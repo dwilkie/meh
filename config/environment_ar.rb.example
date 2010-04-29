@@ -1,0 +1,7 @@
+configure :test do
+  ActiveRecord::Base.establish_connection(
+    :adapter => 'sqlite3',
+    :dbfile =>  'test.sqlite3'
+  )
+end
+
