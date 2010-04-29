@@ -29,9 +29,6 @@ ActiveRecord::Schema.define(:version => 20100429120327) do
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
     t.string   "password_salt",                       :default => "", :null => false
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
@@ -39,7 +36,6 @@ ActiveRecord::Schema.define(:version => 20100429120327) do
     t.datetime "updated_at"
   end
 
-  add_index "suppliers", ["confirmation_token"], :name => "index_suppliers_on_confirmation_token", :unique => true
   add_index "suppliers", ["email"], :name => "index_suppliers_on_email", :unique => true
   add_index "suppliers", ["reset_password_token"], :name => "index_suppliers_on_reset_password_token", :unique => true
 

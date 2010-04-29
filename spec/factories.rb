@@ -1,5 +1,4 @@
 Factory.define :supplier, :default_strategy => :build do |f|
-  f.sequence(:email) {|n| "supplier#{n}@example.com" }
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.after_build { |l|

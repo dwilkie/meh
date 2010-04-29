@@ -2,7 +2,7 @@ class DeviseCreateSuppliers < ActiveRecord::Migration
   def self.up
     create_table(:suppliers) do |t|
       t.database_authenticatable :null => false
-      t.confirmable
+      # t.confirmable
       t.recoverable
       t.rememberable
       # t.trackable
@@ -14,7 +14,7 @@ class DeviseCreateSuppliers < ActiveRecord::Migration
     end
 
     add_index :suppliers, :email,                :unique => true
-    add_index :suppliers, :confirmation_token,   :unique => true
+    # add_index :suppliers, :confirmation_token,   :unique => true
     add_index :suppliers, :reset_password_token, :unique => true
     # add_index :suppliers, :unlock_token,         :unique => true
   end
