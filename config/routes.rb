@@ -1,4 +1,6 @@
 Meh::Application.routes.draw do |map|
+  devise_for :suppliers
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

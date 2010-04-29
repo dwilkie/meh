@@ -14,6 +14,9 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'capistrano'
 
 # Bundle the extra gems:
+gem 'devise',              :git => 'git://github.com/plataformatec/devise.git'
+gem 'aasm',                :git => 'git://github.com/rubyist/aasm.git'
+
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
