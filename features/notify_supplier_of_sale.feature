@@ -4,7 +4,8 @@ Feature: Notify the seller by sms when an item is payed for
   I want to be informed when a customer buys my product
 
   Scenario: Receive notification
-  Given a supplier exists
-  And a product exists belonging to the supplier with external_product_id: "12345"
-  When a customer purchases a product on ebay with item_id: "12345"
-  Then I should receive a text message which is a translation of "order received" in "en" (English)
+    Given a supplier exists
+    And a product exists belonging to the supplier with external_id: "12345"
+    When a customer purchases a product on ebay with item_id: "12345"
+    Then an order should exist for that product with state: "new"
+    Then I should receive a text message which is a translation of "order received" in "en" (English)
