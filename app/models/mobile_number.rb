@@ -95,34 +95,28 @@ class MobileNumber < ActiveRecord::Base
     self if self.phoneable.nil?
   end
 
-  #############################################################################
-  # CONSTANTS
-  #############################################################################
 
-  FULL_NUMBER_REGEX = %r{^[1-9]{1}[0-9]{0,2}[1-9]{1}\d{5,12}$}
+  validates :number, :presence => true,
+            :uniqueness => true,
+            :format => {:with => %r{^[1-9]{1}[0-9]{0,2}[1-9]{1}\d{5,12}$}},
+            :length => {:in => 7..15}
 
-  #############################################################################
-  # VALIDATION
-  #############################################################################
+  validates :state, :presence => true,
+            :inclusion => {:in => ["unverified", "active", "inactive"] }
 
-  validates_presence_of :number, :state
+  validates :verification_code,
+            :confirmation => {:on => :update,
+                              :unless => Proc.new { |p| p.new_verification_code_requested?
+                                                  }
+                             }
 
-  validates_format_of :number,
-                      :with => FULL_NUMBER_REGEX,
-                      :allow_blank => true, :allow_nil => true
-                      
-  validates_length_of :number,  :in => 7..15,
-                      :allow_blank => true, :allow_nil => true
 
-  validates_confirmation_of :verification_code, :on => :update,
-  :unless => Proc.new { |p| p.verification_code_confirmation.blank? || p.new_verification_code_requested? }
+  validates :activation_code,
+            :confirmation => {:on => :update,
+                              :unless => Proc.new { |p| p.activation_code_confirmation.blank? || p.new_activation_code_requested?
+                                                  }
 
-  validates_confirmation_of :activation_code, :on => :update,
-  :unless => Proc.new { |p| p.activation_code_confirmation.blank? || p.new_activation_code_requested? }
-
-  validates_uniqueness_of :number
-
-  validates_inclusion_of :state, :in => ["unverified", "active", "inactive"]
+                             }
 
   attr_accessor :request_new_verification_code, :request_new_activation_code
 

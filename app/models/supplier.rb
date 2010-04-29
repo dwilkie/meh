@@ -12,15 +12,15 @@ class Supplier < ActiveRecord::Base
   has_one :mobile_number, :as => :phoneable
   #has_many :products, :dependent => :destroy
 
-  validates_presence_of :mobile_number
+  validates :mobile_number, :presence => true
+  
+  validates :email, :uniqueness => true,
+                    :format => { :with => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i },
+                    :allow_blank => true
 
-  validates_uniqueness_of :email, :allow_blank => true
-  validates_format_of     :email,
-                          :with  => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i,
-                          :allow_blank => true
+  validates :password, :presence => true, :confirmation => true,
+                       :length => {:within => 6..20},
+                       :allow_blank => true
 
-  validates_presence_of     :password
-  validates_confirmation_of :password
-  validates_length_of       :password, :within => 6..20, :allow_blank => true
 end
 
