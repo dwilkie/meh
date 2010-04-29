@@ -22,7 +22,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # Bundle gems for certain environments:
 # gem 'rspec', :group => :test
 group :test do
-  gem "test-unit"
+  gem 'test-unit'
+  gem 'factory_girl',     :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
   gem 'rspec-rails',      :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'capybara',         :git => 'git://github.com/jnicklas/capybara.git'
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
