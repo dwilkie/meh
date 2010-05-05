@@ -17,6 +17,8 @@ Factory.define :mobile_number, :default_strategy => :build do |f|
 end
 
 Factory.define :product do |f|
+  f.association :supplier, :factory => :supplier
+  f.association :seller,   :factory => :seller
   f.cents "0.01"
 end
 

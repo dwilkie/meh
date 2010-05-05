@@ -1,4 +1,6 @@
 Meh::Application.routes.draw do |map|
+  resources :orders
+
   get "orders/create"
 
   resources :orders, :only => :create

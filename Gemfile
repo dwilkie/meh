@@ -17,6 +17,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'devise',                       :git => 'git://github.com/plataformatec/devise.git'
 gem 'aasm',                         :git => 'git://github.com/rubyist/aasm.git'
 gem 'money',                        :git => 'git://github.com/FooBarWidget/money.git'
+gem 'ebayapi',                      :git => 'http://github.com/dwilkie/ebay.git'
 gem 'ruby-debug19'
 
 # gem 'bj'
