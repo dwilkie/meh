@@ -1,9 +1,15 @@
-Factory.define :supplier, :default_strategy => :build do |f|
+Factory.define :seller, :class => User, :default_strategy => :build do |f|
+  f.sequence(:email) {|n| "seller#{n}@example.com" }
+  f.roles ["seller"]
   f.password "foobar"
   f.password_confirmation { |u| u.password }
-  f.after_build { |l|
-    l.mobile_number = Factory(:mobile_number)
-  }
+end
+
+Factory.define :supplier, :class => User, :default_strategy => :build do |f|
+  f.sequence(:email) {|n| "supplier#{n}@example.com" }
+  f.roles ["supplier"]
+  f.password "foobar"
+  f.password_confirmation { |u| u.password }
 end
 
 Factory.define :mobile_number, :default_strategy => :build do |f|
@@ -11,6 +17,6 @@ Factory.define :mobile_number, :default_strategy => :build do |f|
 end
 
 Factory.define :product do |f|
-  f.name "Some Manky Product"
+  f.cents "0.01"
 end
 

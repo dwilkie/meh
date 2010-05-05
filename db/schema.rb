@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100429120327) do
+ActiveRecord::Schema.define(:version => 20100429170127) do
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",            :limit => 20, :null => false
@@ -25,18 +25,36 @@ ActiveRecord::Schema.define(:version => 20100429120327) do
 
   add_index "mobile_numbers", ["number"], :name => "index_mobile_numbers_on_number", :unique => true
 
-  create_table "suppliers", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
-    t.string   "reset_password_token"
-    t.string   "remember_token"
-    t.datetime "remember_created_at"
+  create_table "products", :force => true do |t|
+    t.integer  "external_id", :null => false
+    t.integer  "cents",       :null => false
+    t.integer  "supplier_id", :null => false
+    t.integer  "seller_id",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "suppliers", ["email"], :name => "index_suppliers_on_email", :unique => true
-  add_index "suppliers", ["reset_password_token"], :name => "index_suppliers_on_reset_password_token", :unique => true
+  add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
+  add_index "products", ["external_id", "supplier_id"], :name => "index_products_on_external_id_and_supplier_id", :unique => true
+
+  create_table "users", :force => true do |t|
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "reset_password_token"
+    t.string   "remember_token"
+    t.datetime "remember_created_at"
+    t.integer  "roles_mask"
+    t.integer  "seller_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
 end
