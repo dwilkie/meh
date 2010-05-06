@@ -27,7 +27,7 @@
    <AutoPay>false</AutoPay>
    <BuyerProtection>ItemIneligible</BuyerProtection>
    <Currency>USD</Currency>
-   <ItemID>12345</ItemID>
+   <ItemID>110045170373</ItemID>
    <ListingDetails>
     <ViewItemURL>http://cgi.sandbox.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;Item=110045170373</ViewItemURL>
     <ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;item=110045170373&amp;category=0</ViewItemURLForNaturalSearch>
