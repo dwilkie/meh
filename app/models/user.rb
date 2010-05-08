@@ -12,9 +12,15 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation
 
   has_one    :mobile_number, :as => :phoneable, :dependent => :destroy
-  has_many   :products, :dependent => :destroy
-  has_many   :suppliers, :class_name => "User", :foreign_key => "seller_id"
-  belongs_to :seller, :class_name => "User"
+  
+  # seller has many products for sale
+  has_many   :products_for_sale, :foreign_key => "seller_id", :class_name => "Product"
+  # a seller is supplied by many suppliers
+  has_many   :suppliers, :through => :products_for_sale
+  # a supplier has many products to supply
+  has_many   :supplying_products, :foreign_key => "supplier_id", :class_name => "Product"
+  # a supplier supplies many sellers
+  has_many   :sellers, :through => :supplying_products
 
   validates :email, :uniqueness => true,
             :format => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i,

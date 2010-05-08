@@ -7,8 +7,6 @@ class CreateProducts < ActiveRecord::Migration
       t.references  :seller,      :null => false
       t.timestamps
     end
-    # A supplier cannot have more than one product with the same external id
-    add_index :products, [:external_id, :supplier_id], :unique => true
     # A seller cannot have more than one product with the same external id
     add_index :products, [:external_id, :seller_id], :unique => true
   end

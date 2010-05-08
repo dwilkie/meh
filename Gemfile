@@ -28,9 +28,9 @@ gem 'ruby-debug19'
 # Bundle gems for certain environments:
 group :test do
   gem 'test-unit'
-  gem 'launchy'
-  gem 'autotest'
-  gem 'autotest-rails'
+#  gem 'launchy'
+#  gem 'autotest'
+#  gem 'autotest-rails'
   gem 'rspec',            :git => 'git://github.com/rspec/rspec.git'
   gem 'factory_girl',     :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
   gem 'capybara',         :git => 'git://github.com/jnicklas/capybara.git'

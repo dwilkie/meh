@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100505105011) do
+ActiveRecord::Schema.define(:version => 20100508100858) do
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",            :limit => 20, :null => false
@@ -33,6 +33,13 @@ ActiveRecord::Schema.define(:version => 20100505105011) do
     t.datetime "updated_at"
   end
 
+  create_table "paypal_ipns", :force => true do |t|
+    t.text     "params"
+    t.string   "payment_status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "products", :force => true do |t|
     t.integer  "external_id", :null => false
     t.integer  "cents",       :null => false
@@ -43,7 +50,6 @@ ActiveRecord::Schema.define(:version => 20100505105011) do
   end
 
   add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
-  add_index "products", ["external_id", "supplier_id"], :name => "index_products_on_external_id_and_supplier_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -56,7 +62,6 @@ ActiveRecord::Schema.define(:version => 20100505105011) do
     t.string   "remember_token"
     t.datetime "remember_created_at"
     t.integer  "roles_mask"
-    t.integer  "seller_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

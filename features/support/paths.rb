@@ -11,8 +11,8 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
-    when /create order/
-      orders_path
+    when /create paypal ipn/
+      paypal_ipns_path
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

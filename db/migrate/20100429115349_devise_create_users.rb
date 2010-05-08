@@ -6,7 +6,6 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.recoverable
       t.rememberable
       t.integer :roles_mask
-      t.integer :seller_id
       # t.trackable
 
       # t.lockable :lock_strategy => :failed_attempts, :unlock_strategy => :both

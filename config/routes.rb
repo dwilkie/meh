@@ -1,9 +1,5 @@
 Meh::Application.routes.draw do |map|
-  resources :orders
-
-  get "orders/create"
-
-  resources :orders, :only => :create
+  resources :paypal_ipns, :only => :create
 
   devise_for :users
 

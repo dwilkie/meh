@@ -6,11 +6,10 @@
 
 require 'rubygems'
 require 'spork'
- 
+
 Spork.prefork do
   ENV["RAILS_ENV"] ||= "test"
   require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
-  
   require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
   require 'cucumber/rails/rspec'
   require 'cucumber/rails/world'
@@ -27,7 +26,6 @@ Spork.prefork do
   # prefer to use XPath just remove this line and adjust any selectors in your
   # steps to use the XPath syntax.
   Capybara.default_selector = :css
-
 end
  
 Spork.each_run do
