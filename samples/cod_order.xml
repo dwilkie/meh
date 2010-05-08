@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <soapenv:Header>
+ <ebl:RequesterCredentials soapenv:mustUnderstand="0" xmlns:ns="urn:ebay:apis:eBLBaseComponents" xmlns:ebl="urn:ebay:apis:eBLBaseComponents">
+  <ebl:NotificationSignature xmlns:ebl="urn:ebay:apis:eBLBaseComponents">pV3ENuUK/bvFAV7tdsRarA==</ebl:NotificationSignature>
+ </ebl:RequesterCredentials>
+ </soapenv:Header>
+ <soapenv:Body>
+ <GetItemTransactionsResponse xmlns="urn:ebay:apis:eBLBaseComponents">
+  <Timestamp>2010-05-06T08:25:29.915Z</Timestamp>
+  <Ack>Success</Ack>
+  <CorrelationID>362099610</CorrelationID>
+  <Version>667</Version>
+  <Build>E667_CORE_BUNDLED_11160767_R1</Build>
+  <NotificationEventName>AuctionCheckoutComplete</NotificationEventName>
+  <RecipientUserID>testuser_maggot2</RecipientUserID>
+  <EIASToken>nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4CoAJGHpA6dj6x9nY+seQ**</EIASToken>
+  <PaginationResult>
+   <TotalNumberOfPages>1</TotalNumberOfPages>
+   <TotalNumberOfEntries>1</TotalNumberOfEntries>
+  </PaginationResult>
+  <HasMoreTransactions>false</HasMoreTransactions>
+  <TransactionsPerPage>100</TransactionsPerPage>
+  <PageNumber>1</PageNumber>
+  <ReturnedTransactionCountActual>1</ReturnedTransactionCountActual>
+  <Item>
+   <AutoPay>false</AutoPay>
+   <Currency>USD</Currency>
+   <ItemID>110045232708</ItemID>
+   <ListingDetails>
+    <ViewItemURL>http://cgi.sandbox.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;Item=110045232708</ViewItemURL>
+    <ViewItemURLForNaturalSearch>http://cgi.sandbox.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;item=110045232708&amp;category=0</ViewItemURLForNaturalSearch>
+   </ListingDetails>
+   <ListingType>FixedPriceItem</ListingType>
+   <PaymentMethods>CashOnPickup</PaymentMethods>
+   <PaymentMethods>VisaMC</PaymentMethods>
+   <PrivateListing>false</PrivateListing>
+   <Quantity>25</Quantity>
+   <Seller>
+    <AboutMePage>false</AboutMePage>
+    <EIASToken>nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4CoAJGHpA6dj6x9nY+seQ==</EIASToken>
+    <Email>maggot2@gmail.com</Email>
+    <FeedbackScore>500</FeedbackScore>
+    <PositiveFeedbackPercent>0.0</PositiveFeedbackPercent>
+    <FeedbackPrivate>false</FeedbackPrivate>
+    <FeedbackRatingStar>Purple</FeedbackRatingStar>
+    <IDVerified>true</IDVerified>
+    <eBayGoodStanding>true</eBayGoodStanding>
+    <NewUser>false</NewUser>
+    <RegistrationDate>1995-01-01T00:00:00.000Z</RegistrationDate>
+    <Site>US</Site>
+    <Status>Confirmed</Status>
+    <UserID>testuser_maggot2</UserID>
+    <UserIDChanged>true</UserIDChanged>
+    <UserIDLastChanged>2010-04-21T10:45:42.000Z</UserIDLastChanged>
+    <VATStatus>NoVATTax</VATStatus>
+    <SellerInfo>
+     <AllowPaymentEdit>true</AllowPaymentEdit>
+     <CheckoutEnabled>true</CheckoutEnabled>
+     <CIPBankAccountStored>false</CIPBankAccountStored>
+     <GoodStanding>true</GoodStanding>
+     <LiveAuctionAuthorized>false</LiveAuctionAuthorized>
+     <MerchandizingPref>OptIn</MerchandizingPref>
+     <QualifiesForB2BVAT>false</QualifiesForB2BVAT>
+     <SellerLevel>None</SellerLevel>
+     <StoreOwner>false</StoreOwner>
+     <ExpressEligible>false</ExpressEligible>
+     <ExpressWallet>false</ExpressWallet>
+     <SafePaymentExempt>true</SafePaymentExempt>
+    </SellerInfo>
+   </Seller>
+   <SellingStatus>
+    <ConvertedCurrentPrice currencyID="USD">25.0</ConvertedCurrentPrice>
+    <CurrentPrice currencyID="USD">25.0</CurrentPrice>
+    <QuantitySold>2</QuantitySold>
+    <ListingStatus>Active</ListingStatus>
+   </SellingStatus>
+   <Site>US</Site>
+   <Title>Manky Model Boat from Hoi An</Title>
+   <GetItFast>false</GetItFast>
+   <IntegratedMerchantCreditCardEnabled>false</IntegratedMerchantCreditCardEnabled>
+  </Item>
+  <TransactionArray>
+   <Transaction>
+    <AmountPaid currencyID="USD">45.0</AmountPaid>
+    <AdjustmentAmount currencyID="USD">0.0</AdjustmentAmount>
+    <ConvertedAdjustmentAmount currencyID="USD">0.0</ConvertedAdjustmentAmount>
+    <Buyer>
+     <AboutMePage>false</AboutMePage>
+     <EIASToken>nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFk4CoAJGFqA2dj6x9nY+seQ==</EIASToken>
+     <Email>mehbuyer@example.com</Email>
+     <FeedbackScore>500</FeedbackScore>
+     <PositiveFeedbackPercent>0.0</PositiveFeedbackPercent>
+     <FeedbackPrivate>false</FeedbackPrivate>
+     <FeedbackRatingStar>Purple</FeedbackRatingStar>
+     <IDVerified>true</IDVerified>
+     <eBayGoodStanding>true</eBayGoodStanding>
+     <NewUser>false</NewUser>
+     <RegistrationDate>1995-01-01T00:00:00.000Z</RegistrationDate>
+     <Site>US</Site>
+     <Status>Confirmed</Status>
+     <UserID>testuser_mehbuyer</UserID>
+     <UserIDChanged>true</UserIDChanged>
+     <UserIDLastChanged>2010-04-30T06:08:17.000Z</UserIDLastChanged>
+     <VATStatus>NoVATTax</VATStatus>
+     <BuyerInfo>
+      <ShippingAddress>
+       <Name>Test User</Name>
+       <Street1>address</Street1>
+       <CityName>city</CityName>
+       <StateOrProvince>WA</StateOrProvince>
+       <Country>US</Country>
+       <CountryName>United States</CountryName>
+       <Phone>(180) 011-1111 ext.: 1</Phone>
+       <PostalCode>98102</PostalCode>
+       <AddressID>5298934</AddressID>
+       <AddressOwner>eBay</AddressOwner>
+      </ShippingAddress>
+     </BuyerInfo>
+     <UserAnonymized>false</UserAnonymized>
+    </Buyer>
+    <ShippingDetails>
+     <ChangePaymentInstructions>true</ChangePaymentInstructions>
+     <InsuranceFee currencyID="USD">0.0</InsuranceFee>
+     <InsuranceOption>NotOffered</InsuranceOption>
+     <InsuranceWanted>false</InsuranceWanted>
+     <PaymentEdited>false</PaymentEdited>
+     <SalesTax>
+      <SalesTaxPercent>0.0</SalesTaxPercent>
+      <ShippingIncludedInTax>false</ShippingIncludedInTax>
+      <SalesTaxAmount currencyID="USD">0.0</SalesTaxAmount>
+     </SalesTax>
+     <ShippingServiceOptions>
+      <ShippingService>UPSGround</ShippingService>
+      <ShippingServiceCost currencyID="USD">20.0</ShippingServiceCost>
+      <ShippingServiceAdditionalCost currencyID="USD">20.0</ShippingServiceAdditionalCost>
+      <ShippingServicePriority>1</ShippingServicePriority>
+      <ExpeditedService>false</ExpeditedService>
+      <ShippingTimeMin>1</ShippingTimeMin>
+      <ShippingTimeMax>6</ShippingTimeMax>
+     </ShippingServiceOptions>
+     <ShippingServiceOptions>
+      <ShippingService>UPS2ndDay</ShippingService>
+      <ShippingServiceCost currencyID="USD">20.0</ShippingServiceCost>
+      <ShippingServiceAdditionalCost currencyID="USD">20.0</ShippingServiceAdditionalCost>
+      <ShippingServicePriority>2</ShippingServicePriority>
+      <ExpeditedService>false</ExpeditedService>
+      <ShippingTimeMin>1</ShippingTimeMin>
+      <ShippingTimeMax>2</ShippingTimeMax>
+     </ShippingServiceOptions>
+     <ShippingType>Flat</ShippingType>
+     <SellingManagerSalesRecordNumber>108</SellingManagerSalesRecordNumber>
+     <ThirdPartyCheckout>false</ThirdPartyCheckout>
+     <TaxTable/>
+     <GetItFast>false</GetItFast>
+    </ShippingDetails>
+    <ConvertedAmountPaid currencyID="USD">45.0</ConvertedAmountPaid>
+    <ConvertedTransactionPrice currencyID="USD">25.0</ConvertedTransactionPrice>
+    <CreatedDate>2010-05-06T08:23:12.000Z</CreatedDate>
+    <DepositType>None</DepositType>
+    <QuantityPurchased>1</QuantityPurchased>
+    <Status>
+     <eBayPaymentStatus>NoPaymentFailure</eBayPaymentStatus>
+     <CheckoutStatus>CheckoutComplete</CheckoutStatus>
+     <LastTimeModified>2010-05-06T08:25:28.000Z</LastTimeModified>
+     <PaymentMethodUsed>CashOnPickup</PaymentMethodUsed>
+     <CompleteStatus>Complete</CompleteStatus>
+     <BuyerSelectedShipping>true</BuyerSelectedShipping>
+     <PaymentHoldStatus>None</PaymentHoldStatus>
+     <IntegratedMerchantCreditCardEnabled>false</IntegratedMerchantCreditCardEnabled>
+    </Status>
+    <TransactionID>24994539001</TransactionID>
+    <TransactionPrice currencyID="USD">25.0</TransactionPrice>
+    <BestOfferSale>false</BestOfferSale>
+    <ShippingServiceSelected>
+     <ShippingInsuranceCost currencyID="USD">0.0</ShippingInsuranceCost>
+     <ShippingService>UPSGround</ShippingService>
+     <ShippingServiceCost currencyID="USD">20.0</ShippingServiceCost>
+    </ShippingServiceSelected>
+    <BuyerMessage></BuyerMessage>
+    <FinalValueFee currencyID="USD">3.0</FinalValueFee>
+    <TransactionSiteID>US</TransactionSiteID>
+    <Platform>eBay</Platform>
+    <PayPalEmailAddress>maggot2@gmail.com</PayPalEmailAddress>
+    <BuyerGuaranteePrice currencyID="USD">20000.0</BuyerGuaranteePrice>
+    <IntangibleItem>false</IntangibleItem>
+   </Transaction>
+  </TransactionArray>
+ </GetItemTransactionsResponse>
+ </soapenv:Body>
+</soapenv:Envelope>
