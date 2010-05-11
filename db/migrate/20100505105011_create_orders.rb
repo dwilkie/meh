@@ -1,9 +1,11 @@
 class CreateOrders < ActiveRecord::Migration
   def self.up
     create_table :orders do |t|
-      t.string     :state
+      t.string     :status
       t.text       :details
-      t.references :product, :null => false
+      t.references :seller
+      t.references :supplier
+      t.references :seller_order
       t.timestamps
     end
   end

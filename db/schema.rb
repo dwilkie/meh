@@ -9,7 +9,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100508100858) do
+ActiveRecord::Schema.define(:version => 20100511025331) do
+
+  create_table "line_items", :force => true do |t|
+    t.integer  "quantity"
+    t.integer  "product_id"
+    t.integer  "supplier_order_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",            :limit => 20, :null => false
@@ -26,9 +34,11 @@ ActiveRecord::Schema.define(:version => 20100508100858) do
   add_index "mobile_numbers", ["number"], :name => "index_mobile_numbers_on_number", :unique => true
 
   create_table "orders", :force => true do |t|
-    t.string   "state"
+    t.string   "status"
     t.text     "details"
-    t.integer  "product_id", :null => false
+    t.integer  "seller_id"
+    t.integer  "supplier_id"
+    t.integer  "seller_order_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

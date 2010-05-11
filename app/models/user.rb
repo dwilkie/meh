@@ -14,13 +14,20 @@ class User < ActiveRecord::Base
   has_one    :mobile_number, :as => :phoneable, :dependent => :destroy
   
   # seller has many products for sale
-  has_many   :products_for_sale, :foreign_key => "seller_id", :class_name => "Product"
+  # this adds user.selling_products
+  has_many   :selling_products, :foreign_key => "seller_id", :class_name => "Product"
   # a seller is supplied by many suppliers
-  has_many   :suppliers, :through => :products_for_sale
+  # this adds user.suppliers
+  has_many   :suppliers, :through => :selling_products
   # a supplier has many products to supply
+  # this adds user.supplying_products
   has_many   :supplying_products, :foreign_key => "supplier_id", :class_name => "Product"
   # a supplier supplies many sellers
+  # this adds user.sellers
   has_many   :sellers, :through => :supplying_products
+  
+  has_many   :customer_orders, :foreign_key => "seller_id", :class_name => "Order"
+  has_many   :supplier_orders, :foreign_key => "supplier_id", :class_name => "Order"
 
   validates :email, :uniqueness => true,
             :format => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i,

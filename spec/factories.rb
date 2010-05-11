@@ -19,6 +19,6 @@ end
 Factory.define :product do |f|
   f.association :supplier, :factory => :supplier
   f.association :seller,   :factory => :seller
+  f.external_id 12345
   f.cents "0.01"
 end
-
