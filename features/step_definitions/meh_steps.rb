@@ -31,14 +31,15 @@ When /^a customer purchases a product on ebay from #{capture_model} with item id
   post path_to("create order"), document.to_s, {"Content-type" => "text/xml"}
 end
 
-
-When /^a buyer successfully purchases the product through paypal with external_id: "([^\"]*)"$/ do |external_id|
+When /^a buyer successfully purchases(?: the| a| (\d+)) product from #{capture_model} through paypal with external_id: "([^\"]*)"$/ do |quantity, seller, external_id|
+  seller = model!(seller)
+  quantity ||= "1"
   params = {
     "mc_gross"=>"54.00",
     "protection_eligibility"=>"Eligible",
     "for_auction"=>"true",
     "address_status"=>"confirmed",
-    "item_number1"=>"110045294536",
+    "item_number1"=>"#{external_id}",
     "payer_id"=>"T23XXY2DVKA6J",
     "tax"=>"0.00",
     "address_street"=>"address",
@@ -55,11 +56,11 @@ When /^a buyer successfully purchases the product through paypal with external_i
     "notify_version"=>"2.9",
     "custom"=>"",
     "payer_status"=>"verified",
-    "business"=>"mehsel_1273155831_biz@gmail.com",
+    "business"=>"#{seller.email}",
     "num_cart_items"=>"1",
     "address_country"=>"United States",
     "address_city"=>"city",
-    "quantity"=>"1",
+    "quantity"=>"#{quantity}",
     "verify_sign"=>"Aa4P7UnWW85EE9W0YVKVAc7z1v8OAkejFXqE2AlDChXtbvZRHTHaiH4C",
     "payer_email"=>"mehbuy_1272942317_per@gmail.com",
     "txn_id"=>"45D21472YD1820048",
@@ -67,22 +68,21 @@ When /^a buyer successfully purchases the product through paypal with external_i
     "last_name"=>"User",
     "item_name1"=>"Yet another piece of mank",
     "address_state"=>"WA",
-    "receiver_email"=>"mehsel_1273155831_biz@gmail.com",
+    "receiver_email"=>"#{seller.email}",
     "payment_fee"=>"2.41",
-    "quantity1"=>"1",
+    "quantity1"=>"#{quantity}",
     "insurance_amount"=>"0.00",
     "receiver_id"=>"8AYM8ZN48AARJ",
     "txn_type"=>"web_accept",
     "item_name"=>"Yet another piece of mank",
     "mc_currency"=>"USD",
-    "item_number"=>"110045294536",
+    "item_number"=>"#{external_id}",
     "residence_country"=>"AU",
     "test_ipn"=>"1",
     "transaction_subject"=>"Yet another piece of mank",
     "payment_gross"=>"54.00",
     "shipping"=>"20.00"
   }
-  params["item_number"] = external_id
   post path_to("create paypal ipn"), params
 end
 

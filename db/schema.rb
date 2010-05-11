@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(:version => 20100511025331) do
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params"
     t.string   "payment_status"
+    t.integer  "customer_order_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

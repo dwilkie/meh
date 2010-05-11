@@ -15,9 +15,9 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Bundle the extra gems:
 gem 'devise',                       :git => 'git://github.com/plataformatec/devise.git'
-gem 'aasm',                         :git => 'git://github.com/rubyist/aasm.git'
+gem 'state_machine',                :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'money',                        :git => 'git://github.com/FooBarWidget/money.git'
-gem 'ebayapi',                      :git => 'http://github.com/dwilkie/ebay.git'
+gem 'ebayapi',                      :git => 'git://github.com/dwilkie/ebay.git'
 gem 'ruby-debug19'
 
 # gem 'bj'
@@ -28,9 +28,6 @@ gem 'ruby-debug19'
 # Bundle gems for certain environments:
 group :test do
   gem 'test-unit'
-#  gem 'launchy'
-#  gem 'autotest'
-#  gem 'autotest-rails'
   gem 'rspec',            :git => 'git://github.com/rspec/rspec.git'
   gem 'factory_girl',     :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
   gem 'capybara',         :git => 'git://github.com/jnicklas/capybara.git'

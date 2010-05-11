@@ -1,6 +1,4 @@
 class MobileNumber < ActiveRecord::Base
-  include AASM
-
   #############################################################################
   # CALLBACKS
   #############################################################################
@@ -19,28 +17,22 @@ class MobileNumber < ActiveRecord::Base
   # STATES
   #############################################################################
 
-  aasm_column :state
-  
-  aasm_initial_state :unverified
+  state_machine :state, :initial => :unverified do
+    event :internal_verify do
+      transition :unverified => :active, :if => :verification_code_valid_and_registered?
+    end
 
-  aasm_state :unverified
-  aasm_state :active
-  aasm_state :inactive
+    event :unverify do
+      transition [:active, :inactive] => :unverified
+    end
 
-  aasm_event :internal_verify do
-    transitions :to => :active, :from => [:unverified], :guard => :verification_code_valid_and_registered?
-  end
+    event :internal_activate do
+      transition :inactive => :active, :if => :activation_code_valid?
+    end
 
-  aasm_event :unverify do
-    transitions :to => :unverified, :from => [:active, :inactive]
-  end
-
-  aasm_event :internal_activate do
-    transitions :to => :active, :from => [:inactive], :guard => :activation_code_valid?
-  end
-
-  aasm_event :deactivate do
-    transitions :to => :inactive, :from => [:active]
+    event :deactivate do
+      transition :active => :inactive
+    end
   end
 
   def verify!

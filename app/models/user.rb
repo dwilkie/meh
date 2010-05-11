@@ -2,6 +2,8 @@ class User < ActiveRecord::Base
 
   ROLES = %w[seller supplier]
 
+  scope :with_role, lambda { |role| where("roles_mask & #{2**ROLES.index(role.to_s)} > 0 ") }
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
