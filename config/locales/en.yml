@@ -2,4 +2,5 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  messages:
+    supplier_order_notification: "Hi {{supplier}},\nU have a new order for {{quantity}} x {{product_code}}. To accept the order, look up the pv code for {{product_code}} and work out how much stock u will have after u send {{quantity}} of them. Then reply with: acceptorder {{order_number}} {{quantity}} <pv code> <new stock level>. To reject the order reply with rejectorder {{order_number}}."

@@ -44,6 +44,8 @@ class User < ActiveRecord::Base
             :confirmation => true,
             :length => {:within => 6..20}
 
+  validates :name, :presence => true
+
   validates :mobile_number, :presence => true,
             :if => Proc.new { |user| user.email.nil? }
 

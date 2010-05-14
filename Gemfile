@@ -15,9 +15,10 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Bundle the extra gems:
 gem 'devise',                       :git => 'git://github.com/plataformatec/devise.git'
+gem 'conversation',                 :git => 'git://github.com/dwilkie/conversation.git'
 gem 'state_machine',                :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'money',                        :git => 'git://github.com/FooBarWidget/money.git'
-gem 'ebayapi',                      :git => 'git://github.com/dwilkie/ebay.git'
+#gem 'ebayapi',                      :git => 'git://github.com/dwilkie/ebay.git'
 gem 'ruby-debug19'
 
 # gem 'bj'
@@ -34,7 +35,6 @@ group :test do
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'pickle',           :git => 'git://github.com/codegram/pickle.git'
   gem 'cucumber-rails',   :git => 'git://github.com/aslakhellesoy/cucumber-rails.git'
-  gem 'cucumber',         :git => 'git://github.com/aslakhellesoy/cucumber.git'
   gem 'rspec-rails',      :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'spork',            :git => 'git://github.com/timcharper/spork.git'
 end

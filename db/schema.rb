@@ -9,15 +9,28 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100511025331) do
+ActiveRecord::Schema.define(:version => 20100513105800) do
 
-  create_table "line_items", :force => true do |t|
-    t.integer  "quantity"
-    t.integer  "product_id"
-    t.integer  "supplier_order_id"
+  create_table "conversations", :force => true do |t|
+    t.string   "state",      :null => false
+    t.string   "with",       :null => false
+    t.string   "topic"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "incoming_text_messages", :force => true do |t|
+    t.string   "originator",      :null => false
+    t.string   "message_id",      :null => false
+    t.text     "params"
+    t.integer  "smsable_id",      :null => false
+    t.string   "smsable_type",    :null => false
+    t.integer  "conversation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "incoming_text_messages", ["message_id"], :name => "index_incoming_text_messages_on_message_id", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",            :limit => 20, :null => false
@@ -36,9 +49,21 @@ ActiveRecord::Schema.define(:version => 20100511025331) do
   create_table "orders", :force => true do |t|
     t.string   "status"
     t.text     "details"
+    t.integer  "quantity"
+    t.integer  "product_id"
     t.integer  "seller_id"
     t.integer  "supplier_id"
     t.integer  "seller_order_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "outgoing_text_messages", :force => true do |t|
+    t.string   "message",         :null => false
+    t.text     "params"
+    t.integer  "smsable_id",      :null => false
+    t.string   "smsable_type",    :null => false
+    t.integer  "conversation_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -73,6 +98,7 @@ ActiveRecord::Schema.define(:version => 20100511025331) do
     t.string   "remember_token"
     t.datetime "remember_created_at"
     t.integer  "roles_mask"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -3,6 +3,8 @@ class CreateOrders < ActiveRecord::Migration
     create_table :orders do |t|
       t.string     :status
       t.text       :details
+      t.integer    :quantity
+      t.references :product
       t.references :seller
       t.references :supplier
       t.references :seller_order

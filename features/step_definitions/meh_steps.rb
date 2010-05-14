@@ -86,3 +86,31 @@ When /^a buyer successfully purchases(?: the| a| (\d+)) product from #{capture_m
   post path_to("create paypal ipn"), params
 end
 
+Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, exact_or_includes, translate, expected_text, language, interpolations|
+  text_message = OutgoingTextMessage.last
+  if translate
+    i18n_key = translation_key(expected_text)
+    language = "en" if language.blank?
+    locale = language.to_sym
+    interpolations_hash = {:locale => locale}
+    if interpolations
+      interpolations.split(",").each do |interpolation|
+        key_value_pair = interpolation.split(":")
+        key_value_pair[0].strip!
+        key_value_pair[1].strip!
+        key_value_pair[1].gsub!("\"", "")
+        interpolations_hash.merge!({key_value_pair[0] => key_value_pair[1]})
+      end
+    end
+    interpolations_hash.symbolize_keys!
+    message = I18n.t(i18n_key, interpolations_hash)
+  else
+    message = expected_text
+  end
+  if exact_or_includes == "is"
+    text_message.message.should == message
+  else
+    text_message.message.should include(message)
+  end
+end
+

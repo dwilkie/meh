@@ -12,6 +12,8 @@ class MobileNumber < ActiveRecord::Base
 
   belongs_to :phoneable, :polymorphic => true
   has_many   :conversations, :foreign_key => "with"
+  has_many   :outgoing_text_messages, :as => :smsable
+  has_many   :incoming_text_messages, :as => :smsable
 
   #############################################################################
   # STATES

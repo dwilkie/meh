@@ -3,6 +3,7 @@ Factory.define :seller, :class => User, :default_strategy => :build do |f|
   f.roles ["seller"]
   f.password "foobar"
   f.password_confirmation { |u| u.password }
+  f.name "Chris"
 end
 
 Factory.define :supplier, :class => User, :default_strategy => :build do |f|
@@ -10,6 +11,7 @@ Factory.define :supplier, :class => User, :default_strategy => :build do |f|
   f.roles ["supplier"]
   f.password "foobar"
   f.password_confirmation { |u| u.password }
+  f.name "Bob"
 end
 
 Factory.define :mobile_number, :default_strategy => :build do |f|
