@@ -9,8 +9,15 @@
 #end
 
 # Or you can use Conversation with whatever you like
-Conversation.converse do |with, notice, conversation|
-  conversation.outgoing_text_messages.create!(:smsable => with, :message => notice)
+Conversation.converse do |with, notice|
+#  notification_method = with.preferred_notification_method
+#  if notification_method == "both" || notification_method == "email"
+#    # send by email...
+#  end
+#  if notification_method == "both" || notification_method == "mobile"
+#    OutgoingTextMessage.create!(:smsable => with.mobile_number, :message => notice)
+#  end
+  OutgoingTextMessage.create!(:smsable => with.mobile_number, :message => notice) unless with.mobile_number.nil?
 end
 
 # Configure finishing keywords

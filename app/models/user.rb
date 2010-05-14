@@ -31,6 +31,8 @@ class User < ActiveRecord::Base
   has_many   :customer_orders, :foreign_key => "seller_id", :class_name => "Order"
   has_many   :supplier_orders, :foreign_key => "supplier_id", :class_name => "Order"
 
+  has_many   :conversations, :foreign_key => "with"
+
   validates :email, :uniqueness => true,
             :format => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i,
             :allow_nil => true
@@ -39,6 +41,8 @@ class User < ActiveRecord::Base
                         :if => Proc.new {
                                  |user| user.is?(:seller) || user.mobile_number.nil?
                                }
+
+  #preference :notification_method, :string, :default => 'email'
 
   validates :password, :presence => true,
             :confirmation => true,
@@ -49,6 +53,8 @@ class User < ActiveRecord::Base
   validates :mobile_number, :presence => true,
             :if => Proc.new { |user| user.email.nil? }
 
+  #validate :check_notification_method_preference
+  
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end
@@ -62,5 +68,12 @@ class User < ActiveRecord::Base
   def is?(role)
     roles.include?(role.to_s)
   end
+  
+  private
+    def check_notification_method_preference
+      errors.add(:preferred_notification_method, "customize") if email.nil? && preferred_notification_method == "email"
+        errors.add(:preferred_notification_method, "customize") if mobile_number.nil? && preferred_notification_method == "mobile"
+        errors.add(:preferred_notification_method, "customize") if (email.nil? || mobile_number.nil?) && preferred_notification_method == "both"
+    end
 end
 

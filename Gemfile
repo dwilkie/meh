@@ -14,11 +14,12 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'capistrano'
 
 # Bundle the extra gems:
-gem 'devise',                       :git => 'git://github.com/plataformatec/devise.git'
-gem 'conversation',                 :git => 'git://github.com/dwilkie/conversation.git'
-gem 'state_machine',                :git => 'git://github.com/pluginaweek/state_machine.git'
-gem 'money',                        :git => 'git://github.com/FooBarWidget/money.git'
-#gem 'ebayapi',                      :git => 'git://github.com/dwilkie/ebay.git'
+gem 'devise',        :git => 'git://github.com/plataformatec/devise.git'
+gem 'conversation',  :git => 'git://github.com/dwilkie/conversation.git'
+gem 'state_machine', :git => 'git://github.com/pluginaweek/state_machine.git'
+gem 'money',         :git => 'git://github.com/FooBarWidget/money.git'
+#gem 'ebayapi',      :git => 'git://github.com/dwilkie/ebay.git'
+#gem 'preferences',   :git => 'git://github.com/maxschulze/preferences.git'
 gem 'ruby-debug19'
 
 # gem 'bj'

@@ -1,3 +1,7 @@
+When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
+  create_model(name, fields)
+end
+
 When /^a customer purchases a product on ebay from #{capture_model} with item id: "([^\"]*)"$/ do |seller, ebay_item_id|
   require "rexml/document"
   GET_ITEM_TRANSACTIONS_FILE = File.dirname(__FILE__) +
@@ -31,15 +35,16 @@ When /^a customer purchases a product on ebay from #{capture_model} with item id
   post path_to("create order"), document.to_s, {"Content-type" => "text/xml"}
 end
 
-When /^a buyer successfully purchases(?: the| a| (\d+)) product from #{capture_model} through paypal with external_id: "([^\"]*)"$/ do |quantity, seller, external_id|
-  seller = model!(seller)
+When /^a customer successfully purchases(?: (\d+) of)? #{capture_model} through paypal$/ do |quantity, product|
+  product = model!(product)
+  seller = product.seller
   quantity ||= "1"
   params = {
     "mc_gross"=>"54.00",
     "protection_eligibility"=>"Eligible",
     "for_auction"=>"true",
     "address_status"=>"confirmed",
-    "item_number1"=>"#{external_id}",
+    "item_number1"=>"#{product.external_id}",
     "payer_id"=>"T23XXY2DVKA6J",
     "tax"=>"0.00",
     "address_street"=>"address",
@@ -76,7 +81,7 @@ When /^a buyer successfully purchases(?: the| a| (\d+)) product from #{capture_m
     "txn_type"=>"web_accept",
     "item_name"=>"Yet another piece of mank",
     "mc_currency"=>"USD",
-    "item_number"=>"#{external_id}",
+    "item_number"=>"#{product.external_id}",
     "residence_country"=>"AU",
     "test_ipn"=>"1",
     "transaction_subject"=>"Yet another piece of mank",

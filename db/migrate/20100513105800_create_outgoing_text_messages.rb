@@ -4,7 +4,6 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
       t.string     :message,     :null => false
       t.text       :params
       t.references :smsable, :polymorphic => true, :null => false
-      t.references :conversation
       t.timestamps
     end
   end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100513105800) do
+ActiveRecord::Schema.define(:version => 20100514132516) do
 
   create_table "conversations", :force => true do |t|
     t.string   "state",      :null => false
@@ -59,11 +59,10 @@ ActiveRecord::Schema.define(:version => 20100513105800) do
   end
 
   create_table "outgoing_text_messages", :force => true do |t|
-    t.string   "message",         :null => false
+    t.string   "message",      :null => false
     t.text     "params"
-    t.integer  "smsable_id",      :null => false
-    t.string   "smsable_type",    :null => false
-    t.integer  "conversation_id"
+    t.integer  "smsable_id",   :null => false
+    t.string   "smsable_type", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -75,6 +74,19 @@ ActiveRecord::Schema.define(:version => 20100513105800) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "preferences", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "owner_id",   :null => false
+    t.string   "owner_type", :null => false
+    t.integer  "group_id"
+    t.string   "group_type"
+    t.string   "value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "preferences", ["owner_id", "owner_type", "name", "group_id", "group_type"], :name => "index_preferences_on_owner_and_name_and_preference", :unique => true
 
   create_table "products", :force => true do |t|
     t.integer  "external_id", :null => false
