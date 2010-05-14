@@ -14,6 +14,9 @@ module NavigationHelpers
     when /create paypal ipn/
       paypal_ipns_path
 
+    when /create incoming text message/
+      incoming_text_messages_path
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

@@ -11,6 +11,9 @@ class Order < ActiveRecord::Base
   accepts_nested_attributes_for :supplier_orders
 
   state_machine :status, :initial => :unconfirmed do
+    event :confirm do
+      transition :unconfirmed => :confirmed
+    end
   end
 
 end

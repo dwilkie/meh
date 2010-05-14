@@ -2,7 +2,7 @@ class PaypalIpn < ActiveRecord::Base
   serialize  :params
   belongs_to :customer_order, :class_name => "Order"
   before_create :create_order
-
+  
   private
     def create_order
       seller = User.with_role("seller").where(

@@ -119,3 +119,16 @@ Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in
   end
 end
 
+When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
+  message = Conversation.finishing_keywords.first if Conversation.finishing_keywords && finishing_keyword
+  message ||= ""
+  params = {
+    "to"=>"61447100308",
+    "from"=> sender,
+    "msg"=> message,
+    "userfield"=>"123456",
+    "date"=>"2010-05-13 23:59:58"
+  }
+  post path_to("create incoming text message"), params
+end
+

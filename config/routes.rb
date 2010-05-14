@@ -1,5 +1,6 @@
 Meh::Application.routes.draw do |map|
   resources :paypal_ipns, :only => :create
+  resources :incoming_text_messages, :only => :create
 
   devise_for :users
 

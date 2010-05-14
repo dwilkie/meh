@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100514132516) do
+ActiveRecord::Schema.define(:version => 20100513105800) do
 
   create_table "conversations", :force => true do |t|
     t.string   "state",      :null => false
@@ -20,17 +20,15 @@ ActiveRecord::Schema.define(:version => 20100514132516) do
   end
 
   create_table "incoming_text_messages", :force => true do |t|
-    t.string   "originator",      :null => false
-    t.string   "message_id",      :null => false
+    t.string   "originator",   :null => false
     t.text     "params"
-    t.integer  "smsable_id",      :null => false
-    t.string   "smsable_type",    :null => false
-    t.integer  "conversation_id"
+    t.integer  "smsable_id"
+    t.string   "smsable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "incoming_text_messages", ["message_id"], :name => "index_incoming_text_messages_on_message_id", :unique => true
+  add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",            :limit => 20, :null => false
@@ -74,19 +72,6 @@ ActiveRecord::Schema.define(:version => 20100514132516) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "preferences", :force => true do |t|
-    t.string   "name",       :null => false
-    t.integer  "owner_id",   :null => false
-    t.string   "owner_type", :null => false
-    t.integer  "group_id"
-    t.string   "group_type"
-    t.string   "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "preferences", ["owner_id", "owner_type", "name", "group_id", "group_type"], :name => "index_preferences_on_owner_and_name_and_preference", :unique => true
 
   create_table "products", :force => true do |t|
     t.integer  "external_id", :null => false
