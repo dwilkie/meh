@@ -10,5 +10,4 @@ class IncomingTextMessage < ActiveRecord::Base
     def link_to_smsable
       self.smsable = MobileNumber.where("number = ?", originator).first
     end
-    
 end

@@ -37,7 +37,7 @@ class PaypalIpn < ActiveRecord::Base
                   params["item_number#{index + 1}"]).first
         supplier_orders_attributes["#{index}"] = {
           :supplier => product.supplier,
-          :product=>product,
+          :product => product,
           :quantity => params["quantity#{index + 1}"].to_i
         }
       end

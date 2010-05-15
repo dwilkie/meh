@@ -1,3 +1,8 @@
+Given /^#{capture_model} is also a (.)+$/ do |user, role|
+  user = model!(user)
+  user.new_role = role
+end
+
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
 end
@@ -112,7 +117,7 @@ Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in
   else
     message = expected_text
   end
-  if exact_or_includes == "is"
+  if exact_or_includes == "be"
     text_message.message.should == message
   else
     text_message.message.should include(message)

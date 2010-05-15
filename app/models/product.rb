@@ -5,8 +5,17 @@ class Product < ActiveRecord::Base
   belongs_to :seller, :class_name => "User"
   has_many   :supplier_orders, :class_name => "Order"
 
-  validates :cents, :presence => true, :numericality => {:greater_than => 0}
-  validates :external_id, :uniqueness => {:scope => :seller_id}, :presence => true
-  validates :supplier_id, :presence => true
-  validates :seller_id,   :presence => true
+  validates :cents,
+            :presence => true,
+            :numericality => {:greater_than => 0}
+            
+  validates :external_id, :verification_code,
+            :uniqueness => {:scope => :seller_id},
+            :presence => true
+            
+  validates :supplier_id,
+            :presence => true
+            
+  validates :seller_id,
+            :presence => true
 end

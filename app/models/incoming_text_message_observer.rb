@@ -1,11 +1,12 @@
 class IncomingTextMessageObserver < ActiveRecord::Observer
   def after_create(incoming_text_message)
     if smsable = incoming_text_message.smsable
-      topic = incoming_text_message.params[:msg].split(" ").first
+      message_text = incoming_text_message.params[:msg]
+      topic = message_text.split(" ").first
       Conversation.create!(
         :with => smsable.phoneable,
         :topic => topic
-      ).details.move_along!(incoming_text_message)
+      ).details.move_along!(message_text)
     end
   end
 end

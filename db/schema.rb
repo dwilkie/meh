@@ -74,15 +74,17 @@ ActiveRecord::Schema.define(:version => 20100513105800) do
   end
 
   create_table "products", :force => true do |t|
-    t.integer  "external_id", :null => false
-    t.integer  "cents",       :null => false
-    t.integer  "supplier_id", :null => false
-    t.integer  "seller_id",   :null => false
+    t.string   "external_id",       :null => false
+    t.string   "verification_code", :null => false
+    t.integer  "cents",             :null => false
+    t.integer  "supplier_id",       :null => false
+    t.integer  "seller_id",         :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
+  add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

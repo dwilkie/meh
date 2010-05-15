@@ -4,8 +4,11 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^supplier order notification$/
-      "messages.supplier_order_notification"
+    when /^supplier order notification for sellers product$/
+      "messages.supplier_order_notification_for_sellers_product"
+      
+    when /^supplier order notification for own product$/
+      "messages.supplier_order_notification_for_own_product"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

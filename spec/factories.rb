@@ -22,5 +22,6 @@ Factory.define :product do |f|
   f.association :supplier, :factory => :supplier
   f.association :seller,   :factory => :seller
   f.external_id 12345
+  f.verification_code "54321x"
   f.cents "0.01"
 end
