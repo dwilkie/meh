@@ -3,8 +3,8 @@
 
 en:
   messages:
-    supplier_order_notification_for_sellers_product: "Hi %{supplier},\nU have a new order from %{seller} (%{seller_email}) for %{quantity} x %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} <pv code>. To reject the order reply with rejectorder %{order_number}."
-    supplier_order_notification_for_own_product: "Hi %{supplier},\nU have a new order for %{quantity} x your product: %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} <pv code>. To reject the order reply with rejectorder %{order_number}."
+    supplier_order_notification_for_sellers_product: "Hi %{supplier},\nU have a new order #%{order_number} from %{seller} (%{seller_email}) for %{quantity} x %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} x <pv code>. To reject the order reply with rejectorder %{order_number}."
+    supplier_order_notification_for_own_product: "Hi %{supplier},\nU have a new order #%{order_number} for %{quantity} x your product: %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} x <pv code>. To reject the order reply with rejectorder %{order_number}."
   errors:
     messages:
       not_matching_order_quantity: "isn't %{value}"
