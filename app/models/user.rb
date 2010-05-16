@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :lockable and :timeoutable
 
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable
+         :recoverable, :rememberable, :validatable
          
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation
@@ -33,25 +33,9 @@ class User < ActiveRecord::Base
 
   has_many   :conversations, :foreign_key => "with"
 
-  validates :email, :uniqueness => true,
-            :format => /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i,
-            :allow_nil => true
-
-  validates_presence_of :email,
-                        :if => Proc.new {
-                                 |user| user.is?(:seller) || user.mobile_number.nil?
-                               }
-
   #preference :notification_method, :string, :default => 'email'
 
-  validates :password, :presence => true,
-            :confirmation => true,
-            :length => {:within => 6..20}
-
   validates :name, :presence => true
-
-  validates :mobile_number, :presence => true,
-            :if => Proc.new { |user| user.email.nil? }
 
   #validate :check_notification_method_preference
   

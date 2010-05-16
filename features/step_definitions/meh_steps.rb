@@ -1,6 +1,7 @@
-Given /^#{capture_model} is also a (.)+$/ do |user, role|
+Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user = model!(user)
   user.new_role = role
+  user.save!
 end
 
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
@@ -136,4 +137,3 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   }
   post path_to("create incoming text message"), params
 end
-
