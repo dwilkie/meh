@@ -1,5 +1,11 @@
-class AcceptorderConversation < AbstractConversation
-
+class AcceptorderConversation < AbstractConfirmOrderConversation
+  
+  @@options = {
+    :confirm_order_action => "accept",
+    :confirm_order_action_human_name => "accept orders",
+    :invalid_message_i18n_key => "messages.accept_order_invalid_message"
+  }
+  
   # A valid text message should be formatted as follows:
   # acceptorder <order_id> <quantity> x <pv code>
   # Examples of valid messages:
@@ -15,9 +21,7 @@ class AcceptorderConversation < AbstractConversation
   # "acceptorder 21243"             # Quantity is blank, pv code can't be blank
   # "acceptorder 23324 1"           # pv code can't be blank
 
-  class Message
-    include ActiveModel::Validations
-    
+  class AcceptOrderMessage < AbstractConfirmOrderConversation::AbstractMessage
     class MatchesOrderQuantityValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         record.errors.add(attribute, :not_matching_order_quantity) unless
@@ -27,74 +31,34 @@ class AcceptorderConversation < AbstractConversation
     
     class MatchesProductVerificationCodeValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
-        record.errors.add(attribute, :not_matching_product_verification_code) unless
+        record.errors.add(
+          attribute,
+          :not_matching_product_verification_code
+        ) unless
         value.nil? || record.order.nil? || 
         record.order.product.verification_code == value
       end
     end
     
-    attr_reader   :order_number, :order, :quantity,
-                  :product_verification_code, :raw_message
-                  
+    attr_reader   :quantity, :product_verification_code
+
     validates :quantity,
               :presence => true,
               :matches_order_quantity => true
-              
-    validates :order,
-              :presence => true
 
     validates :product_verification_code,
               :presence => true,
               :matches_product_verification_code => true
     
     def initialize(raw_message, supplier)
-      @raw_message = raw_message
-      message_contents = raw_message.split(" ")
-      @order_number = message_contents[1].try(:to_i)
-      @order = supplier.supplier_orders.find_by_id(@order_number)
+      message_contents = super
       @quantity = message_contents[2].try(:to_i)
-      @product_verification_code = message_contents.last if message_contents.size >= 4
+      @product_verification_code = message_contents.last if
+        message_contents.size >= 4
     end
   end
-    
+  
   def move_along!(message)
-    if user.is?(:supplier)
-      message = Message.new(message, user)
-      if message.valid?
-        message.order.confirmed? ?
-          say(already_confirmed(message.order)) :
-          message.order.accept
-      else
-        say invalid_message(message)
-      end
-    else
-      say unauthorized
-    end
-    finish
+    super(AcceptOrderMessage.new(message, user), @@options)
   end
-    private
-      def invalid_message(message)
-        I18n.t(
-          "messages.accept_order_invalid_message",
-          :errors => message.errors.full_messages.to_sentence,
-          :raw_message => message.raw_message
-        )
-      end
-      
-      def unauthorized
-        I18n.t(
-          "messages.unauthorized",
-          :action => "accept orders"
-        )
-      end
-      
-      def already_confirmed(order)
-        confirmation = order.status
-        confirmation = "confirmed" unless
-          confirmation == "accepted" || confirmation == "rejected"
-        I18n.t(
-          "messages.order_already_confirmed",
-          :confirmation => confirmation
-        )
-      end
 end

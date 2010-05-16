@@ -9,7 +9,7 @@ Feature: Accept an order
     And a product exists with external_id: "12345", verification_code: "hy456n"
     And a supplier_order exists with id: 154674, supplier: the supplier, product_id: the product, quantity: 1
 
-  Scenario Outline: Confirm an order correctly
+  Scenario Outline: Accept an order correctly
     When I text <message_text> from "66354668789"
     Then the supplier_order should be confirmed
 

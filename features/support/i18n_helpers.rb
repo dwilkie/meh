@@ -17,7 +17,7 @@ module I18nHelpers
       "errors.messages.not_matching_product_verification_code"
 
     when /^order not found when accepting order$/
-      "activemodel.errors.models.acceptorder_conversation/message.attributes.order.blank"
+      "activemodel.errors.models.acceptorder_conversation/accept_order_message.attributes.order.blank"
 
     when /^unauthorized message action$/
       "messages.unauthorized"

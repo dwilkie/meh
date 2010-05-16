@@ -15,7 +15,7 @@ en:
   activemodel:
     errors:
       models:
-        acceptorder_conversation/message:
+        acceptorder_conversation/accept_order_message:
           attributes:
             order:
               blank: "can't be found"
