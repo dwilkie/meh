@@ -9,3 +9,11 @@ en:
     messages:
       not_matching_order_quantity: "isn't %{value}"
       not_matching_product_verification_code: "isn't %{value}"
+  activemodel:
+    errors:
+      models:
+        acceptorder_conversation/message:
+          attributes:
+            order:
+              blank: "can't be found"
+
