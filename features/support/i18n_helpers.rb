@@ -24,6 +24,12 @@ module I18nHelpers
       
     when /^order already confirmed$/
       "messages.order_already_confirmed"
+      
+    when /^confirm reject order for sellers product$/
+      "messages.confirm_reject_order_for_sellers_product"
+
+    when /^confirm reject order for own product$/
+      "messages.confirm_reject_order_for_own_product"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

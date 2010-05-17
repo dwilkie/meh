@@ -1,8 +1,7 @@
 class AcceptorderConversation < AbstractConfirmOrderConversation
   
   @@options = {
-    :confirm_order_action => "accept",
-    :confirm_order_action_human_name => "accept orders",
+    :confirm_order_action => "accept orders",
     :invalid_message_i18n_key => "messages.accept_order_invalid_message"
   }
   
@@ -59,6 +58,8 @@ class AcceptorderConversation < AbstractConfirmOrderConversation
   end
   
   def move_along!(message)
-    super(AcceptOrderMessage.new(message, user), @@options)
+    message = AcceptOrderMessage.new(message, user)
+    super(message, @@options)
+    message.order.accept unless finished?
   end
 end

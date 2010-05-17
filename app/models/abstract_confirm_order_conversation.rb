@@ -19,16 +19,13 @@ class AbstractConfirmOrderConversation < AbstractConversation
   def move_along!(message, options)
     if user.is?(:supplier)
       if message.valid?
-        message.order.confirmed? ?
-          say(already_confirmed(message.order)) :
-          message.order.send(options[:confirm_order_action])
+        say(already_confirmed(message.order)) if message.order.confirmed?
       else
         say invalid_message(message, options[:invalid_message_i18n_key])
       end
     else
-      say unauthorized(options[:confirm_order_action_human_name])
+      say unauthorized(options[:confirm_order_action])
     end
-    finish
   end
     private
       def invalid_message(message, invalid_message_i18n_key)
@@ -39,10 +36,10 @@ class AbstractConfirmOrderConversation < AbstractConversation
         )
       end
       
-      def unauthorized(confirm_order_action_human_name)
+      def unauthorized(confirm_order_action)
         I18n.t(
           "messages.unauthorized",
-          :action => confirm_order_action_human_name
+          :action => confirm_order_action
         )
       end
       
