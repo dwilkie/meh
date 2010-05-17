@@ -4,7 +4,7 @@ Feature: Accept an order
   I want to be able to accept an order by sending a text message
   
   Background:
-    Given a supplier exists
+    Given a supplier exists with name: "Nok"
     And a mobile_number exists with number: "66354668789", phoneable: the supplier
     And a product exists with external_id: "12345", verification_code: "hy456n"
     And a supplier_order exists with id: 154674, supplier: the supplier, product_id: the product, quantity: 1
@@ -24,6 +24,7 @@ Feature: Accept an order
     Then the supplier_order should not be confirmed
     And an outgoing_text_message should exist with smsable_id: the mobile_number
     And the outgoing_text_message should include a translation of <response> in "en" (English) <where>
+    And the outgoing_text_message should include "Nok"
 
   Examples:
     | message_text                     |  response                     | where             |
