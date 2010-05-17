@@ -32,7 +32,7 @@ class AbstractConfirmOrderConversation < AbstractConversation
       def invalid_message(message, invalid_message_i18n_key)
         I18n.t(
           invalid_message_i18n_key,
-          :name => user.name,
+          :supplier => user.name,
           :errors => message.errors.full_messages.to_sentence,
           :raw_message => message.raw_message
         )
@@ -52,7 +52,7 @@ class AbstractConfirmOrderConversation < AbstractConversation
           confirmation == "accepted" || confirmation == "rejected"
         I18n.t(
           "messages.order_already_confirmed",
-          :name => user.name,
+          :supplier => user.name,
           :confirmation => confirmation
         )
       end

@@ -5,7 +5,7 @@ Feature: Validate confirming an order
   I want to make sure that I cant do anything I shouldn't be able to do
 
   Background:
-    Given a supplier exists
+    Given a supplier exists with name: "Phan"
     And a mobile_number exists with number: "66354668789", phoneable: the supplier
     And a supplier_order exists with id: 154674, supplier: the supplier
 
@@ -14,6 +14,7 @@ Feature: Validate confirming an order
     Then the supplier_order should not be confirmed
     And an outgoing_text_message should exist with smsable_id: the mobile_number
     And the outgoing_text_message should include a translation of "order not found when confirming order" in "en" (English)
+    And the outgoing_text_message should include "Phan"
 
     Examples:
       | text_message         |
@@ -21,13 +22,13 @@ Feature: Validate confirming an order
       | "rejectorder 154673" |
 
   Scenario Outline: Try to confirm an order as a seller
-    Given a seller exists
+    Given a seller exists with name: "Dave"
     And a mobile_number exists with phoneable: the seller, number: "66354668790"
     
     When I text <text_message> from "66354668790"
     Then the supplier_order should not be confirmed
     And an outgoing_text_message should exist with smsable_id: the mobile_number
-    And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where action: <action>
+    And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where action: <action>, name: "Dave"
 
     Examples:
       | text_message  | action        |
@@ -35,13 +36,14 @@ Feature: Validate confirming an order
       | "rejectorder" | "rejectorder" |
 
   Scenario Outline: Try to confirm an order not belonging to me
-    Given a supplier exists
+    Given a supplier exists with name: "Keng"
     And a mobile_number exists with phoneable: the supplier, number: "66354668790"
 
     When I text <text_message> from "66354668790"
     Then the supplier_order should not be confirmed
     And an outgoing_text_message should exist with smsable_id: the mobile_number
     And the outgoing_text_message should include a translation of "order not found when confirming order" in "en" (English)
+    And the outgoing_text_message should include "Keng"
     
     Examples:
       | text_message         |
@@ -49,14 +51,14 @@ Feature: Validate confirming an order
       | "rejectorder 154674" |
 
   Scenario Outline: Try to confirm an already confirmed order
-    Given a supplier exists
+    Given a supplier exists with name: "Bruno"
     And a mobile_number exists with phoneable: the supplier, number: "66354668790"
     And a product exists with supplier: the supplier, verification_code: "xcvbyu"
     And a supplier_order exists with id: 654789, quantity: 5, product: that product, supplier: the supplier, status: <status>
     
     When I text <text_message> from "66354668790"
     And an outgoing_text_message should exist with smsable_id: the mobile_number
-    And the outgoing_text_message should be a translation of "order already confirmed" in "en" (English) where confirmation: <status>
+    And the outgoing_text_message should be a translation of "order already confirmed" in "en" (English) where confirmation: <status>, supplier: "Bruno"
     
     Examples:
       | status     | text_message                    |
