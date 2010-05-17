@@ -1,7 +1,6 @@
 class RejectorderConversation < AbstractConfirmOrderConversation
 
   @@options = {
-    :confirm_order_action => "reject orders",
     :invalid_message_i18n_key => "messages.reject_order_invalid_message"
   }
 
