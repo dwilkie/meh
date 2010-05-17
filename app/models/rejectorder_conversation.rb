@@ -5,19 +5,19 @@ class RejectorderConversation < AbstractConfirmOrderConversation
   }
 
   class RejectOrderMessage < AbstractConfirmOrderConversation::AbstractMessage
-    attr_reader   :confirmed
+    attr_reader   :confirmation
     
-    validates :confirmed,
+    validates :confirmation,
               :format => /^confirm\!$/i,
               :allow_nil => true
     
     def initialize(raw_message, supplier)
       message_contents = super
-      @confirmed = message_contents[2]
+      @confirmation = message_contents[2]
     end
     
     def confirmed?
-      !confirmed.nil?
+      !confirmation.nil?
     end
   end
 

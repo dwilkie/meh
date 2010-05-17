@@ -22,4 +22,8 @@ en:
           attributes:
             order:
               blank: "can't be found"
+        rejectorder_conversation/reject_order_message:
+          attributes:
+            confirmation:
+              invalid: "must be CONFIRM! if you really want to reject the order"
 

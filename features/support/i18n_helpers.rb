@@ -30,6 +30,9 @@ module I18nHelpers
 
     when /^confirm reject order for own product$/
       "messages.confirm_reject_order_for_own_product"
+      
+    when /^confirmation invalid when rejecting an order$/
+      "activemodel.errors.models.rejectorder_conversation/reject_order_message.attributes.confirmation.invalid"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
