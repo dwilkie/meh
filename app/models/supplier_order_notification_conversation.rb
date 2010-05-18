@@ -38,7 +38,7 @@ class SupplierOrderNotificationConversation < AbstractConversation
     
     def message_params_for_sellers_product(seller)
       seller_contact_details = seller.mobile_number.nil? ?
-        seller.email : seller.mobile_number.number.humanize
+        seller.email : seller.mobile_number.humanize
       {
         :seller => seller.name,
         :seller_contact_details => seller_contact_details

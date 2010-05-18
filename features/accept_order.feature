@@ -22,7 +22,7 @@ Feature: Accept an order
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
     Then the supplier_order should not be confirmed
-    And an outgoing_text_message should exist with smsable_id: the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of <response> in "en" (English) <where>
     And the outgoing_text_message should include "Nok"
 

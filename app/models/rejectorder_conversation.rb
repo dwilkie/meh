@@ -25,26 +25,38 @@ class RejectorderConversation < AbstractConfirmOrderConversation
     message = RejectOrderMessage.new(message, user)
     super(message, @@options)
     unless finished?
-      message.confirmed? ? message.order.reject : say(reject_order_confirmation(message))
+      if message.confirmed?
+        message.order.reject
+        say successfully_rejected_order(message)
+      else
+        say reject_order_confirmation(message)
+      end
     end
   end
   
   private
     def reject_order_confirmation(message)
-      seller =  message.order.product.seller
+      seller = message.order.product.seller
       if seller == user
         I18n.t(
-          "messages.confirm_reject_order_for_own_product",
+          "messages.reject_order_for_own_product_confirmation",
           :supplier => user.name,
           :order_number => message.order.id
         )
       else
         I18n.t(
-          "messages.confirm_reject_order_for_sellers_product",
+          "messages.reject_order_for_sellers_product_confirmation",
           :supplier => user.name,
           :seller => seller.name,
           :order_number => message.order.id
         )
       end
+    end
+    def successfully_rejected_order(message)
+      I18n.t(
+        "messages.successfully_rejected_order",
+        :supplier => user.name,
+        :order_number => message.order.id
+      )
     end
 end

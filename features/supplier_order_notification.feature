@@ -14,8 +14,8 @@ Feature: Notify the supplier by text message when a supplier order is created
 
     When a supplier_order is created with id: 567843, supplier_id: the supplier, product_id: the product, quantity: 1
 
-    Then an outgoing_text_message should exist with smsable_id: mobile_number: "supplier's number"
-    And the outgoing_text_message should be a translation of "supplier order notification for sellers product" in "en" (English) where seller: "John", seller_contact_details: "66123456789", supplier: "Bob", product_code: "12345", quantity: "1", order_number: "567843"
+    Then a new outgoing text message should be created destined for mobile_number: "supplier's number"
+    And the outgoing_text_message should be a translation of "supplier order notification for sellers product" in "en" (English) where seller: "John", seller_contact_details: "+66123456789", supplier: "Bob", product_code: "12345", quantity: "1", order_number: "567843"
 
   Scenario: I am also the seller of this item
     Given the supplier is also a seller
@@ -23,5 +23,5 @@ Feature: Notify the supplier by text message when a supplier order is created
 
     When a supplier_order is created with id: 567843, supplier_id: the supplier, product_id: the product, quantity: 1
 
-    Then an outgoing_text_message should exist with smsable_id: the mobile_number
+    Then a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "supplier order notification for own product" in "en" (English) where supplier: "Bob", product_code: "12345", quantity: "1", order_number: "567843"

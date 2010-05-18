@@ -97,8 +97,28 @@ When /^a customer successfully purchases(?: (\d+) of)? #{capture_model} through 
   post path_to("create paypal ipn"), params
 end
 
+
+When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
+  message = Conversation.finishing_keywords.first if Conversation.finishing_keywords && finishing_keyword
+  message ||= ""
+  params = {
+    "to"=>"61447100308",
+    "from"=> sender,
+    "msg"=> message,
+    "userfield"=>"123456",
+    "date"=>"2010-05-13 23:59:58"
+  }
+  post path_to("create incoming text message"), params
+end
+
+Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
+  mobile_number = model!(destination)
+  outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
+  Then "an outgoing_text_message should exist with id: \"#{outgoing_text_message.id}\""
+end
+
 Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, exact_or_includes, translate, expected_text, language, interpolations|
-  text_message = OutgoingTextMessage.last
+  text_message = model!(text_message)
   if translate
     i18n_key = translation_key(expected_text)
     language = "en" if language.blank?
@@ -123,17 +143,4 @@ Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in
   else
     text_message.message.should include(message)
   end
-end
-
-When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
-  message = Conversation.finishing_keywords.first if Conversation.finishing_keywords && finishing_keyword
-  message ||= ""
-  params = {
-    "to"=>"61447100308",
-    "from"=> sender,
-    "msg"=> message,
-    "userfield"=>"123456",
-    "date"=>"2010-05-13 23:59:58"
-  }
-  post path_to("create incoming text message"), params
 end

@@ -9,9 +9,10 @@ en:
     reject_order_invalid_message: "Hey %{supplier}, u just sent us: %{raw_message}. We can't reject the order because the %{errors}. Please check the details and try again. The format is: rejectorder <order #>"
     reject_order_for_own_product_confirmation: "%{supplier}, R u sure u want to reject this order?. Text: rejectorder %{order_number} CONFIRM! to go ahead and reject the order."
     reject_order_for_sellers_product_confirmation: "%{supplier}, R u sure u want to reject this order?. If you go ahead we'll notify %{seller} of your choice. Text: rejectorder %{order_number} CONFIRM! to go ahead and reject the order."
-    unauthorized: "Sorry ${name}, u're not authorized issue the command: %{action}"
-    order_already_confirmed: "Hey ${supplier}, sorry this order was already %{confirmation}"
-    suppler_rejected_sellers_order: "Hey %{seller}, %{supplier} (%{supplier_contact_details}) just rejected an order #{order_number} for your product #{product_code}."
+    unauthorized: "Sorry %{name}, u're not authorized issue the command: %{action}"
+    order_already_confirmed: "Hey %{supplier}, sorry this order was already %{confirmation}"
+    successfully_rejected_order: "Hey %{supplier}, U successfully rejected the order #%{order_number}"
+    supplier_rejected_sellers_order: "Hey %{seller}, %{supplier} (%{supplier_contact_details}) just rejected an order #%{order_number} for your product #%{product_code}."
   errors:
     messages:
       not_matching_order_quantity: "isn't %{value} for this order"

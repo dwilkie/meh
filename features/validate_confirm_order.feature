@@ -12,7 +12,7 @@ Feature: Validate confirming an order
   Scenario Outline: Try to confirm an order with an incorrect order number
     When I text <text_message> from "66354668789"
     Then the supplier_order should not be confirmed
-    And an outgoing_text_message should exist with smsable_id: the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of "order not found when confirming order" in "en" (English)
     And the outgoing_text_message should include "Phan"
 
@@ -27,7 +27,7 @@ Feature: Validate confirming an order
     
     When I text <text_message> from "66354668790"
     Then the supplier_order should not be confirmed
-    And an outgoing_text_message should exist with smsable_id: the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where action: <action>, name: "Dave"
 
     Examples:
@@ -41,7 +41,7 @@ Feature: Validate confirming an order
 
     When I text <text_message> from "66354668790"
     Then the supplier_order should not be confirmed
-    And an outgoing_text_message should exist with smsable_id: the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of "order not found when confirming order" in "en" (English)
     And the outgoing_text_message should include "Keng"
     
@@ -57,7 +57,7 @@ Feature: Validate confirming an order
     And a supplier_order exists with id: 654789, quantity: 5, product: that product, supplier: the supplier, status: <status>
     
     When I text <text_message> from "66354668790"
-    And an outgoing_text_message should exist with smsable_id: the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "order already confirmed" in "en" (English) where confirmation: <status>, supplier: "Bruno"
     
     Examples:
