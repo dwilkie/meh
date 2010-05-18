@@ -13,7 +13,7 @@ en:
     order_already_confirmed: "Hey %{supplier}, sorry this order was already %{confirmation}"
     successfully_rejected_order: "Hey %{supplier}, U successfully rejected the order #%{order_number}"
     supplier_rejected_sellers_order: "Hey %{seller}, %{supplier} (%{supplier_contact_details}) just rejected an order #%{order_number} for your product #%{product_code}."
-    not_authenticated: "Hey. We could not process ur request: \"%{request}\" cos the %{errors}. Try again with <your pin code> <your request>"
+    not_authenticated: "Hey, we could not process ur request because your %{errors}. Try again with <your pin code> <your request>"
   errors:
     messages:
       not_matching_order_quantity: "isn't %{value} for this order"
@@ -31,6 +31,7 @@ en:
               invalid: "must be CONFIRM! if you really want to reject the order"
         not_authenticated_conversation/unauthenticated_message:
           attributes:
-            pin_code:
-              incorrect: "u supplied was incorrect"
+            pin_number:
+              incorrect: "was incorrect"
               invalid: "was not supplied, or it was invalid (should be 4 digits)"
+              blank: "must be supplied"

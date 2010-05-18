@@ -99,8 +99,6 @@ end
 
 
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
-  message = Conversation.finishing_keywords.first if Conversation.finishing_keywords && finishing_keyword
-  message ||= ""
   params = {
     "to"=>"61447100308",
     "from"=> sender,

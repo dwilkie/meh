@@ -40,6 +40,15 @@ module I18nHelpers
     when /^successfully rejected order$/
       "messages.successfully_rejected_order"
 
+    when /^mobile pin number blank$/
+      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.blank"
+
+    when /^mobile pin number format invalid$/
+      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.invalid"
+      
+    when /^mobile pin number incorrect$/
+      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.incorrect"
+
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
         "Now, go and add a mapping in #{__FILE__}"

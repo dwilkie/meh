@@ -8,9 +8,9 @@ class NotAuthenticatedConversation < AbstractConversation
       end
     end
     
-    attr_reader   :pin_code, :raw_message, :mobile_number
+    attr_reader   :pin_number, :raw_message, :mobile_number
 
-    validates :pin_code,
+    validates :pin_number,
               :presence => true,
               :format => /^\d{4}$/,
               :correct => true,
@@ -18,7 +18,7 @@ class NotAuthenticatedConversation < AbstractConversation
 
     def initialize(raw_message, mobile_number)
       @raw_message = raw_message
-      @pin_code = raw_message.split(" ")[0]
+      @pin_number = raw_message.split(" ")[0]
       @mobile_number = mobile_number
     end
     
@@ -38,8 +38,7 @@ class NotAuthenticatedConversation < AbstractConversation
     def not_authenticated(message)
       I18n.t(
         "messages.not_authenticated",
-        :errors => message.errors.full_messages.to_sentence,
-        :request => message.raw_message
+        :errors => message.errors.full_messages.to_sentence
       )
     end
 end

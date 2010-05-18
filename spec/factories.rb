@@ -1,3 +1,10 @@
+Factory.define :user, :default_strategy => :build do |f|
+  f.sequence(:email) {|n| "user#{n}@example.com" }
+  f.password "foobar"
+  f.password_confirmation { |u| u.password }
+  f.name "Maggot"
+end
+
 Factory.define :seller, :class => User, :default_strategy => :build do |f|
   f.sequence(:email) {|n| "seller#{n}@example.com" }
   f.roles ["seller"]
