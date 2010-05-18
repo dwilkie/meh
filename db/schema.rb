@@ -31,13 +31,15 @@ ActiveRecord::Schema.define(:version => 20100513105800) do
   add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
-    t.string   "number",            :limit => 20, :null => false
-    t.string   "verification_code",               :null => false
+    t.string   "number",             :limit => 20,                  :null => false
+    t.string   "encrypted_password", :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                     :default => "", :null => false
+    t.string   "verification_code",                                 :null => false
     t.string   "activation_code"
     t.string   "locale"
-    t.string   "state",                           :null => false
-    t.integer  "phoneable_id"
-    t.string   "phoneable_type"
+    t.string   "state",                                             :null => false
+    t.integer  "phoneable_id",                                      :null => false
+    t.string   "phoneable_type",                                    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

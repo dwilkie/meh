@@ -10,7 +10,7 @@ Feature: Create a customer order when item is payed for via paypal
     When a customer successfully purchases the product through paypal
     
     Then a paypal_ipn should exist with payment_status: "Completed"
-    And an order should exist with seller_id: the seller
-    And the order should be unconfirmed
-    And the paypal_ipn should be the order's paypal_ipn
-    And the order should be amongst the seller's customer_orders
+    And a seller_order should exist with seller_id: the seller
+    And the seller_order should be unconfirmed
+    And the paypal_ipn should be the seller_order's paypal_ipn
+    And the seller_order should be amongst the seller's customer_orders

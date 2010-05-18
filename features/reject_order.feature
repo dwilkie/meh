@@ -5,13 +5,13 @@ Feature: Reject an order
 
   Background:
     Given a supplier exists with name: "Fon"
-    And a mobile_number exists with number: "66354668789", phoneable: the supplier
+    And a mobile_number exists with number: "66354668789", password: "1234", phoneable: the supplier
 
   Scenario: Reject an order for a sellers product
     Given a seller exists with name: "Dave"
     And a product exists with seller: the seller, supplier: the supplier
     And a supplier_order exists with id: 154674, supplier: the supplier, product: the product
-    When I text "rejectorder 154674" from "66354668789"
+    When I text "1234 rejectorder 154674" from "66354668789"
     
     Then the supplier_order should not be rejected
     And a new outgoing text message should be created destined for the mobile_number
@@ -21,7 +21,7 @@ Feature: Reject an order
     Given the supplier is also a seller
     And a product exists with seller: the supplier, supplier: the supplier
     And a supplier_order exists with id: 154674, supplier: the supplier, product: the product
-    When I text "rejectorder 154674" from "66354668789"
+    When I text "1234 rejectorder 154674" from "66354668789"
     
     Then the supplier_order should not be rejected
     And a new outgoing text message should be created destined for the mobile_number
@@ -35,16 +35,16 @@ Feature: Reject an order
     And the outgoing_text_message should be a translation of "successfully rejected order" in "en" (English) where supplier: "Fon", order_number: "654778"
     
       Examples:
-      | text_message                  |
-      | "rejectorder 654778 CONFIRM!" |
-      | "rejectorder 654778 confirm!" |
+      | text_message                       |
+      | "1234 rejectorder 654778 CONFIRM!" |
+      | "1234 rejectorder 654778 confirm!" |
   
   Scenario: Confirm rejecting an order for a sellers product
     Given a seller exists with name: "Dave"
     And a mobile_number: "seller's number" exists with phoneable: the seller
     And a product exists with seller: the seller, supplier: the supplier, external_id: "567864ab"
     And a supplier_order exists with id: 154674, supplier: the supplier, product: the product
-    When I text "rejectorder 154674 confirm!" from "66354668789"
+    When I text "1234 rejectorder 154674 confirm!" from "66354668789"
     Then a new outgoing text message should be created destined for mobile_number: "seller's number"
     And the outgoing_text_message should be a translation of "supplier rejected sellers order" in "en" (English) where seller: "Dave", supplier: "Fon", supplier_contact_details: "+66354668789", order_number: "154674", product_code: "567864ab"
   
@@ -59,5 +59,5 @@ Feature: Reject an order
 
       Examples:
       | text_message                       |
-      | "rejectorder 654778 CONFIRM"       |
-      | "rejectorder 654778 anything else" |
+      | "1234 rejectorder 654778 CONFIRM"       |
+      | "1234 rejectorder 654778 anything else" |

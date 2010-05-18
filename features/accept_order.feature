@@ -5,7 +5,7 @@ Feature: Accept an order
   
   Background:
     Given a supplier exists with name: "Nok"
-    And a mobile_number exists with number: "66354668789", phoneable: the supplier
+    And a mobile_number exists with number: "66354668789", password: "1234", phoneable: the supplier
     And a product exists with external_id: "12345", verification_code: "hy456n"
     And a supplier_order exists with id: 154674, supplier: the supplier, product_id: the product, quantity: 1
 
@@ -14,10 +14,10 @@ Feature: Accept an order
     Then the supplier_order should be confirmed
 
   Examples:
-    | message_text                    |
-    | "acceptorder 154674 1 x hy456n" |
-    | "acceptorder 154674 1 hy456n"   |
-    | "acceptorder 154674 1x hy456n"  |
+    | message_text                         |
+    | "1234 acceptorder 154674 1 x hy456n" |
+    | "1234 acceptorder 154674 1 hy456n"   |
+    | "1234 acceptorder 154674 1x hy456n"  |
 
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
@@ -27,6 +27,6 @@ Feature: Accept an order
     And the outgoing_text_message should include "Nok"
 
   Examples:
-    | message_text                     |  response                     | where             |
-    | "acceptorder 154674 2 x hyn456n" | "not matching order quantity" | where value: "2"  |
-    | "acceptorder 154674 1 x hyn456a" | "not matching pv code"   | where value: "hyn456a" |
+    | message_text                          |  response                     | where             |
+    | "1234 acceptorder 154674 2 x hyn456n" | "not matching order quantity" | where value: "2"  |
+    | "1234 acceptorder 154674 1 x hyn456a" | "not matching pv code"   | where value: "hyn456a" |

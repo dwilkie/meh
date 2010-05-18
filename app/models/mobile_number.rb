@@ -1,4 +1,11 @@
 class MobileNumber < ActiveRecord::Base
+
+  devise :database_authenticatable
+  
+  # this is a white list of attributes that are permitted to be mass assigned
+  # all others have to be assigned using writer methods
+  attr_accessible :number, :password, :password_confirmation
+
   #############################################################################
   # CALLBACKS
   #############################################################################
@@ -91,25 +98,45 @@ class MobileNumber < ActiveRecord::Base
 
   validates :number, :presence => true,
             :uniqueness => true,
-            :format => {:with => %r{^[1-9]{1}[0-9]{0,2}[1-9]{1}\d{5,12}$}},
-            :length => {:in => 7..15}
+            :format => {:with => /^[1-9]{1}[0-9]{0,2}[1-9]{1}\d{5,12}$/ },
+            :allow_nil => true,
+            :allow_blank => true
 
   validates :state, :presence => true,
             :inclusion => {:in => ["unverified", "active", "inactive"] }
 
   validates :verification_code,
-            :confirmation => {:on => :update,
-                              :unless => Proc.new { |p| p.new_verification_code_requested?
-                                                  }
-                             }
-
+            :confirmation => {
+              :on => :update,
+              :unless => Proc.new { |p| 
+                p.new_verification_code_requested?
+              }
+            }
 
   validates :activation_code,
-            :confirmation => {:on => :update,
-                              :unless => Proc.new { |p| p.activation_code_confirmation.blank? || p.new_activation_code_requested?
-                                                  }
+            :confirmation => {
+              :on => :update,
+              :unless => Proc.new { |p|
+                p.activation_code_confirmation.blank? ||
+                p.new_activation_code_requested?
+              }
+            }
+            
+  validates :password,
+            :presence => true,
+            :confirmation => true,
+            :if => :password_required?,
+            :format => /^\d{4}$/,
+            :length => { :is => 4 },
+            :numericality => { :only_integer => true},
+            :allow_nil => true
+            
+  validates :password_confirmation,
+            :presence => true,
+            :if => :password_required?
 
-                             }
+  validates :phoneable,
+            :presence => true
 
   attr_accessor :request_new_verification_code, :request_new_activation_code
 
@@ -177,7 +204,8 @@ class MobileNumber < ActiveRecord::Base
   private
     # normalises the mobile number by removing invalid characters
     def normalise_phone
-      if self.number && !self.number.blank?
+      if number
+        self.number = self.number.to_s
         # remove everything that is not a digit from the number
         self.number.gsub!(/[^\d]/, "")
         # remove leading zeros from phone
@@ -223,6 +251,13 @@ class MobileNumber < ActiveRecord::Base
 
     def activation_code_valid?
       self.activation_code == self.activation_code_confirmation
+    end
+    
+    # Checks whether a password is needed or not. For validations only.
+    # Passwords are always required if it's a new record, or if the password
+    # or confirmation are being set somewhere.
+    def password_required?
+      !persisted? || !password.nil? || !password_confirmation.nil?
     end
 end
 

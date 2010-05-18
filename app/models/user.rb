@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable
          
   # Setup accessible (or protected) attributes for your model
+  # this is a white list of attributes that are permitted to be mass assigned
+  # all others have to be assigned using writer methods
   attr_accessible :email, :password, :password_confirmation
 
   has_one    :mobile_number, :as => :phoneable, :dependent => :destroy
@@ -37,6 +39,10 @@ class User < ActiveRecord::Base
 
   validates :name, :presence => true
 
+  validates :password_confirmation,
+            :presence => true,
+            :if => :password_required?
+
   #validate :check_notification_method_preference
   
   def roles=(roles)
@@ -62,6 +68,13 @@ class User < ActiveRecord::Base
       errors.add(:preferred_notification_method, "customize") if email.nil? && preferred_notification_method == "email"
         errors.add(:preferred_notification_method, "customize") if mobile_number.nil? && preferred_notification_method == "mobile"
         errors.add(:preferred_notification_method, "customize") if (email.nil? || mobile_number.nil?) && preferred_notification_method == "both"
+    end
+    
+    # Checks whether a password is needed or not. For validations only.
+    # Passwords are always required if it's a new record, or if the password
+    # or confirmation are being set somewhere.
+    def password_required?
+      !persisted? || !password.nil? || !password_confirmation.nil?
     end
 end
 
