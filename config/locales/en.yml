@@ -3,7 +3,7 @@
 
 en:
   messages:
-    supplier_order_notification_for_sellers_product: "Hi %{supplier},\nU have a new order #%{order_number} from %{seller} (%{seller_email}) for %{quantity} x %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} x <pv code>. To reject the order reply with rejectorder %{order_number}."
+    supplier_order_notification_for_sellers_product: "Hi %{supplier},\nU have a new order #%{order_number} from %{seller} (%{seller_contact_details}) for %{quantity} x %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} x <pv code>. To reject the order reply with rejectorder %{order_number}."
     supplier_order_notification_for_own_product: "Hi %{supplier},\nU have a new order #%{order_number} for %{quantity} x your product: %{product_code}. To accept the order, look up the pv code for %{product_code} and reply with: acceptorder %{order_number} %{quantity} x <pv code>. To reject the order reply with rejectorder %{order_number}."
     accept_order_invalid_message: "Hey %{supplier}, u just sent us: %{raw_message}. We can't accept the order because the %{errors}. Please check the details and try again. The format is: acceptorder <order #> <quantity> x <pv_code>. Remember, u must look up the pv code for the product."
     reject_order_invalid_message: "Hey %{supplier}, u just sent us: %{raw_message}. We can't reject the order because the %{errors}. Please check the details and try again. The format is: rejectorder <order #>"
@@ -11,6 +11,7 @@ en:
     reject_order_for_sellers_product_confirmation: "%{supplier}, R u sure u want to reject this order?. If you go ahead we'll notify %{seller} of your choice. Text: rejectorder %{order_number} CONFIRM! to go ahead and reject the order."
     unauthorized: "Sorry ${name}, u're not authorized issue the command: %{action}"
     order_already_confirmed: "Hey ${supplier}, sorry this order was already %{confirmation}"
+    suppler_rejected_sellers_order: "Hey %{seller}, %{supplier} (%{supplier_contact_details}) just rejected an order #{order_number} for your product #{product_code}."
   errors:
     messages:
       not_matching_order_quantity: "isn't %{value} for this order"

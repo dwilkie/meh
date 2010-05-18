@@ -30,13 +30,16 @@ gem 'ruby-debug19'
 # Bundle gems for certain environments:
 group :test do
   gem 'test-unit'
-  gem 'rspec',            :git => 'git://github.com/rspec/rspec.git'
-  gem 'factory_girl',     :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
+  gem 'rspec',              :git => 'git://github.com/rspec/rspec.git'
+  gem 'rspec-core',         :git => 'git://github.com/rspec/rspec-core.git'
+  gem 'rspec-mocks',        :git => 'git://github.com/rspec/rspec-mocks.git'
+  gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
+  gem 'rspec-rails',        :git => 'git://github.com/rspec/rspec-rails.git'
+  gem 'factory_girl',       :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
   gem 'capybara',         :git => 'git://github.com/jnicklas/capybara.git'
   gem 'database_cleaner', :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'pickle',           :git => 'git://github.com/ianwhite/pickle.git'
   gem 'cucumber-rails',   :git => 'git://github.com/aslakhellesoy/cucumber-rails.git'
-  gem 'rspec-rails',      :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'spork',            :git => 'git://github.com/timcharper/spork.git'
 end
 

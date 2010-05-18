@@ -33,6 +33,9 @@ module I18nHelpers
       
     when /^confirmation invalid when rejecting an order$/
       "activemodel.errors.models.rejectorder_conversation/reject_order_message.attributes.confirmation.invalid"
+    
+    when /^supplier rejected sellers order$/
+      "messages.supplier_rejected_sellers_order"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

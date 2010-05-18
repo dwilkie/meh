@@ -8,7 +8,6 @@ class SupplierOrderNotificationConversation < AbstractConversation
               message_for_sellers_product(order, supplier, seller)
 
     say message
-    finish
   end
   
   private
@@ -38,9 +37,11 @@ class SupplierOrderNotificationConversation < AbstractConversation
     end
     
     def message_params_for_sellers_product(seller)
+      seller_contact_details = seller.mobile_number.nil? ?
+        seller.email : seller.mobile_number.number.humanize
       {
         :seller => seller.name,
-        :seller_email => seller.email
+        :seller_contact_details => seller_contact_details
       }
     end
 end
