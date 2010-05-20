@@ -1,9 +1,5 @@
-class AcceptorderConversation < AbstractConfirmOrderConversation
-  
-  @@options = {
-    :invalid_message_i18n_key => "messages.accept_order_invalid_message"
-  }
-  
+class AcceptorderConversation < AbstractProcessOrderConversation
+
   # A valid text message should be formatted as follows:
   # acceptorder <order_id> <quantity> x <pv code>
   # Examples of valid messages:
@@ -19,22 +15,24 @@ class AcceptorderConversation < AbstractConfirmOrderConversation
   # "acceptorder 21243"             # Quantity is blank, pv code can't be blank
   # "acceptorder 23324 1"           # pv code can't be blank
 
-  class AcceptOrderMessage < AbstractConfirmOrderConversation::AbstractMessage
+  class AcceptOrderMessage < AbstractProcessOrderConversation::OrderMessage
     class MatchesOrderQuantityValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
+        order = record.order
         record.errors.add(attribute, :not_matching_order_quantity) unless
-        value.nil? || record.order.nil? || record.order.quantity == value
+        value.nil? || order.nil? || order.quantity == value
       end
     end
     
     class MatchesProductVerificationCodeValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
+        order = record.order
         record.errors.add(
           attribute,
           :not_matching_product_verification_code
         ) unless
-        value.nil? || record.order.nil? || 
-        record.order.product.verification_code == value
+        value.nil? || order.nil? || 
+        order.product.verification_code == value
       end
     end
     
@@ -58,7 +56,19 @@ class AcceptorderConversation < AbstractConfirmOrderConversation
   
   def move_along!(message)
     message = AcceptOrderMessage.new(message, user)
-    super(message, @@options)
-    message.order.accept unless finished?
+    super(message)
+    unless finished?
+      processed = "accepted"
+      if message.valid?
+        order = message.order
+        if order.unconfirmed?
+          order.accept
+        else 
+          say cannot_process(order)
+        end
+      else
+        say invalid(message, processed)
+      end
+    end
   end
 end

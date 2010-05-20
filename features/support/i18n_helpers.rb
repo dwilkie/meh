@@ -4,32 +4,26 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^supplier order notification for sellers product$/
-      "messages.supplier_order_notification_for_sellers_product"
-      
-    when /^supplier order notification for own product$/
-      "messages.supplier_order_notification_for_own_product"
-      
+    when /^supplier order notification$/
+      "messages.supplier_order_notification"
+
     when /^not matching order quantity$/
       "errors.messages.not_matching_order_quantity"
       
     when /^not matching pv code$/
       "errors.messages.not_matching_product_verification_code"
 
-    when /^order not found when confirming order$/
-      "activemodel.errors.models.abstract_confirm_order_conversation/abstract_message.attributes.order.blank"
+    when /^order not found when processing order$/
+      "activemodel.errors.models.abstract_process_order_conversation/order_message.attributes.order.blank"
 
     when /^unauthorized message action$/
       "messages.unauthorized"
       
-    when /^order already confirmed$/
-      "messages.order_already_confirmed"
+    when /^cannot process order$/
+      "messages.cannot_process_order"
       
-    when /^confirm reject order for seller's product$/
-      "messages.reject_order_for_sellers_product_confirmation"
-
-    when /^confirm reject order for own product$/
-      "messages.reject_order_for_own_product_confirmation"
+    when /^confirm reject order$/
+      "messages.confirm_reject_order"
       
     when /^confirmation invalid when rejecting an order$/
       "activemodel.errors.models.rejectorder_conversation/reject_order_message.attributes.confirmation.invalid"
@@ -37,8 +31,8 @@ module I18nHelpers
     when /^supplier rejected sellers order$/
       "messages.supplier_rejected_sellers_order"
 
-    when /^successfully rejected order$/
-      "messages.successfully_rejected_order"
+    when /^successfully processed order$/
+      "messages.successfully_processed_order"
 
     when /^mobile pin number blank$/
       "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.blank"
@@ -48,6 +42,9 @@ module I18nHelpers
       
     when /^mobile pin number incorrect$/
       "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.incorrect"
+      
+    when /^order details$/
+      "messages.order_details"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

@@ -1,10 +1,6 @@
-class RejectorderConversation < AbstractConfirmOrderConversation
+class RejectorderConversation < AbstractProcessOrderConversation
 
-  @@options = {
-    :invalid_message_i18n_key => "messages.reject_order_invalid_message"
-  }
-
-  class RejectOrderMessage < AbstractConfirmOrderConversation::AbstractMessage
+  class RejectOrderMessage < AbstractProcessOrderConversation::OrderMessage
     attr_reader   :confirmation
     
     validates :confirmation,
@@ -23,40 +19,33 @@ class RejectorderConversation < AbstractConfirmOrderConversation
 
   def move_along!(message)
     message = RejectOrderMessage.new(message, user)
-    super(message, @@options)
+    super(message)
     unless finished?
-      if message.confirmed?
-        message.order.reject
-        say successfully_rejected_order(message)
+      processed = "rejected"
+      if message.valid?
+        order = message.order
+        if order.unconfirmed?
+          if message.confirmed?
+            order.reject
+            say successfully(processed, order)
+          else
+            say confirm_reject(order)
+          end
+        else
+          say cannot_process(order)
+        end
       else
-        say reject_order_confirmation(message)
+        say invalid(message, processed)
       end
     end
   end
   
   private
-    def reject_order_confirmation(message)
-      seller = message.order.product.seller
-      if seller == user
-        I18n.t(
-          "messages.reject_order_for_own_product_confirmation",
-          :supplier => user.name,
-          :order_number => message.order.id
-        )
-      else
-        I18n.t(
-          "messages.reject_order_for_sellers_product_confirmation",
-          :supplier => user.name,
-          :seller => seller.name,
-          :order_number => message.order.id
-        )
-      end
-    end
-    def successfully_rejected_order(message)
+    def confirm_reject(order)
       I18n.t(
-        "messages.successfully_rejected_order",
-        :supplier => user.name,
-        :order_number => message.order.id
-      )
+          "messages.confirm_reject_order",
+          :supplier => user.name,
+          :order_number => order.id
+        )
     end
 end

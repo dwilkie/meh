@@ -8,6 +8,10 @@ When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fiel
   create_model(name, fields)
 end
 
+When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
+  model!(name).send(transition)
+end
+
 When /^a customer purchases a product on ebay from #{capture_model} with item id: "([^\"]*)"$/ do |seller, ebay_item_id|
   require "rexml/document"
   GET_ITEM_TRANSACTIONS_FILE = File.dirname(__FILE__) +
@@ -112,7 +116,8 @@ end
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
   mobile_number = model!(destination)
   outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
-  Then "an outgoing_text_message should exist with id: \"#{outgoing_text_message.id}\""
+  id = outgoing_text_message.nil? ? 0 : outgoing_text_message.id
+  Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
 Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, exact_or_includes, translate, expected_text, language, interpolations|

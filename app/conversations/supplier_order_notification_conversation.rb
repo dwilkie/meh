@@ -1,47 +1,28 @@
 class SupplierOrderNotificationConversation < AbstractConversation
-  def move_along!(order)
-    supplier = order.supplier
-    seller = order.product.seller
-    
-    message = (seller == supplier) ?
-              message_for_own_product(order, supplier) :
-              message_for_sellers_product(order, supplier, seller)
 
-    say message
+  def move_along!(order)
+    say notification_for_new(order)
   end
   
   private
-    def message_for_own_product(order, supplier)
+    def notification_for_new(order)
+      product = order.product
+      seller = product.seller
+      seller = nil if seller == user
+      if seller
+        seller_name = seller.name
+        seller_mobile_number = seller.mobile_number
+        seller_contact_details = seller_mobile_number.nil? ?
+          seller.email : seller_mobile_number.humanize
+      end
       I18n.t(
-        "messages.supplier_order_notification_for_own_product",
-        message_params(order, supplier)
-      )
-    end
-    
-    def message_for_sellers_product(order, supplier, seller)
-      I18n.t(
-        "messages.supplier_order_notification_for_sellers_product",
-        message_params(order, supplier).merge!(
-          message_params_for_sellers_product(seller)
-        )
-      )
-    end
-    
-    def message_params(order, supplier)
-      {
-        :supplier => supplier.name,
+        "messages.supplier_order_notification",
+        :supplier => user.name,
         :quantity => order.quantity,
-        :product_code => order.product.external_id,
-        :order_number => order.id
-       }
-    end
-    
-    def message_params_for_sellers_product(seller)
-      seller_contact_details = seller.mobile_number.nil? ?
-        seller.email : seller.mobile_number.humanize
-      {
-        :seller => seller.name,
+        :product_code => product.external_id,
+        :order_number => order.id,
+        :seller => seller_name,
         :seller_contact_details => seller_contact_details
-      }
+      )
     end
 end

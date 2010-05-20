@@ -17,10 +17,8 @@ class Order < ActiveRecord::Base
     event :reject do
       transition :unconfirmed => :rejected
     end
+    event :complete do
+      transition :accepted => :completed
+    end
   end
-  
-  def confirmed?
-    !unconfirmed?
-  end
-
 end

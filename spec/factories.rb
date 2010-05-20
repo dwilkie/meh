@@ -23,7 +23,7 @@ end
 
 Factory.define :mobile_number, :default_strategy => :build do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
-  f.association :phoneable, :factory => :supplier
+  f.association :phoneable, :factory => :user
   f.password "1234"
   f.password_confirmation { |m| m.password }
 end
