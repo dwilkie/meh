@@ -1,3 +1,9 @@
+Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |plural_factory, fields|
+  find_models(plural_factory.singularize, fields).each do |instance|
+    instance.destroy
+  end
+end
+
 Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user = model!(user)
   user.new_role = role
@@ -146,4 +152,9 @@ Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in
   else
     text_message.message.should include(message)
   end
+end
+
+Then /^there should be no more than (\d+) outgoing text messages? destined for #{capture_model}$/ do |count, destination|
+  mobile_number = model!(destination)
+  OutgoingTextMessage.where(:smsable_id => mobile_number.id, :smsable_type => "mobile_number").count.should <= count.to_i
 end

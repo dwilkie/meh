@@ -6,7 +6,7 @@ Feature: Notify seller when an order for a product they are selling is processed
   
   Background:
     Given a supplier exists with name: "Bruno"
-    And a mobile_number exists with number: "66354668789", password: "1234", phoneable: the supplier
+    And a mobile_number: "supplier's number" exists with number: "66354668789", password: "1234", phoneable: the supplier
   
   Scenario Outline: Notify seller when an order is processed by a supplier
     Given a seller exists with name: "Dave"
@@ -25,7 +25,19 @@ Feature: Notify seller when an order for a product they are selling is processed
       | unconfirmed  | reject    | rejected  |
       | accepted     | complete  | completed |
     
-  Scenario: Don't notify the seller if they are also the supplier of the product
+  Scenario Outline: Don't notify the seller if they are also the supplier of the product
     Given the supplier is also a seller
     And a product exists with seller: the supplier, supplier: the supplier, external_id: "567864ab"
-    And a supplier_order exists with id: 154671, supplier: the supplier, product: the product
+    And a seller_order exists with id: 154670, seller: the supplier
+    And a supplier_order exists with id: 154671, supplier: the supplier, product: the product, status: "<status>", seller_order: the seller order
+    And no outgoing_text_messages exist with smsable_id: mobile_number: "supplier's number"
+
+    When the supplier <processes> the supplier_order
+    Then there should be no more than 1 outgoing text message destined for the mobile_number
+    
+    Examples:
+      | status       | processes | processed |
+      | unconfirmed  | accept    | accepted  |
+      | unconfirmed  | reject    | rejected  |
+      | accepted     | complete  | completed |
+
