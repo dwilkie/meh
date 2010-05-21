@@ -28,8 +28,8 @@ module I18nHelpers
     when /^confirmation invalid when rejecting an order$/
       "activemodel.errors.models.rejectorder_conversation/reject_order_message.attributes.confirmation.invalid"
     
-    when /^supplier rejected sellers order$/
-      "messages.supplier_rejected_sellers_order"
+    when /^supplier processed seller's order$/
+      "messages.supplier_processed_sellers_order_notification"
 
     when /^successfully processed order$/
       "messages.successfully_processed_order"

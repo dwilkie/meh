@@ -96,10 +96,10 @@
         message = "u're not authorized to issue the command #{options[:command]}"
         I18n.t("messages.base", :name => options[:name], :body => message)
       },
-      :supplier_processed_order => lambda { |key, options|
-        message = "#{options[:supplier]} (#{options[:supplier_contact_details]}) just " <<
+      :supplier_processed_sellers_order_notification => lambda { |key, options|
+        message = "#{options[:supplier]} (#{options[:supplier_contact_details]}) " <<
         I18n.t("activerecord.attribute_values.order.status.#{options[:processed]}") <<
-        " their order for ur product ##{options[:product_code]} which is part of ur order ##{options[:seller_order_number]}."
+        " their order ##{options[:supplier_order_number]} for ur product ##{options[:product_code]} which is part of your order ##{options[:seller_order_number]}."
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :not_authenticated => lambda { |key, options|
