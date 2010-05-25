@@ -1,5 +1,6 @@
 Feature: Complete an order
-  In order to notify stakeholders that I have completed processing this order
+  In order to notify stakeholders that I have completed processing this order and
+  send them any other relevant information
   As a supplier
   I want to be able to complete an order by sending in a text message
   
