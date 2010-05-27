@@ -1,6 +1,9 @@
 class Product < ActiveRecord::Base
 
-  composed_of :price, :class_name => "Money", :mapping => [%w(cents cents)]
+  composed_of :supplier_price,
+              :class_name => "Money",
+              :mapping => [%w(cents cents), %w(currency currency_as_string)]
+
   belongs_to :supplier, :class_name => "User"
   belongs_to :seller, :class_name => "User"
   has_many   :supplier_orders, :class_name => "Order"

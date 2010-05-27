@@ -78,7 +78,8 @@ ActiveRecord::Schema.define(:version => 20100513105800) do
   create_table "products", :force => true do |t|
     t.string   "external_id",       :null => false
     t.string   "verification_code", :null => false
-    t.integer  "cents",             :null => false
+    t.integer  "cents"
+    t.string   "currency"
     t.integer  "supplier_id",       :null => false
     t.integer  "seller_id",         :null => false
     t.datetime "created_at"

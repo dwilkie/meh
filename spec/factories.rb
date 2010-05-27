@@ -33,7 +33,6 @@ Factory.define :product do |f|
   f.association :seller
   f.external_id 12345
   f.verification_code "54321x"
-  f.cents "0.01"
 end
 
 Factory.define :seller_order, :class => Order do |f|

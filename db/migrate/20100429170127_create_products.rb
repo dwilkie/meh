@@ -3,7 +3,8 @@ class CreateProducts < ActiveRecord::Migration
     create_table :products do |t|
       t.string      :external_id,       :null => false
       t.string      :verification_code, :null => false
-      t.integer     :cents,             :null => false
+      t.integer     :cents
+      t.string      :currency
       t.references  :supplier,          :null => false
       t.references  :seller,            :null => false
       t.timestamps
