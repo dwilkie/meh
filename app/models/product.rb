@@ -9,9 +9,13 @@ class Product < ActiveRecord::Base
   has_many   :supplier_orders, :class_name => "Order"
 
   validates :cents,
+            :numericality => {:only_integer => true, :greater_than => 0},
+            :allow_nil => true
+
+  validates :currency,
             :presence => true,
-            :numericality => {:greater_than => 0}
-            
+            :unless => Proc.new { |product| product.cents.nil? }
+
   validates :external_id, :verification_code,
             :uniqueness => {:scope => :seller_id},
             :presence => true
