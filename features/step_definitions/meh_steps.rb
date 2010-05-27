@@ -10,12 +10,17 @@ Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user.save!
 end
 
+Given /^an agreement exists with seller: the seller, supplier: the supplier, payment_for_supplier_order: "([^\"]*)"$/ do |arg1|
+  # i'll implement this later
+end
+
+
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
 end
 
 When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
-  model!(name).send(transition)
+  model!(name).send(transition.singularize)
 end
 
 When /^a customer purchases a product on ebay from #{capture_model} with item id: "([^\"]*)"$/ do |seller, ebay_item_id|

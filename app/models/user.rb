@@ -15,25 +15,56 @@ class User < ActiveRecord::Base
   # all others have to be assigned using writer methods
   attr_accessible :email, :password, :password_confirmation
 
-  has_one    :mobile_number, :as => :phoneable, :dependent => :destroy
+  # General Associations
   
+  has_one    :mobile_number,
+             :as => :phoneable,
+             :dependent => :destroy
+
+  has_many   :conversations,
+             :foreign_key => "with"
+
+  # Seller Associations
+
   # seller has many products for sale
   # this adds user.selling_products
-  has_many   :selling_products, :foreign_key => "seller_id", :class_name => "Product"
+  has_many   :selling_products,
+             :foreign_key => "seller_id",
+             :class_name => "Product"
+
   # a seller is supplied by many suppliers
   # this adds user.suppliers
-  has_many   :suppliers, :through => :selling_products
+  has_many   :suppliers,
+             :through => :selling_products
+
+  has_many   :customer_orders,
+             :foreign_key => "seller_id",
+             :class_name => "Order"
+
+  has_many   :outgoing_payments,
+             :foreign_key => "seller_id",
+             :class_name => "Payment"
+
+  # Supplier Associations
+
   # a supplier has many products to supply
   # this adds user.supplying_products
-  has_many   :supplying_products, :foreign_key => "supplier_id", :class_name => "Product"
+  has_many   :supplying_products,
+             :foreign_key => "supplier_id",
+             :class_name => "Product"
+
   # a supplier supplies many sellers
   # this adds user.sellers
-  has_many   :sellers, :through => :supplying_products
-  
-  has_many   :customer_orders, :foreign_key => "seller_id", :class_name => "Order"
-  has_many   :supplier_orders, :foreign_key => "supplier_id", :class_name => "Order"
+  has_many   :sellers,
+             :through => :supplying_products
 
-  has_many   :conversations, :foreign_key => "with"
+  has_many   :supplier_orders,
+             :foreign_key => "supplier_id",
+             :class_name => "Order"
+  
+  has_many   :incoming_payments,
+             :foreign_key => "supplier_id",
+             :class_name => "Payment"
 
   #preference :notification_method, :string, :default => 'email'
 

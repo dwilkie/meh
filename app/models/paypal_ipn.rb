@@ -1,7 +1,10 @@
 class PaypalIpn < ActiveRecord::Base
-  serialize  :params
-  belongs_to :customer_order, :class_name => "Order"
+  belongs_to    :customer_order,
+                :class_name => "Order"
+  
   before_create :create_order
+  
+  serialize  :params
   
   private
     def create_order

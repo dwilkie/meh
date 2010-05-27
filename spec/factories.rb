@@ -53,3 +53,11 @@ end
 Factory.define :paypal_ipn do |f|
   f.association :seller_order
 end
+
+Factory.define :payment do |f|
+  f.association :supplier_order
+  f.association :supplier
+  f.association :seller
+  f.cents 100000
+  f.currency "THB"
+end
