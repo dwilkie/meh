@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100527130626) do
+ActiveRecord::Schema.define(:version => 20100528041330) do
 
   create_table "conversations", :force => true do |t|
     t.string   "state",      :null => false
@@ -66,6 +66,20 @@ ActiveRecord::Schema.define(:version => 20100527130626) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "payment_agreements", :force => true do |t|
+    t.boolean  "automatic",                :default => true,  :null => false
+    t.boolean  "confirm",                  :default => false, :null => false
+    t.string   "payment_trigger_on_order"
+    t.integer  "supplier_id"
+    t.integer  "seller_id"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payment_agreements", ["product_id"], :name => "index_payment_agreements_on_product_id", :unique => true
+  add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
   create_table "payment_applications", :force => true do |t|
     t.string   "application_url", :null => false

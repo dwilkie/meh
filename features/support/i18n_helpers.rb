@@ -30,6 +30,9 @@ module I18nHelpers
     
     when /^supplier processed seller's order$/
       "messages.supplier_processed_sellers_order_notification"
+      
+    when /^confirm payment$/
+      "messages.confirm_payment_notification"
 
     when /^successfully processed order$/
       "messages.successfully_processed_order"
@@ -44,7 +47,7 @@ module I18nHelpers
       "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.incorrect"
       
     when /^order details$/
-      "messages.order_details"
+      "messages.order_details_notification"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

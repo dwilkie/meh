@@ -12,14 +12,17 @@
           :pin_number => "<ur pin code>",
           :order_number => "<order number>",
           :quantity => "<quantity>",
-          :pv_code => "<pv code>"
+          :pv_code => "<pv code>",
+          :confirm => "CONFIRM!"
         },
         :base => lambda { |key, options|
           I18n.t("messages.commands.elements.pin_number") << " " << options[:command]
         },
         :templates => {
           :acceptorder => lambda { |key, options|
-            options[:order_number] ||= I18n.t("messages.commands.elements.order_number")
+            options[:order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
             options[:quantity] ||= I18n.t("messages.commands.elements.quantity")
             options[:pv_code] ||= I18n.t("messages.commands.elements.pv_code")
             I18n.t(
@@ -28,17 +31,30 @@
             )
           },
           :rejectorder => lambda { |key, options|
-            options[:order_number] ||= I18n.t("messages.commands.elements.order_number")
+            options[:order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
             I18n.t(
               "messages.commands.base",
               :command => "rejectorder #{options[:order_number]}"
             )
           },
           :completeorder => lambda { |key, options|
-            options[:order_number] ||= I18n.t("messages.commands.elements.order_number")
+            options[:order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
             I18n.t(
               "messages.commands.base",
               :command => "completeorder #{options[:order_number]}"
+            )
+          },
+          :pay4order => lambda { |key, options|
+            options[:order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
+            I18n.t(
+              "messages.commands.base",
+              :command => "pay4order #{options[:order_number]}"
             )
           }
         }
@@ -89,7 +105,10 @@
         I18n.t(
           "messages.commands.templates.rejectorder",
           :order_number => options[:order_number]
-        ) << " CONFIRM! to go ahead and reject the order."
+        ) << " " <<
+        I18n.t(
+          "messages.commands.elements.confirm"
+          ) << " to go ahead and reject the order."
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :unauthorized => lambda { |key, options|
@@ -98,8 +117,9 @@
       },
       :supplier_processed_sellers_order_notification => lambda { |key, options|
         message = "#{options[:supplier]} (#{options[:supplier_contact_details]}) " <<
-        I18n.t("activerecord.attribute_values.order.status.#{options[:processed]}") <<
-        " their order ##{options[:supplier_order_number]} for ur product ##{options[:product_code]} which is part of your order ##{options[:seller_order_number]}."
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << " their order ##{options[:supplier_order_number]} of #{options[:quantity]} x product ##{options[:product_code]} which is part of ur customer order ##{options[:customer_order_number]}."
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :not_authenticated => lambda { |key, options|
@@ -113,18 +133,20 @@
           :order_number => options[:order_number]
         ) << " when ur done."
         I18n.t("messages.base", :name => options[:supplier], :body => message)
-      }
-    },
-    :activerecord => {
-      :attribute_values => {
-        :order => {
-          :status => {
-            :accepted => "accepted",
-            :rejected => "rejected",
-            :completed => "completed",
-            :unconfirmed => "unconfirmed"
-          }
-        }
+      },
+      :confirm_payment_notification => lambda {|key, options|
+        message = "u r about to pay #{options[:supplier]} (#{options[:supplier_contact_details]}) #{options[:amount]} for their " <<
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << " order ##{options[:supplier_order_number]} of #{options[:quantity]} x product ##{options[:product_code]} which is part of ur customer order ##{options[:customer_order_number]}. Reply with " <<
+        I18n.t(
+          "messages.commands.templates.pay4order",
+          :order_number => options[:supplier_order_number]
+        ) << " " <<
+        I18n.t(
+          "messages.commands.elements.confirm"
+        ) << " to confirm payment."
+        I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },
     :errors => {
@@ -156,6 +178,33 @@
                 :incorrect => "was incorrect",
                 :invalid => "was not supplied, or it was invalid (should be 4 digits)",
                 :blank => "must be supplied"
+              }
+            }
+          }
+        }
+      }
+    },
+    :activerecord => {
+      :attribute_values => {
+        :order => {
+          :status => {
+            :accepted => "accepted",
+            :rejected => "rejected",
+            :completed => "completed",
+            :unconfirmed => "unconfirmed"
+          }
+        }
+      },
+      :errors => {
+        :models => {
+          :payment_agreement => {
+            :attributes => {
+              :supplier => {
+                :is_the_seller => "cannot be the seller"
+              },
+              :product => {
+                :supplied_by_seller => "is also supplied by the seller",
+                :is_not_nil         => "should be cleared"
               }
             }
           }

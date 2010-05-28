@@ -4,9 +4,16 @@ class Product < ActiveRecord::Base
               :class_name => "Money",
               :mapping => [%w(cents cents), %w(currency currency_as_string)]
 
-  belongs_to :supplier, :class_name => "User"
-  belongs_to :seller, :class_name => "User"
-  has_many   :supplier_orders, :class_name => "Order"
+  belongs_to  :supplier,
+              :class_name => "User"
+  
+  belongs_to  :seller,
+              :class_name => "User"
+  
+  has_many    :supplier_orders,
+              :class_name => "Order"
+              
+  has_one     :payment_agreement
 
   validates :cents,
             :presence => true,

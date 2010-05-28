@@ -18,8 +18,7 @@ class OrderObserver < ActiveRecord::Observer
         :topic => "order_details_conversation"
       ).move_along!(order)
     end
-    notify_seller(order)
-    pay_supplier(order)
+    pay_supplier_and_notify_seller(order, transition)
   end
 
   def after_reject(order, transition)
@@ -27,8 +26,7 @@ class OrderObserver < ActiveRecord::Observer
   end
     
   def after_complete(order, transition)
-    notify_seller(order)
-    pay_supplier(order)
+    pay_supplier_and_notify_seller(order, transition)
   end
   
   private
@@ -44,11 +42,43 @@ class OrderObserver < ActiveRecord::Observer
       end
     end
     
-    def pay_supplier(order)
-      payment = order.product.seller.outgoing_payments.build(
+    def pay_supplier_and_notify_seller(order, transition)
+      product = order.product
+      seller = product.seller
+      supplier = order.supplier
+      if seller != supplier
+        payment_agreement = find_payment_agreement(product, seller, supplier)
+        if payment_agreement &&
+           payment_agreement.automatic? &&
+           payment_agreement.payment_trigger_on_order == transition.to
+
+          if payment_agreement.confirm?
+            ConfirmPaymentNotificationConversation.create!(
+              :with => seller,
+              :topic => "confirm_payment_notification"
+            ).move_along!(order)
+          else
+            pay supplier, seller, order, order.supplier_total
+          end
+        else
+          notify_seller(order)
+        end
+      end
+    end
+    
+    def find_payment_agreement(product, seller, supplier)
+      payment_agreement = product.payment_agreement
+      payment_agreement = seller.payment_agreements_with_suppliers.where(
+        :supplier_id => supplier.id
+      ).first if payment_agreement.nil?
+      payment_agreement
+    end
+    
+    def pay(supplier, seller, order, total)
+      payment = seller.outgoing_payments.build(
         :supplier_order => order,
-        :supplier => order.supplier,
-        :amount => order.supplier_total
+        :supplier => supplier,
+        :amount => total
       )
       payment.pay if payment.save
     end

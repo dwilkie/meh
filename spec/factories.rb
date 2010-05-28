@@ -61,3 +61,6 @@ Factory.define :payment do |f|
   f.cents 100000
   f.currency "THB"
 end
+
+Factory.define :payment_agreement do |f|
+end

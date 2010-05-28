@@ -6,7 +6,7 @@ class OrderDetailsNotificationConversation < AbstractConversation
   private
     def order_details(order)
       I18n.t(
-        "messages.order_details",
+        "messages.order_details_notification",
         :supplier => user.name,
         :order_number => order.id,
         :product_code => order.product.external_id,

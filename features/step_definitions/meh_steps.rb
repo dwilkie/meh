@@ -10,10 +10,13 @@ Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user.save!
 end
 
-Given /^an agreement exists with seller: the seller, supplier: the supplier, payment_for_supplier_order: "([^\"]*)"$/ do |arg1|
-  # i'll implement this later
+Given /^there is a payment agreement set to (\w+)(?: and to trigger when an order is (\w+))?(?: with #{capture_fields})?$/ do |payment_method, payment_trigger_on_order, fields|
+  automatic = payment_method == "automatic"
+  new_fields = "automatic: #{automatic}"
+  new_fields = new_fields << ", payment_trigger_on_order: \"#{payment_trigger_on_order}\"" if payment_trigger_on_order
+  new_fields = new_fields << ", " << fields if fields
+  Given "a payment_agreement exists with #{new_fields}"
 end
-
 
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
@@ -131,31 +134,33 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
-Then /^#{capture_model} should (be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, exact_or_includes, translate, expected_text, language, interpolations|
+Then /^#{capture_model} should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
   text_message = model!(text_message)
   if translate
     i18n_key = translation_key(expected_text)
     language = "en" if language.blank?
     locale = language.to_sym
-    interpolations_hash = {:locale => locale}
-    if interpolations
-      interpolations.split(",").each do |interpolation|
-        key_value_pair = interpolation.split(":")
-        key_value_pair[0].strip!
-        key_value_pair[1].strip!
-        key_value_pair[1].gsub!("\"", "")
-        interpolations_hash.merge!({key_value_pair[0] => key_value_pair[1]})
-      end
-    end
+    interpolations_hash = parse_fields(interpolations)
+    interpolations_hash.merge!({:locale => locale})
     interpolations_hash.symbolize_keys!
     message = I18n.t(i18n_key, interpolations_hash)
+    message.should_not include("translation missing")
   else
     message = expected_text
   end
+  text_message.message.should_not include("translation missing")
   if exact_or_includes == "be"
-    text_message.message.should == message
+     unless reverse
+       text_message.message.should == message
+     else
+       text_message.message.should_not == message
+     end
   else
-    text_message.message.should include(message)
+    unless reverse
+      text_message.message.should include(message)
+    else
+      text_message.message.should_not include(message)
+    end
   end
 end
 

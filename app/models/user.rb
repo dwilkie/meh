@@ -45,6 +45,17 @@ class User < ActiveRecord::Base
              :foreign_key => "seller_id",
              :class_name => "Payment"
 
+  # this sets up seller.payment_agreements_with_suppliers
+  # the foreign key should be seller_id because its on the seller's side
+  # of the association
+  has_many   :payment_agreements_with_suppliers,
+             :foreign_key => "seller_id",
+             :class_name => "PaymentAgreement"
+
+  # and this sets up seller.suppliers_with_payment_agreements
+  has_many   :suppliers_with_payment_agreements,
+             :through => :payment_agreements_with_suppliers
+
   # Supplier Associations
 
   # a supplier has many products to supply
@@ -65,6 +76,17 @@ class User < ActiveRecord::Base
   has_many   :incoming_payments,
              :foreign_key => "supplier_id",
              :class_name => "Payment"
+             
+  # this sets up supplier.payment_agreements_with_sellers
+  # the foreign key should be supplier_id because its on the supplier's side
+  # of the association
+  has_many   :payment_agreements_with_sellers,
+             :foreign_key => "supplier_id",
+             :class_name => "PaymentAgreement"
+
+  # and this sets up supplier.sellers_with_payment_agreements
+  has_many   :sellers_with_payment_agreements,
+             :through => :payment_agreements_with_sellers
 
   #preference :notification_method, :string, :default => 'email'
 
