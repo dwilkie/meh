@@ -16,6 +16,7 @@ Feature: Notify seller when an order for a product they are selling is processed
     Given a supplier_order exists with id: 154671, supplier: the supplier, product: the product, status: "<status>", seller_order: the seller order, quantity: 5
     
     When the supplier <processes> the supplier_order
+    
     Then a new outgoing text message should be created destined for mobile_number: "seller's number"
     And the outgoing_text_message should be a translation of "supplier processed seller's order" in "en" (English) where seller: "Dave", supplier: "Bruno", supplier_contact_details: "+66354668789", processed: "<processed>", customer_order_number: "154670", supplier_order_number: "154671", product_code: "567864ab", quantity: "5"
 
@@ -31,6 +32,7 @@ Feature: Notify seller when an order for a product they are selling is processed
     And a supplier_order exists with id: 154672, supplier: the supplier, product: the product, status: "unconfirmed", seller_order: the seller order, quantity: 5
     
     When the supplier accepts the supplier_order
+    
     Then a new outgoing text message should be created destined for mobile_number: "seller's number"
     But the outgoing_text_message should not be a translation of "supplier processed seller's order" in "en" (English) where seller: "Dave", supplier: "Bruno", supplier_contact_details: "+66354668789", processed: "accepted", customer_order_number: "154670", supplier_order_number: "154671", product_code: "567864ab", quantity: "5"
 
@@ -40,6 +42,7 @@ Feature: Notify seller when an order for a product they are selling is processed
     And a supplier_order exists with id: 154671, supplier: the supplier, product: the product, status: "<status>", seller_order: the seller order, quantity: 5
     
     When the supplier <processes> the supplier_order
+    
     Then a new outgoing text message should be created destined for mobile_number: "supplier's number"
     But the outgoing_text_message should not be a translation of "supplier processed seller's order" in "en" (English) where seller: "Bruno", supplier: "Bruno", supplier_contact_details: "+66354668789", processed: "<processed>", customer_order_number: "154670", supplier_order_number: "154671", product_code: "567864aa", quantity: "5"
     

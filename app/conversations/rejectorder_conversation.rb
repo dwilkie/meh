@@ -1,6 +1,6 @@
 class RejectorderConversation < AbstractProcessOrderConversation
 
-  class RejectOrderMessage < AbstractProcessOrderConversation::OrderMessage
+  class Message < AbstractProcessOrderConversation::SupplierOrderMessage
     attr_reader   :confirmation
     
     validates :confirmation,
@@ -18,9 +18,8 @@ class RejectorderConversation < AbstractProcessOrderConversation
   end
 
   def move_along!(message)
-    message = RejectOrderMessage.new(message, user)
-    super(message)
-    unless finished?
+    if user.is?(:supplier)
+      message = Message.new(message, user)
       processed = "rejected"
       if message.valid?
         order = message.order
@@ -37,6 +36,8 @@ class RejectorderConversation < AbstractProcessOrderConversation
       else
         say invalid(message, processed)
       end
+    else
+      say unauthorized
     end
   end
   

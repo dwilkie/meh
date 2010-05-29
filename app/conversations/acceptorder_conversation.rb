@@ -15,7 +15,7 @@ class AcceptorderConversation < AbstractProcessOrderConversation
   # "acceptorder 21243"             # Quantity is blank, pv code can't be blank
   # "acceptorder 23324 1"           # pv code can't be blank
 
-  class AcceptOrderMessage < AbstractProcessOrderConversation::OrderMessage
+  class Message < AbstractProcessOrderConversation::SupplierOrderMessage
     class MatchesOrderQuantityValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         order = record.order
@@ -36,7 +36,7 @@ class AcceptorderConversation < AbstractProcessOrderConversation
       end
     end
     
-    attr_reader   :quantity, :product_verification_code
+    attr_reader :quantity, :product_verification_code
 
     validates :quantity,
               :presence => true,
@@ -55,9 +55,8 @@ class AcceptorderConversation < AbstractProcessOrderConversation
   end
   
   def move_along!(message)
-    message = AcceptOrderMessage.new(message, user)
-    super(message)
-    unless finished?
+    if user.is?(:supplier)
+      message = Message.new(message, user)
       processed = "accepted"
       if message.valid?
         order = message.order
@@ -69,6 +68,8 @@ class AcceptorderConversation < AbstractProcessOrderConversation
       else
         say invalid(message, processed)
       end
+    else
+      say unauthorized
     end
   end
 end

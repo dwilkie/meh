@@ -1,8 +1,8 @@
 class AbstractProcessOrderConversation < AbstractConversation
-  class OrderMessage
+  class SupplierOrderMessage
     include ActiveModel::Validations
 
-    attr_reader   :order_number, :order, :raw_message, :command
+    attr_reader  :order, :raw_message, :command
 
     validates :order,
               :presence => true
@@ -11,14 +11,10 @@ class AbstractProcessOrderConversation < AbstractConversation
       @raw_message = raw_message
       message_contents = raw_message.split(" ")
       @command = message_contents[0]
-      @order_number = message_contents[1].try(:to_i)
-      @order = supplier.supplier_orders.find_by_id(@order_number)
+      order_number = message_contents[1].try(:to_i)
+      @order = supplier.supplier_orders.find_by_id(order_number)
       message_contents
     end
-  end
-    
-  def move_along!(message)
-    say unauthorized(message.command) unless user.is?(:supplier)
   end
   
   protected
@@ -43,7 +39,7 @@ class AbstractProcessOrderConversation < AbstractConversation
     def invalid(message, processed)
       I18n.t(
         "messages.process_order_invalid_message",
-        :supplier => user.name,
+        :user => user.name,
         :errors => message.errors.full_messages.to_sentence,
         :raw_message => message.raw_message,
         :command => message.command,
@@ -51,13 +47,10 @@ class AbstractProcessOrderConversation < AbstractConversation
       )
     end
 
-  private
-  
-    def unauthorized(command)
+    def unauthorized
       I18n.t(
         "messages.unauthorized",
-        :name => user.name,
-        :command => command
+        :name => user.name
       )
     end
 end

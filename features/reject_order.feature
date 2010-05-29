@@ -33,13 +33,12 @@ Feature: Reject an order
     Then the supplier_order should not be rejected
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of "confirmation invalid when rejecting an order" in "en" (English) 
-    And the outgoing_text_message should include "Fon"
 
       Examples:
       | text_message                            |
-      | "1234 rejectorder 654778 CONFIRM"       |
-      | "1234 rejectorder 654778 anything else" |
-      
+      | "1234 rejectorder 154674 CONFIRM"       |
+      | "1234 rejectorder 154674 anything else" |
+
   Scenario Outline: Try to reject an order which has been accepted or completed
     Given a supplier_order exists with id: 654789, supplier: the supplier, status: "<order_status>"
     

@@ -15,7 +15,6 @@ Feature: Validate processing an order
     Then the supplier_order should not be <processed>
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of "order not found when processing order" in "en" (English)
-    And the outgoing_text_message should include "Phan"
 
     Examples:
       | text_message                | processed |
@@ -30,13 +29,13 @@ Feature: Validate processing an order
     When I text <text_message> from "66354668790"
     Then the supplier_order should not be <processed>
     And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where command: <command>, name: "Dave"
+    And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where name: "Dave"
 
     Examples:
-      | text_message         | processed |command          |
-      | "3456 acceptorder"   | accepted  | "acceptorder"   |
-      | "3456 rejectorder"   | rejected  | "rejectorder"   |
-      | "3456 completeorder" | completed | "completeorder" |
+      | text_message         | processed |
+      | "3456 acceptorder"   | accepted  |
+      | "3456 rejectorder"   | rejected  |
+      | "3456 completeorder" | completed |
 
   Scenario Outline: Try to process an order not belonging to me
     Given a supplier exists with name: "Keng"
@@ -46,7 +45,6 @@ Feature: Validate processing an order
     Then the supplier_order should not be <processed>
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of "order not found when processing order" in "en" (English)
-    And the outgoing_text_message should include "Keng"
     
     Examples:
       | text_message                | processed    |

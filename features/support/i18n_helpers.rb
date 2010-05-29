@@ -14,7 +14,7 @@ module I18nHelpers
       "errors.messages.not_matching_product_verification_code"
 
     when /^order not found when processing order$/
-      "activemodel.errors.models.abstract_process_order_conversation/order_message.attributes.order.blank"
+      "activemodel.errors.models.abstract_process_order_conversation/supplier_order_message.attributes.order.blank"
 
     when /^unauthorized message action$/
       "messages.unauthorized"
@@ -26,7 +26,7 @@ module I18nHelpers
       "messages.confirm_reject_order"
       
     when /^confirmation invalid when rejecting an order$/
-      "activemodel.errors.models.rejectorder_conversation/reject_order_message.attributes.confirmation.invalid"
+      "activemodel.errors.models.rejectorder_conversation/message.attributes.confirmation.invalid"
     
     when /^supplier processed seller's order$/
       "messages.supplier_processed_sellers_order_notification"
@@ -38,13 +38,13 @@ module I18nHelpers
       "messages.successfully_processed_order"
 
     when /^mobile pin number blank$/
-      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.blank"
+      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.blank"
 
     when /^mobile pin number format invalid$/
-      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.invalid"
+      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.invalid"
       
     when /^mobile pin number incorrect$/
-      "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.incorrect"
+      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.incorrect"
 
     when /^payment not greater than$/
       "activerecord.errors.models.payment.attributes.cents.greater_than"

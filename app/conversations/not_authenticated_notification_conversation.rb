@@ -1,5 +1,5 @@
-class NotAuthenticatedConversation < AbstractConversation
-  class UnauthenticatedMessage
+class NotAuthenticatedNotificationConversation < AbstractConversation
+  class Message
     include ActiveModel::Validations
     class CorrectValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)

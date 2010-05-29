@@ -149,7 +149,9 @@ Then /^#{capture_model} should (not )?(be|include)( a translation of)? "([^\"]*)
     message = expected_text
   end
   text_message.message.should_not include("translation missing")
+  puts "\n"
   puts text_message.message
+  puts "\n"
   if exact_or_includes == "be"
      unless reverse
        text_message.message.should == message

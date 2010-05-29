@@ -1,8 +1,7 @@
 class CompleteorderConversation < AbstractProcessOrderConversation
   def move_along!(message)
-    message = AbstractProcessOrderConversation::OrderMessage.new(message, user)
-    super(message)
-    unless finished?
+    if user.is?(:supplier)
+      message = AbstractProcessOrderConversation::SupplierOrderMessage.new(message, user)
       processed = "completed"
       if message.valid?
         order = message.order
@@ -15,6 +14,8 @@ class CompleteorderConversation < AbstractProcessOrderConversation
       else
         say invalid(message, processed)
       end
+    else
+      say unauthorized
     end
   end
 end

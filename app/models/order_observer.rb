@@ -62,9 +62,9 @@ class OrderObserver < ActiveRecord::Observer
               ConfirmPaymentNotificationConversation.create!(
                 :with => seller,
                 :topic => "confirm_payment_notification"
-              ).move_along!(order)
+              ).move_along!(payment)
             else
-              payment.save
+              payment.save!
               payment.pay
             end
           else

@@ -17,7 +17,9 @@
           :order_number => "<order number>",
           :quantity => "<quantity>",
           :pv_code => "<pv code>",
-          :confirm => "CONFIRM!"
+          :confirm => "CONFIRM!",
+          :supplier_order_number => "<supplier order number>",
+          :customer_order_number => "<customer order number>"
         },
         :base => lambda { |key, options|
           I18n.t("messages.commands.elements.pin_number") << " " << options[:command]
@@ -53,12 +55,15 @@
             )
           },
           :pay4order => lambda { |key, options|
-            options[:order_number] ||= I18n.t(
-              "messages.commands.elements.order_number"
+            options[:customer_order_number] ||= I18n.t(
+              "messages.commands.elements.customer_order_number"
+            )
+            options[:supplier_order_number] ||= I18n.t(
+              "messages.commands.elements.supplier_order_number"
             )
             I18n.t(
               "messages.commands.base",
-              :command => "pay4order #{options[:order_number]}"
+              :command => "pay4order #{options[:customer_order_number]} #{options[:supplier_order_number]}"
             )
           },
           :paymentstatus => lambda { |key, options|
@@ -100,7 +105,7 @@
         I18n.t(
           "messages.commands.templates.#{options[:command]}"
         )
-        I18n.t("messages.base", :name => options[:supplier], :body => message)
+        I18n.t("messages.base", :name => options[:user], :body => message)
       },
       :successfully_processed_order => lambda { |key, options|
         message = "u successfully " << 
@@ -125,7 +130,7 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :unauthorized => lambda { |key, options|
-        message = "u're not authorized to issue the command #{options[:command]}"
+        message = "you're not authorized to issue this command"
         I18n.t("messages.base", :name => options[:name], :body => message)
       },
       :supplier_processed_sellers_order_notification => lambda { |key, options|
@@ -133,17 +138,17 @@
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
           :supplier_contact_details => options[:supplier_contact_details]
-        ) << " "
-        I18n.t(
-          "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " their " << 
+        ) << " has marked their " <<
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
           :quantity => options[:quantity],
           :product_code => options[:product_code],
           :customer_order_number => options[:customer_order_number]
-        )
+        ) << " as " <<
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << "."
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :not_authenticated => lambda { |key, options|
@@ -166,19 +171,19 @@
           :supplier_contact_details => options[:supplier_contact_details]
         ) << " " << options[:amount] << " for their " <<
         I18n.t(
-          "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " " <<
-        I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
           :customer_order_number => options[:customer_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
-        ) <<
-        ". Reply with " <<
+        ) << ". Their order is marked as " <<
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << ". Reply with " <<
         I18n.t(
           "messages.commands.templates.pay4order",
-          :order_number => options[:supplier_order_number]
+          :customer_order_number => options[:customer_order_number],
+          :supplier_order_number => options[:supplier_order_number]
         ) << " " <<
         I18n.t(
           "messages.commands.elements.confirm"
@@ -193,15 +198,15 @@
           :supplier_contact_details => options[:supplier_contact_details]
         ) << " for their " << 
         I18n.t(
-          "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " " <<
-        I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
           :customer_order_number => options[:customer_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
-        ) << ". We couldn't sent the payment because the #{options[:errors]}"
+        ) << ". Their order is marked as " <<
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << ". We couldn't send the payment because the #{options[:errors]}"
         I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },
@@ -214,21 +219,21 @@
     :activemodel => {
       :errors => {
         :models => {
-          :'abstract_process_order_conversation/order_message' => {
+          :'abstract_process_order_conversation/supplier_order_message' => {
             :attributes => {
               :order => {
                 :blank => "can't be found"
               }
             }
           },
-          :'rejectorder_conversation/reject_order_message' => {
+          :'rejectorder_conversation/message' => {
             :attributes => {
               :confirmation => {
                 :invalid => "must be CONFIRM! if you really want to reject the order"
               }
             }
           },
-          :'not_authenticated_conversation/unauthenticated_message' => {
+          :'not_authenticated_notification_conversation/message' => {
             :attributes => {
               :pin_number => {
                 :incorrect => "was incorrect",
