@@ -45,7 +45,13 @@ module I18nHelpers
       
     when /^mobile pin number incorrect$/
       "activemodel.errors.models.not_authenticated_conversation/unauthenticated_message.attributes.pin_number.incorrect"
-      
+
+    when /^payment not greater than$/
+      "activerecord.errors.models.payment.attributes.cents.greater_than"
+
+    when /^payment already exists for this order$/
+      "activerecord.errors.models.payment.attributes.supplier_order_id.taken"
+
     when /^order details$/
       "messages.order_details_notification"
 

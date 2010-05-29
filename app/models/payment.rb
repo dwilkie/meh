@@ -20,7 +20,10 @@ class Payment < ActiveRecord::Base
             :numericality => {:only_integer => true, :greater_than => 0}
 
   validates :currency,
-            :presence => true
+            :presence => true,
+            :unless => Proc.new { |payment|
+              payment.cents <= 0
+            }
             
   validates :supplier_order,
             :presence => true

@@ -34,16 +34,16 @@ class PaymentAgreement < ActiveRecord::Base
             :has_another_supplier => true,
             :allow_nil => true,
             :unless => Proc.new { |payment_agreement|
-                payment_agreement.supplier ||
-                payment_agreement.seller
-              }
+              payment_agreement.supplier ||
+              payment_agreement.seller
+            }
               
   validates :product,
             :is_nil => true,
             :if => Proc.new { |payment_agreement|
-                payment_agreement.supplier ||
-                payment_agreement.seller
-              }
+              payment_agreement.supplier ||
+              payment_agreement.seller
+            }
   
   validates :product_id,
             :uniqueness => true,
@@ -52,7 +52,7 @@ class PaymentAgreement < ActiveRecord::Base
   validates :seller, :supplier,
             :presence => true,
             :unless => Proc.new { |payment_agreement|
-               payment_agreement.product
+              payment_agreement.product
             }
 
   validates :supplier_id,

@@ -7,8 +7,8 @@
       :elements => {
         :greeting => "Hey %{name}, ",
         :shared => {
-          :order_details_for_seller => "order (#%{supplier_order_number}) of %{quantity} x product (#%{product_code}) which is part of ur customer order (#%{customer_order_number})",
-          :supplier_details => "#%{supplier} (%{supplier_contact_details})"
+          :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur customer order(#%{customer_order_number})",
+          :supplier_details => "%{supplier} (%{supplier_contact_details})"
         }
       },
       :commands => {
@@ -59,6 +59,15 @@
             I18n.t(
               "messages.commands.base",
               :command => "pay4order #{options[:order_number]}"
+            )
+          },
+          :paymentstatus => lambda { |key, options|
+            options[:order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
+            I18n.t(
+              "messages.commands.base",
+              :command => "paymentstatus #{options[:order_number]}"
             )
           }
         }
@@ -158,14 +167,14 @@
         ) << " " << options[:amount] << " for their " <<
         I18n.t(
           "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " "
+        ) << " " <<
         I18n.t(
-          "messages.elements.shared.order_details_for_supplier",
+          "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
           :customer_order_number => options[:customer_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
-        )
+        ) <<
         ". Reply with " <<
         I18n.t(
           "messages.commands.templates.pay4order",
@@ -177,7 +186,7 @@
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :payment_invalid => lambda {|key, options|
-        "a payment was about to be sent from you to " << 
+        message = "a payment was about to be sent on ur behalf to " << 
         I18n.t(
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
@@ -187,12 +196,13 @@
           "activerecord.attribute_values.order.status.#{options[:processed]}"
         ) << " " <<
         I18n.t(
-          "messages.elements.shared.order_details_for_supplier",
+          "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
           :customer_order_number => options[:customer_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
         ) << ". We couldn't sent the payment because the #{options[:errors]}"
+        I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },
     :errors => {
@@ -231,6 +241,12 @@
       }
     },
     :activerecord => {
+      :attributes => {
+        :payment => {
+          :cents => "amount",
+          :supplier_order => "order"
+        }
+      },
       :attribute_values => {
         :order => {
           :status => {
@@ -243,6 +259,22 @@
       },
       :errors => {
         :models => {
+          :payment => {
+            :attributes => {
+              :cents => {
+                :greater_than => "must be greater than %{count} (check that u have set a supplier price for this product)"
+              },
+              :supplier_order_id => { 
+                :taken => lambda {|key, options|
+                  "already has a payment (text (" <<
+                  I18n.t(
+                    "messages.commands.templates.paymentstatus",
+                    :order_number => options[:value]
+                  ) << ") to check its status)"
+                }
+              }
+            }
+          },
           :payment_agreement => {
             :attributes => {
               :supplier => {
@@ -259,4 +291,3 @@
     }
   }
 }
-

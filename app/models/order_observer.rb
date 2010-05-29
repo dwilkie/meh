@@ -68,9 +68,9 @@ class OrderObserver < ActiveRecord::Observer
               payment.pay
             end
           else
-            InvalidPaymentNotificationConversation.create!(
+            PaymentInvalidNotificationConversation.create!(
               :with => seller,
-              :topic => "invalid_payment_notification"
+              :topic => "payment_invalid_notification"
             ).move_along!(payment)
           end
         else
