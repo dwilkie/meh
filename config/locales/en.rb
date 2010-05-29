@@ -5,7 +5,11 @@
         I18n.t("messages.elements.greeting", :name => options[:name]) << options[:body]
       },
       :elements => {
-        :greeting => "Hey %{name}, "
+        :greeting => "Hey %{name}, ",
+        :shared => {
+          :order_details_for_seller => "order (#%{supplier_order_number}) of %{quantity} x product (#%{product_code}) which is part of ur customer order (#%{customer_order_number})",
+          :supplier_details => "#%{supplier} (%{supplier_contact_details})"
+        }
       },
       :commands => {
         :elements => {
@@ -116,10 +120,21 @@
         I18n.t("messages.base", :name => options[:name], :body => message)
       },
       :supplier_processed_sellers_order_notification => lambda { |key, options|
-        message = "#{options[:supplier]} (#{options[:supplier_contact_details]}) " <<
+        message = I18n.t(
+          "messages.elements.shared.supplier_details",
+          :supplier => options[:supplier],
+          :supplier_contact_details => options[:supplier_contact_details]
+        ) << " "
         I18n.t(
           "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " their order ##{options[:supplier_order_number]} of #{options[:quantity]} x product ##{options[:product_code]} which is part of ur customer order ##{options[:customer_order_number]}."
+        ) << " their " << 
+        I18n.t(
+          "messages.elements.shared.order_details_for_seller",
+          :supplier_order_number => options[:supplier_order_number],
+          :quantity => options[:quantity],
+          :product_code => options[:product_code],
+          :customer_order_number => options[:customer_order_number]
+        )
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :not_authenticated => lambda { |key, options|
@@ -135,10 +150,23 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :confirm_payment_notification => lambda {|key, options|
-        message = "u r about to pay #{options[:supplier]} (#{options[:supplier_contact_details]}) #{options[:amount]} for their " <<
+        message = "u r about to pay " << 
+        I18n.t(
+          "messages.elements.shared.supplier_details",
+          :supplier => options[:supplier],
+          :supplier_contact_details => options[:supplier_contact_details]
+        ) << " " << options[:amount] << " for their " <<
         I18n.t(
           "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) << " order ##{options[:supplier_order_number]} of #{options[:quantity]} x product ##{options[:product_code]} which is part of ur customer order ##{options[:customer_order_number]}. Reply with " <<
+        ) << " "
+        I18n.t(
+          "messages.elements.shared.order_details_for_supplier",
+          :supplier_order_number => options[:supplier_order_number],
+          :customer_order_number => options[:customer_order_number],
+          :product_code => options[:product_code],
+          :quantity => options[:quantity]
+        )
+        ". Reply with " <<
         I18n.t(
           "messages.commands.templates.pay4order",
           :order_number => options[:supplier_order_number]
@@ -147,6 +175,24 @@
           "messages.commands.elements.confirm"
         ) << " to confirm payment."
         I18n.t("messages.base", :name => options[:seller], :body => message)
+      },
+      :payment_invalid => lambda {|key, options|
+        "a payment was about to be sent from you to " << 
+        I18n.t(
+          "messages.elements.shared.supplier_details",
+          :supplier => options[:supplier],
+          :supplier_contact_details => options[:supplier_contact_details]
+        ) << " for their " << 
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:processed]}"
+        ) << " " <<
+        I18n.t(
+          "messages.elements.shared.order_details_for_supplier",
+          :supplier_order_number => options[:supplier_order_number],
+          :customer_order_number => options[:customer_order_number],
+          :product_code => options[:product_code],
+          :quantity => options[:quantity]
+        ) << ". We couldn't sent the payment because the #{options[:errors]}"
       }
     },
     :errors => {

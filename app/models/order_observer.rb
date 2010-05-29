@@ -52,13 +52,26 @@ class OrderObserver < ActiveRecord::Observer
            payment_agreement.automatic? &&
            payment_agreement.payment_trigger_on_order == transition.to
 
-          if payment_agreement.confirm?
-            ConfirmPaymentNotificationConversation.create!(
-              :with => seller,
-              :topic => "confirm_payment_notification"
-            ).move_along!(order)
+          payment = seller.outgoing_payments.build(
+            :supplier_order => order,
+            :supplier => supplier,
+            :amount => order.supplier_total
+          )
+          if payment.valid?
+            if payment_agreement.confirm?
+              ConfirmPaymentNotificationConversation.create!(
+                :with => seller,
+                :topic => "confirm_payment_notification"
+              ).move_along!(order)
+            else
+              payment.save
+              payment.pay
+            end
           else
-            pay supplier, seller, order, order.supplier_total
+            InvalidPaymentNotificationConversation.create!(
+              :with => seller,
+              :topic => "invalid_payment_notification"
+            ).move_along!(payment)
           end
         else
           notify_seller(order)
@@ -74,15 +87,6 @@ class OrderObserver < ActiveRecord::Observer
       payment_agreement
     end
     
-    def pay(supplier, seller, order, total)
-      payment = seller.outgoing_payments.build(
-        :supplier_order => order,
-        :supplier => supplier,
-        :amount => total
-      )
-      payment.pay if payment.save
-    end
-
     def send_notification_by_text_message?(user)
       user.mobile_number # do more here...
     end

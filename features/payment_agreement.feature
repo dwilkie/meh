@@ -1,14 +1,14 @@
-Feature: Automatic Supplier Payment
+Feature: Payment Agreement
   In order to pay my suppliers for orders they have processed
   As a seller
-  I want to be able to set up my account to pay suppliers automatically
+  I want to be able to set up payment agreements to pay suppliers automatically
          with or without confirmation when they process an order
   
   Background:
     Given a seller exists with name: "Dave"
     And a supplier exists with name: "Fon"
     And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB"
-    And a supplier_order exists with supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product, seller_order: the seller_order
+    And a supplier_order exists with supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product
 
   Scenario Outline: Payment agreement between the seller and supplier is set to automatic
     Given there is a payment agreement set to automatic and to trigger when an order is <processed> with seller: the seller, supplier: the supplier
