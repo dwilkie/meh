@@ -19,7 +19,51 @@ Feature: Pay4order
     But a new outgoing text message should be created destined for the mobile_number: "Dave's number"
     And the outgoing_text_message should be a translation of "confirm payment" in "en" (English) where seller: "Dave", supplier_order_number: "65434", processed: "unconfirmed", supplier_contact_details: "+66743578456", amount: "2,000.00 THB", quantity: "4", product_code: "thaibudda34", customer_order_number: "65433", supplier: "Kikie"
     
-  Scenario: Confirm pay4order
+  Scenario: Confirm payment
     When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
     
     Then a payment should exist
+    
+  Scenario: Try to confirm a payment with
+    When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
+    
+    Then a payment should exist
+    
+  Scenario Outline: Try to pay for an order with incorrect order numbers
+    When I text <text_message> from "66542345789"
+
+    Then a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should include a translation of "order not found when pay4order" in "en" (English)
+    
+    Examples:
+      | text_message                 |
+      | "1234 pay4order"             |
+      | "1234 pay4order 65433"       |
+      | "1234 pay4order 65433 65433" |
+      | "1234 pay4order 65432 65434" |
+      | "1234 pay4order 65434 65433" |
+      
+  Scenario: Try to pay for an order as a supplier
+    When I text "1234 pay4order 65433 65434" from "66743578456"
+
+    Then a new outgoing text message should be created destined for the mobile_number: "Kikie's number"
+    And the outgoing_text_message should be a translation of "unauthorized message action" in "en" (English) where name: "Kikie"
+    
+  Scenario Outline: Try to confirm paying for an an order incorrectly
+    When I text <text_message> from "66542345789"
+ 
+    Then a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should include a translation of "confirmation invalid when pay4order" in "en" (English) 
+
+      Examples:
+      | text_message                               |
+      | "1234 pay4order 65433 65434 CONFIRM"       |
+      | "1234 pay4order 65433 65434 anything else" |
+      
+  Scenario: Try to trigger a payment for someone elses order
+    Given a seller exists
+    And a mobile_number: "Another sellers number" exists with phoneable: the seller, number: "6698654568", password: "1234"
+    When I text "1234 pay4order 65433 65434" from "6698654568"
+
+    Then a new outgoing text message should be created destined for the mobile_number: "Another sellers number"
+    And the outgoing_text_message should include a translation of "order not found when pay4order" in "en" (English)

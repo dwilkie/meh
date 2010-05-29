@@ -1,4 +1,4 @@
-class Pay4orderConversation < AbstractProcessOrderConversation
+class Pay4orderConversation < AbstractConversation
   
   class Message
     include ActiveModel::Validations
@@ -66,10 +66,28 @@ class Pay4orderConversation < AbstractProcessOrderConversation
           ).move_along!(payment)
         end
       else
-        say invalid(message, processed)
+        say invalid(message)
       end
     else
       say unauthorized
     end
   end
+  
+  private
+    def invalid(message)
+      I18n.t(
+        "messages.pay4order_invalid_message",
+        :user => user.name,
+        :errors => message.errors.full_messages.to_sentence,
+        :raw_message => message.raw_message,
+        :command => message.command
+      )
+    end
+    
+    def unauthorized
+      I18n.t(
+        "messages.unauthorized",
+        :name => user.name
+      )
+    end
 end

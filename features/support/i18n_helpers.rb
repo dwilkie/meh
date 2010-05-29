@@ -16,6 +16,9 @@ module I18nHelpers
     when /^order not found when processing order$/
       "activemodel.errors.models.abstract_process_order_conversation/supplier_order_message.attributes.order.blank"
 
+    when /^order not found when pay4order$/
+      "activemodel.errors.models.pay4order_conversation/message.blank"
+
     when /^unauthorized message action$/
       "messages.unauthorized"
       
@@ -27,7 +30,10 @@ module I18nHelpers
       
     when /^confirmation invalid when rejecting an order$/
       "activemodel.errors.models.rejectorder_conversation/message.attributes.confirmation.invalid"
-    
+
+    when /^confirmation invalid when pay4order$/
+      "activemodel.errors.models.pay4order_conversation/message.attributes.confirmation.invalid"
+
     when /^supplier processed seller's order$/
       "messages.supplier_processed_sellers_order_notification"
       

@@ -4,6 +4,12 @@
       :base => lambda { |key, options|
         I18n.t("messages.elements.greeting", :name => options[:name]) << options[:body]
       },
+      :invalid_text_message => lambda { |key, options|
+        "u just sent us: \"#{options[:raw_message]}\". #{options[:action]} because the #{options[:errors]}. Please check the details and try again. The format is: " <<
+        I18n.t(
+          "messages.commands.templates.#{options[:command]}"
+        )
+      },
       :elements => {
         :greeting => "Hey %{name}, ",
         :shared => {
@@ -97,13 +103,26 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :process_order_invalid_message => lambda { |key, options|
-        message = "u just sent us: \"#{options[:raw_message]}\". The order can't be " <<
+        message = "The order can't be " <<
         I18n.t(
           "activerecord.attribute_values.order.status.#{options[:processed]}"
-        ) <<
-        " because the #{options[:errors]}. Please check the details and try again. The format is: " <<
-        I18n.t(
-          "messages.commands.templates.#{options[:command]}"
+        )
+        message = I18n.t(
+          "messages.invalid_text_message",
+          :action => message,
+          :command => options[:command],
+          :raw_message => options[:raw_message],
+          :errors => options[:errors]
+        )
+        I18n.t("messages.base", :name => options[:user], :body => message)
+      },
+      :pay4order_invalid_message => lambda { |key, options|
+        message = I18n.t(
+          "messages.invalid_text_message",
+          :action => "We couldn't process your request",
+          :command => options[:command],
+          :raw_message => options[:raw_message],
+          :errors => options[:errors]
         )
         I18n.t("messages.base", :name => options[:user], :body => message)
       },
@@ -230,6 +249,14 @@
             :attributes => {
               :confirmation => {
                 :invalid => "must be CONFIRM! if you really want to reject the order"
+              }
+            }
+          },
+          :'pay4order_conversation/message' => {
+            :blank => "can't be found",
+            :attributes => {
+              :confirmation => {
+                :invalid => "must be CONFIRM! to confirm payment"
               }
             }
           },
