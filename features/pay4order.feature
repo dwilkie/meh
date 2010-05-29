@@ -23,12 +23,7 @@ Feature: Pay4order
     When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
     
     Then a payment should exist
-    
-  Scenario: Try to confirm a payment with
-    When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
-    
-    Then a payment should exist
-    
+
   Scenario Outline: Try to pay for an order with incorrect order numbers
     When I text <text_message> from "66542345789"
 
