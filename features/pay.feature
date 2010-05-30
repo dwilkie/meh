@@ -10,5 +10,7 @@ Feature: Pay
 
   Scenario: Pay
     Given a payment_application exists with seller: the seller
-    When a payment is created with seller: the seller, supplier: the supplier, supplier_order: the supplier_order
+    And a payment exists with seller: the seller, supplier: the supplier, supplier_order: the supplier_order
+    
+    Then a payment_request should exist
 

@@ -227,6 +227,10 @@
           "activerecord.attribute_values.order.status.#{options[:processed]}"
         ) << ". We couldn't send the payment because the #{options[:errors]}"
         I18n.t("messages.base", :name => options[:seller], :body => message)
+      },
+      :problem_with_payment_application => lambda { |key, options|
+        
+        "U haven't set up your payment "
       }
     },
     :errors => {
@@ -260,7 +264,7 @@
               }
             }
           },
-          :'not_authenticated_notification_conversation/message' => {
+          :'authentication_notification/message' => {
             :attributes => {
               :pin_number => {
                 :incorrect => "was incorrect",

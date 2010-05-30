@@ -1,7 +1,5 @@
 class PaymentApplication < ActiveRecord::Base
   
-  PAYMENT_URL = 'payments/create'
-  
   belongs_to :seller,
              :class_name => "User"
   
@@ -11,7 +9,7 @@ class PaymentApplication < ActiveRecord::Base
   validates  :status,
              :presence => true
   
-  validates  :application_url,
+  validates  :application_uri,
              :presence => true
              # add format here
 
@@ -28,9 +26,5 @@ class PaymentApplication < ActiveRecord::Base
     event :deactivate do
       transition :active => :inactive
     end
-  end
-  
-  def create_payment_url
-    application_url.gsub(/\/$/) << PAYMENT_URL
   end
 end

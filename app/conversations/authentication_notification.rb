@@ -1,4 +1,4 @@
-class NotAuthenticatedNotificationConversation < AbstractConversation
+class AuthenticationNotification < AbstractConversation
   class Message
     include ActiveModel::Validations
     class CorrectValidator < ActiveModel::EachValidator
@@ -27,18 +27,12 @@ class NotAuthenticatedNotificationConversation < AbstractConversation
       message_elements.delete_at(0)
       message_elements.join(" ")
     end
-    
   end
 
-  def move_along!(message)
-    say not_authenticated(message)
+  def not_authenticated(message)
+    say I18n.t(
+      "messages.not_authenticated",
+      :errors => message.errors.full_messages.to_sentence
+    )
   end
-  
-  private
-    def not_authenticated(message)
-      I18n.t(
-        "messages.not_authenticated",
-        :errors => message.errors.full_messages.to_sentence
-      )
-    end
 end

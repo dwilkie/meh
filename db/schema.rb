@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100528041330) do
+ActiveRecord::Schema.define(:version => 20100530115542) do
 
   create_table "conversations", :force => true do |t|
     t.string   "state",      :null => false
@@ -82,15 +82,25 @@ ActiveRecord::Schema.define(:version => 20100528041330) do
   add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
   create_table "payment_applications", :force => true do |t|
-    t.string   "application_url", :null => false
-    t.string   "status",          :null => false
-    t.integer  "seller_id",       :null => false
+    t.string   "uri",        :null => false
+    t.string   "status",     :null => false
+    t.integer  "seller_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "payment_applications", ["application_url"], :name => "index_payment_applications_on_application_url", :unique => true
   add_index "payment_applications", ["seller_id"], :name => "index_payment_applications_on_seller_id", :unique => true
+  add_index "payment_applications", ["uri"], :name => "index_payment_applications_on_uri", :unique => true
+
+  create_table "payment_requests", :force => true do |t|
+    t.string   "application_uri", :null => false
+    t.string   "status",          :null => false
+    t.integer  "payment_id",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "payment_requests", ["payment_id"], :name => "index_payment_requests_on_payment_id", :unique => true
 
   create_table "payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false

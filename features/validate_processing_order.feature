@@ -1,9 +1,7 @@
 Feature: Validate processing an order
-  In order to avoid causing problems when making a mistake while processing an order
-           and to get feedback on the error(s) I made
+  In order to avoid causing problems when making a mistake while processing an order and to get feedback on the error(s) I made
   As a supplier
-  I want to make sure that I can't do anything I shouldn't be able to do
-         while processing an order
+  I want to make sure that I can't do anything I shouldn't be able to do while processing an order
 
   Background:
     Given a supplier exists with name: "Phan"

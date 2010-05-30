@@ -55,6 +55,9 @@ class User < ActiveRecord::Base
   # and this sets up seller.suppliers_with_payment_agreements
   has_many   :suppliers_with_payment_agreements,
              :through => :payment_agreements_with_suppliers
+             
+  has_one    :payment_application,
+             :foreign_key => "seller_id"
 
   # Supplier Associations
 

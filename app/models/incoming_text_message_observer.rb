@@ -2,7 +2,7 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
   def after_create(incoming_text_message)
     if smsable = incoming_text_message.smsable
       message_text = incoming_text_message.params[:msg]
-      unauthenticated_message = NotAuthenticatedNotificationConversation::Message.new(message_text, smsable)
+      unauthenticated_message = AuthenticationNotification::Message.new(message_text, smsable)
       if unauthenticated_message.valid?
         message_text = unauthenticated_message.request
         topic = message_text.split(" ")[0]
@@ -11,10 +11,9 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
           :topic => topic
         ).details.move_along!(message_text)
       else
-        NotAuthenticatedNotificationConversation.create!(
-          :with => smsable.phoneable,
-          :topic => "not_authenticated"
-        ).move_along!(unauthenticated_message)
+        AuthenticationNotification.create!(
+          :with => smsable.phoneable
+        ).not_authenticated(unauthenticated_message)
       end
     end
   end

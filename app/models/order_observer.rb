@@ -2,22 +2,15 @@ class OrderObserver < ActiveRecord::Observer
   def after_create(order)
     if supplier = order.supplier
       if send_notification_by_text_message?(supplier)
-        SupplierOrderNotificationConversation.create!(
-          :with => supplier,
-          :topic => "supplier_order_notification"
-        ).move_along!(order)
+        OrderNotification.create!(:with => supplier).notification_for_new(order)
       end
     end
   end
 
   def after_accept(order, transition)
     supplier = order.supplier
-    if send_notification_by_text_message?(supplier)
-      OrderDetailsNotificationConversation.create!(
-        :with => supplier,
-        :topic => "order_details_conversation"
-      ).move_along!(order)
-    end
+    OrderNotification.create!(:with => supplier).details(order) if
+      send_notification_by_text_message?(supplier)
     pay_supplier_and_notify_seller(order, transition)
   end
 
@@ -34,10 +27,7 @@ class OrderObserver < ActiveRecord::Observer
       seller = order.product.seller
       unless seller == order.supplier
         if send_notification_by_text_message?(seller)
-          SupplierProcessedOrderNotificationConversation.create!(
-            :with => seller,
-            :topic => "supplier_processed_order_notification_conversation"
-          ).move_along!(order)
+          OrderNotification.create!(:with => seller).notify_seller(order)
         end
       end
     end
@@ -59,19 +49,12 @@ class OrderObserver < ActiveRecord::Observer
           )
           if payment.valid?
             if payment_agreement.confirm?
-              ConfirmPaymentNotificationConversation.create!(
-                :with => seller,
-                :topic => "confirm_payment_notification"
-              ).move_along!(payment)
+              PaymentNotification.create!(:with => seller).confirm(payment)
             else
               payment.save!
-              payment.pay
             end
           else
-            PaymentInvalidNotificationConversation.create!(
-              :with => seller,
-              :topic => "payment_invalid_notification"
-            ).move_along!(payment)
+            PaymentNotification.create!(:with => seller).invalid(payment)
           end
         else
           notify_seller(order)

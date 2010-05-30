@@ -44,13 +44,13 @@ module I18nHelpers
       "messages.successfully_processed_order"
 
     when /^mobile pin number blank$/
-      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.blank"
+      "activemodel.errors.models.authentication_notification/message.attributes.pin_number.blank"
 
     when /^mobile pin number format invalid$/
-      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.invalid"
+      "activemodel.errors.models.authentication_notification/message.attributes.pin_number.invalid"
       
     when /^mobile pin number incorrect$/
-      "activemodel.errors.models.not_authenticated_notification_conversation/message.attributes.pin_number.incorrect"
+      "activemodel.errors.models.authentication_notification/message.attributes.pin_number.incorrect"
 
     when /^payment not greater than$/
       "activerecord.errors.models.payment.attributes.cents.greater_than"

@@ -12,6 +12,8 @@ class Payment < ActiveRecord::Base
   
   belongs_to  :supplier_order,
               :class_name => "Order"
+              
+  has_one     :payment_request
   
   serialize   :params
   
@@ -43,6 +45,4 @@ class Payment < ActiveRecord::Base
   state_machine :status, :initial => :payment_not_requested do
   end
   
-  def pay
-  end
 end

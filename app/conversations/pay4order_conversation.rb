@@ -52,18 +52,19 @@ class Pay4orderConversation < AbstractConversation
         if payment.valid?
           if message.confirmed?
             payment.save!
-            payment.pay
+            if payment_application = user.payment_application &&
+              payment_application.active?
+              payment.payment_request.create!(
+                :application_uri => payment_application.uri
+              )
+            else
+              notify_problem_with(payment_application)
+            end
           else
-            ConfirmPaymentNotificationConversation.create!(
-              :with => user,
-              :topic => "confirm_payment_notification"
-            ).move_along!(payment)
+            notify_confirm(payment)
           end
         else
-          PaymentInvalidNotificationConversation.create!(
-            :with => user,
-            :topic => "payment_invalid_notification"
-          ).move_along!(payment)
+          notify_invalid(payment)
         end
       else
         say invalid(message)
@@ -74,6 +75,19 @@ class Pay4orderConversation < AbstractConversation
   end
   
   private
+    
+    def notify_invalid(payment)
+      PaymentNotification.create!(:with => user).invalid(payment)
+    end
+    
+    def notify_confirm(payment)
+      PaymentNotification.create!(:with => user).confirm(payment)
+    end
+    
+    def notify_problem_with(payment_application)
+      #PaymentApplicationNotification.create!(:with => user).invalid(payment_application)
+    end
+
     def invalid(message)
       I18n.t(
         "messages.pay4order_invalid_message",
