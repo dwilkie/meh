@@ -8,8 +8,8 @@ Feature: Pay4order
     And a supplier exists with name: "Kikie"
     And a mobile_number: "Dave's number" exists with phoneable: the seller, number: "66542345789", password: "1234"
     And a mobile_number: "Kikie's number" exists with phoneable: the supplier, number: "66743578456"
-    And a product exists with supplier: the supplier, seller: the seller, cents: 50000, currency: "THB", external_id: "thaibudda34"
     And a seller_order exists with id: 65433, seller: the seller
+    And a product exists with supplier: the supplier, seller: the seller, cents: 50000, currency: "THB", external_id: "thaibudda34"
     And a supplier_order exists with id: 65434, seller_order: the seller_order, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product
   
   Scenario: pay4order
@@ -62,3 +62,22 @@ Feature: Pay4order
 
     Then a new outgoing text message should be created destined for the mobile_number: "Another sellers number"
     And the outgoing_text_message should include a translation of "order not found when pay4order" in "en" (English)
+    
+  Scenario: Try to pay for an order where the product has no supplier price
+    Given a product exists with supplier: the supplier, seller: the seller
+    And a supplier_order exists with id: 65435, seller_order: the seller_order, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product
+
+    When I text "1234 pay4order 65433 65435" from "66542345789"
+
+    Then a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should include a translation of "payment not greater than" in "en" (English) where count: 0
+    
+  Scenario: Do not create a payment if there is already a payment for this order
+    Given a product exists with supplier: the supplier, seller: the seller, cents: 500000, currency: "KHR"
+    And a supplier_order exists with id: 65435, seller_order: the seller_order, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product
+    And a payment exists with cents: 2000000, currency: "KHR", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
+
+    When I text "1234 pay4order 65433 65435" from "66542345789"
+
+    Then a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should include a translation of "payment already exists for this order" in "en" (English) where value: "65435"

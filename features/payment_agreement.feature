@@ -27,7 +27,7 @@ Feature: Payment Agreement
     Given there is a payment agreement set to automatic and to trigger when an order is accepted with seller: the seller, supplier: the supplier, confirm: true
     And a mobile_number: "seller's number" exists with phoneable: the seller
     And a mobile_number: "supplier's number" exists with phoneable: the supplier, number: "66789098763"
-    And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB", external_id: 244654, verification_code: 67454
+    And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB", external_id: 244654
     And a seller_order exists with id: 123553
     And a supplier_order exists with supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product, id: 154674, seller_order: the seller_order
 

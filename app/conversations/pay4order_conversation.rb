@@ -61,7 +61,7 @@ class Pay4orderConversation < AbstractConversation
           end
         else
           PaymentInvalidNotificationConversation.create!(
-            :with => seller,
+            :with => user,
             :topic => "payment_invalid_notification"
           ).move_along!(payment)
         end
