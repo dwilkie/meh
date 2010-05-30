@@ -1,3 +1,18 @@
+Given /^#{capture_model} has an (\w+) payment application(?: with #{capture_fields})?$/ do |seller, application_status, fields|
+  pickle_step = "a payment_application exists with seller: #{seller}, status: \"#{application_status}\""
+  pickle_step << ", #{fields}" if fields
+  Given pickle_step
+  payment_application = model!("payment_application")
+  FakeWeb.register_uri(
+    :post,
+    URI.join(
+      payment_application.uri,
+      "payment_requests/create"
+    ).to_s,
+  :status => ["200", "OK"]
+  ) if application_status == "active"
+end
+
 Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |plural_factory, fields|
   find_models(plural_factory.singularize, fields).each do |instance|
     instance.destroy
@@ -171,3 +186,4 @@ Then /^there should be no more than (\d+) outgoing text messages? destined for #
   mobile_number = model!(destination)
   OutgoingTextMessage.where(:smsable_id => mobile_number.id, :smsable_type => "mobile_number").count.should <= count.to_i
 end
+

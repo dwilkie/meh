@@ -9,7 +9,7 @@ class PaymentApplication < ActiveRecord::Base
   validates  :status,
              :presence => true
   
-  validates  :application_uri,
+  validates  :uri,
              :presence => true
              # add format here
 

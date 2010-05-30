@@ -2,14 +2,14 @@ class OrderObserver < ActiveRecord::Observer
   def after_create(order)
     if supplier = order.supplier
       if send_notification_by_text_message?(supplier)
-        OrderNotification.create!(:with => supplier).notification_for_new(order)
+        OrderNotification.new(:with => supplier).notification_for_new(order)
       end
     end
   end
 
   def after_accept(order, transition)
     supplier = order.supplier
-    OrderNotification.create!(:with => supplier).details(order) if
+    OrderNotification.new(:with => supplier).details(order) if
       send_notification_by_text_message?(supplier)
     pay_supplier_and_notify_seller(order, transition)
   end
@@ -27,7 +27,7 @@ class OrderObserver < ActiveRecord::Observer
       seller = order.product.seller
       unless seller == order.supplier
         if send_notification_by_text_message?(seller)
-          OrderNotification.create!(:with => seller).notify_seller(order)
+          OrderNotification.new(:with => seller).notify_seller(order)
         end
       end
     end
@@ -49,12 +49,12 @@ class OrderObserver < ActiveRecord::Observer
           )
           if payment.valid?
             if payment_agreement.confirm?
-              PaymentNotification.create!(:with => seller).confirm(payment)
+              PaymentNotification.new(:with => seller).confirm(payment)
             else
               payment.save!
             end
           else
-            PaymentNotification.create!(:with => seller).invalid(payment)
+            PaymentNotification.new(:with => seller).invalid(payment)
           end
         else
           notify_seller(order)

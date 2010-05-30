@@ -12,17 +12,44 @@ Feature: Pay4order
     And a product exists with supplier: the supplier, seller: the seller, cents: 50000, currency: "THB", external_id: "thaibudda34"
     And a supplier_order exists with id: 65434, seller_order: the seller_order, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product
   
-  Scenario: pay4order
+  Scenario: Texting pay4order with valid order numbers
     When I text "1234 pay4order 65433 65434" from "66542345789"
     
     Then a payment should not exist
     But a new outgoing text message should be created destined for the mobile_number: "Dave's number"
     And the outgoing_text_message should be a translation of "confirm payment" in "en" (English) where seller: "Dave", supplier_order_number: "65434", processed: "unconfirmed", supplier_contact_details: "+66743578456", amount: "2,000.00 THB", quantity: "4", product_code: "thaibudda34", customer_order_number: "65433", supplier: "Kikie"
     
-  Scenario: Confirm payment
+  Scenario: Confirming a payment
     When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
     
     Then a payment should exist
+
+  Scenario: Confirming payment when the seller has an active payment application
+    Given the seller has an active payment application
+    
+    When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
+
+    Then a payment should exist
+    And a payment_request should exist
+
+  Scenario Outline: Confirming payment when seller has payment application but it is not active
+    Given the seller has an <status> payment application
+    
+    When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
+    
+    Then a payment should exist
+    But a payment_request should not exist
+    
+    Examples:
+      | status      |
+      | unconfirmed |
+      | inactive    |
+
+  Scenario: Confirming a payment when the seller does not have a payment application
+    When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
+    
+    Then a payment should exist
+    But a payment_request should not exist
 
   Scenario Outline: Try to pay for an order with incorrect order numbers
     When I text <text_message> from "66542345789"

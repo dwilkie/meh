@@ -8,8 +8,8 @@ class PaymentRequest < ActiveRecord::Base
       @application_uri = application_uri
     end
 
-    def create!(application_uri, params)
-      request_uri = URI.join(application_url, "payment_requests/create").to_s
+    def create!(params)
+      request_uri = URI.join(application_uri, "payment_requests/create").to_s
       response = self.class.post(request_uri, params)
     end
   end

@@ -48,15 +48,14 @@ class Pay4orderConversation < AbstractConversation
           :supplier => supplier_order.supplier,
           :amount => supplier_order.supplier_total
         )
-        finish
         if payment.valid?
           if message.confirmed?
             payment.save!
-            if payment_application = user.payment_application &&
-              payment_application.active?
-              payment.payment_request.create!(
+            payment_application = user.payment_application
+            if payment_application && payment_application.active?
+              payment.build_payment_request(
                 :application_uri => payment_application.uri
-              )
+              ).save!
             else
               notify_problem_with(payment_application)
             end
@@ -77,15 +76,15 @@ class Pay4orderConversation < AbstractConversation
   private
     
     def notify_invalid(payment)
-      PaymentNotification.create!(:with => user).invalid(payment)
+      PaymentNotification.new(:with => user).invalid(payment)
     end
     
     def notify_confirm(payment)
-      PaymentNotification.create!(:with => user).confirm(payment)
+      PaymentNotification.new(:with => user).confirm(payment)
     end
     
     def notify_problem_with(payment_application)
-      #PaymentApplicationNotification.create!(:with => user).invalid(payment_application)
+      PaymentApplicationNotification.new(:with => user).invalid(payment_application)
     end
 
     def invalid(message)

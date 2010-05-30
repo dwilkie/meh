@@ -67,9 +67,10 @@ end
 
 Factory.define :payment_request do |f|
   f.application_uri "http://example.appspot.com"
+  f.association :payment
 end
 
 Factory.define :payment_application do |f|
-  f.application_uri "example.appspot.com"
+  f.uri "http://example.appspot.com"
   f.association :seller
 end

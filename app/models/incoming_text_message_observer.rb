@@ -6,12 +6,12 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
       if unauthenticated_message.valid?
         message_text = unauthenticated_message.request
         topic = message_text.split(" ")[0]
-        Conversation.create!(
+        Conversation.new(
           :with => smsable.phoneable,
           :topic => topic
         ).details.move_along!(message_text)
       else
-        AuthenticationNotification.create!(
+        AuthenticationNotification.new(
           :with => smsable.phoneable
         ).not_authenticated(unauthenticated_message)
       end
