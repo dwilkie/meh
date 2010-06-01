@@ -11,14 +11,6 @@
 
 ActiveRecord::Schema.define(:version => 20100530115542) do
 
-  create_table "conversations", :force => true do |t|
-    t.string   "state",      :null => false
-    t.string   "with",       :null => false
-    t.string   "topic"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "incoming_text_messages", :force => true do |t|
     t.string   "originator",   :null => false
     t.text     "params"

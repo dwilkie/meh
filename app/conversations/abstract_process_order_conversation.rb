@@ -1,4 +1,4 @@
-class AbstractProcessOrderConversation < AbstractConversation
+class AbstractProcessOrderConversation < Conversation
   class SupplierOrderMessage
     include ActiveModel::Validations
 

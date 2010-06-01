@@ -1,4 +1,4 @@
-class PaymentNotification < AbstractConversation
+class PaymentNotification < Conversation
   def confirm(payment)
     supplier_order = payment.supplier_order
     supplier = supplier_order.supplier

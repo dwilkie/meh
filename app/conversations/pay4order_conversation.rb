@@ -1,4 +1,4 @@
-class Pay4orderConversation < AbstractConversation
+class Pay4orderConversation < Conversation
   
   class Message
     include ActiveModel::Validations

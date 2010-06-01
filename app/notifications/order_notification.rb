@@ -1,4 +1,4 @@
-class OrderNotification < AbstractConversation
+class OrderNotification < Conversation
   def details(order)
     say I18n.t(
       "messages.order_details_notification",

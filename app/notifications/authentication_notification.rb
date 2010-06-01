@@ -1,4 +1,4 @@
-class AuthenticationNotification < AbstractConversation
+class AuthenticationNotification < Conversation
   class Message
     include ActiveModel::Validations
     class CorrectValidator < ActiveModel::EachValidator
