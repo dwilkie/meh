@@ -119,9 +119,10 @@ Feature: Payment Agreement
 
   Scenario: Do not create a payment if there is already a payment for this order
     Given there is a payment agreement set to automatic and to trigger when an order is accepted with seller: the seller, supplier: the supplier
-    And a payment exists with cents: 920000, currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
+    And a payment exists with cents: 200000, currency: "KHR", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
 
     When the supplier accepts the supplier_order
-
-    Then a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    
+    Then 1 payments should exist with cents: 200000, currency: "KHR", supplier_order_id: the supplier_order, seller_id: the seller, supplier_id: the supplier
+    And a new outgoing text message should be created destined for the mobile_number: "Dave's number"
     And the outgoing_text_message should include a translation of "payment already exists for this order" in "en" (English) where value: "154674"
