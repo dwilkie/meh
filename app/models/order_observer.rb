@@ -52,6 +52,16 @@ class OrderObserver < ActiveRecord::Observer
               PaymentNotification.new(:with => seller).confirm(payment)
             else
               payment.save!
+              payment_application = seller.payment_application
+              if payment_application && payment_application.active?
+                payment.build_payment_request(
+                  :application_uri => payment_application.uri
+                ).save!
+              else
+                PaymentApplicationNotification.new(
+                  :with => seller
+                ).invalid(payment_application, payment)
+              end
             end
           else
             PaymentNotification.new(:with => seller).invalid(payment)

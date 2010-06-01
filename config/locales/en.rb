@@ -72,13 +72,13 @@
               :command => "pay4order #{options[:customer_order_number]} #{options[:supplier_order_number]}"
             )
           },
-          :paymentstatus => lambda { |key, options|
-            options[:order_number] ||= I18n.t(
+          :paymentdetails => lambda { |key, options|
+            options[:supplier_order_number] ||= I18n.t(
               "messages.commands.elements.order_number"
             )
             I18n.t(
               "messages.commands.base",
-              :command => "paymentstatus #{options[:order_number]}"
+              :command => "paymentdetails #{options[:supplier_order_number]}"
             )
           }
         }
@@ -228,9 +228,27 @@
         ) << ". We couldn't send the payment because the #{options[:errors]}"
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
-      :problem_with_payment_application => lambda { |key, options|
-        
-        "U haven't set up your payment "
+      :payment_application_invalid => lambda { |key, options|
+        message = "a payment for #{options[:amount]} was about to be sent to " << 
+        I18n.t(
+          "messages.elements.shared.supplier_details",
+          :supplier => options[:supplier],
+          :supplier_contact_details => options[:supplier_contact_details]
+        ) << " for their order(##{options[:supplier_order_number]}). We couldn't transfer the funds because "
+        if options[:status]
+          message << "your payment system is " << 
+          I18n.t(
+            "activerecord.attribute_values.payment_application.status.#{options[:status]}"
+          ) << ". Log in to ur account to reactivate it"
+        else
+          message << "u haven't set up your payment system yet"
+        end
+        message << ". U can check ur payment details anytime by texting " <<
+        I18n.t(
+          "messages.commands.templates.paymentdetails",
+          :supplier_order_number => options[:supplier_order_number]
+        )
+        I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },
     :errors => {
@@ -291,6 +309,13 @@
             :completed => "completed",
             :unconfirmed => "unconfirmed"
           }
+        },
+        :payment_application => {
+          :status => {
+            :active => "active",
+            :inactive => "inactive",
+            :unconfirmed => "unconfirmed"
+          }
         }
       },
       :errors => {
@@ -304,8 +329,8 @@
                 :taken => lambda {|key, options|
                   "already has a payment (text (" <<
                   I18n.t(
-                    "messages.commands.templates.paymentstatus",
-                    :order_number => options[:value]
+                    "messages.commands.templates.paymentdetails",
+                    :supplier_order_number => options[:value]
                   ) << ") to check its status)"
                 }
               }

@@ -39,17 +39,21 @@ Feature: Pay4order
     
     Then a payment should exist
     But a payment_request should not exist
-    
+    And a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should be a translation of "invalid payment application" in "en" (English) where seller: "Dave", supplier_order_number: "65434", supplier_contact_details: "+66743578456", amount: "2,000.00 THB", supplier: "Kikie", status: "<status>"
+
     Examples:
       | status      |
       | unconfirmed |
       | inactive    |
-
+      
   Scenario: Confirming a payment when the seller does not have a payment application
     When I text "1234 pay4order 65433 65434 CONFIRM!" from "66542345789"
     
     Then a payment should exist
     But a payment_request should not exist
+    And a new outgoing text message should be created destined for the mobile_number: "Dave's number"
+    And the outgoing_text_message should be a translation of "invalid payment application" in "en" (English) where seller: "Dave", supplier_order_number: "65434", supplier_contact_details: "+66743578456", amount: "2,000.00 THB", supplier: "Kikie"
 
   Scenario Outline: Try to pay for an order with incorrect order numbers
     When I text <text_message> from "66542345789"
@@ -89,7 +93,7 @@ Feature: Pay4order
 
     Then a new outgoing text message should be created destined for the mobile_number: "Another sellers number"
     And the outgoing_text_message should include a translation of "order not found when pay4order" in "en" (English)
-    
+  
   Scenario: Try to pay for an order where the product has no supplier price
     Given a product exists with supplier: the supplier, seller: the seller
     And a supplier_order exists with id: 65435, seller_order: the seller_order, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product

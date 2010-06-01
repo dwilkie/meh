@@ -57,7 +57,7 @@ class Pay4orderConversation < Conversation
                 :application_uri => payment_application.uri
               ).save!
             else
-              notify_problem_with(payment_application)
+              notify_problem_with(payment_application, payment)
             end
           else
             notify_confirm(payment)
@@ -74,7 +74,7 @@ class Pay4orderConversation < Conversation
   end
   
   private
-    
+
     def notify_invalid(payment)
       PaymentNotification.new(:with => user).invalid(payment)
     end
@@ -83,8 +83,10 @@ class Pay4orderConversation < Conversation
       PaymentNotification.new(:with => user).confirm(payment)
     end
     
-    def notify_problem_with(payment_application)
-      PaymentApplicationNotification.new(:with => user).invalid(payment_application)
+    def notify_problem_with(payment_application, payment)
+      PaymentApplicationNotification.new(
+        :with => user
+      ).invalid(payment_application, payment)
     end
 
     def invalid(message)

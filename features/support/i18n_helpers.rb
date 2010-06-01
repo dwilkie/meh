@@ -58,6 +58,9 @@ module I18nHelpers
     when /^payment already exists for this order$/
       "activerecord.errors.models.payment.attributes.supplier_order_id.taken"
 
+    when /^invalid payment application$/
+      "messages.payment_application_invalid"
+
     when /^order details$/
       "messages.order_details_notification"
 
