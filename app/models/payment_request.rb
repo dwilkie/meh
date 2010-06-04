@@ -9,7 +9,7 @@ class PaymentRequest < ActiveRecord::Base
     end
 
     def create(params)
-      request_uri = URI.join(application_uri, "payment_requests/create").to_s
+      request_uri = URI.join(application_uri, "payment_requests").to_s
       response = self.class.post(request_uri, :body => params)
     end
   end
@@ -45,11 +45,11 @@ class PaymentRequest < ActiveRecord::Base
         :to => payment.supplier.email,
         :amount => payment.amount.to_s,
         :currency => payment.amount.currency.to_s,
-        :id => self.id.to_s
       }
     end
   
     def request_remote_payment
-      RemotePaymentRequest.new(application_uri).create(self.params)
+      request_params = self.params.merge({:external_id => self.id})
+      RemotePaymentRequest.new(application_uri).create(request_params)
     end
 end

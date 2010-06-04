@@ -7,7 +7,7 @@ Given /^#{capture_model} has an (\w+) payment application(?: with #{capture_fiel
     :post,
     URI.join(
       payment_application.uri,
-      "payment_requests/create"
+      "payment_requests"
     ).to_s,
   :status => ["200", "OK"]
   ) if application_status == "active"

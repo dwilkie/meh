@@ -14,12 +14,12 @@ Feature: Payment Request Verification
     
   Scenario: Payment request verification is made with correct parameters
     Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "requested"
-    When a payment request verification is made for 234564 with amount: "500.00", currency: "THB", to: "johnny@gmail.com", id: "234564"
+    When a payment request verification is made for 234564 with amount: "500.00", currency: "THB", to: "johnny@gmail.com"
     Then the response should be 200
     
   Scenario: Payment request verification is made with correct parameters but for a payment request which has already been completed
     Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "completed"
-    When a payment request verification is made for 234564 with amount: "500.00", currency: "THB", to: "johnny@gmail.com", id: "234564"
+    When a payment request verification is made for 234564 with amount: "500.00", currency: "THB", to: "johnny@gmail.com"
     Then the response should be 404
       
   Scenario: Payment request verification is made for unknown resource
@@ -34,6 +34,6 @@ Feature: Payment Request Verification
     
     Examples:
       | parameters |
-      | amount: "500.01", currency: "THB", to: "johnny@gmail.com", id: "234564" |
-      | amount: "500.00", currency: "USD", to: "johnny@gmail.com", id: "234564" |
-      | amount: "500.00", currency: "THB", to: "johnny2@gmail.com", id: "234564" |
+      | amount: "500.01", currency: "THB", to: "johnny@gmail.com"|
+      | amount: "500.00", currency: "USD", to: "johnny@gmail.com"|
+      | amount: "500.00", currency: "THB", to: "johnny2@gmail.com"|
