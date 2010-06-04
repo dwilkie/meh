@@ -15,8 +15,6 @@ class Payment < ActiveRecord::Base
               
   has_one     :payment_request
   
-  serialize   :params
-  
   validates :cents,
             :presence => true,
             :numericality => {:only_integer => true, :greater_than => 0}

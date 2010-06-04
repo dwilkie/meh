@@ -41,39 +41,6 @@ When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
   model!(name).send(transition.singularize)
 end
 
-When /^a customer purchases a product on ebay from #{capture_model} with item id: "([^\"]*)"$/ do |seller, ebay_item_id|
-  require "rexml/document"
-  GET_ITEM_TRANSACTIONS_FILE = File.dirname(__FILE__) +
-                               '/../support/get_item_transactions.xml.original'
-
-  seller_email = model!(seller).email
-
-  modified_file_name = GET_ITEM_TRANSACTIONS_FILE.gsub(/\.original/, "")
-
-  FileUtils.copy GET_ITEM_TRANSACTIONS_FILE, modified_file_name
-
-  # this is a bit of a hack because it requires unique fields in the xml
-  File.open(modified_file_name, 'r+') do |f|
-    out = ""
-    f.each do |line|
-      # modifies the paypal email address
-      replaced_line = line.gsub(/\<PaypalEmailAddress\>\w+\<\/PaypalEmailAddress\>/, "<PaypalEmailAddress>#{seller_email}</PaypalEmailAddress>")
-      # modifies the item id
-      replaced_line = line.gsub(/\<ItemID\>\d+\<\/ItemID\>/, "<ItemID>#{ebay_item_id}</ItemID>")
-      out << replaced_line
-    end
-    f.pos = 0
-    f.print out
-    f.truncate(f.pos)
-  end
-
-  document = nil
-  File.open(modified_file_name, "r") do |current_file|
-    document = REXML::Document.new current_file
-  end
-  post path_to("create order"), document.to_s, {"Content-type" => "text/xml"}
-end
-
 When /^a customer successfully purchases(?: (\d+) of)? #{capture_model} through paypal$/ do |quantity, product|
   product = model!(product)
   seller = product.seller
@@ -142,6 +109,13 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   post path_to("create incoming text message"), params
 end
 
+When /^a payment request verification is made for (\d+)(?: with #{capture_fields})?$/ do |id, fields|
+  @response = head(
+    path_to("get payment request with id: #{id}"),
+    parse_fields(fields)
+  )
+end
+
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
   mobile_number = model!(destination)
   outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
@@ -185,5 +159,9 @@ end
 Then /^there should be no more than (\d+) outgoing text messages? destined for #{capture_model}$/ do |count, destination|
   mobile_number = model!(destination)
   OutgoingTextMessage.where(:smsable_id => mobile_number.id, :smsable_type => "mobile_number").count.should <= count.to_i
+end
+
+Then /^the response should be (\d+)$/ do |response|
+   @response.should == response.to_i
 end
 

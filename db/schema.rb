@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(:version => 20100530115542) do
     t.string   "application_uri", :null => false
     t.string   "status",          :null => false
     t.integer  "payment_id",      :null => false
+    t.text     "params",          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -101,7 +102,6 @@ ActiveRecord::Schema.define(:version => 20100530115542) do
     t.integer  "supplier_id",                      :null => false
     t.integer  "seller_id",                        :null => false
     t.integer  "supplier_order_id",                :null => false
-    t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

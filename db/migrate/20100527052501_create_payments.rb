@@ -7,7 +7,6 @@ class CreatePayments < ActiveRecord::Migration
       t.references  :supplier,               :null => false
       t.references  :seller,                 :null => false
       t.references  :supplier_order,         :null => false
-      t.text        :params
       t.timestamps
     end
     add_index :payments, :supplier_order_id, :unique => true

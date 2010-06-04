@@ -1,8 +1,7 @@
 Feature: Payment Agreement
   In order to pay my suppliers for orders they have processed
   As a seller
-  I want to be able to set up payment agreements to pay suppliers automatically
-         with or without confirmation when they process an order
+  I want to be able to set up payment agreements to pay suppliers automatically with or without confirmation when they process an order
   
   Background:
     Given a seller exists with name: "Dave"
