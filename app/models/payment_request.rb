@@ -38,6 +38,12 @@ class PaymentRequest < ActiveRecord::Base
       transition :requested => :completed
     end
   end
+  
+  def authorized?(params)
+    # overrides the incoming params with saved params
+    merged_params = params.merge(self.params)
+    merged_params == params && self.requested?
+  end
 
   private
     def build_params
@@ -45,6 +51,7 @@ class PaymentRequest < ActiveRecord::Base
         :to => payment.supplier.email,
         :amount => payment.amount.to_s,
         :currency => payment.amount.currency.to_s,
+        :sender => payment.seller.email
       }
     end
   
