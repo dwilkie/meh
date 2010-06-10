@@ -18,16 +18,6 @@ Given /^there is a payment agreement set to (\w+)(?: and to trigger when an orde
   Given "a payment_agreement exists with #{new_fields}"
 end
 
-Given /^the payment request is answered$/ do
-  payment_request = model!("payment_request")
-  payment_request.answered_at = Time.now
-  payment_request.save!
-end
-
-Given /^the worker is about to process a job and send the payment request to "([^\"]*)"$/ do |uri|
-  FakeWeb.register_uri(:post, URI.join(uri, "payment_requests").to_s, :status => ["200", "OK"])
-end
-
 When /^the worker completes its job$/ do
   Delayed::Worker.new.work_off
 end
@@ -108,27 +98,6 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   post path_to("create incoming text message"), params
 end
 
-When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
-  fields = instance_eval(fields) if fields
-  @response = head(
-    path_to("payment request with id: #{id}"),
-    fields
-  )
-end
-
-When /^a payment request notification is received for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
-  fields = instance_eval(fields) if fields
-  put(
-    path_to("payment request with id: #{id}"),
-    fields
-  )
-end
-
-Then /^a job should exist to notify my payment application$/ do
-  Delayed::Job.last.name.should match(
-    /^PaymentRequest::RemotePaymentRequest#create/
-  )
-end
 
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
   mobile_number = model!(destination)
@@ -177,9 +146,5 @@ end
 
 Then /^the response should be (\d+)$/ do |response|
    @response.should == response.to_i
-end
-
-Then /^the payment request should have been sent$/ do
-  # this step is intentionally blank
 end
 

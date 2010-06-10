@@ -15,8 +15,8 @@ Feature: Payment Request
      When a payment_request is created with id: 234564, application_uri: "http://example.com", payment: the payment
      Then a job should exist to notify my payment application
 
-  Scenario: The worker processes it's job
-    Given the worker is about to process a job and send the payment request to "http://example.com"
+  Scenario: The worker processes its job
+    Given the worker is about to process its job and send the payment request to "http://example.com"
     When the worker completes its job
     Then the payment request should have been sent
 

@@ -13,6 +13,21 @@ class PaymentRequest < ActiveRecord::Base
       self.class.post(request_uri, :body => params)
     end
     handle_asynchronously :create
+
+    def verify(payment_request)
+      request_uri = URI.join(
+        application_uri, "payment_requests/#{payment_request.remote_id}"
+      )
+      if self.class.head(
+        request_uri,
+        :body => payment_request.params
+      ).code == "200"
+        payment_request.verified_at = Time.now
+      else
+        payment_request.mark_as_fraudulent
+      end
+    end
+    handle_asynchronously :verified?
   end
 
   after_create :request_remote_payment
@@ -33,6 +48,10 @@ class PaymentRequest < ActiveRecord::Base
 
   def response=(response)
     response
+  end
+
+  def mark_as_fraudulent
+    self.update_attribute(:fraudulent, true)
   end
 
   def authorized?(params)

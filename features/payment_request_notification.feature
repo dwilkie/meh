@@ -15,4 +15,19 @@ Feature: Payment Request Notification
   @current
   Scenario: A payment request notification is received
     When a payment request notification is received for 234564
+    Then a job should exist to verify it came from my payment application
+
+  Scenario: My payment application made the request
+    Given the worker is about to process its job and verify the notification came from "http://example.com" regarding the payment request: "" and assuming my application made the request
+
+    When the worker completes its job
+    Then the payment request notification verification should have been sent
+    And the payment_request should be verified
+
+  Scenario: My payment application did not make the request
+    Given the worker is about to process its job and verify the notification came from "http://example.com" regarding the payment request: "" and assuming my application did not make the request
+
+    When the worker completes its job
+    Then the payment request notification verification should have been sent
+    But the payment_request should not be verified
 

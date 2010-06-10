@@ -103,7 +103,10 @@ ActiveRecord::Schema.define(:version => 20100607184944) do
     t.string   "application_uri", :null => false
     t.integer  "payment_id",      :null => false
     t.text     "params",          :null => false
+    t.integer  "remote_id"
     t.datetime "answered_at"
+    t.datetime "verified_at"
+    t.boolean  "fraudulent"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
