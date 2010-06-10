@@ -12,24 +12,25 @@ class PaymentRequest < ActiveRecord::Base
       request_uri = URI.join(application_uri, "payment_requests").to_s
       response = self.class.post(request_uri, :body => params)
     end
+    handle_asynchronously :create
   end
-  
+
   after_create :request_remote_payment
   before_create :build_params
   belongs_to :payment
 
   serialize   :params
-    
+
   validates :application_uri,
             :presence => true
             #:format => # add format here
-            
+
   validates :payment,
             :presence => true
-  
+
   validates :payment_id,
             :uniqueness => true
-  
+
   validates :status,
             :presence => true
 
@@ -38,7 +39,7 @@ class PaymentRequest < ActiveRecord::Base
       transition :requested => :completed
     end
   end
-  
+
   def authorized?(params)
     # overrides the incoming params with saved params
     merged_params = params.merge(self.params)
@@ -47,16 +48,27 @@ class PaymentRequest < ActiveRecord::Base
 
   private
     def build_params
+      receiver = payment.supplier.email
+      amount = payment.amount.to_s
+      currency = payment.currency.to_s
       self.params = {
-        :to => payment.supplier.email,
-        :amount => payment.amount.to_s,
-        :currency => payment.amount.currency.to_s,
-        :sender => payment.seller.email
+        "payee" => {
+          "email" => receiver,
+          "amount" => amount,
+          "currency" => currency
+        },
+        "payment" => {
+          "senderEmail" => payment.seller.email,
+          "receiverList.receiver(0).email" => receiver,
+          "receiverList.receiver(0).amount" => amount,
+          "currencyCode" => currency
+        }
       }
     end
-  
+
     def request_remote_payment
       request_params = self.params.merge({:external_id => self.id})
       RemotePaymentRequest.new(application_uri).create(request_params)
     end
 end
+

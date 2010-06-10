@@ -4,3 +4,4 @@ class PaymentRequestsController < ApplicationController
     payment_request && payment_request.authorized?(params) ? head(:ok) : head(:not_found)
   end
 end
+

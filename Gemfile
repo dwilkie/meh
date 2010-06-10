@@ -21,8 +21,7 @@ gem 'money',           :git => 'git://github.com/FooBarWidget/money.git'
 #gem 'ebayapi',        :git => 'git://github.com/dwilkie/ebay.git'
 #gem 'preferences',    :git => 'git://github.com/maxschulze/preferences.git'
 gem 'httparty',        :git => 'git://github.com/jnunemaker/httparty.git'
-#gem 'crack',           :git => 'git://github.com/jnunemaker/crack.git'
-#gem 'ruby-debug19'
+gem 'delayed_job',     :git => 'git://github.com/collectiveidea/delayed_job.git'
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'
@@ -44,5 +43,6 @@ group :test do
   gem 'cucumber-rails',     :git => 'git://github.com/aslakhellesoy/cucumber-rails.git'
   gem 'spork',              :git => 'git://github.com/timcharper/spork.git'
   gem 'fakeweb',            :git => 'git://github.com/chrisk/fakeweb.git'
+  gem 'ruby-debug19'
 end
 

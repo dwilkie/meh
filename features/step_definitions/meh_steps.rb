@@ -109,10 +109,11 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   post path_to("create incoming text message"), params
 end
 
-When /^a payment request verification is made for (\d+)(?: with #{capture_fields})?$/ do |id, fields|
+When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
+  fields = instance_eval(fields) if fields
   @response = head(
     path_to("get payment request with id: #{id}"),
-    parse_fields(fields)
+    fields
   )
 end
 
