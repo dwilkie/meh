@@ -12,23 +12,25 @@ Feature: Payment Request Verification
     And a supplier_order exists with supplier: the supplier, product: the product, quantity: "1"
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
 
+  @current
   Scenario: Payment request verification is made with correct parameters
-    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "requested"
+    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
     When a payment request verification is made for 234564 with: "{'payment' => {'receiverList.receiver(0).amount' => '500.00', 'currencyCode' => 'THB', 'receiverList.receiver(0).email' => 'johnny@gmail.com', 'senderEmail' => 'mara@gmail.com'}, 'payee' => { 'email' => 'johnny@gmail.com', 'amount' => '500.00', 'currency' => 'THB'}}"
     Then the response should be 200
 
-  Scenario: Payment request verification is made with correct parameters but for a payment request which has already been completed
-    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "completed"
+  Scenario: Payment request verification is made with correct parameters but for a payment request which has already been answered
+    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
+    And the payment request is answered
     When a payment request verification is made for 234564 with: "{'payment' => {'receiverList.receiver(0).amount' => '500.00', 'currencyCode' => 'THB', 'receiverList.receiver(0).email' => 'johnny@gmail.com', 'senderEmail' => 'mara@gmail.com'}, 'payee' => { 'email' => 'johnny@gmail.com', 'amount' => '500.00', 'currency' => 'THB'}}"
     Then the response should be 404
 
   Scenario: Payment request verification is made for unknown resource
-    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "requested"
+    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
     When a payment request verification is made for 234563
     Then the response should be 404
 
   Scenario Outline: Payment request verification is made for correct resource with incorrect parameters
-    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment, status: "requested"
+    Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
     When a payment request verification is made for 234564 with: <parameters>
     Then the response should be 404
 

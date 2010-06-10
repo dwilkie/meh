@@ -33,6 +33,12 @@ Given /^there is a payment agreement set to (\w+)(?: and to trigger when an orde
   Given "a payment_agreement exists with #{new_fields}"
 end
 
+Given /^the payment request is answered$/ do
+  payment_request = model!("payment_request")
+  payment_request.answered_at = Time.now
+  payment_request.save!
+end
+
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
 end
@@ -112,7 +118,15 @@ end
 When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
   fields = instance_eval(fields) if fields
   @response = head(
-    path_to("get payment request with id: #{id}"),
+    path_to("payment request with id: #{id}"),
+    fields
+  )
+end
+
+When /^a payment request notification is received for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
+  fields = instance_eval(fields) if fields
+  put(
+    path_to("payment request with id: #{id}"),
     fields
   )
 end

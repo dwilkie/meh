@@ -10,7 +10,7 @@ class PaymentRequest < ActiveRecord::Base
 
     def create(params)
       request_uri = URI.join(application_uri, "payment_requests").to_s
-      response = self.class.post(request_uri, :body => params)
+      self.class.post(request_uri, :body => params)
     end
     handle_asynchronously :create
   end
@@ -31,22 +31,21 @@ class PaymentRequest < ActiveRecord::Base
   validates :payment_id,
             :uniqueness => true
 
-  validates :status,
-            :presence => true
-
-  state_machine :status, :initial => :requested do
-    event :complete do
-      transition :requested => :completed
-    end
+  def response=(response)
+    debugger
+    response
   end
 
   def authorized?(params)
-    # overrides the incoming params with saved params
     merged_params = params.merge(self.params)
-    merged_params == params && self.requested?
+    merged_params == params && !answered?
   end
 
   private
+    def answered?
+      !answered_at.nil?
+    end
+
     def build_params
       receiver = payment.supplier.email
       amount = payment.amount.to_s

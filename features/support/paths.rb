@@ -16,8 +16,8 @@ module NavigationHelpers
 
     when /create incoming text message/
       incoming_text_messages_path
-      
-    when /get payment request with id: (\d+)/
+
+    when /payment request with id: (\d+)/
       payment_request_path($1)
 
     # Add more mappings here.
@@ -40,3 +40,4 @@ module NavigationHelpers
 end
 
 World(NavigationHelpers)
+

@@ -1,7 +1,7 @@
 Meh::Application.routes.draw do |map|
   resources :paypal_ipns, :only => :create
   resources :incoming_text_messages, :only => :create
-  resources :payment_requests, :only => :show
+  resources :payment_requests, :only => [:show, :update]
 
   devise_for :users
 
@@ -62,3 +62,4 @@ Meh::Application.routes.draw do |map|
   # Note: This route will make all actions in every controller accessible via GET requests.
   # match ':controller(/:action(/:id(.:format)))'
 end
+

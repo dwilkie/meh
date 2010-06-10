@@ -101,9 +101,9 @@ ActiveRecord::Schema.define(:version => 20100607184944) do
 
   create_table "payment_requests", :force => true do |t|
     t.string   "application_uri", :null => false
-    t.string   "status",          :null => false
     t.integer  "payment_id",      :null => false
     t.text     "params",          :null => false
+    t.datetime "answered_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
