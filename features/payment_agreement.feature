@@ -27,7 +27,7 @@ Feature: Payment Agreement
 
   Scenario: Automatic payment when the seller also has an active payment application
     Given there is a payment agreement set to automatic and to trigger when an order is accepted with seller: the seller, supplier: the supplier
-    And the seller has an active payment application
+    And a payment_application exists with seller: the seller, status: "active"
 
     When the supplier accepts the supplier_order
 
@@ -36,7 +36,7 @@ Feature: Payment Agreement
 
   Scenario Outline: Automatic payment when seller also has payment application but it is not active
     Given there is a payment agreement set to automatic and to trigger when an order is accepted with seller: the seller, supplier: the supplier
-    And the seller has an <status> payment application
+    And a payment_application exists with seller: the seller, status: "<status>"
 
     When the supplier accepts the supplier_order
 

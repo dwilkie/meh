@@ -32,7 +32,6 @@ class PaymentRequest < ActiveRecord::Base
             :uniqueness => true
 
   def response=(response)
-    debugger
     response
   end
 

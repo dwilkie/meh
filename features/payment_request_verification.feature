@@ -6,7 +6,6 @@ Feature: Payment Request Verification
   Background:
     Given a seller exists with email: "mara@gmail.com"
     And a supplier exists with email: "johnny@gmail.com"
-    And the seller has an active payment application with uri: "http://example.com"
     And a product exists with seller: the seller, supplier: the supplier, cents: "50000", currency: "THB"
     And a seller_order exists with seller: the seller
     And a supplier_order exists with supplier: the supplier, product: the product, quantity: "1"

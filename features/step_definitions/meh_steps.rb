@@ -1,18 +1,3 @@
-Given /^#{capture_model} has an (\w+) payment application(?: with #{capture_fields})?$/ do |seller, application_status, fields|
-  pickle_step = "a payment_application exists with seller: #{seller}, status: \"#{application_status}\""
-  pickle_step << ", #{fields}" if fields
-  Given pickle_step
-  payment_application = model!("payment_application")
-  FakeWeb.register_uri(
-    :post,
-    URI.join(
-      payment_application.uri,
-      "payment_requests"
-    ).to_s,
-  :status => ["200", "OK"]
-  ) if application_status == "active"
-end
-
 Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |plural_factory, fields|
   find_models(plural_factory.singularize, fields).each do |instance|
     instance.destroy
@@ -37,6 +22,14 @@ Given /^the payment request is answered$/ do
   payment_request = model!("payment_request")
   payment_request.answered_at = Time.now
   payment_request.save!
+end
+
+Given /^the worker is about to process a job and send the payment request to "([^\"]*)"$/ do |uri|
+  FakeWeb.register_uri(:post, URI.join(uri, "payment_requests").to_s, :status => ["200", "OK"])
+end
+
+When /^the worker completes its job$/ do
+  Delayed::Worker.new.work_off
 end
 
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
@@ -131,6 +124,12 @@ When /^a payment request notification is received for (\d+)(?: with: "([^\"]*)")
   )
 end
 
+Then /^a job should exist to notify my payment application$/ do
+  Delayed::Job.last.name.should match(
+    /^PaymentRequest::RemotePaymentRequest#create/
+  )
+end
+
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
   mobile_number = model!(destination)
   outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
@@ -178,5 +177,9 @@ end
 
 Then /^the response should be (\d+)$/ do |response|
    @response.should == response.to_i
+end
+
+Then /^the payment request should have been sent$/ do
+  # this step is intentionally blank
 end
 
