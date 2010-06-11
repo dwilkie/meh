@@ -18,10 +18,6 @@ Given /^there is a payment agreement set to (\w+)(?: and to trigger when an orde
   Given "a payment_agreement exists with #{new_fields}"
 end
 
-When /^the worker completes its job$/ do
-  Delayed::Worker.new.work_off
-end
-
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
 end

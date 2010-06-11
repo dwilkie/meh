@@ -28,6 +28,10 @@ gem 'delayed_job',     :git => 'git://github.com/collectiveidea/delayed_job.git'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 
+group :development do
+  gem 'ruby-debug19'
+end
+
 # Bundle gems for certain environments:
 group :test do
   gem 'test-unit'

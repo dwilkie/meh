@@ -5,8 +5,9 @@ class CreatePaymentRequests < ActiveRecord::Migration
       t.references  :payment, :null => false
       t.text        :params,  :null => false
       t.integer     :remote_id
-      t.datetime    :answered_at
-      t.datetime    :verified_at
+      t.text        :notification
+      t.datetime    :notified_at
+      t.datetime    :notification_verified_at
       t.boolean     :fraudulent
       t.timestamps
     end

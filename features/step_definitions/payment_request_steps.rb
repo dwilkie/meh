@@ -4,8 +4,26 @@ Given /^the payment request is answered$/ do
   payment_request.save!
 end
 
-Given /^the worker is about to process its job and send the payment request to "([^\"]*)"$/ do |uri|
-  FakeWeb.register_uri(:post, URI.join(uri, "payment_requests").to_s, :status => ["200", "OK"])
+Given /^(?:the worker is about to process its job and send the payment request|the payment request has been sent) to: "([^\"]*)"$/ do |uri|
+  FakeWeb.register_uri(
+    :post, URI.join(uri, "payment_requests").to_s,
+    :status => ["200", "OK"]
+  )
+end
+
+Given /^the remote application for this payment request (sent|did not send) the notification$/ do |app_sent|
+   @notification_verification_response = app_sent == "sent" ? ["200", "OK"] :
+     ["404", "Not Found"]
+end
+
+Given /^the worker is about to process its job and verify the notification came from the remote application for this payment request$/ do
+  payment_request = model!("payment_request")
+  uri = URI.join(
+    payment_request.application_uri,
+    "payment_requests/#{payment_request.remote_id}"
+  )
+  uri.query = payment_request.notification.to_query
+  FakeWeb.register_uri(:head, uri.to_s, :status => @notification_verification_response)
 end
 
 When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
@@ -16,7 +34,7 @@ When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ 
   )
 end
 
-When /^a payment request notification is received for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
+When /^a payment request notification (?:is|was) received for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
   fields = instance_eval(fields) if fields
   put(
     path_to("payment request with id: #{id}"),
@@ -30,13 +48,15 @@ Then /^a job should exist to notify my payment application$/ do
   )
 end
 
-Then /^a job should exist to verify it came from my payment application$/ do
-  Delayed::Job.last.name.should match(
-    /^PaymentRequest::RemotePaymentRequest#verified?/
-  )
+Then /^a job should (not )?exist to verify it came from the remote application for this payment request$/ do |no_job|
+  condition = no_job ? "_not" : ""
+  Delayed::Job.last.name.send("should#{condition}", match(
+    /^PaymentRequest::RemotePaymentRequest#verify/
+  ))
 end
 
-Then /^the payment request should have been sent$/ do
-  # this step is intentionally blank
+Then /^the payment request notification should( not)? be verified$/ do |unverified|
+  condition = unverified ? "" : "_not"
+  model!("payment_request").notification_verified_at.send("should#{condition}", be_nil)
 end
 

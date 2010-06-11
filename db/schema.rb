@@ -100,12 +100,13 @@ ActiveRecord::Schema.define(:version => 20100607184944) do
   add_index "payment_applications", ["uri"], :name => "index_payment_applications_on_uri", :unique => true
 
   create_table "payment_requests", :force => true do |t|
-    t.string   "application_uri", :null => false
-    t.integer  "payment_id",      :null => false
-    t.text     "params",          :null => false
+    t.string   "application_uri",          :null => false
+    t.integer  "payment_id",               :null => false
+    t.text     "params",                   :null => false
     t.integer  "remote_id"
-    t.datetime "answered_at"
-    t.datetime "verified_at"
+    t.text     "notification"
+    t.datetime "notified_at"
+    t.datetime "notification_verified_at"
     t.boolean  "fraudulent"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -12,11 +12,12 @@ Feature: Payment Request
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
 
   Scenario: A payment request is created for my payment
-     When a payment_request is created with id: 234564, application_uri: "http://example.com", payment: the payment
+     When a payment_request is created with payment: the payment
      Then a job should exist to notify my payment application
 
   Scenario: The worker processes its job
-    Given the worker is about to process its job and send the payment request to "http://example.com"
+    Given a payment_request exists with payment: the payment, application_uri: "http://example.com"
+    And the worker is about to process its job and send the payment request to: "http://example.com"
     When the worker completes its job
-    Then the payment request should have been sent
+    Then there should be no jobs in the queue
 

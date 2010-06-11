@@ -10,7 +10,7 @@ class PaymentRequest < ActiveRecord::Base
 
     def create(params)
       request_uri = URI.join(application_uri, "payment_requests").to_s
-      self.class.post(request_uri, :body => params)
+      self.class.post(request_uri, :body => {"payment_request" => params})
     end
     handle_asynchronously :create
 
@@ -18,16 +18,14 @@ class PaymentRequest < ActiveRecord::Base
       request_uri = URI.join(
         application_uri, "payment_requests/#{payment_request.remote_id}"
       )
-      if self.class.head(
-        request_uri,
-        :body => payment_request.params
-      ).code == "200"
-        payment_request.verified_at = Time.now
+      request_uri.query = payment_request.notification.to_query
+      if self.class.head(request_uri.to_s).code == 200
+        payment_request.update_attribute(:notification_verified_at, Time.now)
       else
         payment_request.mark_as_fraudulent
       end
     end
-    handle_asynchronously :verified?
+    handle_asynchronously :verify
   end
 
   after_create :request_remote_payment
@@ -35,6 +33,7 @@ class PaymentRequest < ActiveRecord::Base
   belongs_to :payment
 
   serialize   :params
+  serialize   :notification
 
   validates :application_uri,
             :presence => true
@@ -46,8 +45,18 @@ class PaymentRequest < ActiveRecord::Base
   validates :payment_id,
             :uniqueness => true
 
-  def response=(response)
-    response
+  def notify!(notification)
+    remote_id = notification.try(:delete, "id")
+    if remote_id
+      self.update_attributes!(
+        :remote_id => remote_id,
+        :notification => notification,
+        :notified_at => Time.now
+      )
+      RemotePaymentRequest.new(application_uri).verify(self)
+    else
+      self.mark_as_fraudulent
+    end
   end
 
   def mark_as_fraudulent
@@ -56,12 +65,12 @@ class PaymentRequest < ActiveRecord::Base
 
   def authorized?(params)
     merged_params = params.merge(self.params)
-    merged_params == params && !answered?
+    merged_params == params && !notified?
   end
 
   private
-    def answered?
-      !answered_at.nil?
+    def notified?
+      !notified_at.nil?
     end
 
     def build_params
@@ -84,7 +93,7 @@ class PaymentRequest < ActiveRecord::Base
     end
 
     def request_remote_payment
-      request_params = self.params.merge({:external_id => self.id})
+      request_params = self.params.merge({"id" => self.id})
       RemotePaymentRequest.new(application_uri).create(request_params)
     end
 end
