@@ -9,7 +9,7 @@ module I18nHelpers
 
     when /^not matching order quantity$/
       "errors.messages.not_matching_order_quantity"
-      
+
     when /^not matching pv code$/
       "errors.messages.not_matching_product_verification_code"
 
@@ -21,13 +21,13 @@ module I18nHelpers
 
     when /^unauthorized message action$/
       "messages.unauthorized"
-      
+
     when /^cannot process order$/
       "messages.cannot_process_order"
-      
+
     when /^confirm reject order$/
       "messages.confirm_reject_order"
-      
+
     when /^confirmation invalid when rejecting an order$/
       "activemodel.errors.models.rejectorder_conversation/message.attributes.confirmation.invalid"
 
@@ -36,7 +36,7 @@ module I18nHelpers
 
     when /^supplier processed seller's order$/
       "messages.supplier_processed_sellers_order_notification"
-      
+
     when /^confirm payment$/
       "messages.confirm_payment_notification"
 
@@ -48,7 +48,7 @@ module I18nHelpers
 
     when /^mobile pin number format invalid$/
       "activemodel.errors.models.authentication_notification/message.attributes.pin_number.invalid"
-      
+
     when /^mobile pin number incorrect$/
       "activemodel.errors.models.authentication_notification/message.attributes.pin_number.incorrect"
 
@@ -63,6 +63,16 @@ module I18nHelpers
 
     when /^order details$/
       "messages.order_details_notification"
+
+    when /^payee not found error$/
+      "activerecord.errors.models.payment_request.attributes.notification.payee_not_found"
+
+    when /^payee maximum amount exceeded error$/
+      "activerecord.errors.models.payment_request.attributes.notification.payee_maximum_amount_exceeded"
+
+    when /^payee currency invalid error$/
+      "activerecord.errors.models.payment_request.attributes.notification.payee_currency_invalid"
+
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

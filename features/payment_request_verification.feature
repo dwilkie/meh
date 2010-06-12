@@ -17,9 +17,9 @@ Feature: Payment Request Verification
     When a payment request verification is made for 234564 with: "{'payment' => {'receiverList.receiver(0).amount' => '500.00', 'currencyCode' => 'THB', 'receiverList.receiver(0).email' => 'johnny@gmail.com', 'senderEmail' => 'mara@gmail.com'}, 'payee' => { 'email' => 'johnny@gmail.com', 'amount' => '500.00', 'currency' => 'THB'}}"
     Then the response should be 200
 
-  Scenario: Payment request verification is made with correct parameters but for a payment request which has already been answered
+  Scenario: Payment request verification is made with correct parameters but for a payment request which has already received a notification
     Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
-    And the payment request is answered
+    And the payment request already received a notification
     When a payment request verification is made for 234564 with: "{'payment' => {'receiverList.receiver(0).amount' => '500.00', 'currencyCode' => 'THB', 'receiverList.receiver(0).email' => 'johnny@gmail.com', 'senderEmail' => 'mara@gmail.com'}, 'payee' => { 'email' => 'johnny@gmail.com', 'amount' => '500.00', 'currency' => 'THB'}}"
     Then the response should be 404
 

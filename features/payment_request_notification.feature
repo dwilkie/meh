@@ -4,14 +4,16 @@ Feature: Payment Request Notification
   I want to receive notifications when a payment request was completed or when a payment request failed
 
   Background:
-    Given a seller exists with email: "mara@gmail.com"
-    And a supplier exists with email: "johnny@gmail.com"
+    Given a seller exists with name: "Mara"
+    And a mobile_number: "Mara's number" exists with phoneable: the seller
+    And a supplier exists with name: "Dave"
+    And a mobile_number: "Dave's number" exists with phoneable: the supplier
     And a product exists with seller: the seller, supplier: the supplier, cents: "50000", currency: "THB"
     And a seller_order exists with seller: the seller
     And a supplier_order exists with supplier: the supplier, product: the product, quantity: "1"
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
-    And a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
-    And the payment request has been sent to: "http://example.com"
+    And a payment_request exists with id: 234564, application_uri: "http://mara-payment-app.appspot.com", payment: the payment
+    And the payment request has been sent to: "http://mara-payment-app.appspot.com"
 
   Scenario: A payment request notification is received for an existing payment request
     When a payment request notification is received for 234564 with: "{'payment_request' => {'id' => '23'}}"
@@ -51,4 +53,19 @@ Feature: Payment Request Notification
      | notification                                                                    |
      | "{'payment_response' => {'someresponse' => 'response'}, 'id' => '23'}"          |
      | "{'payment_request' => {'payment_response' => {'someresponse' => 'response'}}}" |
+
+@current
+  Scenario Outline: A notification is received with errors originating from the remote payment application
+    Given the payment request got the following notification: <error>
+    And the remote application for this payment request sent the notification
+
+    When the notification gets verified
+    Then a new outgoing text message should be created destined for the mobile_number: "Mara's number"
+    And the outgoing_text_message should include a translation of <error_message> in "en" (English) where supplier: "Dave", application_uri: "http://mara-payment-app.appspot.com", currency: "THB"
+
+    Examples:
+    | error                                                     | error_message                  |
+    | "{'errors' => {'payee_not_found' => true}}"               | "payee not found error"        |
+    | "{'errors' => {'payee_maximum_amount_exceeded' => true}}" | "payee maximum amount exceeded error"                                                                                           |
+    | "{'errors' => {'payee_currency_invalid' => true}}"        | "payee currency invalid error" |
 

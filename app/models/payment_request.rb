@@ -59,6 +59,25 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
+  def successful?
+    self.notification["payment_response"].try(:[], "paymentExecStatus") == "COMPLETED"
+  end
+
+  def error
+    if payment_response = self.notification["payment_response"]
+      payment_response["error(0).message"]
+    elsif remote_application_error = self.notification["errors"]
+      payment = self.payment
+      I18n.t(
+        "activerecord.errors.models.payment_request.attributes.notification." <<
+        remote_application_error.keys.first.to_s,
+        :supplier => payment.supplier.name,
+        :currency => payment.currency,
+        :application_uri => self.application_uri
+      )
+    end
+  end
+
   def mark_as_fraudulent
     self.update_attribute(:fraudulent, true)
   end

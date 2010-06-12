@@ -1,7 +1,6 @@
-Given /^the payment request is answered$/ do
+Given /^the payment request already received a notification$/ do
   payment_request = model!("payment_request")
-  payment_request.answered_at = Time.now
-  payment_request.save!
+  payment_request.update_attribute(:notified_at, Time.now)
 end
 
 Given /^(?:the worker is about to process its job and send the payment request|the payment request has been sent) to: "([^\"]*)"$/ do |uri|
@@ -26,6 +25,12 @@ Given /^the worker is about to process its job and verify the notification came 
   FakeWeb.register_uri(:head, uri.to_s, :status => @notification_verification_response)
 end
 
+Given /^the payment request got the following notification: "([^"]*)"$/ do |notification|
+  model!("payment_request").update_attributes!(
+    :notification => instance_eval(notification)
+  )
+end
+
 When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
   fields = instance_eval(fields) if fields
   @response = head(
@@ -40,6 +45,10 @@ When /^a payment request notification (?:is|was) received for (\d+)(?: with: "([
     path_to("payment request with id: #{id}"),
     fields
   )
+end
+
+When /^the notification gets verified$/ do
+  model!("payment_request").update_attribute(:notification_verified_at, Time.now)
 end
 
 Then /^a job should exist to notify my payment application$/ do

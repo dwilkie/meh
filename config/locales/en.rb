@@ -11,7 +11,7 @@
         )
       },
       :elements => {
-        :greeting => "Hey %{name}, ",
+        :greeting => "Hi %{name}, ",
         :shared => {
           :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur customer order(#%{customer_order_number})",
           :supplier_details => "%{supplier} (%{supplier_contact_details})"
@@ -89,7 +89,7 @@
           options[:seller]
         message << "for #{options[:quantity]} x "
         message << "your product " unless options[:seller]
-        message << "##{options[:product_code]}. To accept the order, look up the pv code for ##{options[:product_code]} and reply with: " << 
+        message << "##{options[:product_code]}. To accept the order, look up the pv code for ##{options[:product_code]} and reply with: " <<
         I18n.t(
           "messages.commands.templates.acceptorder",
           :order_number => options[:order_number],
@@ -127,18 +127,18 @@
         I18n.t("messages.base", :name => options[:user], :body => message)
       },
       :successfully_processed_order => lambda { |key, options|
-        message = "u successfully " << 
+        message = "u successfully " <<
         I18n.t("activerecord.attribute_values.order.status.#{options[:processed]}") <<
         " the order ##{options[:order_number]}."
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :cannot_process_order => lambda { |key, options|
-        message = "we cannot process ur request because this order is " << 
+        message = "we cannot process ur request because this order is " <<
         I18n.t("activerecord.attribute_values.order.status.#{options[:status]}")
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :confirm_reject_order => lambda { |key, options|
-        message = "r u sure u want to reject this order? Text: " << 
+        message = "r u sure u want to reject this order? Text: " <<
         I18n.t(
           "messages.commands.templates.rejectorder",
           :order_number => options[:order_number]
@@ -183,7 +183,7 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :confirm_payment_notification => lambda {|key, options|
-        message = "u r about to pay " << 
+        message = "u r about to pay " <<
         I18n.t(
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
@@ -210,12 +210,12 @@
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :payment_invalid => lambda {|key, options|
-        message = "a payment was about to be sent on ur behalf to " << 
+        message = "a payment was about to be sent on ur behalf to " <<
         I18n.t(
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
           :supplier_contact_details => options[:supplier_contact_details]
-        ) << " for their " << 
+        ) << " for their " <<
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
@@ -229,14 +229,14 @@
         I18n.t("messages.base", :name => options[:seller], :body => message)
       },
       :payment_application_invalid => lambda { |key, options|
-        message = "a payment for #{options[:amount]} was about to be sent to " << 
+        message = "a payment for #{options[:amount]} was about to be sent to " <<
         I18n.t(
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
           :supplier_contact_details => options[:supplier_contact_details]
         ) << " for their order(##{options[:supplier_order_number]}). We couldn't transfer the funds because "
         if options[:status]
-          message << "your payment system is " << 
+          message << "your payment system is " <<
           I18n.t(
             "activerecord.attribute_values.payment_application.status.#{options[:status]}"
           ) << ". Log in to ur account to reactivate it"
@@ -248,6 +248,27 @@
           "messages.commands.templates.paymentdetails",
           :supplier_order_number => options[:supplier_order_number]
         )
+        I18n.t("messages.base", :name => options[:seller], :body => message)
+      },
+      :payment_request_notification => lambda { |key, options|
+        message = "ur payment of #{options[:amount]} to " <<
+        I18n.t(
+          "messages.elements.shared.supplier_details",
+          :supplier => options[:supplier],
+          :supplier_contact_details => options[:supplier_contact_details]
+        ) << " for for their order " <<
+        I18n.t(
+          "messages.elements.shared.order_details_for_seller",
+          :supplier_order_number => options[:supplier_order_number],
+          :customer_order_number => options[:customer_order_number],
+          :product_code => options[:product_code],
+          :quantity => options[:quantity]
+        )
+        if options[:error]
+          message << " failed because #{options[:error]}"
+        else
+          message << " succeeded. We notified #{options[:supplier]} for you."
+        end
         I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },
@@ -325,7 +346,7 @@
               :cents => {
                 :greater_than => "must be greater than %{count} (check that u have set a supplier price for this product)"
               },
-              :supplier_order_id => { 
+              :supplier_order_id => {
                 :taken => lambda {|key, options|
                   "already has a payment (text (" <<
                   I18n.t(
@@ -346,9 +367,19 @@
                 :is_not_nil         => "should be cleared"
               }
             }
+          },
+          :payment_request => {
+            :attributes => {
+              :notification => {
+                :payee_not_found => "u restricted ur payees and %{supplier} isn't on the list. Add %{supplier} to ur payee list at %{application_uri} or clear the list to pay all ur suppliers",
+                :payee_maximum_amount_exceeded => "the maximum amount for %{supplier} was exceeded. Increase the amount at %{application_uri}",
+                :payee_currency_invalid => "%{supplier} is not allowed to be paid in %{currency}. Change this at %{application_uri}"
+              }
+            }
           }
         }
       }
     }
   }
 }
+

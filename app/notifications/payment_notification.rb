@@ -1,7 +1,7 @@
 class PaymentNotification < Conversation
   def confirm(payment)
     supplier_order = payment.supplier_order
-    supplier = supplier_order.supplier
+    supplier = payment.supplier
     supplier_contact_details = contact_details(supplier)
     amount = payment.amount
     amount = amount.format(:symbol => false) << " " << amount.currency.iso_code
@@ -18,7 +18,7 @@ class PaymentNotification < Conversation
       :amount => amount
     )
   end
-  
+
   def invalid(payment)
     supplier_order = payment.supplier_order
     supplier = supplier_order.supplier
@@ -36,9 +36,10 @@ class PaymentNotification < Conversation
       :errors => payment.errors.full_messages.to_sentence
     )
   end
-  
+
   private
     def contact_details(user)
       user.mobile_number.nil? ? user.email : user.mobile_number.humanize
     end
 end
+

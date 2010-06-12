@@ -23,7 +23,8 @@ module Meh
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
     config.active_record.observers = :order_observer,
-      :incoming_text_message_observer
+      :incoming_text_message_observer,
+      :payment_request_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -47,3 +48,4 @@ module Meh
     config.filter_parameters += [:password]
   end
 end
+
