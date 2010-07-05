@@ -73,6 +73,8 @@ module I18nHelpers
     when /^payee currency invalid error$/
       "activerecord.errors.models.payment_request.attributes.notification.payee_currency_invalid"
 
+    when /^payment request notification$/
+      "messages.payment_request_notification"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

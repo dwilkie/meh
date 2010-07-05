@@ -256,7 +256,7 @@
           "messages.elements.shared.supplier_details",
           :supplier => options[:supplier],
           :supplier_contact_details => options[:supplier_contact_details]
-        ) << " for for their order " <<
+        ) << " for their " <<
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],

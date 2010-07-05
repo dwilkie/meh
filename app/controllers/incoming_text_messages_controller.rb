@@ -1,6 +1,8 @@
 class IncomingTextMessagesController < ApplicationController
   def create
-    IncomingTextMessage.create!(:params => params, :originator => params[:from] )
+    incoming_text_message = params[:incoming_text_message]
+    IncomingTextMessage.create!(:params => incoming_text_message, :from => incoming_text_message[:from])
     render :nothing => true
   end
 end
+

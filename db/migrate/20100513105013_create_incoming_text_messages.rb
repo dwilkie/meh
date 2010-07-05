@@ -1,7 +1,7 @@
 class CreateIncomingTextMessages < ActiveRecord::Migration
   def self.up
     create_table :incoming_text_messages do |t|
-      t.string   :originator,        :null => false
+      t.string   :from,        :null => false
       t.text     :params
       t.references :smsable, :polymorphic => true
       t.timestamps

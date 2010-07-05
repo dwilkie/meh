@@ -41,7 +41,7 @@ group :test do
   gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
   gem 'rspec-rails',        :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'factory_girl',       :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
-  gem 'capybara',           :git => 'git://github.com/jnicklas/capybara.git'
+  gem 'capybara'#,           :git => 'git://github.com/jnicklas/capybara.git'
   gem 'database_cleaner',   :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'pickle',             :git => 'git://github.com/ianwhite/pickle.git'
   gem 'cucumber-rails',     :git => 'git://github.com/aslakhellesoy/cucumber-rails.git'

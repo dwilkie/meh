@@ -7,10 +7,10 @@ Feature: Payment Request Notification
     Given a seller exists with name: "Mara"
     And a mobile_number: "Mara's number" exists with phoneable: the seller
     And a supplier exists with name: "Dave"
-    And a mobile_number: "Dave's number" exists with phoneable: the supplier
-    And a product exists with seller: the seller, supplier: the supplier, cents: "50000", currency: "THB"
-    And a seller_order exists with seller: the seller
-    And a supplier_order exists with supplier: the supplier, product: the product, quantity: "1"
+    And a mobile_number: "Dave's number" exists with phoneable: the supplier, number: "665323568467"
+    And a product exists with seller: the seller, supplier: the supplier, cents: "50000", currency: "THB", external_id: "blueshirt01"
+    And a seller_order exists with id: 523321, seller: the seller
+    And a supplier_order exists with id: 523322, supplier: the supplier, product: the product, quantity: "1", seller_order: the seller_order
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
     And a payment_request exists with id: 234564, application_uri: "http://mara-payment-app.appspot.com", payment: the payment
     And the payment request has been sent to: "http://mara-payment-app.appspot.com"
@@ -54,13 +54,31 @@ Feature: Payment Request Notification
      | "{'payment_response' => {'someresponse' => 'response'}, 'id' => '23'}"          |
      | "{'payment_request' => {'payment_response' => {'someresponse' => 'response'}}}" |
 
-@current
+  Scenario: A notification is received originating from the remote payment application with a successful payment response
+  Given the payment request got the following notification: "{'payment_response' => {'responseEnvelope.timestamp'=>'2010-06-04T09:55:36.507-07:00', 'responseEnvelope.ack'=>'Success', 'responseEnvelope.correlationId'=>'1ddf86263c63d', 'responseEnvelope.build'=>'1310729', 'payKey'=>'AP-4MV83827NG0173616', 'paymentExecStatus'=>'COMPLETED'}}"
+  And the remote application for this payment request sent the notification
+
+  When the notification gets verified
+  Then the payment_request should be successful
+  And a new outgoing text message should be created destined for the mobile_number: "Mara's number"
+  And the outgoing_text_message should be a translation of "payment request notification" in "en" (English) where supplier: "Dave", seller: "Mara", supplier_order_number: "523322", supplier_contact_details: "+665323568467", amount: "500.00 THB", customer_order_number: "523321", product_code: "blueshirt01", quantity: "1"
+
+  Scenario: A notification is received originating from the remote payment application with an unsuccessful payment response
+  Given the payment request got the following notification: "{'payment_response'=>{'error(0).category'=>'Application', 'error(0).domain'=>'PLATFORM', 'error(0).errorId'=>'58903', 'error(0).message'=>'The email address seller3@example.com is invalid. It may not be registered in PayPals system yet', 'error(0).severity'=>'Error', 'responseEnvelope.ack'=>'Failure', 'responseEnvelope.build'=>'1310729', 'responseEnvelope.correlationId'=>'ec7f3ae427ee1', 'responseEnvelope.timestamp'=>'2010-06-12T02:16:26.587-07:00'}}"
+  And the remote application for this payment request sent the notification
+
+  When the notification gets verified
+  Then the payment_request should not be successful
+  And a new outgoing text message should be created destined for the mobile_number: "Mara's number"
+  And the outgoing_text_message should include "The email address seller3@example.com is invalid. It may not be registered in PayPals system yet"
+
   Scenario Outline: A notification is received with errors originating from the remote payment application
     Given the payment request got the following notification: <error>
     And the remote application for this payment request sent the notification
 
     When the notification gets verified
-    Then a new outgoing text message should be created destined for the mobile_number: "Mara's number"
+    Then the payment_request should not be successful
+    And a new outgoing text message should be created destined for the mobile_number: "Mara's number"
     And the outgoing_text_message should include a translation of <error_message> in "en" (English) where supplier: "Dave", application_uri: "http://mara-payment-app.appspot.com", currency: "THB"
 
     Examples:

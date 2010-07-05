@@ -56,8 +56,7 @@ When /^a customer successfully purchases(?: (\d+) of)? #{capture_model} through 
     "num_cart_items"=>"1",
     "address_country"=>"United States",
     "address_city"=>"city",
-    "quantity"=>"#{quantity}",
-    "verify_sign"=>"Aa4P7UnWW85EE9W0YVKVAc7z1v8OAkejFXqE2AlDChXtbvZRHTHaiH4C",
+    "quantity"=>"#{quantity}", "verify_sign"=>"Aa4P7UnWW85EE9W0YVKVAc7z1v8OAkejFXqE2AlDChXtbvZRHTHaiH4C",
     "payer_email"=>"mehbuy_1272942317_per@gmail.com",
     "txn_id"=>"45D21472YD1820048",
     "payment_type"=>"instant",
@@ -85,11 +84,13 @@ end
 
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   params = {
-    "to"=>"61447100308",
-    "from"=> sender,
-    "msg"=> message,
-    "userfield"=>"123456",
-    "date"=>"2010-05-13 23:59:58"
+    "incoming_text_message" => {
+      "to"=>"61447100308",
+      "from"=> sender,
+      "msg"=> message,
+      "userfield"=>"123456",
+      "date"=>"2010-05-13 23:59:58"
+    }
   }
   post path_to("create incoming text message"), params
 end
