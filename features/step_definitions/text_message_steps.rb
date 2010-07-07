@@ -15,6 +15,14 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   post path_to("create incoming text message"), params
 end
 
+When /^a text message delivery receipt is received with: "([^"]*)"$/ do |params|
+  params = instance_eval(params)
+  post(
+    path_to("create text message delivery receipt"),
+    params
+  )
+end
+
 Then /^a job should exist to send the text message$/ do
   Delayed::Job.last.name.should match(/^OutgoingTextMessage#send_message/)
 end

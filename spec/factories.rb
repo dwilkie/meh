@@ -50,6 +50,10 @@ Factory.define :outgoing_text_message do |f|
   f.association :smsable, :factory => :mobile_number
 end
 
+Factory.define :text_message_delivery_receipt do |f|
+  f.association :outgoing_text_message
+end
+
 Factory.define :paypal_ipn do |f|
   f.association :seller_order
 end
@@ -74,3 +78,4 @@ Factory.define :payment_application do |f|
   f.uri "http://example.appspot.com"
   f.association :seller
 end
+

@@ -69,9 +69,10 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
   create_table "outgoing_text_messages", :force => true do |t|
     t.string   "body"
     t.string   "gateway_response"
+    t.string   "gateway_message_id"
     t.string   "from"
-    t.integer  "smsable_id",       :null => false
-    t.string   "smsable_type",     :null => false
+    t.integer  "smsable_id",         :null => false
+    t.string   "smsable_type",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

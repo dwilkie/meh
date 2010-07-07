@@ -14,6 +14,9 @@ module NavigationHelpers
     when /create paypal ipn/
       paypal_ipns_path
 
+    when /create text message delivery receipt/
+      text_message_delivery_receipts_path
+
     when /create incoming text message/
       incoming_text_messages_path
 

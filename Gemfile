@@ -21,6 +21,7 @@ gem 'money',               :git => 'git://github.com/FooBarWidget/money.git'
 gem 'httparty',            :git => 'git://github.com/jnunemaker/httparty.git'
 gem 'delayed_job',         :git => 'git://github.com/collectiveidea/delayed_job.git'
 gem 'action_sms',          :git => 'git://github.com/dwilkie/action_sms.git'
+#gem 'action_sms_gateways', :path => '/home/dave/work/plugins/action_sms_gateways'
 gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
 
 # gem 'bj'

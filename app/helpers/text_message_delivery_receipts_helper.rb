@@ -1,0 +1,2 @@
+module TextMessageDeliveryReceiptsHelper
+end
