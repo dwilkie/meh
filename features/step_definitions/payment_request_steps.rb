@@ -59,13 +59,18 @@ end
 
 Then /^a job should (not )?exist to verify it came from the remote application for this payment request$/ do |no_job|
   condition = no_job ? "_not" : ""
-  Delayed::Job.last.name.send("should#{condition}", match(
+  last_job = Delayed::Job.last
+  last_job.name.send("should#{condition}", match(
     /^PaymentRequest::RemotePaymentRequest#verify/
-  ))
+  )) if last_job || no_job.blank?
 end
 
 Then /^the payment request notification should( not)? be verified$/ do |unverified|
   condition = unverified ? "" : "_not"
   model!("payment_request").notification_verified_at.send("should#{condition}", be_nil)
+end
+
+Then /^the response should be (\d+)$/ do |response|
+  @response.should == response.to_i
 end
 

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-# gem 'rails', '3.0.0.beta3'
+# gem 'rails', '3.0.0.beta4'
 
 # Bundle edge Rails instead:
 gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -14,14 +14,14 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'capistrano'
 
 # Bundle the extra gems:
-gem 'devise',          :git => 'git://github.com/plataformatec/devise.git'
-gem 'conversational',  :git => 'git://github.com/dwilkie/conversational.git'
-gem 'state_machine',   :git => 'git://github.com/pluginaweek/state_machine.git'
-gem 'money',           :git => 'git://github.com/FooBarWidget/money.git'
-#gem 'ebayapi',        :git => 'git://github.com/dwilkie/ebay.git'
-#gem 'preferences',    :git => 'git://github.com/maxschulze/preferences.git'
-gem 'httparty',        :git => 'git://github.com/jnunemaker/httparty.git'
-gem 'delayed_job',     :git => 'git://github.com/collectiveidea/delayed_job.git'
+gem 'devise',              :git => 'git://github.com/plataformatec/devise.git'
+gem 'conversational',      :git => 'git://github.com/dwilkie/conversational.git'
+gem 'state_machine',       :git => 'git://github.com/pluginaweek/state_machine.git'
+gem 'money',               :git => 'git://github.com/FooBarWidget/money.git'
+gem 'httparty',            :git => 'git://github.com/jnunemaker/httparty.git'
+gem 'delayed_job',         :git => 'git://github.com/collectiveidea/delayed_job.git'
+gem 'action_sms',          :git => 'git://github.com/dwilkie/action_sms.git'
+gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'
@@ -41,7 +41,7 @@ group :test do
   gem 'rspec-expectations', :git => 'git://github.com/rspec/rspec-expectations.git'
   gem 'rspec-rails',        :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'factory_girl',       :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'rails3'
-  gem 'capybara'#,           :git => 'git://github.com/jnicklas/capybara.git'
+  gem 'capybara',           :git => 'git://github.com/jnicklas/capybara.git'
   gem 'database_cleaner',   :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'pickle',             :git => 'git://github.com/ianwhite/pickle.git'
   gem 'cucumber-rails',     :git => 'git://github.com/aslakhellesoy/cucumber-rails.git'

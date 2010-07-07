@@ -3,7 +3,7 @@ Feature: Accept an order
            and I have looked up which product belongs to the order
   As a supplier
   I want to be able to accept an order by sending in a text message
-  
+
   Background:
     Given a supplier exists with name: "Nok"
     And a mobile_number exists with number: "66354668789", password: "1234", phoneable: the supplier
@@ -12,7 +12,7 @@ Feature: Accept an order
 
   Scenario Outline: Accept an order correctly
     When I text <message_text> from "66354668789"
-    
+
     Then the supplier_order should be accepted
 
   Examples:
@@ -23,7 +23,7 @@ Feature: Accept an order
 
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
-    
+
     Then the supplier_order should not be accepted
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should include a translation of <response> in "en" (English) <where>
@@ -37,11 +37,11 @@ Feature: Accept an order
     Given a supplier_order exists with id: 154670, supplier: the supplier, product_id: the product, quantity: 2, status: "<order_status>"
 
     When I text "<text_message>" from "66354668789"
-    
+
     Then the supplier_order should not be accepted
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "cannot process order" in "en" (English) where status: "<order_status>", supplier: "Nok"
-    
+
     Examples:
       | text_message                       | order_status |
       | 1234 acceptorder 154670 2 x hy456n | rejected     |
@@ -54,3 +54,4 @@ Feature: Accept an order
     Then the supplier_order should be accepted
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "cannot process order" in "en" (English) where status: "accepted", supplier: "Nok"
+

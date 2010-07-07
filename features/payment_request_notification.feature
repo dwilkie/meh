@@ -14,6 +14,7 @@ Feature: Payment Request Notification
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
     And a payment_request exists with id: 234564, application_uri: "http://mara-payment-app.appspot.com", payment: the payment
     And the payment request has been sent to: "http://mara-payment-app.appspot.com"
+    And all outgoing text messages have been sent
 
   Scenario: A payment request notification is received for an existing payment request
     When a payment request notification is received for 234564 with: "{'payment_request' => {'id' => '23'}}"

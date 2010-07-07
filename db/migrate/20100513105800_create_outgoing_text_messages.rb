@@ -1,8 +1,9 @@
 class CreateOutgoingTextMessages < ActiveRecord::Migration
   def self.up
     create_table :outgoing_text_messages do |t|
-      t.string     :message,     :null => false
-      t.text       :params
+      t.string     :body
+      t.string     :gateway_response
+      t.string     :from
       t.references :smsable, :polymorphic => true, :null => false
       t.timestamps
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100607184944) do
+ActiveRecord::Schema.define(:version => 20100707084741) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -67,10 +67,11 @@ ActiveRecord::Schema.define(:version => 20100607184944) do
   end
 
   create_table "outgoing_text_messages", :force => true do |t|
-    t.string   "message",      :null => false
-    t.text     "params"
-    t.integer  "smsable_id",   :null => false
-    t.string   "smsable_type", :null => false
+    t.string   "body"
+    t.string   "gateway_response"
+    t.string   "from"
+    t.integer  "smsable_id",       :null => false
+    t.string   "smsable_type",     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -149,6 +150,14 @@ ActiveRecord::Schema.define(:version => 20100607184944) do
 
   add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
   add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
+
+  create_table "text_message_delivery_receipts", :force => true do |t|
+    t.string   "status"
+    t.text     "params"
+    t.integer  "outgoing_text_message_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

@@ -5,8 +5,8 @@ Feature: Notify the supplier by text message when a supplier order is created
 
   Background:
     Given a supplier exists with name: "Bob"
-    And a mobile_number: "supplier's number" exists with phoneable: the supplier
- 
+    And a mobile_number: "supplier's number" exists with phoneable: the supplier, number: "668968320471"
+
   Scenario: I am not the seller of this item
     Given a seller exists with name: "John"
     And a mobile_number: "seller's number" exists with phoneable: the seller, number: "66123456789"
@@ -25,3 +25,4 @@ Feature: Notify the supplier by text message when a supplier order is created
 
     Then a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "supplier order notification" in "en" (English) where supplier: "Bob", product_code: "12345", quantity: "1", order_number: "567843"
+

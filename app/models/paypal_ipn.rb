@@ -1,23 +1,25 @@
 class PaypalIpn < ActiveRecord::Base
   belongs_to    :customer_order,
                 :class_name => "Order"
-  
+
   before_create :create_order
-  
+
   serialize  :params
-  
+
   private
     def create_order
       seller = User.with_role("seller").where(
         ["email = ?", params[:receiver_email]]
       ).first
-      # if no seller it means that either the user is not registered as a seller
-      # or they do not exist in the system with this email....probably need to notifiy
-      # myself if this happens...
-      self.customer_order = Order.create!(:seller => seller,
-        :supplier_orders_attributes=>build_supplier_orders_attributes(seller))
+      # if no seller it means that either the user
+      # is not registered as a seller
+      # or they do not exist in the system with this email
+      # probably need to notifiy myself if this happens...
+      self.customer_order = Order.create!(
+        :seller => seller,
+        :supplier_orders_attributes => build_supplier_orders_attributes(seller))
     end
-    
+
     # Will return a hash in the following format ready for mass assignment
     # {
     #   "0" => {
@@ -46,8 +48,5 @@ class PaypalIpn < ActiveRecord::Base
       end
       supplier_orders_attributes
     end
-    
-    def build_supplier_order_details
-      
-    end
 end
+
