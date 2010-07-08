@@ -6,6 +6,10 @@ class IncomingTextMessage < ActiveRecord::Base
   validates :from, :presence => true
   validates :params, :uniqueness => true
 
+  before_validation(:on => :create) do
+    self.from = self.params["from"]
+  end
+
   private
     def link_to_smsable
       self.smsable = MobileNumber.where("number = ?", from).first

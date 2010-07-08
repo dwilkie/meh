@@ -50,7 +50,12 @@ Factory.define :outgoing_text_message do |f|
   f.association :smsable, :factory => :mobile_number
 end
 
+Factory.define :incoming_text_message do |f|
+  f.params({"to"=>"61447100308", "from"=> "61447100310", "msg"=> "Endia kasdf ofeao", "userfield"=>"123456", "date"=>"2010-05-13 23:59:58"})
+end
+
 Factory.define :text_message_delivery_receipt do |f|
+  f.params({'msgid'=>'6942744494999745', 'dlrstatus'=>'DELIVRD', 'dlr_err'=>'000', 'donedate'=>'1005132312'})
   f.association :outgoing_text_message
 end
 

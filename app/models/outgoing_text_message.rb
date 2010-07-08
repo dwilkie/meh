@@ -20,10 +20,10 @@ class OutgoingTextMessage < ActiveRecord::Base
   end
 
   def send_message
-    response = SMSNotifier.deliver(self)
-    gateway_message_id = SMSNotifier.connection.message_id(response)
-    self.update_attributes!(
-      :gateway_response => response,
+    gateway_response = SMSNotifier.deliver(self)
+    gateway_message_id = SMSNotifier.connection.message_id(gateway_response)
+    self.update_attributes(
+      :gateway_response => gateway_response,
       :gateway_message_id => gateway_message_id
     )
   end

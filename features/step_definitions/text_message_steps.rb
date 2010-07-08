@@ -2,6 +2,11 @@ Given /^the SMS Gateway will respond with: "([^\"]*)"$/ do |body|
   register_outgoing_text_message_uri(:body => body)
 end
 
+Given /^all outgoing text messages have been sent$/ do
+  register_outgoing_text_message_uri
+  When "the worker completes its job"
+end
+
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   params = {
     "incoming_text_message" => {
@@ -32,8 +37,6 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
   id = outgoing_text_message.nil? ? 0 : outgoing_text_message.id
   Then "an outgoing_text_message should exist with id: \"#{id}\""
-  register_outgoing_text_message_uri
-  When "the worker completes its job"
 end
 
 Then /^#{capture_model} should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|

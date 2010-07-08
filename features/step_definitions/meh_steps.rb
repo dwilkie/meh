@@ -18,11 +18,6 @@ Given /^there is a payment agreement set to (\w+)(?: and to trigger when an orde
   Given "a payment_agreement exists with #{new_fields}"
 end
 
-Given /^all outgoing text messages have been sent$/ do
-  register_outgoing_text_message_uri
-  When "the worker completes its job"
-end
-
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
   create_model(name, fields)
 end

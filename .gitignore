@@ -6,3 +6,4 @@ config/database.yml
 *~
 Gemfile.lock
 rerun.txt
+.rspec
