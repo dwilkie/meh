@@ -32,6 +32,18 @@ When /^a text message delivery receipt is received with: "([^"]*)"$/ do |params|
   end
 end
 
+When /^an incoming text message is received with: "([^"]*)"$/ do |params|
+  params = instance_eval(params)
+  begin
+    post(
+      path_to("create incoming text message"),
+      params
+    )
+  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordNotUnique
+  end
+end
+
 Then /^a job should exist to send the text message$/ do
   Delayed::Job.last.name.should match(/^OutgoingTextMessage#send_message/)
 end

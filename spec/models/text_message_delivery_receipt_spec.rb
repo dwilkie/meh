@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe TextMessageDeliveryReceipt do
   describe "validations" do
+    # tests the factory
+    it "should be valid with valid attributes" do
+      text_message_delivery_receipt = Factory.build(:text_message_delivery_receipt)
+      text_message_delivery_receipt.should be_valid
+    end
     it "should not be valid without params" do
       text_message_delivery_receipt = Factory.build(:text_message_delivery_receipt)
       text_message_delivery_receipt.params = nil
@@ -27,7 +32,7 @@ describe TextMessageDeliveryReceipt do
     duplicate_text_message_delivery_receipt.params = text_message_delivery_receipt.params
     lambda {
       duplicate_text_message_delivery_receipt.save!
-    }.should raise_error
+    }.should raise_error(ActiveRecord::RecordNotUnique)
   end
 end
 

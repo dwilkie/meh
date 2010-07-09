@@ -58,7 +58,15 @@ Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
 end
 
 Factory.define :incoming_text_message do |f|
-  f.params({"to"=>"61447100308", "from"=> "61447100310", "msg"=> "Endia kasdf ofeao", "userfield"=>"123456", "date"=>"2010-05-13 23:59:58"})
+  f.sequence(:params) { |n|
+    {
+      "to" => "61447100308",
+      "from" => "61447100310",
+      "msg"=> "Endia kasdf ofeao",
+      "userfield" => "123456",
+      "date" => "2010-05-13 23:59:#{n}"
+    }
+  }
 end
 
 Factory.define :text_message_delivery_receipt do |f|

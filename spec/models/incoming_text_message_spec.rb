@@ -2,17 +2,26 @@ require 'spec_helper'
 
 describe IncomingTextMessage do
   describe "validations" do
-    # cant find a way for active record to
+    # tests the factory
+    it "should be valid with valid attributes" do
+      incoming_text_message = Factory.build(:incoming_text_message)
+      incoming_text_message.should be_valid
+    end
+    it "should not be valid without a 'from' attribute" do
+      incoming_text_message = Factory.build(:incoming_text_message)
+      incoming_text_message.params["from"] = ""
+      incoming_text_message.should_not be_valid
+      incoming_text_message.errors_on(:from).should_not be_empty
+    end
+    # can't find a way for active record to
     # validate uniqueness of a serialized attribute
-    describe "uniqueness" do
-      before {
-        Factory.create(:incoming_text_message)
-      }
-      it "should not allow two identical incoming text messages to be created" do
-        lambda {
-          Factory.create(:incoming_text_message)
-        }.should raise_error
-      end
+    it "should not allow two identical incoming text messages to be created" do
+      incoming_text_message = Factory.create(:incoming_text_message)
+      duplicate_incoming_text_message = Factory.build(:incoming_text_message)
+      duplicate_incoming_text_message.params = incoming_text_message.params
+      lambda {
+        duplicate_incoming_text_message.save!
+      }.should raise_error(ActiveRecord::RecordNotUnique)
     end
   end
 end

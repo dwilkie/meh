@@ -1,6 +1,6 @@
 Feature: Text message delivery receipts
   In order to keep track of the status of outgoing text messages
-  I want to be notified with delivery receipts when outgoing text messages are delivered or failed to be delivered
+  I want to be notified with delivery receipts when outgoing text messages are delivered or fail to be delivered
 
   Scenario: A text message delivery receipt is received for an existing outgoing text message
     Given an outgoing_text_message exists
