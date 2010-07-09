@@ -5,6 +5,8 @@ class CreatePaypalIpns < ActiveRecord::Migration
       t.string       :payment_status
       t.string       :transaction_id, :null => false
       t.references   :seller,         :null => false
+      t.boolean      :fraudulent
+      t.datetime     :verified_at
       t.references   :customer_order
       t.timestamps
     end

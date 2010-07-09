@@ -137,6 +137,8 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
     t.string   "payment_status"
     t.string   "transaction_id",    :null => false
     t.integer  "seller_id",         :null => false
+    t.boolean  "fraudulent"
+    t.datetime "verified_at"
     t.integer  "customer_order_id"
     t.datetime "created_at"
     t.datetime "updated_at"
