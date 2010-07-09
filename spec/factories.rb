@@ -60,7 +60,14 @@ Factory.define :text_message_delivery_receipt do |f|
 end
 
 Factory.define :paypal_ipn do |f|
-  f.association :seller_order
+  f.transaction_id "45D21472YD1820048"
+  f.association :seller
+  f.params { |paypal_ipn|
+    {
+      "receiver_email" => paypal_ipn.seller.email,
+      "txn_id" => paypal_ipn.transaction_id
+    }
+  }
 end
 
 Factory.define :payment do |f|

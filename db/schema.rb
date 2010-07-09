@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
     t.datetime "updated_at"
   end
 
+  add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id"
+
   create_table "payment_agreements", :force => true do |t|
     t.boolean  "automatic",                :default => true,  :null => false
     t.boolean  "confirm",                  :default => false, :null => false
@@ -131,12 +133,16 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
   add_index "payments", ["supplier_order_id"], :name => "index_payments_on_supplier_order_id", :unique => true
 
   create_table "paypal_ipns", :force => true do |t|
-    t.text     "params"
+    t.text     "params",            :null => false
     t.string   "payment_status"
+    t.string   "transaction_id",    :null => false
+    t.integer  "seller_id",         :null => false
     t.integer  "customer_order_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
 
   create_table "products", :force => true do |t|
     t.string   "external_id",                      :null => false
@@ -154,7 +160,7 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
 
   create_table "text_message_delivery_receipts", :force => true do |t|
     t.string   "status"
-    t.text     "params"
+    t.text     "params",                   :null => false
     t.integer  "outgoing_text_message_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

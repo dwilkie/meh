@@ -9,14 +9,14 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable
-         
+
   # Setup accessible (or protected) attributes for your model
   # this is a white list of attributes that are permitted to be mass assigned
   # all others have to be assigned using writer methods
   attr_accessible :email, :password, :password_confirmation
 
   # General Associations
-  
+
   has_one    :mobile_number,
              :as => :phoneable,
              :dependent => :destroy
@@ -37,6 +37,9 @@ class User < ActiveRecord::Base
   has_many   :suppliers,
              :through => :selling_products
 
+  has_many   :paypal_ipns,
+             :foreign_key => "seller_id"
+
   has_many   :customer_orders,
              :foreign_key => "seller_id",
              :class_name => "Order"
@@ -55,7 +58,7 @@ class User < ActiveRecord::Base
   # and this sets up seller.suppliers_with_payment_agreements
   has_many   :suppliers_with_payment_agreements,
              :through => :payment_agreements_with_suppliers
-             
+
   has_one    :payment_application,
              :foreign_key => "seller_id"
 
@@ -75,11 +78,11 @@ class User < ActiveRecord::Base
   has_many   :supplier_orders,
              :foreign_key => "supplier_id",
              :class_name => "Order"
-  
+
   has_many   :incoming_payments,
              :foreign_key => "supplier_id",
              :class_name => "Payment"
-             
+
   # this sets up supplier.payment_agreements_with_sellers
   # the foreign key should be supplier_id because its on the supplier's side
   # of the association
@@ -100,7 +103,7 @@ class User < ActiveRecord::Base
             :if => :password_required?
 
   #validate :check_notification_method_preference
-  
+
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end
@@ -118,14 +121,14 @@ class User < ActiveRecord::Base
   def is?(role)
     roles.include?(role.to_s)
   end
-  
+
   private
     def check_notification_method_preference
       errors.add(:preferred_notification_method, "customize") if email.nil? && preferred_notification_method == "email"
         errors.add(:preferred_notification_method, "customize") if mobile_number.nil? && preferred_notification_method == "mobile"
         errors.add(:preferred_notification_method, "customize") if (email.nil? || mobile_number.nil?) && preferred_notification_method == "both"
     end
-    
+
     # Checks whether a password is needed or not. For validations only.
     # Passwords are always required if it's a new record, or if the password
     # or confirmation are being set somewhere.

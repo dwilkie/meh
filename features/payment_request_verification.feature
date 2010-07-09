@@ -11,7 +11,6 @@ Feature: Payment Request Verification
     And a supplier_order exists with supplier: the supplier, product: the product, quantity: "1"
     And a payment exists with cents: "50000", currency: "THB", supplier_order: the supplier_order, seller: the seller, supplier: the supplier
 
-  @current
   Scenario: Payment request verification is made with correct parameters
     Given a payment_request exists with id: 234564, application_uri: "http://example.com", payment: the payment
     When a payment request verification is made for 234564 with: "{'payment' => {'receiverList.receiver(0).amount' => '500.00', 'currencyCode' => 'THB', 'receiverList.receiver(0).email' => 'johnny@gmail.com', 'senderEmail' => 'mara@gmail.com'}, 'payee' => { 'email' => 'johnny@gmail.com', 'amount' => '500.00', 'currency' => 'THB'}}"
