@@ -12,7 +12,7 @@ class TextMessageDeliveryReceipt < ActiveRecord::Base
   before_save :set_status
 
   before_validation(:on => :create) do
-    self.outgoing_text_message = OutgoingTextMessage.find_by_delivery_receipt(self.params)
+    self.outgoing_text_message = OutgoingTextMessage.find_by_delivery_receipt(self.params) if self.params
   end
 
   private

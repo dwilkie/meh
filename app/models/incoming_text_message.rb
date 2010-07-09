@@ -11,7 +11,7 @@ class IncomingTextMessage < ActiveRecord::Base
             :presence => true
 
   before_validation(:on => :create) do
-    self.from = self.params["from"]
+    self.from = self.params["from"] if self.params
   end
 
   private

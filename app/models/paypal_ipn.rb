@@ -7,19 +7,23 @@ class PaypalIpn < ActiveRecord::Base
 
   serialize  :params
 
+  validates :params,
+            :presence => true
+
   validates :transaction_id,
             :presence => true,
             :uniqueness => true
 
   validates :seller,
-            :params,
             :presence => true
 
   before_validation(:on => :create) do
-    self.transaction_id = params["txn_id"]
-    self.seller = User.with_role("seller").where(
-      ["email = ?", params["receiver_email"]]
-    ).first
+    if self.params
+      self.transaction_id = self.params["txn_id"]
+      self.seller = User.with_role("seller").where(
+        ["email = ?", self.params["receiver_email"]]
+      ).first
+    end
   end
 end
 

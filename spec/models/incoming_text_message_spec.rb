@@ -7,6 +7,12 @@ describe IncomingTextMessage do
       incoming_text_message = Factory.build(:incoming_text_message)
       incoming_text_message.should be_valid
     end
+    it "should not be valid without params" do
+      incoming_text_message = Factory.build(:incoming_text_message)
+      incoming_text_message.params = nil
+      incoming_text_message.should_not be_valid
+      incoming_text_message.errors_on(:params).should_not be_empty
+    end
     it "should not be valid without a 'from' attribute" do
       incoming_text_message = Factory.build(:incoming_text_message)
       incoming_text_message.params["from"] = ""
