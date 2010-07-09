@@ -1,9 +1,12 @@
 class TextMessageDeliveryReceipt < ActiveRecord::Base
   belongs_to :outgoing_text_message
-  serialize :params
+  serialize :params, Hash
+
+  validates :params,
+            :presence => true,
+            :uniqueness => true
 
   validates :outgoing_text_message,
-            :params,
             :presence => true
 
   before_save :set_status

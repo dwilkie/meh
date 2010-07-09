@@ -22,10 +22,14 @@ end
 
 When /^a text message delivery receipt is received with: "([^"]*)"$/ do |params|
   params = instance_eval(params)
-  post(
-    path_to("create text message delivery receipt"),
-    params
-  )
+  begin
+    post(
+      path_to("create text message delivery receipt"),
+      params
+    )
+  rescue ActiveRecord::RecordInvalid
+  rescue ActiveRecord::RecordNotUnique
+  end
 end
 
 Then /^a job should exist to send the text message$/ do

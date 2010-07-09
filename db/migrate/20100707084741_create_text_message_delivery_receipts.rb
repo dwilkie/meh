@@ -6,6 +6,7 @@ class CreateTextMessageDeliveryReceipts < ActiveRecord::Migration
       t.references  :outgoing_text_message, :null => false
       t.timestamps
     end
+    add_index :text_message_delivery_receipts, :params, :unique => true
   end
 
   def self.down

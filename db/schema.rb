@@ -166,6 +166,8 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
     t.datetime "updated_at"
   end
 
+  add_index "text_message_delivery_receipts", ["params"], :name => "index_text_message_delivery_receipts_on_params", :unique => true
+
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false

@@ -14,7 +14,7 @@ Feature: Paypal IPN
 
   Then a paypal_ipn should not exist
 
-  Scenario: A Paypal IPN is for a duplicate transaction id
+  Scenario: A Paypal IPN is received for a duplicate transaction id
     Given a seller exists with email: "some_seller@example.com"
     And a paypal_ipn exists with seller: the seller, transaction_id: "45D21472YD1820048"
 

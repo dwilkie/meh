@@ -3,8 +3,12 @@ class IncomingTextMessage < ActiveRecord::Base
   belongs_to :smsable,  :polymorphic => true
   before_create :link_to_smsable
 
-  validates :from, :presence => true
-  validates :params, :uniqueness => true
+  validates :params,
+            :presence => true,
+            :uniqueness => true
+
+  validates :from,
+            :presence => true
 
   before_validation(:on => :create) do
     self.from = self.params["from"]
