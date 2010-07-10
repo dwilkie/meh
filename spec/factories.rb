@@ -3,6 +3,7 @@ Factory.define :user, :default_strategy => :build do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Maggot"
+  f.association :mobile_number
 end
 
 Factory.define :seller, :class => User, :default_strategy => :build do |f|
@@ -11,6 +12,7 @@ Factory.define :seller, :class => User, :default_strategy => :build do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Chris"
+  f.association :mobile_number
 end
 
 Factory.define :supplier, :class => User, :default_strategy => :build do |f|
@@ -19,11 +21,11 @@ Factory.define :supplier, :class => User, :default_strategy => :build do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Bob"
+  f.association :mobile_number
 end
 
 Factory.define :mobile_number, :default_strategy => :build do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
-  f.association :phoneable, :factory => :user
   f.password "1234"
   f.password_confirmation { |m| m.password }
 end
@@ -35,11 +37,12 @@ Factory.define :product do |f|
   f.sequence(:verification_code) {|n| "meh#{n}" }
 end
 
-Factory.define :seller_order, :class => Order do |f|
+Factory.define :seller_order do |f|
   f.association :seller
+  f.association :order_notification, :factory => :paypal_ipn
 end
 
-Factory.define :supplier_order, :class => Order do |f|
+Factory.define :supplier_order do |f|
   f.association :supplier
   f.association :seller_order
   f.association :product
@@ -47,7 +50,7 @@ Factory.define :supplier_order, :class => Order do |f|
 end
 
 Factory.define :outgoing_text_message do |f|
-  f.association :smsable, :factory => :mobile_number
+  f.association :mobile_number
 end
 
 Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
@@ -82,11 +85,11 @@ Factory.define :text_message_delivery_receipt do |f|
 end
 
 Factory.define :paypal_ipn do |f|
-  f.transaction_id "45D21472YD1820048"
-  f.association :seller
+  f.sequence(:transaction_id) {|n| "45D21472YD182004#{n}" }
   f.params { |paypal_ipn|
+    seller = Factory.create(:seller)
     {
-      "receiver_email" => paypal_ipn.seller.email,
+      "receiver_email" => seller.email,
       "txn_id" => paypal_ipn.transaction_id
     }
   }

@@ -8,7 +8,7 @@ class CreateMobileNumbers < ActiveRecord::Migration
       t.string     :activation_code
       t.string     :locale
       t.string     :state,                                               :null => false
-      t.references :phoneable, :polymorphic => true,                     :null => false
+      t.references :phoneable, :polymorphic => true
       t.timestamps
     end
     add_index :mobile_numbers, :number, :unique => true
@@ -18,3 +18,4 @@ class CreateMobileNumbers < ActiveRecord::Migration
     drop_table :mobile_numbers
   end
 end
+

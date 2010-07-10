@@ -1,14 +1,12 @@
 class AbstractProcessOrderConversation < Conversation
-  class SupplierOrderMessage
-    include ActiveModel::Validations
-
-    attr_reader  :order, :raw_message, :command
+  class SupplierOrderMessage < AbstractAuthenticatedConversation::Message
+    attr_reader  :order, :command
 
     validates :order,
               :presence => true
 
     def initialize(raw_message, supplier)
-      @raw_message = raw_message
+      super
       message_contents = raw_message.split(" ")
       @command = message_contents[0]
       order_number = message_contents[1].try(:to_i)
@@ -16,7 +14,7 @@ class AbstractProcessOrderConversation < Conversation
       message_contents
     end
   end
-  
+
   protected
 
     def cannot_process(order)
@@ -35,7 +33,7 @@ class AbstractProcessOrderConversation < Conversation
         :order_number => order.id
       )
     end
-    
+
     def invalid(message, processed)
       I18n.t(
         "messages.process_order_invalid_message",
@@ -54,3 +52,4 @@ class AbstractProcessOrderConversation < Conversation
       )
     end
 end
+

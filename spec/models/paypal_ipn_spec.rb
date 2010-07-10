@@ -13,12 +13,12 @@ describe PaypalIpn do
       paypal_ipn.should_not be_valid
       paypal_ipn.errors_on(:params).should_not be_empty
     end
-    it "should not be valid without an associated seller" do
+    it "should not be valid unless the seller exists" do
       paypal_ipn = Factory.build(:paypal_ipn)
       paypal_ipn.params["receiver_email"] = ""
       paypal_ipn.should_not be_valid
       paypal_ipn.errors_on(
-        :seller
+        :base
       ).should_not be_empty
     end
   end

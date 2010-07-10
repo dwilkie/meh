@@ -5,7 +5,7 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
       t.string     :gateway_response
       t.string     :gateway_message_id
       t.string     :from
-      t.references :smsable, :polymorphic => true, :null => false
+      t.references :mobile_number, :null => false
       t.timestamps
     end
     add_index :outgoing_text_messages, :gateway_message_id

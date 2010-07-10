@@ -37,12 +37,8 @@ class User < ActiveRecord::Base
   has_many   :suppliers,
              :through => :selling_products
 
-  has_many   :paypal_ipns,
+  has_many   :seller_orders,
              :foreign_key => "seller_id"
-
-  has_many   :customer_orders,
-             :foreign_key => "seller_id",
-             :class_name => "Order"
 
   has_many   :outgoing_payments,
              :foreign_key => "seller_id",
@@ -76,8 +72,7 @@ class User < ActiveRecord::Base
              :through => :supplying_products
 
   has_many   :supplier_orders,
-             :foreign_key => "supplier_id",
-             :class_name => "Order"
+             :foreign_key => "supplier_id"
 
   has_many   :incoming_payments,
              :foreign_key => "supplier_id",
@@ -97,6 +92,9 @@ class User < ActiveRecord::Base
   #preference :notification_method, :string, :default => 'email'
 
   validates :name, :presence => true
+
+  validates :mobile_number,
+            :presence => true
 
   validates :password_confirmation,
             :presence => true,

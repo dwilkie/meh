@@ -1,15 +1,18 @@
 class PaypalIpn < ActiveRecord::Base
   include HTTParty
 
-  after_create :verify
+  has_one :seller_order, :as => :order_notification
 
-  belongs_to :seller,
-             :class_name => "User"
-
-  belongs_to :customer_order,
-             :class_name => "Order"
+  has_one :seller,
+          :through => :seller_order
 
   serialize  :params
+
+  before_validation(:on => :create) do
+    self.transaction_id = self.params["txn_id"] if self.params
+  end
+
+  after_create :verify
 
   validates :params,
             :presence => true
@@ -18,17 +21,7 @@ class PaypalIpn < ActiveRecord::Base
             :presence => true,
             :uniqueness => true
 
-  validates :seller,
-            :presence => true
-
-  before_validation(:on => :create) do
-    if self.params
-      self.transaction_id = self.params["txn_id"]
-      self.seller = User.with_role("seller").where(
-        ["email = ?", self.params["receiver_email"]]
-      ).first
-    end
-  end
+  validate :seller_must_exist
 
   def verify
     request_uri = URI.parse(APP_CONFIG["paypal_ipn_postback_uri"])
@@ -44,5 +37,15 @@ class PaypalIpn < ActiveRecord::Base
     end
   end
   handle_asynchronously :verify
+
+  private
+    def seller_must_exist
+      if self.params
+        errors[:base] << "Receiver must be registered as a seller" unless
+        User.with_role("seller").where(
+          ["email = ?", self.params["receiver_email"]]
+        ).first
+      end
+    end
 end
 

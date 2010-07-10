@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
-# gem 'rails', '3.0.0.beta4'
+ gem 'rails', '3.0.0.beta4'
 
 # Bundle edge Rails instead:
-gem 'rails', :git => 'git://github.com/rails/rails.git'
+# gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
@@ -14,7 +14,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'capistrano'
 
 # Bundle the extra gems:
-gem 'devise',              :git => 'git://github.com/plataformatec/devise.git'
+#gem 'devise',              :git => 'git://github.com/plataformatec/devise.git'
+gem 'devise',              ">=1.1.rc2"
 gem 'conversational',      :git => 'git://github.com/dwilkie/conversational.git'
 gem 'state_machine',       :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'money',               :git => 'git://github.com/FooBarWidget/money.git'

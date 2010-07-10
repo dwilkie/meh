@@ -1,4 +1,4 @@
-class OrderObserver < ActiveRecord::Observer
+class SupplierOrderObserver < ActiveRecord::Observer
   def after_create(order)
     if supplier = order.supplier
       if send_notification_by_text_message?(supplier)
@@ -17,11 +17,11 @@ class OrderObserver < ActiveRecord::Observer
   def after_reject(order, transition)
     notify_seller(order)
   end
-    
+
   def after_complete(order, transition)
     pay_supplier_and_notify_seller(order, transition)
   end
-  
+
   private
     def notify_seller(order)
       seller = order.product.seller
@@ -31,7 +31,7 @@ class OrderObserver < ActiveRecord::Observer
         end
       end
     end
-    
+
     def pay_supplier_and_notify_seller(order, transition)
       product = order.product
       seller = product.seller
@@ -71,7 +71,7 @@ class OrderObserver < ActiveRecord::Observer
         end
       end
     end
-    
+
     def find_payment_agreement(product, seller, supplier)
       payment_agreement = product.payment_agreement
       payment_agreement = seller.payment_agreements_with_suppliers.where(
@@ -79,8 +79,9 @@ class OrderObserver < ActiveRecord::Observer
       ).first if payment_agreement.nil?
       payment_agreement
     end
-    
+
     def send_notification_by_text_message?(user)
       user.mobile_number # do more here...
     end
 end
+

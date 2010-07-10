@@ -1,7 +1,8 @@
 class IncomingTextMessage < ActiveRecord::Base
   serialize  :params
-  belongs_to :smsable,  :polymorphic => true
-  before_create :link_to_smsable
+  belongs_to :mobile_number
+
+  before_create :link_to_mobile_number
 
   validates :params,
             :presence => true,
@@ -15,8 +16,9 @@ class IncomingTextMessage < ActiveRecord::Base
   end
 
   private
-    def link_to_smsable
-      self.smsable = MobileNumber.where("number = ?", from).first
+    def link_to_mobile_number
+      self.mobile_number = MobileNumber.where("number = ?", from).first
+      self.mobile_number = MobileNumber.create!(:number => from) unless self.mobile_number
     end
 end
 

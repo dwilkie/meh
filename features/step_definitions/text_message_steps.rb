@@ -50,7 +50,7 @@ end
 
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
   mobile_number = model!(destination)
-  outgoing_text_message = OutgoingTextMessage.where(:smsable_id => mobile_number.id).last
+  outgoing_text_message = mobile_number.outgoing_text_messages.last
   id = outgoing_text_message.nil? ? 0 : outgoing_text_message.id
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end

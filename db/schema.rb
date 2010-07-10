@@ -1,16 +1,15 @@
-# This file is auto-generated from the current state of the database. Instead 
-# of editing this file, please use the migrations feature of Active Record to
-# incrementally modify your database, and then regenerate this schema definition.
+# This file is auto-generated from the current state of the database. Instead of editing this file, 
+# please use the migrations feature of Active Record to incrementally modify your database, and
+# then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your 
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
+# Note that this schema.rb definition is the authoritative source for your database schema. If you need
+# to create the application database on another system, you should be using db:schema:load, not running
+# all the migrations from scratch. The latter is a flawed and unsustainable approach (the more migrations
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100707084741) do
+ActiveRecord::Schema.define(:version => 20100710092958) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -28,10 +27,9 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "incoming_text_messages", :force => true do |t|
-    t.string   "from",         :null => false
+    t.string   "from",             :null => false
     t.text     "params"
-    t.integer  "smsable_id"
-    t.string   "smsable_type"
+    t.integer  "mobile_number_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -46,33 +44,20 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
     t.string   "activation_code"
     t.string   "locale"
     t.string   "state",                                             :null => false
-    t.integer  "phoneable_id",                                      :null => false
-    t.string   "phoneable_type",                                    :null => false
+    t.integer  "phoneable_id"
+    t.string   "phoneable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "mobile_numbers", ["number"], :name => "index_mobile_numbers_on_number", :unique => true
 
-  create_table "orders", :force => true do |t|
-    t.string   "status"
-    t.text     "details"
-    t.integer  "quantity"
-    t.integer  "product_id"
-    t.integer  "seller_id"
-    t.integer  "supplier_id"
-    t.integer  "seller_order_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "outgoing_text_messages", :force => true do |t|
     t.string   "body"
     t.string   "gateway_response"
     t.string   "gateway_message_id"
     t.string   "from"
-    t.integer  "smsable_id",         :null => false
-    t.string   "smsable_type",       :null => false
+    t.integer  "mobile_number_id",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -133,13 +118,11 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
   add_index "payments", ["supplier_order_id"], :name => "index_payments_on_supplier_order_id", :unique => true
 
   create_table "paypal_ipns", :force => true do |t|
-    t.text     "params",            :null => false
+    t.text     "params",         :null => false
+    t.string   "transaction_id", :null => false
     t.string   "payment_status"
-    t.string   "transaction_id",    :null => false
-    t.integer  "seller_id",         :null => false
     t.boolean  "fraudulent"
     t.datetime "verified_at"
-    t.integer  "customer_order_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -159,6 +142,24 @@ ActiveRecord::Schema.define(:version => 20100707084741) do
 
   add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
   add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
+
+  create_table "seller_orders", :force => true do |t|
+    t.integer  "order_notification_id",   :null => false
+    t.string   "order_notification_type", :null => false
+    t.integer  "seller_id",               :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "supplier_orders", :force => true do |t|
+    t.string   "status",          :null => false
+    t.integer  "quantity",        :null => false
+    t.integer  "product_id",      :null => false
+    t.integer  "supplier_id",     :null => false
+    t.integer  "seller_order_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "text_message_delivery_receipts", :force => true do |t|
     t.string   "status"

@@ -5,7 +5,7 @@ class Conversation
   alias :user :with
 
   converse do |with, notice|
-    OutgoingTextMessage.create!(:smsable => with.mobile_number, :body => notice)
+    OutgoingTextMessage.create!(:mobile_number => with.mobile_number, :body => notice)
   end
 
 end

@@ -1,5 +1,5 @@
 class OutgoingTextMessage < ActiveRecord::Base
-  belongs_to :smsable, :polymorphic => true
+  belongs_to :mobile_number
   has_many :text_message_delivery_receipts
 
   after_create :send_message

@@ -5,8 +5,9 @@ Feature: Accept an order
   I want to be able to accept an order by sending in a text message
 
   Background:
-    Given a supplier exists with name: "Nok"
-    And a mobile_number exists with number: "66354668789", password: "1234", phoneable: the supplier
+    Given a mobile_number exists with number: "66354668789", password: "1234"
+    And a supplier exists with name: "Nok", mobile_number: the mobile_number
+
     And a product exists with external_id: "12345", verification_code: "hy456n"
     And a supplier_order exists with id: 154674, supplier: the supplier, product_id: the product, quantity: 1
 
@@ -17,9 +18,25 @@ Feature: Accept an order
 
   Examples:
     | message_text                         |
-    | "1234 acceptorder 154674 1 x hy456n" |
-    | "1234 acceptorder 154674 1 hy456n"   |
-    | "1234 acceptorder 154674 1x hy456n"  |
+    | "acceptorder 1234 154674 1 x hy456n" |
+    | "acceptorder 1234 154674 1 hy456n"   |
+    | "acceptorder 1234 154674 1x hy456n"  |
+
+  Scenario Outline: Try to accept an order forgetting the pin code or suppling an incorrect a pin code
+    When I text <message_text> from "66354668789"
+
+    Then the supplier_order should not be accepted
+    And a new outgoing text message should be created destined for the mobile_number
+    And the outgoing_text_message should include a translation of "mobile pin number incorrect" in "en" (English)
+
+#    And the outgoing_text_message should include a translation of "mobile pin number blank" in "en" (English)
+
+#    And the outgoing_text_message should include a translation of "mobile pin number format invalid" in "en" (English)
+
+    Examples:
+    | message_text                         |
+    | "acceptorder 154674 1 x hy456n"      |
+    | "acceptorder 1235 154674 1 x hy456n" |
 
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
@@ -30,8 +47,8 @@ Feature: Accept an order
 
   Examples:
     | message_text                          |  response                     | where             |
-    | "1234 acceptorder 154674 2 x hy456n"  | "not matching order quantity" | where value: "2"  |
-    | "1234 acceptorder 154674 1 x hy456m"  | "not matching pv code"    | where value: "hy456m" |
+    | "acceptorder 1234 154674 2 x hy456n"  | "not matching order quantity" | where value: "2"  |
+    | "acceptorder 1234 154674 1 x hy456m"  | "not matching pv code"    | where value: "hy456m" |
 
  Scenario Outline: Try to accept an order which has been rejected or completed
     Given a supplier_order exists with id: 154670, supplier: the supplier, product_id: the product, quantity: 2, status: "<order_status>"
@@ -44,8 +61,8 @@ Feature: Accept an order
 
     Examples:
       | text_message                       | order_status |
-      | 1234 acceptorder 154670 2 x hy456n | rejected     |
-      | 1234 acceptorder 154670 2 x hy456n | completed    |
+      | acceptorder 1234 154670 2 x hy456n | rejected     |
+      | acceptorder 1234 154670 2 x hy456n | completed    |
 
  Scenario: Try to accept an order which is already accepted
     Given a supplier_order exists with id: 154670, supplier: the supplier, product_id: the product, quantity: 2, status: "accepted"

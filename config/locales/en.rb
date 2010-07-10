@@ -13,7 +13,7 @@
       :elements => {
         :greeting => "Hi %{name}, ",
         :shared => {
-          :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur customer order(#%{customer_order_number})",
+          :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur customer order(#%{seller_order_number})",
           :supplier_details => "%{supplier} (%{supplier_contact_details})"
         }
       },
@@ -25,7 +25,7 @@
           :pv_code => "<pv code>",
           :confirm => "CONFIRM!",
           :supplier_order_number => "<supplier order number>",
-          :customer_order_number => "<customer order number>"
+          :seller_order_number => "<customer order number>"
         },
         :base => lambda { |key, options|
           I18n.t("messages.commands.elements.pin_number") << " " << options[:command]
@@ -61,15 +61,15 @@
             )
           },
           :pay4order => lambda { |key, options|
-            options[:customer_order_number] ||= I18n.t(
-              "messages.commands.elements.customer_order_number"
+            options[:seller_order_number] ||= I18n.t(
+              "messages.commands.elements.seller_order_number"
             )
             options[:supplier_order_number] ||= I18n.t(
               "messages.commands.elements.supplier_order_number"
             )
             I18n.t(
               "messages.commands.base",
-              :command => "pay4order #{options[:customer_order_number]} #{options[:supplier_order_number]}"
+              :command => "pay4order #{options[:seller_order_number]} #{options[:supplier_order_number]}"
             )
           },
           :paymentdetails => lambda { |key, options|
@@ -163,7 +163,7 @@
           :supplier_order_number => options[:supplier_order_number],
           :quantity => options[:quantity],
           :product_code => options[:product_code],
-          :customer_order_number => options[:customer_order_number]
+          :seller_order_number => options[:seller_order_number]
         ) << " as " <<
         I18n.t(
           "activerecord.attribute_values.order.status.#{options[:processed]}"
@@ -192,7 +192,7 @@
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
-          :customer_order_number => options[:customer_order_number],
+          :seller_order_number => options[:seller_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
         ) << ". Their order is marked as " <<
@@ -201,7 +201,7 @@
         ) << ". Reply with " <<
         I18n.t(
           "messages.commands.templates.pay4order",
-          :customer_order_number => options[:customer_order_number],
+          :seller_order_number => options[:seller_order_number],
           :supplier_order_number => options[:supplier_order_number]
         ) << " " <<
         I18n.t(
@@ -219,7 +219,7 @@
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
-          :customer_order_number => options[:customer_order_number],
+          :seller_order_number => options[:seller_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
         ) << ". Their order is marked as " <<
@@ -260,7 +260,7 @@
         I18n.t(
           "messages.elements.shared.order_details_for_seller",
           :supplier_order_number => options[:supplier_order_number],
-          :customer_order_number => options[:customer_order_number],
+          :seller_order_number => options[:seller_order_number],
           :product_code => options[:product_code],
           :quantity => options[:quantity]
         )

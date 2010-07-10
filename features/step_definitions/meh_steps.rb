@@ -1,9 +1,3 @@
-Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |plural_factory, fields|
-  find_models(plural_factory.singularize, fields).each do |instance|
-    instance.destroy
-  end
-end
-
 Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user = model!(user)
   user.new_role = role
@@ -16,14 +10,6 @@ Given /^there is a payment agreement set to (\w+)(?: and to trigger when an orde
   new_fields = new_fields << ", payment_trigger_on_order: \"#{payment_trigger_on_order}\"" if payment_trigger_on_order
   new_fields = new_fields << ", " << fields if fields
   Given "a payment_agreement exists with #{new_fields}"
-end
-
-When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
-  create_model(name, fields)
-end
-
-When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
-  model!(name).send(transition.singularize)
 end
 
 When /^a customer successfully purchases(?: (\d+) of)? #{capture_model} through paypal$/ do |quantity, product|
