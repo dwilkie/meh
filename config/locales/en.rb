@@ -132,8 +132,14 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :cannot_process_order => lambda { |key, options|
-        message = "we cannot process ur request because this order is " <<
-        I18n.t("activerecord.attribute_values.order.status.#{options[:status]}")
+        status_wording = options[:status] == "unconfirmed" ?
+        "is not yet confirmed" :
+        "was already " <<
+        I18n.t(
+          "activerecord.attribute_values.order.status.#{options[:status]}"
+        )
+        message = "we cannot process ur request because this order " <<
+        status_wording
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :confirm_reject_order => lambda { |key, options|
