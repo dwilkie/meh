@@ -27,9 +27,6 @@
           :supplier_order_number => "<supplier order number>",
           :seller_order_number => "<customer order number>"
         },
-        :base => lambda { |key, options|
-          I18n.t("messages.commands.elements.pin_number") << " " << options[:command]
-        },
         :templates => {
           :acceptorder => lambda { |key, options|
             options[:order_number] ||= I18n.t(
@@ -37,28 +34,33 @@
             )
             options[:quantity] ||= I18n.t("messages.commands.elements.quantity")
             options[:pv_code] ||= I18n.t("messages.commands.elements.pv_code")
+            "acceptorder " <<
             I18n.t(
-              "messages.commands.base",
-              :command => "acceptorder #{options[:order_number]} #{options[:quantity]} x #{options[:pv_code]}"
-            )
+              "messages.commands.elements.pin_number"
+            ) << " " <<
+            options[:order_number] << " " <<
+            options[:quantity] << " x " <<
+            options[:pv_code]
           },
           :rejectorder => lambda { |key, options|
             options[:order_number] ||= I18n.t(
               "messages.commands.elements.order_number"
             )
+            "rejectorder" << " " <<
             I18n.t(
-              "messages.commands.base",
-              :command => "rejectorder #{options[:order_number]}"
-            )
+              "messages.commands.elements.pin_number"
+            ) << " " <<
+            options[:order_number]
           },
           :completeorder => lambda { |key, options|
             options[:order_number] ||= I18n.t(
               "messages.commands.elements.order_number"
             )
+            "completeorder" << " " <<
             I18n.t(
-              "messages.commands.base",
-              :command => "completeorder #{options[:order_number]}"
-            )
+              "messages.commands.elements.pin_number"
+            ) << " " <<
+            options[:order_number]
           },
           :pay4order => lambda { |key, options|
             options[:seller_order_number] ||= I18n.t(
@@ -67,19 +69,16 @@
             options[:supplier_order_number] ||= I18n.t(
               "messages.commands.elements.supplier_order_number"
             )
-            I18n.t(
-              "messages.commands.base",
-              :command => "pay4order #{options[:seller_order_number]} #{options[:supplier_order_number]}"
-            )
+            "pay4order" << " " <<
+            options[:seller_order_number] << " " <<
+            options[:supplier_order_number]
           },
           :paymentdetails => lambda { |key, options|
             options[:supplier_order_number] ||= I18n.t(
               "messages.commands.elements.order_number"
             )
-            I18n.t(
-              "messages.commands.base",
-              :command => "paymentdetails #{options[:supplier_order_number]}"
-            )
+            "paymentdetails" << " " <<
+            options[:supplier_order_number]
           }
         }
       },

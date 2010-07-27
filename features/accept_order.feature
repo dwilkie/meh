@@ -28,16 +28,13 @@ Feature: Accept an order
 
     Then the supplier_order should not be accepted
     And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should include a translation of "mobile pin number incorrect" in "en" (English)
-
-#    And the outgoing_text_message should include a translation of "mobile pin number blank" in "en" (English)
-
-#    And the outgoing_text_message should include a translation of "mobile pin number format invalid" in "en" (English)
+    And the outgoing_text_message should include a translation of <error_message> in "en" (English)
 
     Examples:
-    | message_text                         |
-    | "acceptorder 154674 1 x hy456n"      |
-    | "acceptorder 1235 154674 1 x hy456n" |
+    | message_text                         | error_message                      |
+    | "acceptorder 154674 1 x hy456n"      | "mobile pin number incorrect"      |
+    | "acceptorder 1235 154674 1 x hy456n" | "mobile pin number blank"          |
+    | "acceptorder 123 154674 1 x hy456n"  | "mobile pin number format invalid" |
 
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
