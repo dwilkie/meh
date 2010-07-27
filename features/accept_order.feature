@@ -17,10 +17,11 @@ Feature: Accept an order
     Then the supplier_order should be accepted
 
   Examples:
-    | message_text                         |
-    | "acceptorder 1234 154674 1 x hy456n" |
-    | "acceptorder 1234 154674 1 hy456n"   |
-    | "acceptorder 1234 154674 1x hy456n"  |
+    | message_text                          |
+    | "acceptorder 1234 154674 1 x hy456n"  |
+    | "acceptorder 1234 154674 1 hy456n"    |
+    | "acceptorder 1234 154674 1x hy456n"   |
+    | "acceptorder 1234 #154674 1x hy456n"  |
 
   Scenario Outline: Try to accept an order forgetting the pin code or suppling an incorrect a pin code
     When I text <message_text> from "66354668789"

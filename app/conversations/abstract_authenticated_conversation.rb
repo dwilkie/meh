@@ -16,10 +16,12 @@ class AbstractAuthenticatedConversation < Conversation
               :correct => true,
               :allow_nil => true
 
-    def initialize(raw_message, mobile_number)
+    def initialize(raw_message, user)
       @raw_message = raw_message
-      @pin_number = raw_message.split(" ")[1]
-      @mobile_number = mobile_number
+      message_contents = @raw_message.split(" ")
+      @pin_number = message_contents[1]
+      @mobile_number = user.mobile_number
+      message_contents
     end
   end
 end

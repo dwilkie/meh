@@ -6,7 +6,7 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
     Conversation.new(
       :with => phoneable,
       :topic => message_text.try(:split, " ").try(:[], 0)
-    )
+    ).details.move_along(message_text)
   end
 end
 

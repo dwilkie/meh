@@ -89,7 +89,7 @@
           options[:seller]
         message << "for #{options[:quantity]} x "
         message << "your product " unless options[:seller]
-        message << "##{options[:product_code]}. To accept the order, look up the pv code for ##{options[:product_code]} and reply with: " <<
+        message << "##{options[:product_code]}. To accept the order, look up the pv code for the product and reply with: " <<
         I18n.t(
           "messages.commands.templates.acceptorder",
           :order_number => options[:order_number],
@@ -138,7 +138,7 @@
         I18n.t("messages.base", :name => options[:supplier], :body => message)
       },
       :confirm_reject_order => lambda { |key, options|
-        message = "r u sure u want to reject this order? Text: " <<
+        message = "r u sure u want to reject the order ##{options[:order_number]}? Text: " <<
         I18n.t(
           "messages.commands.templates.rejectorder",
           :order_number => options[:order_number]

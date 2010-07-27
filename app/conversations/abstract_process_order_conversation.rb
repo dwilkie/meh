@@ -6,10 +6,9 @@ class AbstractProcessOrderConversation < Conversation
               :presence => true
 
     def initialize(raw_message, supplier)
-      super
-      message_contents = raw_message.split(" ")
+      message_contents = super
       @command = message_contents[0]
-      order_number = message_contents[1].try(:to_i)
+      order_number = message_contents[2].try(:gsub, /\D/, "").try(:to_i)
       @order = supplier.supplier_orders.find_by_id(order_number)
       message_contents
     end

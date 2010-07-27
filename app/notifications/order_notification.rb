@@ -62,11 +62,11 @@ class OrderNotification < Conversation
       supplier_order_details = "Please send the "
       supplier_order_details += supplier_order.quantity > 1 ? "product".pluralize : "product"
       supplier_order_details += " to the following address:" << "\n"
-        order_notification_params["address_name"] << "\n" <<
-        order_notification_params["address_street"] << "\n" <<
-        order_notification_params["address_city"] << "\n" <<
-        order_notification_params["address_state"] << "\n" <<
-        order_notification_params["address_zip"] << "\n" <<
+        order_notification_params["address_name"] << ",\n" <<
+        order_notification_params["address_street"] << ",\n" <<
+        order_notification_params["address_city"] << ",\n" <<
+        order_notification_params["address_state"] << ",\n" <<
+        order_notification_params["address_zip"] << ",\n" <<
         order_notification_params["address_country"]
     end
 
