@@ -302,7 +302,7 @@
               }
             }
           },
-          :'authentication_notification/message' => {
+          :'abstract_authenticated_conversation/message' => {
             :attributes => {
               :pin_number => {
                 :incorrect => "was incorrect",

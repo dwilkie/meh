@@ -32,9 +32,9 @@ Feature: Accept an order
 
     Examples:
     | message_text                         | error_message                      |
-    | "acceptorder 154674 1 x hy456n"      | "mobile pin number incorrect"      |
-    | "acceptorder 1235 154674 1 x hy456n" | "mobile pin number blank"          |
-    | "acceptorder 123 154674 1 x hy456n"  | "mobile pin number format invalid" |
+    | "acceptorder 1235 154674 1 x hy456n" | "mobile pin number incorrect"      |
+    | "acceptorder x123 154674 1 x hy456n" | "mobile pin number format invalid" |
+    | "acceptorder"                        | "mobile pin number blank"          |
 
   Scenario Outline: Try to accept an order with the wrong quantity or pv code
     When I text <message_text> from "66354668789"
