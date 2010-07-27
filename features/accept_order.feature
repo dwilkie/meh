@@ -65,7 +65,7 @@ Feature: Accept an order
  Scenario: Try to accept an order which is already accepted
     Given a supplier_order exists with id: 154670, supplier: the supplier, product_id: the product, quantity: 2, status: "accepted"
 
-    When I text "1234 acceptorder 154670 2 x hy456n" from "66354668789"
+    When I text "acceptorder 1234 154670 2 x hy456n" from "66354668789"
     Then the supplier_order should be accepted
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "cannot process order" in "en" (English) where status: "accepted", supplier: "Nok"
