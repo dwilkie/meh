@@ -2,22 +2,22 @@ class RejectorderConversation < AbstractProcessOrderConversation
 
   class Message < AbstractProcessOrderConversation::SupplierOrderMessage
     attr_reader   :confirmation
-    
+
     validates :confirmation,
               :format => /^confirm\!$/i,
               :allow_nil => true
-    
+
     def initialize(raw_message, supplier)
       message_contents = super
-      @confirmation = message_contents[2]
+      @confirmation = message_contents[3]
     end
-    
+
     def confirmed?
       !confirmation.nil?
     end
   end
 
-  def move_along!(message)
+  def move_along(message)
     if user.is?(:supplier)
       message = Message.new(message, user)
       processed = "rejected"
@@ -40,13 +40,14 @@ class RejectorderConversation < AbstractProcessOrderConversation
       say unauthorized
     end
   end
-  
+
   private
     def confirm_reject(order)
       I18n.t(
-          "messages.confirm_reject_order",
-          :supplier => user.name,
-          :order_number => order.id
-        )
+        "messages.confirm_reject_order",
+        :supplier => user.name,
+        :order_number => order.id.to_s
+      )
     end
 end
+

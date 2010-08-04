@@ -29,7 +29,7 @@ class AbstractProcessOrderConversation < Conversation
         "messages.successfully_processed_order",
         :supplier => user.name,
         :processed => processed,
-        :order_number => order.id
+        :order_number => order.id.to_s
       )
     end
 

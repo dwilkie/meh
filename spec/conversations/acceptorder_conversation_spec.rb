@@ -107,8 +107,8 @@ describe AcceptorderConversation do
         context "but the user forgot to supply a password" do
           let!(:message_text) {"acceptorder 2312 5 x suo1243"}
           it "should not mark the order as accepted" do
-            conversation.should_receive(:invalid)
             conversation.move_along(message_text)
+            SupplierOrder.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
