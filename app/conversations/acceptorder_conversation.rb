@@ -1,6 +1,6 @@
 class AcceptorderConversation < AbstractProcessOrderConversation
 
-  class Message < AbstractProcessOrderConversation::SupplierOrderMessage
+  class Message < AbstractProcessOrderConversation::Message
     class MatchesOrderQuantityValidator < ActiveModel::EachValidator
       def validate_each(record, attribute, value)
         order = record.order

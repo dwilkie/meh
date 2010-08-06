@@ -1,7 +1,22 @@
 class CompleteorderConversation < AbstractProcessOrderConversation
-  def move_along!(message)
+
+  class Message < AbstractProcessOrderConversation::Message
+    attr_reader   :tracking_number
+
+    validates :tracking_number,
+              :presence => true,
+              :format => /^cp|re\d{9}th$/i,
+              :allow_blank => true
+
+    def initialize(raw_message, supplier)
+      message_contents = super
+      @tracking_number = message_contents[3]
+    end
+  end
+
+  def move_along(message)
     if user.is?(:supplier)
-      message = AbstractProcessOrderConversation::SupplierOrderMessage.new(message, user)
+      message = Message.new(message, user)
       processed = "completed"
       if message.valid?
         order = message.order
@@ -19,3 +34,4 @@ class CompleteorderConversation < AbstractProcessOrderConversation
     end
   end
 end
+

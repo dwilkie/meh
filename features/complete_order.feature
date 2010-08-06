@@ -10,7 +10,7 @@ Feature: Complete an order
 
   Scenario: Complete an order
     Given a supplier_order exists with id: 154674, supplier: the supplier, status: "accepted"
-    When I text "1234 completeorder 154674" from "66354668789"
+    When I text "completeorder 1234 154674" from "66354668789"
 
     Then the supplier_order should be completed
     And a new outgoing text message should be created destined for the mobile_number
@@ -26,13 +26,13 @@ Feature: Complete an order
 
     Examples:
       | text_message               | order_status |
-      | 1234 completeorder 654789  | rejected     |
-      | 1234 completeorder 654789  | unconfirmed  |
+      | completeorder 1234 654789  | rejected     |
+      | completeorder 1234 654789  | unconfirmed  |
 
   Scenario: Try to complete an order which was already completed
     Given a supplier_order exists with id: 654789, supplier: the supplier, status: "completed"
 
-    When I text "1234 completeorder 654789" from "66354668789"
+    When I text "completeorder 1234 654789" from "66354668789"
     Then the supplier_order should be completed
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "cannot process order" in "en" (English) where status: "completed", supplier: "Nok"

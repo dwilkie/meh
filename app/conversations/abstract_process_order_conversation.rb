@@ -1,5 +1,5 @@
 class AbstractProcessOrderConversation < Conversation
-  class SupplierOrderMessage < AbstractAuthenticatedConversation::Message
+  class Message < AbstractAuthenticatedConversation::Message
     attr_reader  :order, :command
 
     validates :order,

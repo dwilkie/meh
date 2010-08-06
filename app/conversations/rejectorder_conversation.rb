@@ -1,6 +1,6 @@
 class RejectorderConversation < AbstractProcessOrderConversation
 
-  class Message < AbstractProcessOrderConversation::SupplierOrderMessage
+  class Message < AbstractProcessOrderConversation::Message
     attr_reader   :confirmation
 
     validates :confirmation,

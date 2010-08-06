@@ -1,26 +1,31 @@
 require 'spec_helper'
 
-describe RejectorderConversation do
-  # A valid reject order text message should be formatted as follows:
-  # rejectorder <pin_code> <order_number>
+describe CompleteorderConversation do
+  # Todo:
+  # Make the tracking number optional and part of custom supplier input
+  # A seller should be able to specify custom message elements
+  # e.g. The seller can add a message element:
 
-  # To actually reject the order, however the supplier
-  # must format the message as follows:
-  # rejectorder <pin_code> <order_number> CONFIRM!
+  # name => tracking number
+  # allow_blank => true
+  # format => regex
+  # unique => true
+
+  # A valid complete order text message should be formatted as follows:
+  # completeorder <pin_code> <order_number> <tracking_number>
 
   # Supplying a # in front of the order number is also accepted
-  # rejectorder <pin_code> #<order_number>
+  # completeorder <pin_code> #<order_number> <tracking_number>
 
   # Examples of valid messages:
-  # "rejectorder 1234 6788965"          # Prompts the user to confirm
-  # "rejectorder 1234 #6788965"         # Prompts the user to confirm
-  # "rejectorder 1234 6788965 CONFIRM!" # Rejects the order
-  # "rejectorder 1234 6788965 confirm!" # Rejects the order
+  # "completeorder 1234 6788965 cp132446543th"  # Marks the order #6788965 as completed
+  # "completeorder 1234 #6788965 cp132446543th" # Marks the order #6788965 as completed
 
   # Examples of invalid messages:
-  # "rejectorder 2345677"               # Pin code incorrect
-  # "rejectorder 1234 x2345             # Order not found
-  # "rejectorder 1234 6788965 CONFIRM"  # '!' missing from CONFIRM
+  # "completeorder 2345677"                # Pin code incorrect
+  # "completeorder 1234 x2345              # Order not found
+  # "completeorder 1234 6788965"           # Tracking number ommitted
+  # "completeorder 1234 6788965 re21234tp" # Tracking number format incorrect
 
   def create_order(options)
     options[:for_this_supplier] = true if options[:for_this_supplier].nil?
@@ -39,7 +44,7 @@ describe RejectorderConversation do
 
   let(:valid_attributes) {
     {
-      :topic => "rejectorder",
+      :topic => "completeorder",
       :with => Factory.create(
         :user,
         :mobile_number => Factory.create(
@@ -50,8 +55,8 @@ describe RejectorderConversation do
     }
   }
   describe "#move_along" do
-    let(:conversation) { RejectorderConversation.new(valid_attributes) }
-    let(:message_text) {"rejectorder 1234 2312"}
+    let(:conversation) { CompleteorderConversation.new(valid_attributes) }
+    let(:message_text) {"completeorder 1234 2312 cp132446543th"}
     context "user is not a supplier" do
       it "should send a not authorized message" do
         conversation.should_receive(:unauthorized)
@@ -62,51 +67,38 @@ describe RejectorderConversation do
       before {
         conversation.user.new_role = :supplier
       }
-      context "and an unconfirmed order exists belonging to the user" do
+      context "and an accepted order exists belonging to the user" do
         before {
-          create_order(:for_this_supplier => true)
+          create_order(:for_this_supplier => true, :status => :accepted)
         }
         context "and the user supplied the correct order details" do
-          context "but didn't add 'confirm!' at the end" do
-            it "should say confirm reject" do
-              conversation.should_receive(:confirm_reject)
-              conversation.move_along(message_text)
-            end
-            context "supplying a # in front of the order number" do
-              it "should say confirm reject" do
-                conversation.should_receive(:confirm_reject)
-                conversation.move_along("rejectorder 1234 #2312")
-              end
-            end
+          it "should mark the order as completed" do
+            conversation.move_along(message_text)
+            SupplierOrder.first.completed?.should == true
           end
-          context "and added 'confirm!' at the end" do
-            let!(:message_text) {"rejectorder 1234 2312 confirm!"}
-            it "should mark the order as rejected" do
+          it "should say successfully processed order" do
+            conversation.should_receive(:successfully)
+            conversation.move_along(message_text)
+          end
+          context "supplying a # in front of the order number" do
+            let!(:message_text) {"completeorder 1234 #2312 cp132446543th"}
+
+            it "should mark the order as completed" do
               conversation.move_along(message_text)
-              SupplierOrder.first.rejected?.should == true
+              SupplierOrder.first.completed?.should == true
             end
-            it "should say successfully rejected order" do
+
+            it "should say successfully processed" do
               conversation.should_receive(:successfully)
-              conversation.move_along(message_text)
-            end
-          end
-          context "but added 'confirm' at the end instead of 'confirm!'" do
-            let!(:message_text) {"rejectorder 1234 2312 confirm"}
-            it "should not mark the order as rejected" do
-              conversation.move_along(message_text)
-              SupplierOrder.first.rejected?.should == false
-            end
-            it "should say invalid" do
-              conversation.should_receive(:invalid)
               conversation.move_along(message_text)
             end
           end
         end
         context "but the user supplied the wrong password" do
-          let!(:message_text) {"rejectorder 1233 2312"}
-          it "should not mark the order as rejected" do
+          let!(:message_text) {"completeorder 1233 2312 cp132446543th"}
+          it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+            SupplierOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -114,10 +106,10 @@ describe RejectorderConversation do
           end
         end
         context "but the user forgot to supply a password" do
-          let!(:message_text) {"rejectorder 2312"}
-          it "should not mark the order as rejected" do
+          let!(:message_text) {"completeorder 2312 cp132446543th"}
+          it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+            SupplierOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -125,10 +117,10 @@ describe RejectorderConversation do
           end
         end
         context "but the user supplied the incorrect order number" do
-          let!(:message_text) {"rejectorder 1234 2313"}
-          it "should not mark the order as rejected" do
+          let!(:message_text) {"completeorder 1234 2313 cp132446543th"}
+          it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+            SupplierOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -136,39 +128,13 @@ describe RejectorderConversation do
           end
         end
         context "but the user forgot to supply the order number" do
-          let!(:message_text) {"rejectorder 1234"}
-          it "should not mark the order as rejected" do
+          let!(:message_text) {"completeorder 1234 cp132446543th"}
+          it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+            SupplierOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
-            conversation.move_along(message_text)
-          end
-        end
-      end
-      context "and an already rejected order exists belonging to the user" do
-        before {
-          create_order(:for_this_supplier => true, :status => :rejected)
-        }
-        context "and the user supplied the correct order details" do
-          it "should say cannot process order" do
-            conversation.should_receive(:cannot_process)
-            conversation.move_along(message_text)
-          end
-        end
-      end
-      context "and an already accepted order exists belonging to the user" do
-        before {
-          create_order(:for_this_supplier => true, :status => :accepted)
-        }
-        context "and the user supplied the correct order details" do
-          it "should not mark the order as rejected" do
-            conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
-          end
-          it "should say cannot process order" do
-            conversation.should_receive(:cannot_process)
             conversation.move_along(message_text)
           end
         end
@@ -178,9 +144,35 @@ describe RejectorderConversation do
           create_order(:for_this_supplier => true, :status => :completed)
         }
         context "and the user supplied the correct order details" do
-          it "should not mark the order as rejected" do
+          it "should say cannot process order" do
+            conversation.should_receive(:cannot_process)
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+          end
+        end
+      end
+      context "and an already rejected order exists belonging to the user" do
+        before {
+          create_order(:for_this_supplier => true, :status => :rejected)
+        }
+        context "and the user supplied the correct order details" do
+          it "should not mark the order as completed" do
+            conversation.move_along(message_text)
+            SupplierOrder.first.completed?.should == false
+          end
+          it "should say cannot process order" do
+            conversation.should_receive(:cannot_process)
+            conversation.move_along(message_text)
+          end
+        end
+      end
+      context "and an unconfirmed order exists belonging to the user" do
+        before {
+          create_order(:for_this_supplier => true)
+        }
+        context "and the user supplied the correct order details" do
+          it "should not mark the order as completed" do
+            conversation.move_along(message_text)
+            SupplierOrder.first.completed?.should == false
           end
           it "should say cannot process order" do
             conversation.should_receive(:cannot_process)
@@ -190,12 +182,12 @@ describe RejectorderConversation do
       end
       context "and an order exists but does not belong to this user" do
         before {
-          create_order(:for_this_supplier => false)
+          create_order(:for_this_supplier => false, :status => :accepted)
         }
         context "and the user gave the order details for someone elses order" do
-          it "should not mark the order as rejected" do
+          it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.rejected?.should == false
+            SupplierOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
