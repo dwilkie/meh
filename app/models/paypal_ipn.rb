@@ -13,8 +13,8 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   before_create :set_payment_status
-
   after_create  :verify
+  after_update  :link_seller
 
   validates :params,
             :presence => true
@@ -25,6 +25,10 @@ class PaypalIpn < ActiveRecord::Base
 
   validate :seller_must_exist
 
+  def payment_completed?
+    self.payment_status == "Completed"
+  end
+
   def verify
     request_uri = URI.parse(APP_CONFIG["paypal_ipn_postback_uri"])
     request_uri.scheme = "https" # force https
@@ -33,25 +37,34 @@ class PaypalIpn < ActiveRecord::Base
         request_uri.to_s,
         :body => self.params.merge("cmd"=>"_notify-validate")
       ).body == "VERIFIED"
-      self.update_attribute(:verified_at, Time.now)
+      self.update_attributes!(:verified_at => Time.now)
     else
-      self.update_attribute(:fraudulent, true)
+      self.update_attributes!(:fraudulent => true)
     end
   end
   handle_asynchronously :verify
 
+  def create_orders?
+    self.verified_at_changed? && self.payment_completed?
+  end
+
   private
     def seller_must_exist
-      if self.params
-        errors[:base] << "Receiver must be registered as a seller" unless
-        User.with_role("seller").where(
-          ["email = ?", self.params["receiver_email"]]
-        ).first
-      end
+      errors[:base] << "Receiver must be registered as a seller" if self.params && find_seller.nil?
     end
 
     def set_payment_status
       self.payment_status = self.params["payment_status"] if self.params
+    end
+
+    def link_seller
+      self.seller = find_seller if self.create_orders?
+    end
+
+    def find_seller
+      User.with_role("seller").where(
+        ["email = ?", self.params["receiver_email"]]
+      ).first
     end
 end
 

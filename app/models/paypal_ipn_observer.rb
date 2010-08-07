@@ -1,21 +1,11 @@
 class PaypalIpnObserver < ActiveRecord::Observer
   # this is not being run because we're not using
   # state machine. Use after update
-  def after_verify(paypal_ipn, transition)
-    link_seller(paypal_ipn)
-    create_supplier_orders(paypal_ipn)
+  def after_update(paypal_ipn)
+    create_supplier_orders(paypal_ipn) if paypal_ipn.create_orders?
   end
 
   private
-    # This automatically creates the seller order
-    def link_seller(paypal_ipn)
-      paypal_ipn.update_attributes!(
-        :seller => User.with_role("seller").where(
-          ["email = ?", paypal_ipn.params["receiver_email"]]
-        ).first
-      )
-    end
-
     def create_supplier_orders(paypal_ipn)
       seller_order = paypal_ipn.seller_order
       paypal_ipn.params["num_cart_items"].to_i.times do |index|

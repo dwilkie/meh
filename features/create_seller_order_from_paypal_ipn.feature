@@ -1,17 +1,18 @@
-Feature: Create a seller order when a paypal ipn is verified
+Feature: Create a seller order
   In order to keep track of my orders
   As a seller
-  I want a new seller order to be created when a customer successfully purchases an item of mine using paypal
+  I want a new seller order to be created when a paypal ipn is received and verified and the payment status is: 'Completed'
 
-  Scenario: Customer successfully purchases an item using paypal
+  Scenario: Paypal ipn is verified and a the payment status is completed
     Given a seller exists
     And a product exists with seller: the seller
+    And a paypal_ipn exists
+    And the paypal_ipn has the following params: "'payment_status'=>'Completed', 'txn_id'=>'45D21472YD1820048', 'receiver_email'=>'some_seller@example.com'"
 
-    When a customer successfully purchases the product through paypal
+    When the paypal_ipn is verified
 
-    Then a paypal_ipn should exist with payment_status: "Completed"
-    And a seller_order should exist with seller_id: the seller
-    And the seller_order should be unconfirmed
-    And the paypal_ipn should be the seller_order's paypal_ipn
-    And the seller_order should be amongst the seller's customer_orders
+    Then a seller_order should exist
+    And the seller_order should be the paypal_ipn seller_order
+    And the seller should be the paypal_ipn seller
+    And the seller_order should be amongst the seller's seller_orders
 

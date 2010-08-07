@@ -9,6 +9,11 @@ Given /^paypal (did not send|sent) the IPN$/ do |fraudulent|
   )
 end
 
+Given /^the paypal ipn's payment status is: "([^\"]*)"$/ do |payment_status|
+  paypal_ipn = model!("paypal_ipn")
+  paypal_ipn.update_attribute(:payment_status, payment_status)
+end
+
 When /^a paypal ipn is received with: "([^\"]*)"$/ do |params|
   params = instance_eval(params)
   begin

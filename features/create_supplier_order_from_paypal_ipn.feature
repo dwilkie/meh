@@ -1,7 +1,7 @@
 Feature: Create supplier orders when a paypal ipn is verified
   In order to keep track of my orders
   As a supplier
-  I want a new supplier order to be created when a customer successfully purchases an item that I am supplying on paypal
+  I want a new supplier order to be created when a paypal ipn containing a product that I am supplying is verified and the payment status is 'Completed'
 
   Scenario: A Paypal IPN is verified containing my product
     Given a supplier exists
@@ -11,7 +11,7 @@ Feature: Create supplier orders when a paypal ipn is verified
 
     When the paypal_ipn is verified
 
-    Then an order should exist with supplier_id: the supplier
-    And the order should be unconfirmed
-    And the order should be amongst the supplier's supplier_orders
+    Then a supplier_order should exist with supplier_id: the supplier
+    And the supplier_order should be unconfirmed
+    And the supplier_order should be amongst the supplier's supplier_orders
 

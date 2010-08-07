@@ -7,7 +7,7 @@ Feature: Paypal IPN Verification
     When a paypal_ipn is created
     Then a job should exist to verify the ipn came from paypal
 
-  Scenario: Paypal sent the IPN
+  Scenario: Paypal sent an IPN with a payment status of completed
     Given a paypal_ipn exists
     And paypal sent the IPN
 
@@ -15,8 +15,6 @@ Feature: Paypal IPN Verification
 
     Then the paypal_ipn should be marked as verified
     And the paypal_ipn should not be fraudulent
-    And a seller_order should exist
-    And the seller_order should be the paypal_ipn's seller_order
 
   Scenario: Paypal did not send the IPN
     Given a paypal_ipn exists
