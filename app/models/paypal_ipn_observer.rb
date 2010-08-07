@@ -1,4 +1,6 @@
 class PaypalIpnObserver < ActiveRecord::Observer
+  # this is not being run because we're not using
+  # state machine. Use after update
   def after_verify(paypal_ipn, transition)
     link_seller(paypal_ipn)
     create_supplier_orders(paypal_ipn)
