@@ -1,4 +1,4 @@
-Factory.define :user, :default_strategy => :build do |f|
+Factory.define :user do |f|
   f.sequence(:email) {|n| "user#{n}@example.com" }
   f.password "foobar"
   f.password_confirmation { |u| u.password }
@@ -6,7 +6,7 @@ Factory.define :user, :default_strategy => :build do |f|
   f.association :mobile_number
 end
 
-Factory.define :seller, :class => User, :default_strategy => :build do |f|
+Factory.define :seller, :class => User do |f|
   f.sequence(:email) {|n| "seller#{n}@example.com" }
   f.roles ["seller"]
   f.password "foobar"
@@ -15,7 +15,7 @@ Factory.define :seller, :class => User, :default_strategy => :build do |f|
   f.association :mobile_number
 end
 
-Factory.define :supplier, :class => User, :default_strategy => :build do |f|
+Factory.define :supplier, :class => User do |f|
   f.sequence(:email) {|n| "supplier#{n}@example.com" }
   f.roles ["supplier"]
   f.password "foobar"
@@ -24,7 +24,7 @@ Factory.define :supplier, :class => User, :default_strategy => :build do |f|
   f.association :mobile_number
 end
 
-Factory.define :mobile_number, :default_strategy => :build do |f|
+Factory.define :mobile_number do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
   f.password "1234"
   f.password_confirmation { |m| m.password }

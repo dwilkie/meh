@@ -12,7 +12,9 @@ class PaypalIpn < ActiveRecord::Base
     self.transaction_id = self.params["txn_id"] if self.params
   end
 
-  after_create :verify
+  before_create :set_payment_status
+
+  after_create  :verify
 
   validates :params,
             :presence => true
@@ -46,6 +48,10 @@ class PaypalIpn < ActiveRecord::Base
           ["email = ?", self.params["receiver_email"]]
         ).first
       end
+    end
+
+    def set_payment_status
+      self.payment_status = self.params["payment_status"] if self.params
     end
 end
 
