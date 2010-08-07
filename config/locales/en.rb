@@ -25,7 +25,8 @@
           :pv_code => "<pv code>",
           :confirm => "CONFIRM!",
           :supplier_order_number => "<supplier order number>",
-          :seller_order_number => "<customer order number>"
+          :seller_order_number => "<customer order number>",
+          :tracking_number => "<tracking number>"
         },
         :templates => {
           :acceptorder => lambda { |key, options|
@@ -56,11 +57,15 @@
             options[:order_number] ||= I18n.t(
               "messages.commands.elements.order_number"
             )
+            options[:tracking_number] ||= I18n.t(
+              "messages.commands.elements.tracking_number"
+            )
             "completeorder" << " " <<
             I18n.t(
               "messages.commands.elements.pin_number"
             ) << " " <<
-            options[:order_number]
+            options[:order_number] << " " <<
+            options[:tracking_number]
           },
           :pay4order => lambda { |key, options|
             options[:seller_order_number] ||= I18n.t(
