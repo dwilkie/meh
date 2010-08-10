@@ -26,7 +26,7 @@ When /^a paypal ipn is received with: "([^\"]*)"$/ do |params|
 end
 
 When /^the paypal_ipn is verified$/ do
-  model!("paypal_ipn").update_attribute(:verified_at, Time.now)
+  model!("paypal_ipn").update_attributes!(:verified_at => Time.now)
 end
 
 Then /^a job should exist to verify the ipn came from paypal$/ do

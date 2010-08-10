@@ -5,8 +5,11 @@ Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |
 end
 
 Given /^#{capture_model} has the following params: "([^\"]*)"$/ do |name, params|
-  model_instance = model!(name).update_attributes!(
-    :params => instance_eval(params).with_indifferent_access
+  model_instance = model!(name)
+  model_instance.update_attributes!(
+    :params => model_instance.params.merge(
+      instance_eval(params).with_indifferent_access
+    )
   )
 end
 

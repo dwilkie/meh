@@ -89,6 +89,7 @@ Factory.define :paypal_ipn do |f|
   f.params { |paypal_ipn|
     seller = Factory.create(:seller)
     {
+      "payment_status" => paypal_ipn.payment_status,
       "receiver_email" => seller.email,
       "txn_id" => paypal_ipn.transaction_id
     }

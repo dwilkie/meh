@@ -1,8 +1,6 @@
 class PaypalIpnObserver < ActiveRecord::Observer
-  # this is not being run because we're not using
-  # state machine. Use after update
   def after_update(paypal_ipn)
-    create_supplier_orders(paypal_ipn) if paypal_ipn.create_orders?
+    create_supplier_orders(paypal_ipn) if paypal_ipn.verified_at_changed? && paypal_ipn.payment_completed?
   end
 
   private

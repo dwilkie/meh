@@ -44,10 +44,6 @@ class PaypalIpn < ActiveRecord::Base
   end
   handle_asynchronously :verify
 
-  def create_orders?
-    self.verified_at_changed? && self.payment_completed?
-  end
-
   private
     def seller_must_exist
       errors[:base] << "Receiver must be registered as a seller" if self.params && find_seller.nil?
@@ -58,7 +54,7 @@ class PaypalIpn < ActiveRecord::Base
     end
 
     def link_seller
-      self.seller = find_seller if self.create_orders?
+      self.seller = find_seller if self.verified_at_changed? && self.payment_completed?
     end
 
     def find_seller
