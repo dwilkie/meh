@@ -5,18 +5,32 @@ class PaypalIpnObserver < ActiveRecord::Observer
 
   private
     def create_supplier_orders(paypal_ipn)
+      seller = paypal_ipn.seller
       seller_order = paypal_ipn.seller_order
-      paypal_ipn.params["num_cart_items"].to_i.times do |index|
-        product = seller_order.seller.selling_products.where(
-          "external_id = ?",
-          paypal_ipn.params["item_number#{index + 1}"]
+      number_of_missing_products = 0
+      paypal_ipn.number_of_cart_items.times do |index|
+        item_number = paypal_ipn.item_number(index)
+        item_quantity = paypal_ipn.item_quantity(index)
+        product = seller.selling_products.where(
+          "external_id = ?", item_number
         ).first
-        seller_order.supplier_orders.create!(
-          :product => product,
-          :supplier => product.supplier,
-          :quantity => paypal_ipn.params["quantity#{index + 1}"].to_i
-        )
+        if product
+          seller_order.supplier_orders.create!(
+            :product => product,
+            :supplier => product.supplier,
+            :quantity => item_quantity
+          )
+        else
+          number_of_missing_products += 1
+        end
       end
+      SellerOrderNotification.new(
+        :with => seller
+      ).products_not_found(
+        seller_order,
+        number_of_missing_products,
+        paypal_ipn.number_of_cart_items
+      ) if number_of_missing_products > 0
     end
 end
 

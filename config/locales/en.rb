@@ -13,7 +13,7 @@
       :elements => {
         :greeting => "Hi %{name}, ",
         :shared => {
-          :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur customer order(#%{seller_order_number})",
+          :order_details_for_seller => "order(#%{supplier_order_number}) of %{quantity} x product(#%{product_code}) which is part of ur seller order(#%{seller_order_number})",
           :supplier_details => "%{supplier} (%{supplier_contact_details})"
         }
       },
@@ -84,6 +84,20 @@
             )
             "paymentdetails" << " " <<
             options[:supplier_order_number]
+          },
+          :sendorder => lambda { |key, options|
+            options[:seller_order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
+            command = "sendorder " << options[:seller_order_number]
+            command << " " << options[:supplier_name] if options[:supplier_name]
+            command
+          },
+          :missingproducts => lambda { |key, options|
+            options[:seller_order_number] ||= I18n.t(
+              "messages.commands.elements.order_number"
+            )
+            "missingproducts " << options[:seller_order_number]
           }
         }
       },
@@ -279,6 +293,76 @@
         else
           message << " succeeded. We notified #{options[:supplier]} for you."
         end
+        I18n.t("messages.base", :name => options[:seller], :body => message)
+      },
+      :products_not_found => lambda { |key, options|
+        options[:number_of_items] = options[:number_of_items].to_i
+        options[:number_of_missing_products] = options[:number_of_missing_products].to_i
+        message = "there is a new order (##{options[:seller_order_number]}) for "
+        if options[:number_of_items] == 1
+          message << "an item"
+        else
+          message << "#{options[:number_of_items].to_s} items"
+        end
+        message << " that you are selling however "
+
+        if options[:number_of_missing_products] > 1
+          if options[:number_of_missing_products] == options[:number_of_items]
+            message << "none of the item numbers are"
+          else
+            message << "{options[:number_of_missing_products]} of the item numbers are not yet"
+          end
+        else
+          message << "the item number is not yet"
+        end
+
+        message << " registered with us. Since you have "
+
+        if options[:default_supplier]
+          message << "already nominated "
+          if options[:default_supplier_name]
+            message << "#{options[:default_supplier_name]} (#{options[:default_supplier_mobile_number]}) as the "
+          else
+            message << "yourself as the "
+          end
+        else
+          message << "not yet nominated a "
+        end
+
+        message << "default supplier you can elect to send the order "
+        message << "either to them or to " if options[:default_supplier_name]
+        message << "yourself. From then on all new orders for the item number"
+        message << "s" if options[:number_of_missing_products] > 1
+        message << " in question will be automatically sent to "
+        message << "either #{options[:default_supplier_name]} or to " if options[:default_supplier_name]
+        message << "you."
+        message << " To send the order to "
+        if options[:default_supplier_name]
+          message << options[:default_supplier_name]
+        else
+          message << "yourself"
+        end
+        message << " text: " <<
+        I18n.t(
+          "messages.commands.templates.sendorder",
+          :seller_order_number => options[:seller_order_number],
+          :supplier_name => options[:default_supplier_name]
+        )
+        if options[:default_supplier_name]
+          message << ". To send the order to yourself simply text: " <<
+          I18n.t(
+            "messages.commands.templates.sendorder",
+            :seller_order_number => options[:seller_order_number]
+          )
+        end
+        message << ". For more details about the missing product"
+        message << "s" if options[:number_of_missing_products] > 1
+        message << " text: " <<
+        I18n.t(
+          "messages.commands.templates.missingproducts",
+          :seller_order_number => options[:seller_order_number]
+        )
+        message << "."
         I18n.t("messages.base", :name => options[:seller], :body => message)
       }
     },

@@ -29,6 +29,22 @@ class PaypalIpn < ActiveRecord::Base
     self.payment_status == "Completed"
   end
 
+  def item_name(index)
+    self.params["item_name#{index + 1}"]
+  end
+
+  def item_quantity(index)
+    self.params["quantity#{index + 1}"].to_i
+  end
+
+  def item_number(index)
+    self.params["item_number#{index + 1}"]
+  end
+
+  def number_of_cart_items
+    self.params["num_cart_items"].to_i
+  end
+
   def verify
     request_uri = URI.parse(APP_CONFIG["paypal_ipn_postback_uri"])
     request_uri.scheme = "https" # force https
