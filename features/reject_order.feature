@@ -7,7 +7,8 @@ Feature: Reject an order
   Background:
     Given a mobile_number exists with number: "66354668789", password: "1234"
     And a supplier exists with name: "Fon", mobile_number: the mobile_number
-    And a supplier_order exists with id: 154674, supplier: the supplier
+    And a product exists with supplier_id: the supplier
+    And a supplier_order exists with id: 154674, product: the product
 
   Scenario: Reject an order
     When I text "rejectorder 1234 154674" from "66354668789"
@@ -35,10 +36,10 @@ Feature: Reject an order
     And the outgoing_text_message should include a translation of <error_message> in "en" (English)
 
     Examples:
-    | message_text                         | error_message                      |
-    | "rejectorder 1235 154674 1 x hy456n" | "mobile pin number incorrect"      |
-    | "rejectorder x123 154674 1 x hy456n" | "mobile pin number format invalid" |
-    | "rejectorder"                        | "mobile pin number blank"          |
+    | message_text              | error_message                      |
+    | "rejectorder 1235 154674" | "mobile pin number incorrect"      |
+    | "rejectorder x123 154674" | "mobile pin number format invalid" |
+    | "rejectorder"             | "mobile pin number blank"          |
 
   Scenario Outline: Try to confirm rejecting an order incorrectly
     When I text <text_message> from "66354668789"
@@ -53,7 +54,7 @@ Feature: Reject an order
       | "rejectorder 1234 154674 anything else" |
 
   Scenario Outline: Try to reject an order which has been accepted or completed
-    Given a supplier_order exists with id: 654789, supplier: the supplier, status: "<order_status>"
+    Given a supplier_order exists with id: 654789, product_id: the product, status: "<order_status>"
 
     When I text "<text_message>" from "66354668789"
     Then the supplier_order should not be rejected
@@ -66,7 +67,7 @@ Feature: Reject an order
       | rejectorder 1234 654789 | completed     |
 
   Scenario: Try to reject an order is already rejected
-    Given a supplier_order exists with id: 654789, supplier: the supplier, status: "rejected"
+    Given a supplier_order exists with id: 654789, product_id: the product, status: "rejected"
 
     When I text "rejectorder 1234 654789" from "66354668789"
     Then the supplier_order should be rejected

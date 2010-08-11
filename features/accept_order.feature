@@ -7,9 +7,8 @@ Feature: Accept an order
   Background:
     Given a mobile_number exists with number: "66354668789", password: "1234"
     And a supplier exists with name: "Nok", mobile_number: the mobile_number
-
-    And a product exists with external_id: "12345", verification_code: "hy456n"
-    And a supplier_order exists with id: 154674, supplier: the supplier, product_id: the product, quantity: 1
+    And a product exists with verification_code: "hy456n", supplier_id: the supplier
+    And a supplier_order exists with id: 154674, product_id: the product, quantity: 1
 
   Scenario Outline: Accept an order correctly
     When I text <message_text> from "66354668789"

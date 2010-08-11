@@ -79,6 +79,9 @@ module I18nHelpers
     when /^products not found notification$/
       "messages.products_not_found_notification"
 
+    when /^invalid attribute$/
+      "errors.messages.invalid"
+
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
         "Now, go and add a mapping in #{__FILE__}"
