@@ -4,7 +4,7 @@ class SupplierOrderNotification < Conversation
       "messages.order_details_notification",
       :supplier => user.name,
       :order_number => supplier_order.id,
-      :product_code => supplier_order.product.external_id,
+      :product_code => supplier_order.product.item_number,
       :details => supplier_order_details(supplier_order)
     )
   end
@@ -21,7 +21,7 @@ class SupplierOrderNotification < Conversation
       "messages.supplier_order_notification",
       :supplier => user.name,
       :quantity => supplier_order.quantity,
-      :product_code => product.external_id,
+      :product_code => product.item_number,
       :order_number => supplier_order.id,
       :seller => seller_name,
       :seller_contact_details => seller_mobile_number
@@ -39,7 +39,7 @@ class SupplierOrderNotification < Conversation
       :supplier_order_number => supplier_order.id,
       :seller_order_number => supplier_order.seller_order.id,
       :quantity => supplier_order.quantity,
-      :product_code => supplier_order.product.external_id,
+      :product_code => supplier_order.product.item_number,
       :processed => supplier_order.status
     )
   end

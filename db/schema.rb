@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20100710092958) do
   add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
 
   create_table "products", :force => true do |t|
-    t.string   "external_id",                      :null => false
+    t.string   "item_number",                      :null => false
     t.string   "verification_code",                :null => false
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency"
@@ -141,7 +141,7 @@ ActiveRecord::Schema.define(:version => 20100710092958) do
     t.datetime "updated_at"
   end
 
-  add_index "products", ["external_id", "seller_id"], :name => "index_products_on_external_id_and_seller_id", :unique => true
+  add_index "products", ["item_number", "seller_id"], :name => "index_products_on_item_number_and_seller_id", :unique => true
   add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
 
   create_table "seller_orders", :force => true do |t|
@@ -161,6 +161,8 @@ ActiveRecord::Schema.define(:version => 20100710092958) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "supplier_orders", ["product_id", "seller_order_id"], :name => "index_supplier_orders_on_product_id_and_seller_order_id", :unique => true
 
   create_table "text_message_delivery_receipts", :force => true do |t|
     t.string   "status"

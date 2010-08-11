@@ -8,6 +8,7 @@ class CreateSupplierOrders < ActiveRecord::Migration
       t.references :seller_order,   :null => false
       t.timestamps
     end
+    add_index :supplier_orders, [:product_id, :seller_order_id], :unique => true
   end
 
   def self.down

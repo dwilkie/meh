@@ -76,6 +76,9 @@ module I18nHelpers
     when /^payment request notification$/
       "messages.payment_request_notification"
 
+    when /^products not found notification$/
+      "messages.products_not_found_notification"
+
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
         "Now, go and add a mapping in #{__FILE__}"

@@ -1,7 +1,7 @@
 class CreateProducts < ActiveRecord::Migration
   def self.up
     create_table :products do |t|
-      t.string      :external_id,            :null => false
+      t.string      :item_number,            :null => false
       t.string      :verification_code,      :null => false
       t.integer     :cents,   :default => 0, :null => false
       t.string      :currency
@@ -10,7 +10,7 @@ class CreateProducts < ActiveRecord::Migration
       t.timestamps
     end
     # A seller cannot have more than one product with the same external id
-    add_index :products, [:external_id, :seller_id], :unique => true
+    add_index :products, [:item_number, :seller_id], :unique => true
     # A seller cannot have more than one product with teh same verification code
     add_index :products, [:verification_code, :seller_id], :unique => true
   end

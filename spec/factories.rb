@@ -33,7 +33,7 @@ end
 Factory.define :product do |f|
   f.association :supplier
   f.association :seller
-  f.external_id 12345
+  f.item_number 12345
   f.sequence(:verification_code) {|n| "meh#{n}" }
 end
 

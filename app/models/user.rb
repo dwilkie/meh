@@ -100,7 +100,9 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :password_required?
 
-  #validate :check_notification_method_preference
+  def selling_product(item_number)
+    self.selling_products.item_number(item_number)
+  end
 
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum

@@ -7,15 +7,19 @@ class SupplierOrder < ActiveRecord::Base
 
   belongs_to :product
 
-  has_one    :payment,
-             :foreign_key => "supplier_order_id"
+  has_one    :payment
+
+  before_validation :link_supplier
 
   validates :supplier,
-            :seller_order,
             :product,
+            :seller_order,
             :status,
             :quantity,
             :presence => true
+
+  validates :product_id,
+            :uniqueness => {:scope => :seller_order_id}
 
   state_machine :status, :initial => :unconfirmed do
     event :accept do
@@ -32,5 +36,10 @@ class SupplierOrder < ActiveRecord::Base
   def supplier_total
     product.supplier_price * quantity
   end
+
+  private
+    def link_supplier
+      self.supplier = self.product.try(:supplier)
+    end
 end
 

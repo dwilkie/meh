@@ -6,13 +6,13 @@ class Product < ActiveRecord::Base
 
   belongs_to  :supplier,
               :class_name => "User"
-  
+
   belongs_to  :seller,
               :class_name => "User"
-  
+
   has_many    :supplier_orders,
               :class_name => "Order"
-              
+
   has_one     :payment_agreement
 
   validates :cents,
@@ -22,13 +22,18 @@ class Product < ActiveRecord::Base
               :greater_than_or_equal_to => 0
             }
 
-  validates :external_id, :verification_code,
+  validates :item_number, :verification_code,
             :uniqueness => {:scope => :seller_id},
             :presence => true
-            
+
   validates :supplier_id,
             :presence => true
-            
+
   validates :seller_id,
             :presence => true
+
+  def self.item_number(item_number)
+    where("item_number = ?", item_number).first
+  end
 end
+
