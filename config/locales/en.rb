@@ -106,7 +106,8 @@
               "messages.commands.elements.pin_number"
             ) << " " <<
             options[:seller_order_number]
-          }
+          },
+          :help => "help"
         }
       },
       :supplier_order_notification => lambda { |key, options|
@@ -378,7 +379,20 @@
 #        )
 #        message << "."
         I18n.t("messages.base", :name => options[:seller], :body => message)
-      }
+      },
+      :invalid_command => lambda { |key, options|
+        if options[:message_text].blank?
+          message = "for "
+        else
+          message = "you just sent us \"" << options[:message_text] <<
+          "\" but \"" << options[:topic] << "\" is an invalid command. For "
+        end
+        message << "a list of available commands text: " <<
+        I18n.t("messages.commands.templates.help")
+
+        I18n.t("messages.base", :name => options[:user], :body => message)
+      },
+      :welcome => "Welcome to MEH! To see what we can do text: demo"
     },
     :errors => {
       :messages => {

@@ -82,6 +82,12 @@ module I18nHelpers
     when /^invalid attribute$/
       "errors.messages.invalid"
 
+    when /^invalid command$/
+      "messages.invalid_command"
+
+    when /^the welcome message$/
+      "messages.welcome"
+
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
         "Now, go and add a mapping in #{__FILE__}"

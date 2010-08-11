@@ -8,6 +8,9 @@ class OutgoingTextMessage < ActiveRecord::Base
             :uniqueness => true,
             :allow_nil => true
 
+  validates :mobile_number,
+            :presence => true
+
   def self.find_by_delivery_receipt(delivery_receipt)
     gateway_message_id = SMSNotifier.connection.message_id(delivery_receipt)
     OutgoingTextMessage.where(
