@@ -25,6 +25,8 @@ class PaypalIpn < ActiveRecord::Base
 
   validate :seller_must_exist
 
+  # Instance methods that must be implemented for all order notifications
+
   def payment_completed?
     self.payment_status == "Completed"
   end
@@ -36,13 +38,46 @@ class PaypalIpn < ActiveRecord::Base
   def item_quantity(index)
     self.params["quantity#{index + 1}"].to_i
   end
-
+.to_s
   def item_number(index)
     self.params["item_number#{index + 1}"]
   end
 
   def number_of_cart_items
     self.params["num_cart_items"].to_i
+  end
+
+  def customer_address(delimeter = ",\n")
+    customer_address_name << delimeter <<
+    customer_address_street << delimeter <<
+    customer_address_city << delimeter <<
+    customer_address_state << delimeter <<
+    customer_address_zip << delimiter <<
+    customer_address_country
+  end
+
+  def customer_address_name
+    self.params["address_name"].to_s
+  end
+
+  def customer_address_street
+    self.params["address_street"].to_s
+  end
+
+  def customer_address_city
+    self.params["address_city"].to_s
+  end
+
+  def customer_address_state
+    self.params["address_state"].to_s
+  end
+
+  def customer_address_zip
+    self.params["address_zip"].to_s
+  end
+
+  def customer_address_country
+    self.params["address_country"].to_s
   end
 
   def verify

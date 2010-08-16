@@ -5,22 +5,26 @@ class Notification < ActiveRecord::Base
 
   belongs_to :product
 
-  ATTRIBUTES = {
-    :supplier_order_processed => {
-      :supplier_order_number,
-      :seller_order_number,
-      :supplier_name,
-      :seller_name,
-      :supplier_mobile_number,
-      :seller_mobile_number
+  EVENTS = {
+    :supplier_order_accepted => {
+      :notification_attributes => SupplierOrderNotification.ATTRIBUTES,
+      :notification_sent_to => SupplierOrderNotification.SENT_TO
+    },
+    :supplier_order_rejected => {
+      :notification_attributes => SupplierOrderNotification.ATTRIBUTES,
+      :notification_sent_to => SupplierOrderNotification.SENT_TO
+    },
+    :supplier_order_completed => {
+      :notification_attributes => SupplierOrderNotification.ATTRIBUTES,
+      :notification_sent_to => SupplierOrderNotification.SENT_TO
+    }
+    :supplier_order_created => {
+      :notification_attributes => SupplierOrderNotification.ATTRIBUTES,
+      :notification_sent_to => SupplierOrderNotification.SENT_TO
     }
   }
 
-  EVENTS = {
-    :supplier_order_accepted => ATTRIBUTES[:supplier_order_processed],
-    :supplier_order_rejected => ATTRIBUTES[:supplier_order_processed],
-    :supplier_order_completed => ATTRIBUTES[:supplier_order_processed]
-  }
+  SENT_TO = %w[seller supplier supplier_who_is_also_the_seller]
 
   validates  :message, :seller,
              :presence => true
@@ -30,13 +34,12 @@ class Notification < ActiveRecord::Base
              :presence => true
 
   validates  :for,
-             :inclusion => {:in => User::ROLES},
+             :inclusion => {:in => SENT_TO},
              :presence => true
 
   before_validation :link_supplier
 
   def parse_message(event_attributes)
-    "Congratulations your order has been accepted. Your order number is <order_number>"
     parsed_message = self.message
     parsed_message.scan(/<\w+>/).each do |attribute|
       parsed_attribute = attribute.gsub(/[<>]/, "").to_sym
@@ -50,18 +53,29 @@ class Notification < ActiveRecord::Base
     parsed_message
   end
 
-  def send_to(seller, seller)
+  def send_to(seller, supplier)
     if self.for == "seller"
       seller
     elsif self.for == "supplier"
       supplier
+    elsif self.for == "supplier_who_is_also_the_seller"
+      seller
     end
   end
 
-  def self.for_event(event, options)
+  def self.for_event(event, options = {})
+    scope = where(:event => event)
     if options[:seller] && options[:supplier] && options[:seller] == options[:supplier]
-      scope = for_supplier_who_is_a_seller
+      scope = scope.where(:for => "supplier_who_is_also_the_seller")
     end
+    notifications = []
+    if options[:product]
+      notifications = scope.where(:product => options[:product]).all
+    end
+    if notifications.empty?
+      notifications = scope.all
+    end
+    notifications
   end
 
   private
