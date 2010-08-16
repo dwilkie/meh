@@ -13,6 +13,8 @@ class Product < ActiveRecord::Base
   has_many    :supplier_orders,
               :class_name => "Order"
 
+  has_many    :notifications
+
   has_one     :payment_agreement
 
   validates :cents,
@@ -32,8 +34,5 @@ class Product < ActiveRecord::Base
   validates :seller_id,
             :presence => true
 
-  def self.item_number(item_number)
-    where("item_number = ?", item_number).first
-  end
 end
 

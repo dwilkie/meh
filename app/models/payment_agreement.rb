@@ -1,9 +1,9 @@
 class PaymentAgreement < ActiveRecord::Base
   belongs_to :product
-  
+
   belongs_to :supplier,
              :class_name => "User"
-  
+
   belongs_to :seller,
              :class_name => "User"
 
@@ -14,14 +14,14 @@ class PaymentAgreement < ActiveRecord::Base
       record.seller.== value
     end
   end
-  
+
   class HasAnotherSupplierValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       record.errors.add(attribute, :supplied_by_seller) if
       value.seller.== value.supplier
     end
   end
-  
+
   class IsNilValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       record.errors.add(attribute, :is_not_nil) unless
@@ -37,18 +37,18 @@ class PaymentAgreement < ActiveRecord::Base
               payment_agreement.supplier ||
               payment_agreement.seller
             }
-              
+
   validates :product,
             :is_nil => true,
             :if => Proc.new { |payment_agreement|
               payment_agreement.supplier ||
               payment_agreement.seller
             }
-  
+
   validates :product_id,
             :uniqueness => true,
             :allow_nil => true
-  
+
   validates :seller, :supplier,
             :presence => true,
             :unless => Proc.new { |payment_agreement|
@@ -64,3 +64,4 @@ class PaymentAgreement < ActiveRecord::Base
             :allow_nil => true
 
  end
+

@@ -5,12 +5,15 @@ Feature: Accept an order
   I want to be able to accept an order by sending in a text message
 
   Background:
-    Given a mobile_number exists with number: "66354668789", password: "1234"
-    And a supplier exists with name: "Nok", mobile_number: the mobile_number
+    Given a mobile_number: "Mara's number" exists with number: "66354668789", password: "1234"
+    And a mobile_number: "Nok's number" exists with number: "66354668874", password: "1234"
+    And a seller exists with name: "Mara", mobile_number: mobile_number: "Mara's number"
+    And a supplier exists with name: "Nok", mobile_number: mobile_number: "Nok's number"
     And a product exists with verification_code: "hy456n", supplier_id: the supplier
     And a supplier_order exists with id: 154674, product_id: the product, quantity: 1
 
   Scenario Outline: Accept an order correctly
+    Given a notification exists with event: "supplier_order_accepted", seller: the seller, for: "supplier", message: ""
     When I text <message_text> from "66354668789"
 
     Then the supplier_order should be accepted

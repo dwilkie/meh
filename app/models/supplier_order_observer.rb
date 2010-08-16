@@ -1,41 +1,58 @@
 class SupplierOrderObserver < ActiveRecord::Observer
-  def after_create(order)
-    if supplier = order.supplier
-      if send_notification_by_text_message?(supplier)
-        SupplierOrderNotification.new(:with => supplier).notification_for_new(order)
-      end
+  def after_create(supplier_order)
+    SupplierOrderNotification.new(
+      :with => supplier_order.supplier
+    ).notification_for_new(supplier_order)
+  end
+
+  def after_accept(supplier_order, transition)
+    product = supplier_order.product
+    seller = supplier_order.seller_order.seller
+    supplier = supplier_order.supplier
+    notifications = seller.notifications.for_event(
+      "supplier_order_accepted",
+      :seller => seller,
+      :supplier => supplier,
+      :product => product
+    )
+    notifications = seller.find_notifications(
+      :product => product,
+      :seller => seller,
+      :supplier => supplier,
+      :event => event
     end
+    notifications.each do |notification|
+      if notification.is_for_supplier == "seller_who_is_also_a_supplier"
+      with = notification.for == "seller" ? seller : supplier
+      Notifier.new(:with => with).notify(notification.parse_message)
+    end
+    supplier = supplier_order.supplier
+    SupplierOrderNotification.new(:with => supplier).details(supplier_order)
+    pay_supplier_and_notify_seller(supplier_order, transition)
   end
 
-  def after_accept(order, transition)
-    supplier = order.supplier
-    SupplierOrderNotification.new(:with => supplier).details(order) if
-      send_notification_by_text_message?(supplier)
-    pay_supplier_and_notify_seller(order, transition)
+  def after_reject(supplier_order, transition)
+    notify_seller(supplier_order)
   end
 
-  def after_reject(order, transition)
-    notify_seller(order)
-  end
-
-  def after_complete(order, transition)
-    pay_supplier_and_notify_seller(order, transition)
+  def after_complete(supplier_order, transition)
+    pay_supplier_and_notify_seller(supplier_order, transition)
   end
 
   private
-    def notify_seller(order)
-      seller = order.product.seller
-      unless seller == order.supplier
-        if send_notification_by_text_message?(seller)
-          SupplierOrderNotification.new(:with => seller).notify_seller(order)
-        end
+    def notify_seller(supplier_order)
+      seller = supplier_order.seller_order.seller
+      unless seller == supplier_order.supplier
+        SupplierOrderNotification.new(
+          :with => seller
+        ).notify_seller(supplier_order)
       end
     end
 
-    def pay_supplier_and_notify_seller(order, transition)
-      product = order.product
-      seller = product.seller
-      supplier = order.supplier
+    def pay_supplier_and_notify_seller(supplier_order, transition)
+      product = supplier_order.product
+      seller = supplier_order.seller_order.seller
+      supplier = supplier_order.supplier
       if seller != supplier
         payment_agreement = find_payment_agreement(product, seller, supplier)
         if payment_agreement &&
@@ -74,14 +91,23 @@ class SupplierOrderObserver < ActiveRecord::Observer
 
     def find_payment_agreement(product, seller, supplier)
       payment_agreement = product.payment_agreement
-      payment_agreement = seller.payment_agreements_with_suppliers.where(
-        :supplier_id => supplier.id
-      ).first if payment_agreement.nil?
+      payment_agreement = seller.payment_agreement_with_supplier(supplier) if payment_agreement.nil?
       payment_agreement
     end
 
-    def send_notification_by_text_message?(user)
-      user.mobile_number # do more here...
+    def find_notifications(event, options)
+      notifications = seller.notifications.where(
+        :product => product,
+        :event => event
+      )
+      notifications = seller.notifications.where(
+        :event => event
+      ) if notifications.empty?
+      notifications
+    end
+
+    def notify
+
     end
 end
 

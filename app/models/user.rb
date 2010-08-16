@@ -40,6 +40,9 @@ class User < ActiveRecord::Base
   has_many   :seller_orders,
              :foreign_key => "seller_id"
 
+  has_many   :notifications,
+             :foreign_key => "seller_id"
+
   has_many   :outgoing_payments,
              :foreign_key => "seller_id",
              :class_name => "Payment"
@@ -101,7 +104,11 @@ class User < ActiveRecord::Base
             :if => :password_required?
 
   def selling_product(item_number)
-    self.selling_products.item_number(item_number)
+    self.selling_products.where("item_number = ?", item_number).first
+  end
+
+  def payment_agreement_with_supplier(supplier)
+    self.payment_agreements_with_suppliers.where(:supplier => supplier).first
   end
 
   def roles=(roles)

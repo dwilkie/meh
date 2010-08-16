@@ -1,4 +1,18 @@
 class SupplierOrderNotification < Conversation
+  def event_attributes(supplier_order)
+    seller_order = supplier_order.seller_order
+    seller = seller_order.seller
+    supplier = supplier_order.supplier
+    {
+      :supplier_order_number => supplier_order.id.to_s,
+      :seller_order_number => seller_order.id.to_s,
+      :supplier_name => supplier.name,
+      :seller_name => seller.name,
+      :supplier_mobile_number => supplier.mobile_number.humanize,
+      :seller_mobile_number => seller.mobile_number.humanize
+    }
+  end
+
   def details(supplier_order)
     say I18n.t(
       "messages.order_details_notification",

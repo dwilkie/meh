@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100710092958) do
+ActiveRecord::Schema.define(:version => 20100814070345) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -52,6 +52,16 @@ ActiveRecord::Schema.define(:version => 20100710092958) do
   end
 
   add_index "mobile_numbers", ["number"], :name => "index_mobile_numbers_on_number", :unique => true
+
+  create_table "notifications", :force => true do |t|
+    t.string   "event",      :null => false
+    t.string   "for",        :null => false
+    t.text     "message",    :null => false
+    t.integer  "seller_id",  :null => false
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "outgoing_text_messages", :force => true do |t|
     t.string   "body"

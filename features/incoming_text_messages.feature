@@ -17,7 +17,7 @@ Feature: Incoming text messages
 
   Scenario: A duplicate incoming text message is received
     Given an incoming_text_message exists
-    And the incoming_text_message has the following params: "{'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'userfield'=>'123456', 'date'=>'2010-05-13 23:59:58'}"
+    And the incoming_text_message has the following params: "{'msg'=> 'Endiad ad y les', 'userfield'=>'123456', 'from'=> '66322345211', 'to'=>'61447100308', 'date'=>'2010-05-13 23:59:58'}"
 
     When an incoming text message is received with: "{'incoming_text_message' => {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'userfield'=>'123456', 'date'=>'2010-05-13 23:59:58'}}"
 

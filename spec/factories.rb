@@ -52,6 +52,17 @@ Factory.define :outgoing_text_message do |f|
   f.association :mobile_number
 end
 
+Factory.define :notification do |f|
+  f.association :seller
+  f.message "some message"
+  f.event {
+    Notification::EVENTS.keys.first.to_s
+  }
+  f.for {
+    User::ROLES.first
+  }
+end
+
 Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
   f.association :smsable, :factory => :mobile_number
   f.sequence(:gateway_message_id) { |n|

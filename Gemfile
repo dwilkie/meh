@@ -54,7 +54,7 @@ group :test do
   #gem 'rspec-rails',        :git => 'git://github.com/rspec/rspec-rails.git'
   gem 'rspec-rails', ">=2.0.0.beta.19"
   #gem 'factory_girl',       :git => 'git://github.com/thoughtbot/factory_girl.git'
-  gem 'factory_girl'
+  gem 'factory_girl_rails'
   #gem 'capybara',           :git => 'git://github.com/jnicklas/capybara.git'
   gem 'capybara'
   #gem 'database_cleaner',   :git => 'git://github.com/bmabey/database_cleaner.git'
