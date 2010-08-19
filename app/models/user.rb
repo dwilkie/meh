@@ -23,9 +23,6 @@ class User < ActiveRecord::Base
              :as => :phoneable,
              :dependent => :destroy
 
-  has_many   :conversations,
-             :foreign_key => "with"
-
   # Seller Associations
 
   # seller has many products for sale
@@ -94,8 +91,6 @@ class User < ActiveRecord::Base
   has_many   :sellers_with_payment_agreements,
              :through => :payment_agreements_with_sellers
 
-  #preference :notification_method, :string, :default => 'email'
-
   validates :name, :presence => true
 
   validates :mobile_number,
@@ -122,13 +117,17 @@ class User < ActiveRecord::Base
   end
 
   def roles
-    ROLES.reject do |r|
-      ((roles_mask || 0) & 2**ROLES.index(r)).zero?
-    end
+    self.class.roles(roles_mask)
   end
 
   def is?(role)
     roles.include?(role.to_s)
+  end
+
+  def self.roles(roles_mask)
+    ROLES.reject do |r|
+      ((roles_mask || 0) & 2**ROLES.index(r)).zero?
+    end
   end
 
   private

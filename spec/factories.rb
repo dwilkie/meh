@@ -59,7 +59,7 @@ Factory.define :notification do |f|
     Notification::EVENTS.keys.first.to_s
   }
   f.for {
-    User::ROLES.first
+    Notification::SEND_TO.first
   }
 end
 

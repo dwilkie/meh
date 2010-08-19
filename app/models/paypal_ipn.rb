@@ -48,12 +48,14 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   def customer_address(delimeter = ",\n")
-    customer_address_name << delimeter <<
-    customer_address_street << delimeter <<
-    customer_address_city << delimeter <<
-    customer_address_state << delimeter <<
-    customer_address_zip << delimiter <<
-    customer_address_country
+    [
+      customer_address_name,
+      customer_address_street,
+      customer_address_city,
+      customer_address_state,
+      customer_address_country,
+      customer_address_zip
+    ].join(delimeter)
   end
 
   def customer_address_name

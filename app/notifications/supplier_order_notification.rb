@@ -1,46 +1,54 @@
 class SupplierOrderNotification < Conversation
 
-  ATTRIBUTES = [
-    :supplier_order_number => Proc.new{|*args|
-      args[:supplier_order].id.to_s
+  ATTRIBUTES = {
+    :supplier_order_number => Proc.new{|params|
+      params[:supplier_order].id.to_s
     },
-    :seller_order_number => Proc.new{|*args|
-      args[:seller_order].id.to_s
+    :seller_order_number => Proc.new{|params|
+      params[:seller_order].id.to_s
     },
-    :supplier_name => Proc.new{|*args|
-      args[:supplier].name
+    :supplier_name => Proc.new{|params|
+      params[:supplier].name
     },
-    :seller_name => Proc.new{|*args|
-      args[:seller].name
+    :seller_name => Proc.new{|params|
+      params[:seller].name
     },
-    :supplier_mobile_number => Proc.new{|*args|
-      args[:supplier].mobile_number.humanize
+    :supplier_mobile_number => Proc.new{|params|
+      params[:supplier].mobile_number.humanize
     },
-    :seller_mobile_number => Proc.new{|*args|
-      args[:seller].mobile_number.humanize
+    :seller_mobile_number => Proc.new{|params|
+      params[:seller].mobile_number.humanize
     },
-    :customer_address => Proc.new{|*args|
-      args[:order_notification].customer_address
+    :supplier_email => Proc.new{|params|
+      params[:supplier].email
     },
-    :customer_address_name => Proc.new{|*args|
-      args[:order_notification].customer_address_name
+    :seller_email => Proc.new{|params|
+      params[:seller].email
     },
-    :customer_address_street => Proc.new{|*args|
-      args[:order_notification].customer_address_street
+    :customer_address => Proc.new{|params|
+      params[:order_notification].customer_address
     },
-    :customer_address_city => Proc.new{|*args|
-      args[:order_notification].customer_address_city
+    :customer_address_name => Proc.new{|params|
+      params[:order_notification].customer_address_name
     },
-    :customer_address_state => Proc.new{|*args|
-      args[:order_notification].customer_address_state
+    :customer_address_street => Proc.new{|params|
+      params[:order_notification].customer_address_street
     },
-    :customer_address_zip => Proc.new{|*args|
-      args[:order_notification].customer_address_zip
+    :customer_address_city => Proc.new{|params|
+      params[:order_notification].customer_address_city
     },
-    :customer_address_country => Proc.new{|*args|
-      args[:order_notification].customer_address_country
+    :customer_address_state => Proc.new{|params|
+      params[:order_notification].customer_address_state
+    },
+    :customer_address_country => Proc.new{|params|
+      params[:order_notification].customer_address_country
+    },
+    :customer_address_zip => Proc.new{|params|
+      params[:order_notification].customer_address_zip
     }
-  ]
+  }
+
+  SEND_TO_MASK = 3
 
   def notify(notification, supplier_order, seller_order, seller, product, supplier)
     say notification.parse_message(

@@ -54,10 +54,11 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   add_index "mobile_numbers", ["number"], :name => "index_mobile_numbers_on_number", :unique => true
 
   create_table "notifications", :force => true do |t|
-    t.string   "event",      :null => false
-    t.string   "for",        :null => false
-    t.text     "message",    :null => false
-    t.integer  "seller_id",  :null => false
+    t.string   "event",       :null => false
+    t.string   "for",         :null => false
+    t.text     "message",     :null => false
+    t.integer  "seller_id",   :null => false
+    t.integer  "supplier_id"
     t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"

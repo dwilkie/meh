@@ -55,6 +55,10 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
+Then /^#{capture_model} should be$/ do |text_message, expected_text|
+  Then "#{text_message} should be \"#{expected_text}\""
+end
+
 Then /^#{capture_model} should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
   text_message = model!(text_message)
   if translate

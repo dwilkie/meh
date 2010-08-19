@@ -153,8 +153,8 @@
         )
         I18n.t("messages.base", :name => options[:user], :body => message)
       },
-      :successfully_processed_order => lambda { |key, options|
-        message = "u successfully " <<
+      :successfully_processed_order_notification => lambda { |key, options|
+        message = "youu successfully " <<
         I18n.t("activerecord.attribute_values.order.status.#{options[:processed]}") <<
         " the order ##{options[:order_number]}."
         I18n.t("messages.base", :name => options[:supplier], :body => message)
