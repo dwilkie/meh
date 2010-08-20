@@ -54,6 +54,9 @@ end
 
 Factory.define :notification do |f|
   f.association :seller
+  f.purpose "something"
+  f.should_send true
+  f.active true
   f.message "some message"
   f.event {
     Notification::EVENTS.keys.first.to_s
