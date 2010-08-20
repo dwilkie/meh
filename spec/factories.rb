@@ -56,13 +56,13 @@ Factory.define :notification do |f|
   f.association :seller
   f.purpose "something"
   f.should_send true
-  f.active true
+  f.enabled true
   f.message "some message"
   f.event {
     Notification::EVENTS.keys.first.to_s
   }
   f.for {
-    Notification::SEND_TO.first
+    User::ROLES.first
   }
 end
 

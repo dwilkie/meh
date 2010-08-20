@@ -1,130 +1,132 @@
 require 'spec_helper'
 
+def default_event
+  Notification::EVENTS.keys.first.to_s
+end
+
 describe Notification do
   describe ".for_event" do
-    context "Given there are 8 existing notifications for the event: 'first_meeting' and 1 notification is disabled and another should not be sent" do
+    context "given there are 12 existing notifications for the event: '#{default_event}'" do
       let(:seller)   { Factory.create(:seller)   }
       let(:supplier) { Factory.create(:supplier) }
       let(:product)  {
         Factory.create(:product, :seller => seller, :supplier => supplier)
       }
-      let(:existing_notifications) {[]}
-      let!(:notifications) {[]}
-      before {
-        existing_notifications = {
-          # General notification for greeting a new friend on a first meeting
-          :general_greeting_new_friend => Factory.create(
+      let!(:existing_notifications) {
+        {
+          # General notification for greeting a seller
+          :general_greeting_for_seller => Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller
           ),
-          # General notification for greeting another new friend on a first meeting
-          :general_greeting_another_new_friend => Factory.create(
+          # General notification for greeting a supplier
+          :general_greeting_for_supplier => Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller
           ),
-          # General notification for introducing a new friend on a first meeting
-          :general_introduction_new_friend => Factory.create(
+          # General notification for introducing a seller
+          :general_introduction_for_seller => Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller
           ),
-          # General notification for introducing another new friend on a first meeting
-          :general_introduction_another_new_friend => Factory.create(
+          # General notification for introducing a supplier
+          :general_introduction_for_supplier=> Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller
           ),
           # Special notification for a particular product
-          # for greeting a new friend on a first meeting
-          :special_product_greeting_new_friend => Factory.create(
+          # for greeting a seller
+          :special_product_greeting_for_seller=> Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller,
             :product => product
           ),
           # Special notification for particular product
-          # for greeting another new friend on a first meeting
+          # for greeting a supplier
           # But the notification is turned off.
-          :special_product_greeting_another_new_friend => Factory.create(
+          :special_product_greeting_for_supplier => Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller,
             :product => product,
             :enabled => false
           ),
           # Special notification for a particular product
-          # for introducing a new friend on a first meeting
-          :special_product_introduction_new_friend => Factory.create(
+          # for introducing a seller
+          :special_product_introduction_for_seller => Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller,
             :product => product
           ),
           # Special notification for a particular product
-          # for introducing another new friend on a first meeting
-          :special_product_introduction_another_new_friend => Factory.create(
+          # for introducing a supplier
+          :special_product_introduction_for_supplier => Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller,
             :product => product
           ),
           # Special notification for a particular supplier
-          # for greeting a new friend on a first meeting
-          :special_supplier_greeting_new_friend => Factory.create(
+          # for greeting a seller
+          :special_supplier_greeting_for_seller => Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller,
             :supplier => supplier
           ),
           # Special notification for a particular supplier
-          # for greeting another new friend on a first meeting
-          :special_supplier_greeting_another_new_friend => Factory.create(
+          # for greeting a supplier
+          :special_supplier_greeting_for_supplier => Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "greeting",
             :seller => seller,
             :supplier => supplier
           ),
           # Special notification for a particular supplier
-          # for introducing a new friend on a first meeting.
+          # for introducing a seller.
           # This notification should not be sent
-          :special_supplier_introduction_new_friend => Factory.create(
+          :special_supplier_introduction_for_seller => Factory.create(
             :notification,
-            :for => "new friend",
-            :event => "first_meeting",
+            :for => "seller",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller,
             :supplier => supplier,
             :should_send => false
           ),
           # Special notification for a particular supplier
-          # for introducing another new friend on a first meeting.
+          # for introducing a supplier.
           # This notification should not be sent
-          :special_supplier_introduction_another_new_friend => Factory.create(
+          :special_supplier_introduction_for_supplier => Factory.create(
             :notification,
-            :for => "another new friend",
-            :event => "first_meeting",
+            :for => "supplier",
+            :event => default_event,
             :purpose => "introduction",
             :seller => seller,
             :supplier => supplier
@@ -132,130 +134,129 @@ describe Notification do
         }
       }
       context "supplying no options" do
-        before {
-          notifications = Notification.for_event("first_meeting")
-        }
-        it "should return 4 notifications" do
-          notifications.size.should == 4
-        end
         it "should return the correct notifications" do
-          notifications.should_include
-            existing_notifications[:general_greeting_new_friend]
-          notifications.should_include
-            existing_notifications[:general_greeting_another_new_friend]
-          notifications.should_include
-            existing_notifications[:general_introduction_new_friend]
-          notifications.should_include
-            existing_notifications[:general_introduction_another_new_friend]
+          notifications = Notification.for_event(default_event)
+          notifications.size.should == 4
+          notifications.should include(
+            existing_notifications[:general_greeting_for_seller]
+          )
+          notifications.should include(
+            existing_notifications[:general_greeting_for_supplier]
+          )
+          notifications.should include(
+            existing_notifications[:general_introduction_for_seller]
+          )
+          notifications.should include(
+            existing_notifications[:general_introduction_for_supplier]
+          )
         end
       end
       context "supplying the 'product' option" do
         context "with a product that has notifications assigned to it" do
-          before {
+          it "should return the correct notifications" do
             notifications = Notification.for_event(
-              "first_meeting",
+              default_event,
               :product => product
             )
-          }
-          it "should return a total of 4 notifications" do
             notifications.size.should == 4
-          end
-          it "should return the correct notifications" do
-            notifications.should_include
-              existing_notifications[:special_product_greeting_new_friend]
-            notifications.should_include
-              existing_notifications[:general_greeting_another_new_friend]
-            notifications.should_include
-              existing_notifications[:special_product_introduction_new_friend]
-            notifications.should_include
-              existing_notifications[:special_product_introduction_another_new_friend]
+            notifications.should include(
+              existing_notifications[:special_product_greeting_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:general_greeting_for_supplier]
+            )
+            notifications.should include(
+              existing_notifications[:special_product_introduction_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:special_product_introduction_for_supplier]
+            )
           end
         end
         context "with a product that does not have notifications assigned to it" do
-          before {
+          it "should return the correct notifications" do
             notifications = Notification.for_event(
-              "first_meeting",
+              default_event,
               :product => Factory.create(:product)
             )
-          }
-          it "should return a total of 4 notifications" do
             notifications.size.should == 4
-          end
-          it "should return the correct notifications" do
-            notifications.should_include
-              existing_notifications[:general_greeting_new_friend]
-            notifications.should_include
-              existing_notifications[:general_greeting_another_new_friend]
-            notifications.should_include
-              existing_notifications[:general_introduction_new_friend]
-            notifications.should_include
-              existing_notifications[:general_introduction_another_new_friend]
+            notifications.should include(
+              existing_notifications[:general_greeting_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:general_greeting_for_supplier]
+            )
+            notifications.should include(
+              existing_notifications[:general_introduction_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:general_introduction_for_supplier]
+            )
           end
         end
       end
       context "supplying the 'supplier' option" do
         context "with a supplier that has notifications assigned to it" do
-          before {
+          it "should return the correct notifications" do
             notifications = Notification.for_event(
-              "first_meeting",
+              default_event,
               :supplier => supplier
             )
-          }
-          it "should return a total of 3 notifications" do
             notifications.size.should == 3
-          end
-          it "should return the correct notifications" do
-            notifications.should_include
-              existing_notifications[:special_supplier_greeting_new_friend]
-            notifications.should_include
-              existing_notifications[:special_supplier_greeting_another_new_friend]
-            notifications.should_include
-              existing_notifications[:special_supplier_introduction_another_new_friend]
+            notifications.should include(
+              existing_notifications[:special_supplier_greeting_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:special_supplier_greeting_for_supplier]
+            )
+            notifications.should include(
+              existing_notifications[:special_supplier_introduction_for_supplier]
+            )
           end
         end
         context "with a supplier that does not have notifications assigned to it" do
-          before {
+          it "should return the correct notifications" do
             notifications = Notification.for_event(
-              "first_meeting",
+              default_event,
               :supplier => Factory.create(:supplier)
             )
-          }
-          it "should return a total of 4 notifications" do
             notifications.size.should == 4
-          end
-          it "should return the correct notifications" do
-            notifications.should_include
-              existing_notifications[:general_greeting_new_friend]
-            notifications.should_include
-              existing_notifications[:general_greeting_another_new_friend]
-            notifications.should_include
-              existing_notifications[:general_introduction_new_friend]
-            notifications.should_include
-              existing_notifications[:general_introduction_another_new_friend]
+            notifications.should include(
+              existing_notifications[:general_greeting_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:general_greeting_for_supplier]
+            )
+            notifications.should include(
+              existing_notifications[:general_introduction_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:general_introduction_for_supplier]
+            )
           end
         end
       end
       context "supplying both the 'product' and 'supplier' options" do
         context "with a product that and a supplier that have notifications assigned to them" do
-          before {
+          it "should return the correct notifications" do
             notifications = Notification.for_event(
-              "first_meeting",
+              default_event,
               :product => product,
               :supplier => supplier
             )
-          }
-          it "should return a total of 4 notifications" do
             notifications.size.should == 4
-          end
-          it "should return the correct notifications" do
-            notifications.should_include
-              existing_notifications[:special_product_greeting_new_friend]
-            notifications.should_include
-              existing_notifications[:special_supplier_greeting_another_new_friend]
-            notifications.should_include
-              existing_notifications[:special_product_introduction_new_friend]
-            notifications.should_include
-              existing_notifications[:special_product_introduction_another_new_friend]
+            notifications.should include(
+              existing_notifications[:special_product_greeting_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:special_supplier_greeting_for_supplier]
+            )
+            notifications.should include(
+              existing_notifications[:special_product_introduction_for_seller]
+            )
+            notifications.should include(
+              existing_notifications[:special_product_introduction_for_supplier]
+            )
           end
         end
       end

@@ -56,7 +56,10 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   create_table "notifications", :force => true do |t|
     t.string   "event",       :null => false
     t.string   "for",         :null => false
+    t.string   "purpose",     :null => false
     t.text     "message",     :null => false
+    t.boolean  "enabled",     :null => false
+    t.boolean  "should_send", :null => false
     t.integer  "seller_id",   :null => false
     t.integer  "supplier_id"
     t.integer  "product_id"

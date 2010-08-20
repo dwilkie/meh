@@ -5,8 +5,8 @@ class CreateNotifications < ActiveRecord::Migration
       t.string     :for,         :null => false
       t.string     :purpose,     :null => false
       t.text       :message,     :null => false
-      t.boolean    :active,      :null => false
-      t.boolean    :should_send, :null => false
+      t.boolean    :enabled,     :null => false
+      t.boolean    :should_send  :null => false
       t.references :seller,      :null => false
       t.references :supplier
       t.references :product
