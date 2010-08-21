@@ -1,10 +1,10 @@
 class SupplierOrderNotification < Conversation
 
   ATTRIBUTES = {
-    :supplier_order_number => Proc.new{|params|
+    :product_order_number => Proc.new{|params|
       params[:supplier_order].id.to_s
     },
-    :seller_order_number => Proc.new{|params|
+    :customer_order_number => Proc.new{|params|
       params[:seller_order].id.to_s
     },
     :supplier_name => Proc.new{|params|

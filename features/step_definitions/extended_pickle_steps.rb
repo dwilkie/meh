@@ -18,6 +18,6 @@ When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fiel
 end
 
 When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
-  model!(name).send(transition.singularize)
+  model!(name).send(transition.singularize) unless transition == "dreams_about"
 end
 

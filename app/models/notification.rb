@@ -9,25 +9,25 @@ class Notification < ActiveRecord::Base
              :class_name => "User"
 
   EVENTS = {
-    :supplier_order_accepted => {
+    :product_order_accepted => {
       :notification_attributes => SupplierOrderNotification::ATTRIBUTES,
       :send_notification_to => User.roles(
         SupplierOrderNotification::SEND_TO_MASK
       )
     },
-    :supplier_order_rejected => {
+    :product_order_rejected => {
       :notification_attributes => SupplierOrderNotification::ATTRIBUTES,
       :send_notification_to => User.roles(
         SupplierOrderNotification::SEND_TO_MASK
       )
     },
-    :supplier_order_completed => {
+    :product_order_completed => {
       :notification_attributes => SupplierOrderNotification::ATTRIBUTES,
       :send_notification_to => User.roles(
         SupplierOrderNotification::SEND_TO_MASK
       )
     },
-    :supplier_order_created => {
+    :product_order_created => {
       :notification_attributes => SupplierOrderNotification::ATTRIBUTES,
       :send_notification_to => User.roles(
         SupplierOrderNotification::SEND_TO_MASK

@@ -1,18 +1,18 @@
 class SupplierOrderObserver < ActiveRecord::Observer
   def after_create(supplier_order)
-    notify(supplier_order, "supplier_order_created")
+    notify(supplier_order, "product_order_created")
   end
 
   def after_accept(supplier_order, transition)
-    notify(supplier_order, "supplier_order_accepted")
+    notify(supplier_order, "product_order_accepted")
   end
 
   def after_reject(supplier_order, transition)
-    notify(supplier_order, "supplier_order_rejected")
+    notify(supplier_order, "product_order_rejected")
   end
 
   def after_complete(supplier_order, transition)
-    notify(supplier_order, "supplier_order_completed")
+    notify(supplier_order, "product_order_completed")
   end
 
   private
