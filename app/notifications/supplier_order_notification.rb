@@ -25,6 +25,15 @@ class SupplierOrderNotification < Conversation
     :seller_email => Proc.new{|params|
       params[:seller].email
     },
+    :product_order_quantity => Proc.new{|params|
+      params[:supplier_order].quantity.to_s
+    },
+    :product_item_number => Proc.new{|params|
+      params[:product].item_number
+    },
+    :product_verification_code => Proc.new{|params|
+      params[:product].verification_code
+    },
     :customer_address => Proc.new{|params|
       params[:order_notification].customer_address
     },
