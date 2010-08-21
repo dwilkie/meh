@@ -57,7 +57,7 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
     t.string   "event",       :null => false
     t.string   "for",         :null => false
     t.string   "purpose",     :null => false
-    t.text     "message",     :null => false
+    t.text     "message"
     t.boolean  "enabled",     :null => false
     t.boolean  "should_send", :null => false
     t.integer  "seller_id",   :null => false

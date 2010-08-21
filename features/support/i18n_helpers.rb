@@ -4,6 +4,27 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
+    when /^a customer completed payment for\.\.\.$/
+       "notifications.messages.a_customer_completed_payment_for"
+
+    when /^product order was sent to\.\.\.$/
+      "notifications.messages.product_order_was_sent_to"
+
+    when /^you have a new product order from\.\.\. for the following item\.\.\.$/
+      "notifications.messages.new_product_order_from_seller_for_the_following_item"
+
+    when /^your customer bought the following item\.\.\.$/
+      "notifications.messages.your_customer_bought_the_following_item"
+
+    when /^your supplier processed their product order\.\.\.$/
+      "notifications.messages.your_supplier_processed_their_product_order"
+
+    when /^you successfully processed the product order\.\.\.$/
+      "notifications.messages.you_successfully_processed_the_product_order"
+
+    when /^send the product to\.\.\.$/
+      "notifications.messages.send_the_product_to"
+
     when /^supplier order notification$/
       "messages.supplier_order_notification"
 

@@ -69,7 +69,6 @@ class SupplierOrderObserver < ActiveRecord::Observer
       supplier = supplier_order.supplier
       notifications = seller.notifications.for_event(
         event,
-        :seller => seller,
         :supplier => supplier,
         :product => product
       )
