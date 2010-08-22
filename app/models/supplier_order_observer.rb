@@ -67,6 +67,8 @@ class SupplierOrderObserver < ActiveRecord::Observer
       seller_order = supplier_order.seller_order
       seller = seller_order.seller
       supplier = supplier_order.supplier
+      order_notification = seller_order.order_notification
+
       notifications = seller.notifications.for_event(
         event,
         :supplier => supplier,
@@ -74,14 +76,14 @@ class SupplierOrderObserver < ActiveRecord::Observer
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
-        SupplierOrderNotification.new(:with => with).notify(
+        GeneralNotification.new(:with => with).notify(
           notification,
-          :order_notification => seller_order.order_notification,
-          :supplier_order => supplier_order,
-          :seller_order => seller_order,
-          :seller => seller,
           :product => product,
-          :supplier => supplier
+          :product_order => supplier_order,
+          :customer_order => seller_order,
+          :seller => seller,
+          :supplier => supplier,
+          :order_notification => order_notification
         )
       end
     end

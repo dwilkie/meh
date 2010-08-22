@@ -10,7 +10,7 @@ Feature: Notifications
     And a supplier exists with name: "Nok", email: "nok@example.com", mobile_number: mobile_number: "supplier's number"
     And no notifications exist with seller_id: the seller
     And a paypal_ipn exists with seller: the seller
-    And the paypal_ipn has the following params: "{'address_name' => 'Johnny Knoxville', 'address_street' => '14 Mank St', 'address_city' => 'Mankville', 'address_state' => 'VIC', 'address_country' => 'Australia', 'address_zip' => '1234'}"
+    And the paypal_ipn has the following params: "{'num_cart_items' => '0', 'address_name' => 'Johnny Knoxville', 'address_street' => '14 Mank St', 'address_city' => 'Mankville', 'address_state' => 'VIC', 'address_country' => 'Australia', 'address_zip' => '1234'}"
     And a product exists with number: "19023445673", name: "Oriental Fishing Rod", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a seller_order exists with id: 154672, seller: the seller, order_notification: the paypal_ipn
 
@@ -32,12 +32,12 @@ Feature: Notifications
     And a new outgoing text message should be created destined for mobile_number: "supplier's number"
     And the outgoing_text_message should be
     """
-    154674 154672 Nok Mara +66256785325 +66354668789 nok@example.com mara@example.com 1 19023445673 Oriental Fishing Rod hy456n Johnny Knoxville,
+    Johnny Knoxville,
     14 Mank St,
     Mankville,
     VIC,
     Australia,
-    1234 Johnny Knoxville 14 Mank St Mankville VIC Australia 1234
+    1234 Mankville Australia Johnny Knoxville VIC 14 Mank St 1234 154672 0 Oriental Fishing Rod 19023445673 154674 1 hy456n mara@example.com +66354668789 Mara nok@example.com +66256785325 Nok
     """
     And a new outgoing text message should be created destined for mobile_number: "seller's number"
     And the outgoing text message should be "special notification for this product: 19023445673, Oriental Fishing Rod"

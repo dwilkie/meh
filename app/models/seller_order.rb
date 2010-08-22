@@ -57,12 +57,13 @@ class SellerOrder < ActiveRecord::Base
     def notify(event, options = {})
       seller = self.seller
       notifications = seller.notifications.for_event(event)
-      seller_order_notification = SellerOrderNotification.new(:with => seller)
+      seller_order_notification = GeneralNotification.new(:with => seller)
       notifications.each do |notification|
         seller_order_notification.notify(
           notification,
           options.merge(
             :seller => seller,
+            :customer_order => self,
             :order_notification => self.order_notification
           )
         )
