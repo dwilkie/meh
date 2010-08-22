@@ -120,8 +120,8 @@ class Notification < ActiveRecord::Base
     },
     :product_does_not_match_item_in_customer_order => {
       :notification_attributes => {
-        :product_number => EVENT_ATTRIBUTES[:product_number],
-        :product_name => EVENT_ATTRIBUTES[:product_name]
+        :product_number => EVENT_ATTRIBUTES[:product][:product_number],
+        :product_name => EVENT_ATTRIBUTES[:product][:product_name]
       }.merge(
         COMMON_EVENT_ATTRIBUTES[:customer_order]
       ).merge(
@@ -247,6 +247,22 @@ class Notification < ActiveRecord::Base
       :purpose => "to inform me about the customer order details",
       :message => I18n.t(
         "notifications.messages.a_customer_completed_payment_for"
+      )
+    )
+    create!(
+      :event => "product_does_not_match_item_in_customer_order",
+      :for => "seller",
+      :purpose => "to inform me that my existing product does not match an item in the customer order",
+      :message => I18n.t(
+        "notifications.messages.product_does_not_match_item_in_customer_order"
+      )
+    )
+    create!(
+      :event => "product_does_not_exist_in_customer_order",
+      :for => "seller",
+      :purpose => "to inform me that I have not registered an item in the customer order",
+      :message => I18n.t(
+        "notifications.messages.product_does_not_exist_in_customer_order"
       )
     )
     create!(

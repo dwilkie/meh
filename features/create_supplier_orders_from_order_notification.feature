@@ -1,13 +1,13 @@
 Feature: Create supplier orders from an order notification
   In order to keep track of my orders
   As a supplier
-  I want a new supplier order to be created when an order notificationS containing a product that I am supplying is verified and the payment status is completed
+  I want a new supplier order to be created when an order notification containing a product that I am supplying is verified and the payment status is completed
 
   Background:
     Given a mobile_number: "seller's number" exists with number: "66354668789"
     And a seller exists with email: "some_seller@example.com", mobile_number: the mobile_number, name: "Dave"
     And a supplier exists
-    And a product exists with seller: the seller, supplier: the supplier, item_number: "12345790063"
+    And a product exists with seller: the seller, supplier: the supplier, number: "12345790063", name: "Model Ship - The Rubber Dingy"
 
   Scenario Outline: The payment status is completed
     Given an <order_notification> exists with payment_status: <payment_status>
@@ -23,7 +23,7 @@ Feature: Create supplier orders from an order notification
 
     Examples:
       | order_notification | payment_status | params                       |
-      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790063', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}"                                                                   |
+      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}"                                                                      |
 
   Scenario Outline: The payment status is not completed
     Given an <order_notification> exists
@@ -46,9 +46,48 @@ Feature: Create supplier orders from an order notification
     Then a supplier_order should not exist
     But a seller_order should exist
     And a new outgoing text message should be created destined for mobile_number: "seller's number"
-    And the outgoing_text_message should be a translation of "products not found notification" in "en" (English) where seller: "Dave", number_of_missing_products: "1", number_of_items: "1", seller_order_number: "1"
+    And the outgoing_text_message should be
+    """
+    Hi Dave, the customer order: 1, contains the following item which is not registered with us: 12345790062 (Model Ship - The Rubber Ducky). Reply with "rp 12345790062 1" to register the new product. For other options log in to your account
+    """
 
     Examples:
       | order_notification | payment_status | params                       |
-      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790062', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}"                                                    |
+      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790062', 'item_name1' => 'Model Ship - The Rubber Ducky', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}"                                                    |
+
+  Scenario Outline: The seller has registered this product name but the product number is different
+    Given an <order_notification> exists with payment_status: <payment_status>
+    And the <order_notification> has the following params: <params>
+
+    When the <order_notification> is verified
+
+    Then a supplier_order should not exist
+    But a seller_order should exist
+    And a new outgoing text message should be created destined for mobile_number: "seller's number"
+    And the outgoing_text_message should be
+    """
+    Hi Dave, you have the following product: 12345790063 (Model Ship - The Rubber Dingy) registered with us, but the customer order: 1, contains the following item instead: 12345790062 (Model Ship - The Rubber Dingy). Reply with: "up 12345790063 1" to update your existing product details with the details from this order. For other options log in to your account
+    """
+
+    Examples:
+      | order_notification | payment_status | params                       |
+      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790062', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}"                                                    |
+
+  Scenario Outline: The seller has registered this product number but the product name is different
+    Given an <order_notification> exists with payment_status: <payment_status>
+    And the <order_notification> has the following params: <params>
+
+    When the <order_notification> is verified
+
+    Then a supplier_order should not exist
+    But a seller_order should exist
+    And a new outgoing text message should be created destined for mobile_number: "seller's number"
+    And the outgoing_text_message should be
+    """
+    Hi Dave, you have the following product: 12345790063 (Model Ship - The Rubber Dingy) registered with us, but the customer order: 1, contains the following item instead: 12345790063 (Model Ship - The Rubber Ducky). Reply with: "up 12345790063 1" to update your existing product details with the details from this order. For other options log in to your account
+    """
+
+    Examples:
+      | order_notification | payment_status | params                       |
+      | paypal_ipn         | "Completed"    | "{'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Ducky', 'receiver_email'=>'some_seller@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}"                                                    |
 

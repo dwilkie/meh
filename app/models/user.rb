@@ -100,10 +100,6 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :password_required?
 
-  def selling_product(item_number)
-    self.selling_products.where("item_number = ?", item_number).first
-  end
-
   def payment_agreement_with_supplier(supplier)
     self.payment_agreements_with_suppliers.where(:supplier => supplier).first
   end

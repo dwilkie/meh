@@ -34,5 +34,21 @@ class Product < ActiveRecord::Base
   validates :seller_id,
             :presence => true
 
+  def self.with_number_and_name(number, name)
+    where(
+      "products.number = ?",
+      number
+    ).where(
+      "products.name = ?",
+      name
+    )
+  end
+
+  def self.with_number_or_name(number, name)
+    where(
+      "products.number = ? OR products.name = ?",
+      number, name
+    )
+  end
 end
 

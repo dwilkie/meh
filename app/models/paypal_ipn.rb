@@ -53,8 +53,7 @@ class PaypalIpn < ActiveRecord::Base
       customer_address_street,
       customer_address_city,
       customer_address_state,
-      customer_address_country,
-      customer_address_zip
+      customer_address_country + " " + customer_address_zip,
     ].join(delimeter)
   end
 

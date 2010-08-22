@@ -17,7 +17,7 @@ Feature: Create supplier orders manually from a seller order
     Then a seller_order should exist
     But 0 supplier_orders should exist
 
-    Given a product exists with seller: the seller, supplier: the supplier, item_number: "12345790063"
+    Given a product exists with seller: the seller, supplier: the supplier, number: "12345790063"
 
     When a manual creation of supplier orders is triggered for the seller_order
 

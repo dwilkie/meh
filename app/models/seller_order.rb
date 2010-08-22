@@ -11,42 +11,40 @@ class SellerOrder < ActiveRecord::Base
             :order_notification,
             :presence => true
 
-  after_create :trigger_event, :create_supplier_orders
+  after_create :create_supplier_orders, :trigger_notification_event
 
   def create_supplier_orders
     order_notification = self.order_notification
     seller = self.seller
     order_notification.number_of_cart_items.times do |index|
-      item_number = order_notification.item_number(index)
-      item_name = order_notification.item_name(index)
-      item_quantity = order_notification.item_quantity(index)
-      product = seller.selling_product(
-        :product_number => item_number,
-        :product_name => item_name,
-        :exact_match => true
-      )
+      item_attributes = {
+        :item_number => order_notification.item_number(index),
+        :item_name => order_notification.item_name(index),
+        :item_quantity => order_notification.item_quantity(index)
+      }
+      product = seller.selling_products.with_number_and_name(
+        item_attributes[:item_number],
+        item_attributes[:item_name]
+      ).first
       if product
         self.supplier_orders.create(
           :product => product,
-          :quantity => item_quantity
+          :quantity => item_attributes[:item_quantity]
         )
       else
-        product = seller.selling_product(
-          :product_number => item_number,
-          :product_name => item_name,
-          :exact_match => false
-        )
+        product = seller.selling_products.with_number_or_name(
+          item_attributes[:item_number],
+          item_attributes[:item_name]
+        ).first
         if product
           notify(
             "product_does_not_match_item_in_customer_order",
-            :product => product
+            {:product => product}.merge(item_attributes)
           )
         else
           notify(
             "product_does_not_exist_in_customer_order",
-            :item_number => item_number,
-            :item_name => item_name,
-            :item_quantity => item_quantity
+            item_attributes
           )
         end
       end
@@ -70,7 +68,7 @@ class SellerOrder < ActiveRecord::Base
       end
     end
 
-    def trigger_event
+    def trigger_notification_event
       notify("customer_order_created")
     end
 end
