@@ -8,16 +8,17 @@ Feature: Notifications
     And a seller exists with name: "Mara", email: "mara@example.com", mobile_number: mobile_number: "seller's number"
     And a mobile_number: "supplier's number" exists with number: "66256785325"
     And a supplier exists with name: "Nok", email: "nok@example.com", mobile_number: mobile_number: "supplier's number"
-    And a paypal_ipn exists
-    And the paypal_ipn has the following params: "{'receiver_email'=>'mara@example.com', 'address_name' => 'Johnny Knoxville', 'address_street' => '14 Mank St', 'address_city' => 'Mankville', 'address_state' => 'VIC', 'address_country' => 'Australia', 'address_zip' => '1234'}"
-    And a product exists with item_number: "19023445673", verification_code: "hy456n", supplier: the supplier, seller: the seller
+    And no notifications exist with seller_id: the seller
+    And a paypal_ipn exists with seller: the seller
+    And the paypal_ipn has the following params: "{'address_name' => 'Johnny Knoxville', 'address_street' => '14 Mank St', 'address_city' => 'Mankville', 'address_state' => 'VIC', 'address_country' => 'Australia', 'address_zip' => '1234'}"
+    And a product exists with number: "19023445673", name: "Oriental Fishing Rod", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a seller_order exists with id: 154672, seller: the seller, order_notification: the paypal_ipn
 
   Scenario Outline: A supplier order (product order)
     Given a notification exists with event: "<event>", seller: the seller, for: "supplier", purpose: "product order notification"
     And a notification: "special notification for this supplier" exists with event: "<event>", seller: the seller, for: "supplier", purpose: "product order notification", supplier: the supplier
     And the notification: "special notification for this supplier" message includes all available attributes
-    And a notification exists with event: "<event>", seller: the seller, for: "seller", product: the product, purpose: "product order notification", message: "special notification for this product: <product_item_number>"
+    And a notification exists with event: "<event>", seller: the seller, for: "seller", product: the product, purpose: "product order notification", message: "special notification for this product: <product_number>, <product_name>"
     And a notification exists with event: "<event>", seller: the seller, for: "seller", purpose: "product order notification", supplier: the supplier
     And a notification exists with event: "<event>", seller: the seller, for: "seller", purpose: "product order notification"
     And a supplier_order exists with id: 154674, product_id: the product, quantity: 1, seller_order: the seller_order
@@ -31,7 +32,7 @@ Feature: Notifications
     And a new outgoing text message should be created destined for mobile_number: "supplier's number"
     And the outgoing_text_message should be
     """
-    154674 154672 Nok Mara +66256785325 +66354668789 nok@example.com mara@example.com 1 19023445673 hy456n Johnny Knoxville,
+    154674 154672 Nok Mara +66256785325 +66354668789 nok@example.com mara@example.com 1 19023445673 Oriental Fishing Rod hy456n Johnny Knoxville,
     14 Mank St,
     Mankville,
     VIC,
@@ -39,7 +40,7 @@ Feature: Notifications
     1234 Johnny Knoxville 14 Mank St Mankville VIC Australia 1234
     """
     And a new outgoing text message should be created destined for mobile_number: "seller's number"
-    And the outgoing text message should be "special notification for this product: 19023445673"
+    And the outgoing text message should be "special notification for this product: 19023445673, Oriental Fishing Rod"
 
     Examples:
       | event                   | transitions  |

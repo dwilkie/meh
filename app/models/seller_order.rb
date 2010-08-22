@@ -11,41 +11,66 @@ class SellerOrder < ActiveRecord::Base
             :order_notification,
             :presence => true
 
-  after_create :create_supplier_orders
+  after_create :trigger_event, :create_supplier_orders
 
   def create_supplier_orders
     order_notification = self.order_notification
     seller = self.seller
-    number_of_missing_products = 0
     order_notification.number_of_cart_items.times do |index|
       item_number = order_notification.item_number(index)
+      item_name = order_notification.item_name(index)
       item_quantity = order_notification.item_quantity(index)
-      product = seller.selling_product(item_number)
+      product = seller.selling_product(
+        :product_number => item_number,
+        :product_name => item_name,
+        :exact_match => true
+      )
       if product
         self.supplier_orders.create(
           :product => product,
           :quantity => item_quantity
         )
       else
-        number_of_missing_products += 1
+        product = seller.selling_product(
+          :product_number => item_number,
+          :product_name => item_name,
+          :exact_match => false
+        )
+        if product
+          notify(
+            "product_does_not_match_item_in_customer_order",
+            :product => product
+          )
+        else
+          notify(
+            "product_does_not_exist_in_customer_order",
+            :item_number => item_number,
+            :item_name => item_name,
+            :item_quantity => item_quantity
+          )
+        end
       end
     end
-    SellerOrderNotification.new(
-      :with => seller
-    ).products_not_found(
-      self,
-      number_of_missing_products,
-      order_notification.number_of_cart_items
-    ) if number_of_missing_products > 0
   end
 
   private
-    def notify(event)
+    def notify(event, options = {})
+      seller = self.seller
       notifications = seller.notifications.for_event(event)
-      seller_order_notification = SellerOrderNotification.new(:with => self.seller)
+      seller_order_notification = SellerOrderNotification.new(:with => seller)
       notifications.each do |notification|
-        seller_order_notification.notify(notification, self)
+        seller_order_notification.notify(
+          notification,
+          options.merge(
+            :seller => seller,
+            :order_notification => self.order_notification
+          )
+        )
       end
+    end
+
+    def trigger_event
+      notify("customer_order_created")
     end
 end
 

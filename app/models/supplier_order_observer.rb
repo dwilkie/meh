@@ -76,11 +76,12 @@ class SupplierOrderObserver < ActiveRecord::Observer
         with = notification.send_to(seller, supplier)
         SupplierOrderNotification.new(:with => with).notify(
           notification,
-          supplier_order,
-          seller_order,
-          seller,
-          product,
-          supplier
+          :order_notification => seller_order.order_notification,
+          :supplier_order => supplier_order,
+          :seller_order => seller_order,
+          :seller => seller,
+          :product => product,
+          :supplier => supplier
         )
       end
     end

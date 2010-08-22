@@ -24,7 +24,7 @@ class Product < ActiveRecord::Base
               :greater_than_or_equal_to => 0
             }
 
-  validates :item_number, :verification_code,
+  validates :number, :name, :verification_code,
             :uniqueness => {:scope => :seller_id},
             :presence => true
 

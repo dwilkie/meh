@@ -33,7 +33,8 @@ end
 Factory.define :product do |f|
   f.association :supplier
   f.association :seller
-  f.item_number 12345
+  f.number 12345
+  f.name "Some Manky Product"
   f.sequence(:verification_code) {|n| "meh#{n}" }
 end
 
@@ -100,7 +101,7 @@ end
 Factory.define :paypal_ipn do |f|
   f.sequence(:transaction_id) {|n| "45D21472YD182004#{n}" }
   f.params { |paypal_ipn|
-    seller = Factory.create(:seller)
+    seller = paypal_ipn.seller || Factory.create(:seller)
     {
       "payment_status" => paypal_ipn.payment_status,
       "receiver_email" => seller.email,

@@ -145,7 +145,8 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
 
   create_table "products", :force => true do |t|
-    t.string   "item_number",                      :null => false
+    t.string   "number",                           :null => false
+    t.string   "name",                             :null => false
     t.string   "verification_code",                :null => false
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency"
@@ -155,7 +156,8 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
     t.datetime "updated_at"
   end
 
-  add_index "products", ["item_number", "seller_id"], :name => "index_products_on_item_number_and_seller_id", :unique => true
+  add_index "products", ["name", "seller_id"], :name => "index_products_on_name_and_seller_id", :unique => true
+  add_index "products", ["number", "seller_id"], :name => "index_products_on_number_and_seller_id", :unique => true
   add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
 
   create_table "seller_orders", :force => true do |t|

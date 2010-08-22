@@ -10,7 +10,7 @@ class Notification < ActiveRecord::Base
 
   EVENTS = {
     :customer_order_created => {
-      :notification_attributes => SellerOrderNotification::ATTRIBUTES,
+      :notification_attributes => SellerOrderNotification::GENERAL_ATTRIBUTES,
       :send_notification_to => User.roles(
         SellerOrderNotification::SEND_TO_MASK
       )
@@ -78,7 +78,11 @@ class Notification < ActiveRecord::Base
     self.should_send = true if self.should_send.nil?
   end
 
-  def parse_message(event_attributes)
+  def parse_message(event_attribute_values = {})
+    event_attributes = {}
+    EVENTS[self.event.to_sym][:notification_attributes].each do |k, v|
+      event_attributes[k] = v.call(event_attribute_values)
+    end
     parsed_message = self.message
     parsed_message.scan(/<\w+>/).each do |attribute|
       parsed_attribute = attribute.gsub(/[<>]/, "").to_sym

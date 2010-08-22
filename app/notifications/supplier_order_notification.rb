@@ -28,8 +28,11 @@ class SupplierOrderNotification < Conversation
     :product_order_quantity => Proc.new{|params|
       params[:supplier_order].quantity.to_s
     },
-    :product_item_number => Proc.new{|params|
-      params[:product].item_number
+    :product_number => Proc.new{|params|
+      params[:product].number
+    },
+    :product_name => Proc.new{|params|
+      params[:product].name
     },
     :product_verification_code => Proc.new{|params|
       params[:product].verification_code
@@ -59,34 +62,8 @@ class SupplierOrderNotification < Conversation
 
   SEND_TO_MASK = 3
 
-  def notify(notification, supplier_order, seller_order, seller, product, supplier)
-    say notification.parse_message(
-      event_attributes(
-        supplier_order,
-        seller_order,
-        seller,
-        product,
-        supplier
-      )
-    )
+  def notify(notification, options = {})
+    say notification.parse_message(options)
   end
-
-  private
-
-    def event_attributes(supplier_order, seller_order, seller, product, supplier)
-      order_notification = seller_order.order_notification
-      event_attributes = {}
-      ATTRIBUTES.each do |k, v|
-        event_attributes[k] = v.call(
-          :order_notification => order_notification,
-          :supplier_order => supplier_order,
-          :seller_order => seller_order,
-          :seller => seller,
-          :product => product,
-          :supplier => supplier
-        )
-      end
-      event_attributes
-    end
 end
 
