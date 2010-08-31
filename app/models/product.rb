@@ -25,7 +25,7 @@ class Product < ActiveRecord::Base
             }
 
   validates :number, :name, :verification_code,
-            :uniqueness => {:scope => :seller_id},
+            :uniqueness => {:scope => :seller_id, :case_sensitive => false},
             :presence => true
 
   validates :supplier_id,

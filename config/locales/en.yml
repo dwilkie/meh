@@ -1,21 +1,48 @@
 en:
   notifications:
     messages:
-      a_customer_completed_payment_for: "Hi <seller_name>, a customer just completed payment for <number_of_cart_items> of your products. The customer's shipping address is:
+      custom:
+        a_customer_completed_payment_for: "Hi <seller_name>, a customer just completed payment for <number_of_cart_items> of your products. The customer's shipping address is:
 
-      <customer_address>
+        <customer_address>
 
-We'll send you more details about the items in this order shortly. Your customer order number is: <customer_order_number>"
-      product_does_not_match_item_in_customer_order: "Hi <seller_name>, you have the following product: <product_number> (<product_name>) registered with us, but the customer order: <customer_order_number>, contains the following item instead: <item_number> (<item_name>). Reply with: \"up <product_number> <customer_order_number>\" to update your existing product details with the details from this order. For other options log in to your account"
-      product_does_not_exist_in_customer_order: "Hi <seller_name>, the customer order: <customer_order_number>, contains the following item which is not registered with us: <item_number> (<item_name>). Reply with \"rp <item_number> <customer_order_number>\" to register the new product. For other options log in to your account"
-      product_order_was_sent_to: "Hi <seller_name>, FYI: a new product order: <product_order_number>, for <product_order_quantity> x <product_number> (<product_name>) was created and sent to <supplier_name> (supplier_mobile_number) for processing. The product order belongs to your customer order: <customer_order_number>"
-      new_product_order_from_seller_for_the_following_item: "Hi <supplier_name>, you have a new product order: <product_order_number>, from <seller_name> (seller_mobile_number) for <product_order_quantity> x <product_number> (<product_name>). To accept the order, look up the product verification code for this item and reply with: \"apo <product_order_number> <product_order_quantity> 'product verification code'\". To reject the order reply with: \"rpo <product_order_number>\""
-      your_customer_bought_the_following_item: "Hi <supplier_name>, the customer bought <product_order_quantity> x <product_number> (<product_name>) as part of the customer order: <customer_order_number>. A new product order: <product_order_number>, was created to help you track the progress of this item. To mark this product order as completed, reply with: \"cpo <product_order_number>\""
-      your_supplier_processed_their_product_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} their product order: <product_order_number> of <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: <customer_order_number>"
-      you_successfully_processed_the_product_order: "Hi <supplier_name>, you successfully %{processed} the product order: <product_order_number>"
-      send_the_product_to: "Hi <supplier_name>, please send the product order: <product_order_number>, to the following address
+  We'll send you more details about the items in this order shortly. Your customer order number is: <customer_order_number>"
+        product_does_not_match_item_in_customer_order: "Hi <seller_name>, you have the following product: <product_number> (<product_name>) registered with us, but the customer order: <customer_order_number>, contains the following item instead: <item_number> (<item_name>). Reply with: \"up <product_number> <customer_order_number>\" to update your existing product details with the details from this order. For other options log in to your account"
+        product_does_not_exist_in_customer_order: "Hi <seller_name>, the customer order: <customer_order_number>, contains the following item which is not registered with us: <item_number> (<item_name>). Reply with \"rp <item_number> <customer_order_number>\" to register the new product. For other options log in to your account"
+        product_order_was_sent_to: "Hi <seller_name>, FYI: a new product order: <product_order_number>, for <product_order_quantity> x <product_number> (<product_name>) was created and sent to <supplier_name> (supplier_mobile_number) for processing. The product order belongs to your customer order: <customer_order_number>"
+        new_product_order_from_seller_for_the_following_item: "Hi <supplier_name>, you have a new product order: <product_order_number>, from <seller_name> (seller_mobile_number) for <product_order_quantity> x <product_number> (<product_name>). To accept the order, look up the product verification code for this item and reply with: \"apo <product_order_number> <product_order_quantity> 'product verification code'\". To reject the order reply with: \"rpo <product_order_number>\""
+        your_customer_bought_the_following_item: "Hi <supplier_name>, the customer bought <product_order_quantity> x <product_number> (<product_name>) as part of the customer order: <customer_order_number>. A new product order: <product_order_number>, was created to help you track the progress of this item. To mark this product order as completed, reply with: \"cpo <product_order_number>\""
+        your_supplier_processed_their_product_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} their product order: <product_order_number> of <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: <customer_order_number>"
+        you_successfully_processed_the_product_order: "Hi <supplier_name>, you successfully %{processed} the product order: <product_order_number>"
+        send_the_product_to: "Hi <supplier_name>, please send the product order: <product_order_number>, to the following address
 
-      <customer_address>
+        <customer_address>
 
-      and reply with: \"cpo <product_order_number>\" when you are done"
+        and reply with: \"cpo <product_order_number>\" when you are done"
+        your_mobile_number_pin_code_is_invalid: "Hi <user_name>, the pin code you supplied is invalid"
+      built_in:
+        you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
+        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <pin number> <product order number>"
+        supplier_order_was_already_confirmed: "Sorry %{supplier_name}, this product order was already %{status}"
+        your_pin_number_is_incorrect: "Sorry, your pin number is incorrect. Please try again with: %{topic} %{action} <pin number> ..."
+        invalid_action_for_supplier_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ..., %{topic} reject ... or %{topic} complete ..."
+        no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ..., %{topic} reject ... or %{topic} complete ..."
+        you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Please try again with: %{topic} %{action} <pin number> %{supplier_order_number} %{quantity} <product verification code>"
+  errors:
+    messages:
+      incorrect: "isn't \"%{value}\""
+  activemodel:
+    errors:
+      models:
+        'supplier_order_conversation/accept_supplier_order_message':
+          attributes:
+            quantity:
+              blank: "wasn't confirmed"
+            product_verification_code:
+              blank: "wasn't supplied"
+  support:
+    array:
+      words_connector: ", the "
+      two_words_connector: " and the "
+      last_word_connector: " and the "
 

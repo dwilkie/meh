@@ -1,15 +1,14 @@
-Feature: Complete an order
-  In order to notify stakeholders that I have completed processing this order and
-  send them any other relevant information
+Feature: Complete a supplier order
+  In order to notify my seller that I have completed processing a supplier order (product order) and to submit the tracking number if applicable
   As a supplier
-  I want to be able to complete an order by sending in a text message
+  I want to be able to complete a supplier order by sending in a text message
 
   Background:
-    Given a mobile_number exists with number: "66354668789", password: "1234"
+    Given a mobile_number exists with number: "66354668874", password: "1234"
     And a supplier exists with name: "Nok", mobile_number: the mobile_number
     And a product exists with supplier_id: the supplier
 
-  Scenario Outline: Complete an order
+  Scenario Outline: Complete an order explicitly
     Given a supplier_order exists with id: 154674, product_id: the product, status: "accepted"
     When I text "<text_message>" from "66354668789"
 

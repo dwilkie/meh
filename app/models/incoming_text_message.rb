@@ -15,6 +15,10 @@ class IncomingTextMessage < ActiveRecord::Base
     self.from = self.params["from"] if self.params
   end
 
+  def text
+    self.params[:msg]
+  end
+
   private
     def link_to_mobile_number
       self.mobile_number = MobileNumber.where("number = ?", from).first

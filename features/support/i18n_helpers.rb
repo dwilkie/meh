@@ -8,28 +8,55 @@ module I18nHelpers
        "notifications.messages.a_customer_completed_payment_for"
 
     when /^product order was sent to\.\.\.$/
-      "notifications.messages.product_order_was_sent_to"
+      "notifications.messages.supplier_order_was_sent_to"
 
     when /^you have a new product order from\.\.\. for the following item\.\.\.$/
-      "notifications.messages.new_product_order_from_seller_for_the_following_item"
+      "notifications.messages.new_supplier_order_from_seller_for_the_following_item"
 
     when /^your customer bought the following item\.\.\.$/
       "notifications.messages.your_customer_bought_the_following_item"
 
     when /^your supplier processed their product order\.\.\.$/
-      "notifications.messages.your_supplier_processed_their_product_order"
+      "notifications.messages.your_supplier_processed_their_supplier_order"
 
     when /^you successfully processed the product order\.\.\.$/
-      "notifications.messages.you_successfully_processed_the_product_order"
+      "notifications.messages.you_successfully_processed_the_supplier_order"
 
     when /^send the product to\.\.\.$/
       "notifications.messages.send_the_product_to"
 
+    when /^you do not have any supplier orders$/
+      "notifications.messages.built_in.you_do_not_have_any_supplier_orders"
+
+    when /^supplier order was already confirmed$/
+      "notifications.messages.built_in.supplier_order_was_already_confirmed"
+
+    when /^be specific about the supplier order number$/
+      "notifications.messages.built_in.be_specific_about_the_supplier_order_number"
+
+    when /^your pin number is incorrect$/
+      "notifications.messages.built_in.your_pin_number_is_incorrect"
+
+    when /^invalid action given for the supplier order$/
+      "notifications.messages.built_in.invalid_action_for_supplier_order"
+
+    when /^what would you like to do with the supplier order\?$/
+      "notifications.messages.built_in.no_action_for_supplier_order"
+
+    when /^is incorrect$/
+      "errors.messages.incorrect"
+
+    when /^order quantity is blank$/
+      "activemodel.errors.models.supplier_order_conversation/accept_supplier_order_message.attributes.quantity.blank"
+
+    when /^product verification code is blank$/
+      "activemodel.errors.models.supplier_order_conversation/accept_supplier_order_message.attributes.product_verification_code.blank"
+
+
+
     when /^supplier order notification$/
       "messages.supplier_order_notification"
 
-    when /^not matching order quantity$/
-      "errors.messages.not_matching_order_quantity"
 
     when /^not matching pv code$/
       "errors.messages.not_matching_product_verification_code"

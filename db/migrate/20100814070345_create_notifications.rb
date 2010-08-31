@@ -2,8 +2,8 @@ class CreateNotifications < ActiveRecord::Migration
   def self.up
     create_table   :notifications do |t|
       t.string     :event,       :null => false
-      t.string     :for,         :null => false
       t.string     :purpose,     :null => false
+      t.string     :for
       t.text       :message
       t.boolean    :enabled,      :null => false
       t.boolean    :should_send,  :null => false

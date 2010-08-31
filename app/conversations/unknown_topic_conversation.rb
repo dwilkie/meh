@@ -1,5 +1,5 @@
-class UnknownTopicConversation < Conversation
-  def move_along(message)
+class UnknownTopicConversation
+  def move_along
     user.new_record? ? say(welcome) : say(invalid_command(message))
   end
 
@@ -8,12 +8,11 @@ class UnknownTopicConversation < Conversation
       I18n.t("messages.welcome")
     end
 
-    def invalid_command(message_text)
+    def invalid_command
       I18n.t(
         "messages.invalid_command",
         :user => user.name,
-        :topic => self.topic,
-        :message_text => message_text
+        :topic => self.topic
       )
     end
 end

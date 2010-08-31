@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
 
   create_table "notifications", :force => true do |t|
     t.string   "event",       :null => false
-    t.string   "for",         :null => false
     t.string   "purpose",     :null => false
+    t.string   "for"
     t.text     "message"
     t.boolean  "enabled",     :null => false
     t.boolean  "should_send", :null => false
@@ -169,11 +169,13 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   end
 
   create_table "supplier_orders", :force => true do |t|
-    t.string   "status",          :null => false
     t.integer  "quantity",        :null => false
     t.integer  "product_id",      :null => false
     t.integer  "supplier_id",     :null => false
     t.integer  "seller_order_id", :null => false
+    t.datetime "accepted_at"
+    t.datetime "rejected_at"
+    t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

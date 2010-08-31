@@ -91,6 +91,11 @@ class Notification < ActiveRecord::Base
       :supplier_email => Proc.new { |options|
         options[:supplier].email
       }
+    },
+    :user => {
+      :user_name => Proc.new { |options|
+        options[:user].name
+      }
     }
   }
 
@@ -150,6 +155,10 @@ class Notification < ActiveRecord::Base
     :product_order_completed => {
       :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
+    },
+    :pin_number_incorrect => {
+      :notification_attributes => EVENT_ATTRIBUTES[:user],
+      :send_notification_to => User.roles(0)
     }
   }
 
@@ -157,11 +166,12 @@ class Notification < ActiveRecord::Base
     def validate_each(record, attribute, value)
       if record.event
         if available_receivers = EVENTS[record.event.to_sym].try(
-          :[],
-          :send_notification_to
-        )
+            :[],
+            :send_notification_to
+          )
           record.errors.add(attribute, :inclusion) unless
-            available_receivers.include?(value)
+            available_receivers.include?(value) ||
+            (available_receivers.empty? && value.nil?)
         end
       end
     end
