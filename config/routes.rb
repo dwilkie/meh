@@ -1,4 +1,4 @@
-Meh::Application.routes.draw do |map|
+Meh::Application.routes.draw do
   resources :paypal_ipns, :only => :create
   resources :incoming_text_messages, :only => :create
   resources :text_message_delivery_receipts, :only => :create
@@ -23,12 +23,12 @@ Meh::Application.routes.draw do |map|
   # Sample resource route with options:
   #   resources :products do
   #     member do
-  #       get :short
-  #       post :toggle
+  #       get 'short'
+  #       post 'toggle'
   #     end
   #
   #     collection do
-  #       get :sold
+  #       get 'sold'
   #     end
   #   end
 
@@ -42,7 +42,7 @@ Meh::Application.routes.draw do |map|
   #   resources :products do
   #     resources :comments
   #     resources :sales do
-  #       get :recent, :on => :collection
+  #       get 'recent', :on => :collection
   #     end
   #   end
 
