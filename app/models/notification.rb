@@ -123,23 +123,6 @@ class Notification < ActiveRecord::Base
       ),
       :send_notification_to => User.roles(1)
     },
-    :product_does_not_match_item_in_customer_order => {
-      :notification_attributes => {
-        :product_number => EVENT_ATTRIBUTES[:product][:product_number],
-        :product_name => EVENT_ATTRIBUTES[:product][:product_name]
-      }.merge(
-        COMMON_EVENT_ATTRIBUTES[:customer_order]
-      ).merge(
-        EVENT_ATTRIBUTES[:item]
-      ),
-      :send_notification_to => User.roles(1)
-    },
-    :product_does_not_exist_in_customer_order => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:customer_order].merge(
-        EVENT_ATTRIBUTES[:item]
-      ),
-      :send_notification_to => User.roles(1)
-    },
     :product_order_created => {
       :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
@@ -148,17 +131,9 @@ class Notification < ActiveRecord::Base
       :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
     },
-    :product_order_rejected => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
-      :send_notification_to => User.roles(3)
-    },
     :product_order_completed => {
       :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
-    },
-    :pin_number_incorrect => {
-      :notification_attributes => EVENT_ATTRIBUTES[:user],
-      :send_notification_to => User.roles(0)
     }
   }
 
@@ -260,22 +235,6 @@ class Notification < ActiveRecord::Base
       )
     )
     create!(
-      :event => "product_does_not_match_item_in_customer_order",
-      :for => "seller",
-      :purpose => "to inform me that my existing product does not match an item in the customer order",
-      :message => I18n.t(
-        "notifications.messages.product_does_not_match_item_in_customer_order"
-      )
-    )
-    create!(
-      :event => "product_does_not_exist_in_customer_order",
-      :for => "seller",
-      :purpose => "to inform me that I have not registered an item in the customer order",
-      :message => I18n.t(
-        "notifications.messages.product_does_not_exist_in_customer_order"
-      )
-    )
-    create!(
       :event => "product_order_created",
       :for => "seller",
       :purpose => "to inform me which supplier a product order was sent to",
@@ -314,7 +273,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me when a supplier accepts a product order",
       :message => I18n.t(
-        "notifications.messages.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_product_order",
         :processed => "ACCEPTED"
       )
     )
@@ -329,18 +288,9 @@ class Notification < ActiveRecord::Base
     create!(
       :event => "product_order_accepted",
       :for => "supplier",
-      :purpose => "to inform the supplier that they successfully accepted their product order",
-      :message => I18n.t(
-        "notifications.messages.you_successfully_processed_the_product_order",
-        :processed => "accepted"
-      )
-    )
-    create!(
-      :event => "product_order_accepted",
-      :for => "supplier",
       :purpose => "to inform the supplier of the shipping instructions",
       :message => I18n.t(
-        "notifications.messages.send_the_product_to"
+        "notifications.messages.custom.send_the_product_to"
       )
     )
     notification = new(
@@ -351,38 +301,12 @@ class Notification < ActiveRecord::Base
     )
     notification.supplier = notification.seller
     notification.save!
-    create!(
-      :event => "product_order_rejected",
-      :for => "seller",
-      :purpose => "to inform me when a supplier rejects a product order",
-      :message => I18n.t(
-        "notifications.messages.your_supplier_processed_their_product_order",
-        :processed => "REJECTED"
-      )
-    )
-    notification = new(
-      :event => "product_order_rejected",
-      :for => "seller",
-      :purpose => "to inform me when a supplier rejects a product order",
-      :should_send => false
-    )
-    notification.supplier = notification.seller
-    notification.save!
-    create!(
-      :event => "product_order_rejected",
-      :for => "supplier",
-      :purpose => "to inform the supplier that they successfully rejected their product order",
-      :message => I18n.t(
-        "notifications.messages.you_successfully_processed_the_product_order",
-        :processed => "rejected"
-      )
-    )
     create!(
       :event => "product_order_completed",
       :for => "seller",
       :purpose => "to inform me when a supplier completes a product order",
       :message => I18n.t(
-        "notifications.messages.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_product_order",
         :processed => "COMPLETED"
       )
     )
@@ -394,15 +318,6 @@ class Notification < ActiveRecord::Base
     )
     notification.supplier = notification.seller
     notification.save!
-    create!(
-      :event => "product_order_completed",
-      :for => "supplier",
-      :purpose => "to inform the supplier that they successfully completed their product order",
-      :message => I18n.t(
-        "notifications.messages.you_successfully_processed_the_product_order",
-        :processed => "completed"
-      )
-    )
   end
 end
 

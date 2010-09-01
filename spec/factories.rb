@@ -40,7 +40,9 @@ end
 
 Factory.define :seller_order do |f|
   f.association :seller
-  f.association :order_notification, :factory => :paypal_ipn
+  f.order_notification {|seller_order|
+    seller_order.association(:paypal_ipn, :seller => seller_order.seller)
+  }
 end
 
 Factory.define :supplier_order do |f|

@@ -31,12 +31,16 @@ class SupplierOrder < ActiveRecord::Base
     product.supplier_price * quantity
   end
 
-  def complete?
+  def accepted?
+    self.accepted_at
+  end
+
+  def completed?
     self.completed_at
   end
 
   def incomplete?
-    !complete?
+    !completed?
   end
 
   def unconfirmed?

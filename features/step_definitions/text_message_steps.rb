@@ -55,16 +55,24 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
-Then /^#{capture_model} should be$/ do |text_message, expected_text|
-  text_message = model!(text_message)
+Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should be$/ do |text_message_index, mobile_number, text_message, expected_text|
+  text_message = find_text_message(
+    :text_message_index => text_message_index,
+    :mobile_number => mobile_number,
+    :text_message => text_message
+  )
   text_message.body.should == expected_text
   puts "\n"
   puts text_message.body
   puts "\n"
 end
 
-Then /^#{capture_model} should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
-  text_message = model!(text_message)
+Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message_index, mobile_number, text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
+  text_message = find_text_message(
+    :text_message_index => text_message_index,
+    :mobile_number => mobile_number,
+    :text_message => text_message
+  )
   if translate
     i18n_key = translation_key(expected_text)
     language = "en" if language.blank?

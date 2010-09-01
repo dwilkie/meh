@@ -22,7 +22,8 @@ module Meh
     # Activate observers that should always be running.
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
-    config.active_record.observers = :supplier_order_observer,
+    config.active_record.observers = :seller_order_observer,
+      :supplier_order_observer,
       :incoming_text_message_observer,
       :payment_request_observer,
       :user_observer

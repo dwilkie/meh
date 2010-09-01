@@ -4,18 +4,35 @@ Feature: Accept supplier order
   I want to be able to accept a supplier order by sending in a text message
 
   Background:
-    Given a mobile_number exists with number: "66354668874", password: "1234"
-    And a seller exists
-    And a supplier exists with name: "Nok", mobile_number: the mobile_number
-    And a product exists with verification_code: "hy456n", supplier: the supplier, seller: the seller
-    And a supplier_order: "first order" exists with id: 154674, product: the product, quantity: 3
+    Given a mobile_number: "Nok's number" exists with number: "66354668874", password: "1234"
+    And a supplier exists with name: "Nok", mobile_number: mobile_number: "Nok's number"
+    And a mobile_number: "Mara's number" exists with number: "66354668789"
+    And a seller exists with name: "Mara", mobile_number: mobile_number: "Mara's number"
+    And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
+    And a paypal_ipn exists with seller: the seller
+    And the paypal_ipn has the following params: "{'address_name' => 'Ho Chi Minh', 'address_street' => '4 Chau Minh Lane', 'address_city' => 'Hanoi', 'address_state' => 'Hanoi Province', 'address_country' => 'Viet Nam', 'address_zip' => '52321'}"
+    And a seller_order exists with id: 154673, seller: the seller, order_notification: the paypal_ipn
+    And a supplier_order: "first order" exists with id: 154674, product: the product, quantity: 3, seller_order: the seller_order
 
   Scenario Outline: Accept an order explicitly by giving the supplier order number
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
-    And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
+    And the 2nd most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
+    """
+    Hi Nok, please send the product order: 154674, to the following address:
+    Ho Chi Minh,
+    4 Chau Minh Lane,
+    Hanoi,
+    Hanoi Province,
+    Viet Nam 52321
+    and reply with: "po complete 154674" when you are done
+    """
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Nok (+66354668874) has ACCEPTED their product order: 154674 of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: 154673
+    """
 
   Examples:
     | message_text                               |
@@ -33,8 +50,6 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
-    And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
 
   Examples:
     | message_text                        |
@@ -55,7 +70,7 @@ Feature: Accept supplier order
 
     Then the supplier_order: "first order" should not be accepted
     And the supplier_order: "second order" should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "accept", topic: "<topic>", action: "<action>"
 
   Examples:
@@ -74,7 +89,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "your pin number is incorrect" in "en" (English) where topic: "<topic>", action: "<action>"
 
   Examples:
@@ -89,7 +104,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "what would you like to do with the supplier order?" in "en" (English) where topic: "<message_text>"
 
   Examples:
@@ -101,7 +116,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "invalid action given for the supplier order" in "en" (English) where topic: "<topic>", action: "<action>"
 
   Examples:
@@ -113,7 +128,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should include a translation of "<response>" in "en" (English) <where>
 
   Examples:
@@ -126,7 +141,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should include a translation of "<response>" in "en" (English)
 
   Examples:
@@ -140,7 +155,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should include a translation of "<response>" in "en" (English) <where>
 
   Examples:
@@ -166,7 +181,7 @@ Feature: Accept supplier order
     When I text "apo 1234 154674 3 hy456n" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "supplier order was already confirmed" in "en" (English) where status: "completed", supplier_name: "Nok"
 
  Scenario: Try to implicitly accept an order which was already completed
@@ -175,7 +190,7 @@ Feature: Accept supplier order
     When I text "apo 1234 3 hy456n" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
 
  Scenario: Try to explicitly accept an order which was already accepted
@@ -184,7 +199,7 @@ Feature: Accept supplier order
     When I text "apo 1234 154674 3 hy456n" from "66354668874"
 
     Then the supplier_order should be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "supplier order was already confirmed" in "en" (English) where status: "accepted", supplier_name: "Nok"
 
  Scenario: Try to implicitly accept an order which was already accepted
@@ -193,6 +208,6 @@ Feature: Accept supplier order
     When I text "apo 1234 3 hy456n" from "66354668874"
 
     Then the supplier_order should be accepted
-    And a new outgoing text message should be created destined for the mobile_number
+    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
     And the outgoing_text_message should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
 

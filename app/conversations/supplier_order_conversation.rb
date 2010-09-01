@@ -87,13 +87,13 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
         else
           message = AcceptSupplierOrderMessage.new(supplier_order, params)
           if message.valid?
-            supplier_order.accept
             say I18n.t(
               "notifications.messages.built_in.you_successfully_processed_the_supplier_order",
               :supplier_name => user.name,
               :processed => "accepted",
               :supplier_order_number => supplier_order.id.to_s
             )
+            supplier_order.accept
           else
             say I18n.t(
             "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order",
