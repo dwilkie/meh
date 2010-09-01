@@ -13,22 +13,10 @@ class SupplierOrder < ActiveRecord::Base
 
   scope :unconfirmed, where(
     :accepted_at => nil,
-    :rejected_at => nil,
     :completed_at => nil
   )
 
-  private
-    def self.not_completed
-      where(:completed_at => nil)
-    end
-
-    def self.not_rejected
-      where(:rejected_at => nil)
-    end
-
-  public
-
-  scope :incomplete, not_completed.not_rejected
+  scope :incomplete, where(:completed_at => nil)
 
   validates :supplier,
             :product,
@@ -44,7 +32,7 @@ class SupplierOrder < ActiveRecord::Base
   end
 
   def complete?
-    self.completed_at || self.rejected_at
+    self.completed_at
   end
 
   def incomplete?
@@ -52,7 +40,7 @@ class SupplierOrder < ActiveRecord::Base
   end
 
   def unconfirmed?
-    self.accepted_at.nil? && self.rejected_at.nil? && self.completed_at.nil?
+    self.accepted_at.nil? && self.completed_at.nil?
   end
 
   def accept
@@ -64,8 +52,6 @@ class SupplierOrder < ActiveRecord::Base
       "completed"
     elsif !self.accepted_at.nil?
       "accepted"
-    elsif !self.rejected_at.nil?
-      "rejected"
     else
       "unconfirmed"
     end

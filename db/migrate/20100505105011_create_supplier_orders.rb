@@ -6,7 +6,6 @@ class CreateSupplierOrders < ActiveRecord::Migration
       t.references :supplier,       :null => false
       t.references :seller_order,   :null => false
       t.datetime   :accepted_at
-      t.datetime   :rejected_at
       t.datetime   :completed_at
       t.timestamps
     end

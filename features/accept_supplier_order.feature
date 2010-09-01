@@ -51,7 +51,7 @@ Feature: Accept supplier order
 
     Then the supplier_order: "first order" should not be accepted
     And the supplier_order: "second order" should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "accept", topic: "<topic>", action: "<action>"
 
   Examples:
@@ -70,7 +70,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "your pin number is incorrect" in "en" (English) where topic: "<topic>", action: "<action>"
 
   Examples:
@@ -85,7 +85,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "what would you like to do with the supplier order?" in "en" (English) where topic: "<message_text>"
 
   Examples:
@@ -97,7 +97,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should not be accepted
-    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
+    And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "invalid action given for the supplier order" in "en" (English) where topic: "<topic>", action: "<action>"
 
   Examples:
@@ -156,33 +156,23 @@ Feature: Accept supplier order
     | apo 1234 3 hY456n            |
     | ProductOrder a 1234 3 HY456N |
 
- Scenario Outline: Try to explicity accept an order which has been already rejected or completed
-    Given the supplier_order was already <order_status>
+ Scenario: Try to explicity accept an order which was already completed
+    Given the supplier_order was already completed
 
-    When I text "<text_message>" from "66354668874"
+    When I text "apo 1234 154674 3 hy456n" from "66354668874"
 
     Then the supplier_order should not be accepted
     And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should be a translation of "supplier order was already confirmed" in "en" (English) where status: "<order_status>", supplier_name: "Nok"
+    And the outgoing_text_message should be a translation of "supplier order was already confirmed" in "en" (English) where status: "completed", supplier_name: "Nok"
 
-    Examples:
-      | text_message               | order_status |
-      | apo 1234 154674 3 hy456n   | rejected     |
-      | po a 1234 154674 3 hy456n  | completed    |
+ Scenario: Try to implicitly accept an order which was already completed
+    Given the supplier_order was already completed
 
- Scenario Outline: Try to implicitly accept an order which has been already rejected or completed
-    Given the supplier_order was already <order_status>
-
-    When I text "<text_message>" from "66354668874"
+    When I text "apo 1234 3 hy456n" from "66354668874"
 
     Then the supplier_order should not be accepted
     And a new outgoing text message should be created destined for the mobile_number
     And the outgoing_text_message should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
-
-    Examples:
-      | text_message       | order_status |
-      | apo 1234 3 hy456n  | rejected     |
-      | po a 1234 3 hy456n | completed    |
 
  Scenario: Try to explicitly accept an order which was already accepted
     Given the supplier_order was already accepted

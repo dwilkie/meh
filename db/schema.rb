@@ -174,7 +174,6 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
     t.integer  "supplier_id",     :null => false
     t.integer  "seller_order_id", :null => false
     t.datetime "accepted_at"
-    t.datetime "rejected_at"
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -111,12 +111,6 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
   end
   alias_method :a, :accept
 
-  def reject
-    supplier_order = find_supplier_order(:unconfirmed)
-    supplier_order.reject if supplier_order
-  end
-  alias_method :r, :reject
-
   def complete
     supplier_order = find_supplier_order(:incomplete)
     if supplier_order
