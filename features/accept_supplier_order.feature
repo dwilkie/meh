@@ -64,7 +64,7 @@ Feature: Accept supplier order
     | apo 1234 3 hy456n                   |
 
   Scenario Outline: Try to accept an order implicitly by omitting the supplier order number with multiple unconfirmed supplier orders
-    Given a supplier_order: "second order" exists with id: 154675, product_id: the product, quantity: 3
+    Given a supplier_order: "second order" exists with id: 154675, product: the product, quantity: 3
 
     When I text "<message_text>" from "66354668874"
 
@@ -84,6 +84,47 @@ Feature: Accept supplier order
     | po accept 1234 3 hy456n             | po             | accept |
     | po a 1234 3 hy456n                  | po             | a      |
     | apo 1234 3 hy456n                   | po             | a      |
+
+  Scenario Outline: Try to accept an order as the seller
+    When I text "<message_text>" from "66354668789"
+
+    Then the supplier_order should not be accepted
+
+    And a new outgoing text message should be created destined for the mobile_number: "Mara's number"
+    And the outgoing_text_message should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Mara", status: "unconfirmed"
+
+  Examples:
+    | message_text                        |
+    | po accept 1234 3 hy456n             |
+    | po a 1234 2 hy456n                  |
+    | apo 1234 3 hy456x                   |
+
+  Scenario Outline: Try to accept an order as a seller when the seller is also the supplier for the product
+
+    Given a product exists with number: "190287626892", name: "Vietnamese Pig", verification_code: "hy456m", supplier: the seller, seller: the seller
+    And a supplier_order: "second order" exists with id: 154675, product: the product, quantity: 3, seller_order: the seller_order
+
+    When I text "<message_text>" from "66354668789"
+
+    Then the supplier_order: "second order" should not be accepted
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should not be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Mara", processed: "accepted", supplier_order_number: 154675
+
+  Examples:
+    | message_text                        |
+    | po accept 1234 3 hy456m             |
+    | po a 1234 2 hy456m                  |
+    | apo 1234 3 hy456x                   |
+
+  Scenario Outline: Try to accept an order giving the wrong order number
+    When I text "<message_text>" from "66354668874"
+
+    Then the supplier_order should be accepted
+
+  Examples:
+    | message_text                        |
+    | po accept 1234 9999 3 hy456n        |
+    | po a 1234 9999 3 hy456n             |
+    | apo 1234 4355 3 hy456n              |
 
   Scenario Outline: Try to accept an order suppling an incorrect a pin number
     When I text "<message_text>" from "66354668874"

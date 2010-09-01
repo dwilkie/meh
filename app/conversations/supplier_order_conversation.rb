@@ -81,10 +81,8 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
       )
     else
       supplier_order = supplier_orders.first
-      if supplier_order.unconfirmed?
-        if user == supplier_order.seller_order.seller
-          supplier_order.accept
-        else
+      unless user == supplier_order.seller_order.seller
+        if supplier_order.unconfirmed?
           message = AcceptSupplierOrderMessage.new(supplier_order, params)
           if message.valid?
             say I18n.t(
@@ -105,13 +103,13 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
               :quantity => supplier_order.quantity.to_s
             )
           end
+        else
+          say I18n.t(
+            "notifications.messages.built_in.supplier_order_was_already_confirmed",
+            :supplier_name => user.name,
+            :status => supplier_order.status
+          )
         end
-      else
-        say I18n.t(
-          "notifications.messages.built_in.supplier_order_was_already_confirmed",
-          :supplier_name => user.name,
-          :status => supplier_order.status
-        )
       end
     end
   end

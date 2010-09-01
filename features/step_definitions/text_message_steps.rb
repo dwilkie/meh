@@ -55,13 +55,14 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
-Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should be$/ do |text_message_index, mobile_number, text_message, expected_text|
+Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should (not )?be$/ do |text_message_index, mobile_number, text_message, reverse, expected_text|
   text_message = find_text_message(
     :text_message_index => text_message_index,
     :mobile_number => mobile_number,
     :text_message => text_message
   )
-  text_message.body.should == expected_text
+  reverse = reverse ? "_not" : ""
+  text_message.body.send("should#{reverse}") == expected_text
   puts "\n"
   puts text_message.body
   puts "\n"

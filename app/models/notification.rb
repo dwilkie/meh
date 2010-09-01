@@ -231,7 +231,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me about the customer order details",
       :message => I18n.t(
-        "notifications.messages.a_customer_completed_payment_for"
+        "notifications.messages.custom.a_customer_completed_payment_for"
       )
     )
     create!(
@@ -239,7 +239,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me which supplier a product order was sent to",
       :message => I18n.t(
-        "notifications.messages.product_order_was_sent_to"
+        "notifications.messages.custom.product_order_was_sent_to"
       )
     )
     notification = new(
@@ -255,7 +255,7 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the product order details",
       :message => I18n.t(
-        "notifications.messages.new_product_order_from_seller_for_the_following_item"
+        "notifications.messages.custom.new_product_order_from_seller_for_the_following_item"
       )
     )
     notification = new(
@@ -263,7 +263,7 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the product order details",
       :message => I18n.t(
-        "notifications.messages.your_customer_bought_the_following_item"
+        "notifications.messages.custom.your_customer_bought_the_following_item"
       )
     )
     notification.supplier = notification.seller
@@ -277,14 +277,6 @@ class Notification < ActiveRecord::Base
         :processed => "ACCEPTED"
       )
     )
-    notification = new(
-      :event => "product_order_accepted",
-      :for => "seller",
-      :purpose => "to inform me when a supplier accepts a product order",
-      :should_send => false
-    )
-    notification.supplier = notification.seller
-    notification.save!
     create!(
       :event => "product_order_accepted",
       :for => "supplier",
@@ -293,14 +285,6 @@ class Notification < ActiveRecord::Base
         "notifications.messages.custom.send_the_product_to"
       )
     )
-    notification = new(
-      :event => "product_order_accepted",
-      :for => "supplier",
-      :purpose => "to inform the supplier of the shipping instructions",
-      :should_send => false
-    )
-    notification.supplier = notification.seller
-    notification.save!
     create!(
       :event => "product_order_completed",
       :for => "seller",
