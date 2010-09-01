@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   create_table "products", :force => true do |t|
     t.string   "number",                           :null => false
     t.string   "name",                             :null => false
-    t.string   "verification_code",                :null => false
+    t.string   "verification_code"
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency"
     t.integer  "supplier_id",                      :null => false

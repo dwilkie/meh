@@ -1,5 +1,6 @@
 class SellerOrderObserver < ActiveRecord::Observer
   def after_create(seller_order)
+    notify(seller_order)
     create_supplier_orders(seller_order)
   end
 
@@ -34,6 +35,22 @@ class SellerOrderObserver < ActiveRecord::Observer
         seller_order.supplier_orders.create!(
           :product => product,
           :quantity => item_quantity
+        )
+      end
+    end
+
+    def notify(seller_order)
+      seller = seller_order.seller
+      notifications = seller.notifications.for_event(
+        "customer_order_created"
+      )
+      seller_order_notification = GeneralNotification.new(:with => seller)
+      notifications.each do |notification|
+        seller_order_notification.notify(
+          notification,
+          :seller => seller,
+          :customer_order => seller_order,
+          :order_notification => seller_order.order_notification
         )
       end
     end

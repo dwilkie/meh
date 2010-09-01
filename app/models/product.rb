@@ -24,9 +24,15 @@ class Product < ActiveRecord::Base
               :greater_than_or_equal_to => 0
             }
 
-  validates :number, :name, :verification_code,
+  validates :number, :name,
             :uniqueness => {:scope => :seller_id, :case_sensitive => false},
             :presence => true
+
+  validates :verification_code,
+            :presence => true,
+            :unless => Proc.new { |product|
+              product.seller == product.supplier
+            }
 
   validates :supplier_id,
             :presence => true

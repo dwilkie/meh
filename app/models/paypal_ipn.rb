@@ -23,12 +23,16 @@ class PaypalIpn < ActiveRecord::Base
             :presence => true,
             :uniqueness => true
 
-  validate :seller_must_exist
+  validate :seller_exists, :at_least_one_cart_item
 
   # Instance methods that must be implemented for all order notifications
 
   def payment_completed?
     self.payment_status == "Completed"
+  end
+
+  def verified?
+    self.verified_at
   end
 
   def item_name(index)
@@ -97,8 +101,12 @@ class PaypalIpn < ActiveRecord::Base
   handle_asynchronously :verify
 
   private
-    def seller_must_exist
+    def seller_exists
       errors[:base] << "Receiver must be registered as a seller" if self.params && find_seller.nil?
+    end
+
+    def at_least_one_cart_item
+      errors[:base] << "Must be at least one cart item" if self.params && (self.number_of_cart_items < 1 || self.item_name(0).nil? || self.item_number(0).nil? || self.item_quantity(0).nil?)
     end
 
     def set_payment_status
@@ -106,7 +114,7 @@ class PaypalIpn < ActiveRecord::Base
     end
 
     def link_seller
-      self.seller = find_seller if self.verified_at_changed? && self.payment_completed?
+      self.seller = find_seller if self.verified_at_changed? && self.verified? && self.payment_completed?
     end
 
     def find_seller
