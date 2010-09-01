@@ -14,6 +14,8 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
+    And a new outgoing text message should be created destined for the mobile_number
+    And the outgoing_text_message should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
 
   Examples:
     | message_text                               |
@@ -31,6 +33,8 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
+    And a new outgoing text message should be created destined for the mobile_number
+    And the outgoing_text_message should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
 
   Examples:
     | message_text                        |

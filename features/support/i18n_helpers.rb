@@ -19,9 +19,6 @@ module I18nHelpers
     when /^your supplier processed their product order\.\.\.$/
       "notifications.messages.your_supplier_processed_their_supplier_order"
 
-    when /^you successfully processed the product order\.\.\.$/
-      "notifications.messages.you_successfully_processed_the_supplier_order"
-
     when /^send the product to\.\.\.$/
       "notifications.messages.send_the_product_to"
 
@@ -42,6 +39,9 @@ module I18nHelpers
 
     when /^what would you like to do with the supplier order\?$/
       "notifications.messages.built_in.no_action_for_supplier_order"
+
+    when /^you successfully processed the supplier order$/
+      "notifications.messages.built_in.you_successfully_processed_the_supplier_order"
 
     when /^is incorrect$/
       "errors.messages.incorrect"

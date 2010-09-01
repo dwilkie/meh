@@ -6,10 +6,11 @@ Feature: Complete a supplier order
   Background:
     Given a mobile_number exists with number: "66354668874", password: "1234"
     And a supplier exists with name: "Nok", mobile_number: the mobile_number
-    And a product exists with supplier_id: the supplier
+    And a product exists with supplier: the supplier
+    And a supplier_order exists with id: 154674, product: the product
 
   Scenario Outline: Complete an order explicitly
-    Given a supplier_order exists with id: 154674, product_id: the product, status: "accepted"
+
     When I text "<text_message>" from "66354668789"
 
     Then the supplier_order should be completed
