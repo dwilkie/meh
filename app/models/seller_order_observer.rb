@@ -17,10 +17,16 @@ class SellerOrderObserver < ActiveRecord::Observer
           item_name
         ).first
         unless product
-          product = seller.selling_products.with_number_or_name(
+          products = seller.selling_products.with_number_or_name(
             item_number,
             item_name
-          ).first
+          )
+          if products.count == 2
+            products.where(
+              "products.name = ?", item_name
+            ).first.destroy
+          end
+          product = products.first
           if product
             product.update_attributes!(:number => item_number, :name => item_name)
           else

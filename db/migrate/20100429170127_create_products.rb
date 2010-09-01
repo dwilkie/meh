@@ -14,8 +14,6 @@ class CreateProducts < ActiveRecord::Migration
     add_index :products, [:number, :seller_id], :unique => true
     # A seller cannot have more than one product with the same name
     add_index :products, [:name, :seller_id], :unique => true
-    # A seller cannot have more than one product with the same verification code
-    add_index :products, [:verification_code, :seller_id], :unique => true
   end
 
   def self.down

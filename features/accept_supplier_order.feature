@@ -21,17 +21,17 @@ Feature: Accept supplier order
     And the 2nd most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
     """
-    Hi Nok, please send the product order: 154674, to the following address:
+    Hi Nok, please send the product order: #154674, to the following address:
     Ho Chi Minh,
     4 Chau Minh Lane,
     Hanoi,
     Hanoi Province,
     Viet Nam 52321
-    and reply with: "po complete 154674" when you are done
+    then reply with: "po complete 154674"
     """
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has ACCEPTED their product order: 154674 of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: 154673
+    Hi Mara, Nok (+66354668874) has ACCEPTED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #154673
     """
 
   Examples:

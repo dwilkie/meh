@@ -239,7 +239,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me which supplier a product order was sent to",
       :message => I18n.t(
-        "notifications.messages.custom.product_order_was_sent_to"
+        "notifications.messages.custom.supplier_order_was_sent_to"
       )
     )
     notification = new(
@@ -255,7 +255,7 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the product order details",
       :message => I18n.t(
-        "notifications.messages.custom.new_product_order_from_seller_for_the_following_item"
+        "notifications.messages.custom.new_supplier_order_from_seller_for_the_following_item"
       )
     )
     notification = new(
@@ -273,7 +273,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me when a supplier accepts a product order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
         :processed => "ACCEPTED"
       )
     )
@@ -290,7 +290,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me when a supplier completes a product order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
         :processed => "COMPLETED"
       )
     )

@@ -158,7 +158,6 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
 
   add_index "products", ["name", "seller_id"], :name => "index_products_on_name_and_seller_id", :unique => true
   add_index "products", ["number", "seller_id"], :name => "index_products_on_number_and_seller_id", :unique => true
-  add_index "products", ["verification_code", "seller_id"], :name => "index_products_on_verification_code_and_seller_id", :unique => true
 
   create_table "seller_orders", :force => true do |t|
     t.integer  "order_notification_id",   :null => false

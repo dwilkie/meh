@@ -25,7 +25,7 @@ Feature: Create a seller order from an order notification
     Hanoi,
     Hanoi Province,
     Viet Nam 52321
-    We'll send you more details about the items in this order shortly. Your customer order number is: 1
+    We'll send you more details about the items in this order shortly. Your customer order number is: #1
     """
 
     Examples:
