@@ -14,12 +14,10 @@ class CreateNotifications < ActiveRecord::Migration
     end
     add_index(
       :notifications,
-      [:seller_id, :product_id, :purpose, :event, :for], :unique => true
+      [:seller_id, :supplier_id, :product_id, :purpose, :event, :for], :unique => true
     )
-    add_index(
-      :notifications,
-      [:seller_id, :supplier_id, :purpose, :event, :for], :unique => true
-    )
+    # add indexes to ensure nulls are also considered the same (to complement model)
+    # see postrsql unique index documentation
   end
 
   def self.down

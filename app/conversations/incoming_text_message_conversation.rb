@@ -4,9 +4,9 @@ class IncomingTextMessageConversation < Conversation
 
   def move_along(message_text)
     message_words = message_text.split
-    resource = message_words[0]
+    resource = message_words[0].try(:downcase)
     self.topic = resource
-    self.action = message_words[1]
+    self.action = message_words[1].try(:downcase)
     self.params = message_words[2..-1]
     unless topic_defined?
       topic_words = topic.underscore.split("_")

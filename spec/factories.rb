@@ -33,9 +33,9 @@ end
 Factory.define :product do |f|
   f.association :supplier
   f.association :seller
-  f.number 12345
-  f.name "Some Manky Product"
-  f.sequence(:verification_code) {|n| "meh#{n}" }
+  f.sequence(:number) {|n| "1234#{n}"}
+  f.sequence(:name) {|n| "Some Manky Product #{n}"}
+  f.verification_code "meh"
 end
 
 Factory.define :seller_order do |f|

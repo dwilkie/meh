@@ -1,16 +1,132 @@
 require 'spec_helper'
 
 def default_event
-  Notification::EVENTS.keys.first.to_s
+  Notification::EVENTS.keys.last.to_s
+end
+
+def create_seller
+  seller = Factory.create(:seller)
+  Notification.delete_all
+  seller.notifications.clear
+  seller
 end
 
 describe Notification do
+  describe "validations" do
+    describe "#uniqueness" do
+      let(:seller) { create_seller }
+      context "A notification exists" do
+        let (:notification) {
+          Factory.create(
+            :notification,
+            :seller => seller,
+            :event => default_event
+          )
+        }
+        context "and second notification is built for the same seller" do
+          let (:second_notification) {
+            seller.notifications.build(
+              :message => "whatever"
+            )
+          }
+          context "and the two notifications are for the same event and person and have the same purpose" do
+            before {
+              second_notification.event = notification.event
+              second_notification.for = notification.for
+              second_notification.purpose = notification.purpose
+            }
+            it "the second notification should not be valid" do
+              second_notification.should_not be_valid
+              second_notification.errors_on(
+                :seller_id
+              ).should include I18n.t("activerecord.errors.messages.taken")
+            end
+            context "and for the same product" do
+              before {
+                notification.update_attributes!(
+                  :product => Factory.create(
+                    :product,
+                    :seller => seller
+                  )
+                )
+                second_notification.product = notification.product
+              }
+              it "the second notification should not be valid" do
+                second_notification.should_not be_valid
+                second_notification.errors_on(
+                  :seller_id
+                ).should include I18n.t("activerecord.errors.messages.taken")
+              end
+              context "but for a different supplier" do
+                before {
+                  second_notification.supplier = Factory.create(:supplier)
+                }
+                it "the second notification should not be valid" do
+                  second_notification.should_not be_valid
+                  second_notification.errors_on(
+                    :seller_id
+                  ).should include I18n.t("activerecord.errors.messages.taken")
+                end
+              end
+            end
+            context "but for a different product" do
+              before {
+                second_notification.product = Factory.create(
+                  :product,
+                  :seller => seller
+                )
+              }
+              it "the second notification should be valid" do
+                second_notification.should be_valid
+              end
+            end
+            context "and for the same supplier" do
+              before {
+                notification.update_attributes!(
+                  :supplier => Factory.create(:supplier)
+                )
+                second_notification.supplier = notification.supplier
+              }
+              it "the second notification should not be valid" do
+                second_notification.should_not be_valid
+                second_notification.errors_on(
+                  :seller_id
+                ).should include I18n.t("activerecord.errors.messages.taken")
+              end
+              context "but for a different product" do
+                before {
+                  second_notification.product = Factory.create(
+                    :product,
+                    :seller => seller
+                  )
+                }
+                it "the second notification should be valid" do
+                  second_notification.should be_valid
+                end
+              end
+            end
+            context "but for a different supplier" do
+              before {
+                second_notification.supplier = Factory.create(:supplier)
+              }
+              it "the second notification should be valid" do
+                second_notification.should be_valid
+              end
+            end
+          end
+        end
+      end
+    end
+  end
   describe ".for_event" do
     context "given there are 12 existing notifications for the event: '#{default_event}'" do
-      let(:seller)   { Factory.create(:seller)   }
+      let(:seller)   { create_seller }
       let(:supplier) { Factory.create(:supplier) }
       let(:product)  {
         Factory.create(:product, :seller => seller, :supplier => supplier)
+      }
+      before {
+        Notification.delete_all
       }
       let!(:existing_notifications) {
         {
@@ -48,7 +164,7 @@ describe Notification do
           ),
           # Special notification for a particular product
           # for greeting a seller
-          :special_product_greeting_for_seller=> Factory.create(
+          :special_product_greeting_for_seller => Factory.create(
             :notification,
             :for => "seller",
             :event => default_event,
@@ -177,7 +293,11 @@ describe Notification do
           it "should return the correct notifications" do
             notifications = Notification.for_event(
               default_event,
-              :product => Factory.create(:product)
+              :product => Factory.create(
+                :product,
+                :seller => seller,
+                :supplier => supplier
+              )
             )
             notifications.size.should == 4
             notifications.should include(

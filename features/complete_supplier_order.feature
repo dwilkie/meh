@@ -4,23 +4,45 @@ Feature: Complete a supplier order
   I want to be able to complete a supplier order by sending in a text message
 
   Background:
-    Given a mobile_number exists with number: "66354668874", password: "1234"
-    And a supplier exists with name: "Nok", mobile_number: the mobile_number
-    And a product exists with supplier: the supplier
-    And a supplier_order exists with id: 154674, product: the product
+    Given a mobile_number: "Nok's number" exists with number: "66354668874", password: "1234"
+    And a supplier exists with name: "Nok", mobile_number: mobile_number: "Nok's number"
+    And a mobile_number: "Mara's number" exists with number: "66354668789"
+    And a seller exists with name: "Mara", mobile_number: mobile_number: "Mara's number"
+    And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
+    And a seller_order exists with id: 154673, seller: the seller
+    And a supplier_order: "first order" exists with id: 154674, product: the product, quantity: 3, seller_order: the seller_order
+    And the supplier_order was already accepted
 
-  Scenario Outline: Complete an order explicitly
-
-    When I text "<text_message>" from "66354668789"
+  Scenario Outline: Complete an order without a tracking number
+    When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be completed
-    And a new outgoing text message should be created destined for the mobile_number
-    And the outgoing_text_message should be a translation of "successfully processed order" in "en" (English) where supplier: "Nok", order_number: "154674", processed: "completed"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "154674"
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Nok (+66354668874) has COMPLETED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #154673
+    """
 
-    Examples:
-      | text_message                             |
-      | completeorder 1234 154674 cp246589912th  |
-      | completeorder 1234 154674 re142325512th  |
+  Examples:
+    | message_text                        |
+    | supplier_order complete 1234 154674 |
+#    | product_order complete 1234 154674  |
+#    | supplier_order c 1234 154674        |
+#    | product_order c 1234 154674         |
+#    | complete_supplier_order 1234 154674 |
+#    | complete_product_order 1234 154674  |
+#    | po complete 1234 154674             |
+#    | po c 1234 154674                    |
+#    | cpo 1234 154674                     |
+#    | supplier_order complete 1234        |
+#    | product_order complete 1234         |
+#    | supplier_order c 1234               |
+#    | product_order c 1234                |
+#    | complete_supplier_order 1234        |
+#    | complete_product_order 1234         |
+#    | po complete 1234                    |
+#    | po c 1234                           |
+#    | cpo 1234                            |
 
   Scenario Outline: Try to complete an order forgetting the pin code or suppling an incorrect a pin code
     Given a supplier_order exists with id: 154674, product_id: the product, status: "accepted"

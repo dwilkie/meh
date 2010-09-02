@@ -20,7 +20,7 @@ en:
       built_in:
         you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
         be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <pin number> <product order number> ..."
-        supplier_order_was_already_confirmed: "Sorry %{supplier_name}, this product order was already %{status}"
+        supplier_order_was_already_processed: "Sorry %{supplier_name}, this product order was already %{status}"
         your_pin_number_is_incorrect: "Sorry, your pin number is incorrect. Please try again with: %{topic} %{action} <pin number> ..."
         invalid_action_for_supplier_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ... or %{topic} complete ..."
         no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."

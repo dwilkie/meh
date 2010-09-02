@@ -18,7 +18,7 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
-    And the 2nd most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: 154674
+    And the 2nd most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: "154674"
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
     """
     Hi Nok, please send the product order: #154674, to the following address:

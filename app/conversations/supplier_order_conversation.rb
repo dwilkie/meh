@@ -63,34 +63,12 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
   end
 
   def accept
-    supplier_orders = find_supplier_orders(:unconfirmed)
-    if supplier_orders.empty?
-      say I18n.t(
-        "notifications.messages.built_in.you_do_not_have_any_supplier_orders",
-        :supplier_name => user.name,
-        :status => "unconfirmed",
-        :human_action => "accept"
-      )
-    elsif supplier_orders.count > 1
-      say I18n.t(
-        "notifications.messages.built_in.be_specific_about_the_supplier_order_number",
-        :supplier_name => user.name,
-        :topic => self.topic,
-        :action => self.action,
-        :human_action => "accept"
-      )
-    else
-      supplier_order = supplier_orders.first
+    if supplier_order = find_supplier_order(:unconfirmed, :accept)
       unless user == supplier_order.seller_order.seller
         if supplier_order.unconfirmed?
           message = AcceptSupplierOrderMessage.new(supplier_order, params)
           if message.valid?
-            say I18n.t(
-              "notifications.messages.built_in.you_successfully_processed_the_supplier_order",
-              :supplier_name => user.name,
-              :processed => "accepted",
-              :supplier_order_number => supplier_order.id.to_s
-            )
+            say successfully("accepted", supplier_order)
             supplier_order.accept
           else
             say I18n.t(
@@ -104,11 +82,7 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
             )
           end
         else
-          say I18n.t(
-            "notifications.messages.built_in.supplier_order_was_already_confirmed",
-            :supplier_name => user.name,
-            :status => supplier_order.status
-          )
+          say already_processed(supplier_order)
         end
       end
     end
@@ -116,30 +90,37 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
   alias_method :a, :accept
 
   def complete
-    supplier_order = find_supplier_order(:incomplete)
-    if supplier_order
-      seller = supplier_order.seller_order.seller
-      product = supplier_order.product
-      supplier = supplier
-      tracking_number_format = seller.tracking_number_format(
-        :product => product,
-        :supplier => supplier
-      )
-      if tracking_number_format
-        message = CompleteSupplierOrderMessage.new(
-          tracking_number_format.format
+    if supplier_order = find_supplier_order(:incomplete, :complete)
+      if supplier_order.incomplete?
+        seller = supplier_order.seller_order.seller
+        product = supplier_order.product
+        tracking_number_format = seller.tracking_number_formats(
+          :product => product,
+          :supplier => user
         )
-        if message.valid?
-          supplier_order.complete
+        if tracking_number_format
+          message = CompleteSupplierOrderMessage.new(
+            tracking_number_format.format,
+            params
+          )
+          if message.valid?
+            will_complete = true
+          else
+            say I18n.t(
+            "notifications.messages.",
+            :name => user.name,
+            :errors => errors
+          )
+          end
         else
-          say I18n.t(
-          "notifications.messages.",
-          :name => user.name,
-          :errors => errors
-        )
+          will_complete = true
+        end
+        if will_complete
+          say successfully("completed", supplier_order)
+          supplier_order.complete
         end
       else
-        supplier_order.complete
+        say already_processed(supplier_order)
       end
     end
   end
@@ -173,6 +154,46 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
         sanitize_id(params[0])
       )
       supplier_order ? [supplier_order] : user.supplier_orders.send(status).all
+    end
+
+    def find_supplier_order(status, human_action)
+      supplier_orders = find_supplier_orders(status)
+      if supplier_orders.empty?
+        say I18n.t(
+          "notifications.messages.built_in.you_do_not_have_any_supplier_orders",
+          :supplier_name => user.name,
+          :status => status,
+          :human_action => human_action.to_s
+        )
+      elsif supplier_orders.count > 1
+        say I18n.t(
+          "notifications.messages.built_in.be_specific_about_the_supplier_order_number",
+          :supplier_name => user.name,
+          :topic => self.topic,
+          :action => self.action,
+          :human_action => human_action.to_s
+        )
+      else
+        supplier_order = supplier_orders.first
+      end
+      supplier_order
+    end
+
+    def already_processed(supplier_order)
+      I18n.t(
+        "notifications.messages.built_in.supplier_order_was_already_processed",
+        :supplier_name => user.name,
+        :status => supplier_order.status
+      )
+    end
+
+    def successfully(processed, supplier_order)
+       I18n.t(
+          "notifications.messages.built_in.you_successfully_processed_the_supplier_order",
+          :supplier_name => user.name,
+          :processed => processed,
+          :supplier_order_number => supplier_order.id.to_s
+        )
     end
 end
 

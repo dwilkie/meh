@@ -152,7 +152,16 @@ class Notification < ActiveRecord::Base
     end
   end
 
-  validates  :seller, :purpose,
+  validates  :seller_id,
+             :uniqueness => {
+               :scope => [
+                 :product_id,
+                 :supplier_id,
+                 :event,
+                 :for,
+                 :purpose
+               ]
+             },
              :presence => true
 
   validates  :message,
@@ -169,6 +178,13 @@ class Notification < ActiveRecord::Base
 
   validates  :for,
              :available_receivers => true
+
+  validates :purpose,
+            :presence => true
+
+  before_validation do
+    self.supplier = nil if self.product
+  end
 
   before_validation(:on => :create) do
     self.enabled = true if self.enabled.nil?
