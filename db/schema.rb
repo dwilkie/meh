@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100814070345) do
+ActiveRecord::Schema.define(:version => 20100902062808) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
     t.integer  "product_id",      :null => false
     t.integer  "supplier_id",     :null => false
     t.integer  "seller_order_id", :null => false
+    t.string   "tracking_number"
     t.datetime "accepted_at"
     t.datetime "completed_at"
     t.datetime "created_at"
@@ -189,6 +190,16 @@ ActiveRecord::Schema.define(:version => 20100814070345) do
   end
 
   add_index "text_message_delivery_receipts", ["params"], :name => "index_text_message_delivery_receipts_on_params", :unique => true
+
+  create_table "tracking_number_formats", :force => true do |t|
+    t.string   "format",      :null => false
+    t.boolean  "ignore_case", :null => false
+    t.integer  "seller_id",   :null => false
+    t.integer  "supplier_id"
+    t.integer  "product_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false

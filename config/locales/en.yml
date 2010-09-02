@@ -26,6 +26,7 @@ en:
         no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
         you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Please try again with: %{topic} %{action} <pin number> %{supplier_order_number} %{quantity} <product verification code>"
         you_successfully_processed_the_supplier_order: "Hi %{supplier_name}, you successfully %{processed} the product order: #%{supplier_order_number}"
+        this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you already used this tracking number before"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""

@@ -69,6 +69,10 @@ Factory.define :notification do |f|
   }
 end
 
+Factory.define :tracking_number_format do |f|
+  f.association :seller
+end
+
 Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
   f.association :smsable, :factory => :mobile_number
   f.sequence(:gateway_message_id) { |n|

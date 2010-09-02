@@ -14,7 +14,7 @@ Feature: Accept supplier order
     And a seller_order exists with id: 154673, seller: the seller, order_notification: the paypal_ipn
     And a supplier_order: "first order" exists with id: 154674, product: the product, quantity: 3, seller_order: the seller_order
 
-  Scenario Outline: Accept an order explicitly by giving the supplier order number
+  Scenario Outline: Successfully accept an order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
@@ -45,25 +45,17 @@ Feature: Accept supplier order
     | po accept 1234 154674 3 hy456n             |
     | po a 1234 154674 3 hy456n                  |
     | apo 1234 154674 3 hy456n                   |
+    | supplier_order accept 1234 3 hy456n        |
+    | product_order accept 1234 3 hy456n         |
+    | supplier_order a 1234 3 hy456n             |
+    | product_order a 1234 3 hy456n              |
+    | accept_supplier_order 1234 3 hy456n        |
+    | accept_product_order 1234 3 hy456n         |
+    | po accept 1234 3 hy456n                    |
+    | po a 1234 3 hy456n                         |
+    | apo 1234 3 hy456n                          |
 
-  Scenario Outline: Accept an order implicitly by omitting the supplier order number
-    When I text "<message_text>" from "66354668874"
-
-    Then the supplier_order should be accepted
-
-  Examples:
-    | message_text                        |
-    | supplier_order accept 1234 3 hy456n |
-    | product_order accept 1234 3 hy456n  |
-    | supplier_order a 1234 3 hy456n      |
-    | product_order a 1234 3 hy456n       |
-    | accept_supplier_order 1234 3 hy456n |
-    | accept_product_order 1234 3 hy456n  |
-    | po accept 1234 3 hy456n             |
-    | po a 1234 3 hy456n                  |
-    | apo 1234 3 hy456n                   |
-
-  Scenario Outline: Try to accept an order implicitly by omitting the supplier order number with multiple unconfirmed supplier orders
+  Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Given a supplier_order: "second order" exists with id: 154675, product: the product, quantity: 3
 
     When I text "<message_text>" from "66354668874"

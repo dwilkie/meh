@@ -9,9 +9,9 @@ class Notification < ActiveRecord::Base
              :class_name => "User"
 
   EVENT_ATTRIBUTES = {
-    :customer_order => {
+    :seller_order => {
       :customer_order_number => Proc.new { |options|
-        options[:customer_order].id.to_s
+        options[:seller_order].id.to_s
       },
       :number_of_cart_items => Proc.new { |options|
         options[:order_notification].number_of_cart_items.to_s
@@ -51,12 +51,12 @@ class Notification < ActiveRecord::Base
         options[:product].verification_code.to_s
       }
     },
-    :product_order => {
+    :supplier_order => {
       :product_order_number => Proc.new { |options|
-        options[:product_order].id.to_s
+        options[:supplier_order].id.to_s
       },
       :product_order_quantity => Proc.new { |options|
-        options[:product_order].quantity.to_s
+        options[:supplier_order].quantity.to_s
       }
     },
     :item => {
@@ -96,12 +96,15 @@ class Notification < ActiveRecord::Base
       :user_name => Proc.new { |options|
         options[:user].name
       }
+    },
+    :tracking_number => Proc.new { |options|
+      options[:supplier_order].tracking_number.to_s
     }
   }
 
   COMMON_EVENT_ATTRIBUTES = {
-    :product_order => EVENT_ATTRIBUTES[:customer_order].merge(
-      EVENT_ATTRIBUTES[:product_order]
+    :supplier_order => EVENT_ATTRIBUTES[:seller_order].merge(
+      EVENT_ATTRIBUTES[:supplier_order]
     ).merge(
       EVENT_ATTRIBUTES[:product]
     ).merge(
@@ -111,7 +114,7 @@ class Notification < ActiveRecord::Base
     ).merge(
       EVENT_ATTRIBUTES[:supplier]
     ),
-    :customer_order => EVENT_ATTRIBUTES[:customer_order].merge(
+    :seller_order => EVENT_ATTRIBUTES[:seller_order].merge(
       :seller_name => EVENT_ATTRIBUTES[:seller][:seller_name]
     )
   }
@@ -119,20 +122,22 @@ class Notification < ActiveRecord::Base
   EVENTS = {
     :customer_order_created => {
       :notification_attributes => EVENT_ATTRIBUTES[:customer_address].merge(
-        COMMON_EVENT_ATTRIBUTES[:customer_order]
+        COMMON_EVENT_ATTRIBUTES[:seller_order]
       ),
       :send_notification_to => User.roles(1)
     },
     :product_order_created => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
       :send_notification_to => User.roles(3)
     },
     :product_order_accepted => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
       :send_notification_to => User.roles(3)
     },
     :product_order_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
+        :tracking_number => EVENT_ATTRIBUTES[:tracking_number]
+      ),
       :send_notification_to => User.roles(3)
     }
   }

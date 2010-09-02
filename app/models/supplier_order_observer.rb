@@ -75,8 +75,8 @@ class SupplierOrderObserver < ActiveRecord::Observer
         GeneralNotification.new(:with => with).notify(
           notification,
           :product => product,
-          :product_order => supplier_order,
-          :customer_order => seller_order,
+          :supplier_order => supplier_order,
+          :seller_order => seller_order,
           :seller => seller,
           :supplier => supplier,
           :order_notification => order_notification

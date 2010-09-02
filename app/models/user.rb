@@ -42,6 +42,9 @@ class User < ActiveRecord::Base
   has_many   :notifications,
              :foreign_key => "seller_id"
 
+  has_many   :tracking_number_formats,
+             :foreign_key => "seller_id"
+
   has_many   :outgoing_payments,
              :foreign_key => "seller_id",
              :class_name => "Payment"

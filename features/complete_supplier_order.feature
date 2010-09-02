@@ -13,7 +13,7 @@ Feature: Complete a supplier order
     And a supplier_order: "first order" exists with id: 154674, product: the product, quantity: 3, seller_order: the seller_order
     And the supplier_order was already accepted
 
-  Scenario Outline: Complete an order without a tracking number
+  Scenario Outline: Successfully complete an order without a tracking number
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be completed
@@ -26,23 +26,63 @@ Feature: Complete a supplier order
   Examples:
     | message_text                        |
     | supplier_order complete 1234 154674 |
-#    | product_order complete 1234 154674  |
-#    | supplier_order c 1234 154674        |
-#    | product_order c 1234 154674         |
-#    | complete_supplier_order 1234 154674 |
-#    | complete_product_order 1234 154674  |
-#    | po complete 1234 154674             |
-#    | po c 1234 154674                    |
-#    | cpo 1234 154674                     |
-#    | supplier_order complete 1234        |
-#    | product_order complete 1234         |
-#    | supplier_order c 1234               |
-#    | product_order c 1234                |
-#    | complete_supplier_order 1234        |
-#    | complete_product_order 1234         |
-#    | po complete 1234                    |
-#    | po c 1234                           |
-#    | cpo 1234                            |
+    | product_order complete 1234 154674  |
+    | supplier_order c 1234 154674        |
+    | product_order c 1234 154674         |
+    | complete_supplier_order 1234 154674 |
+    | complete_product_order 1234 154674  |
+    | po complete 1234 154674             |
+    | po c 1234 154674                    |
+    | cpo 1234 154674                     |
+    | supplier_order complete 1234        |
+    | product_order complete 1234         |
+    | supplier_order c 1234               |
+    | product_order c 1234                |
+    | complete_supplier_order 1234        |
+    | complete_product_order 1234         |
+    | po complete 1234                    |
+    | po c 1234                           |
+    | cpo 1234                            |
+
+  Scenario Outline: Successfully complete an order with a tracking number
+    Given a notification exists with event: "product_order_completed", for: "seller", purpose: "to inform me when a supplier completes a product order", seller: the seller, supplier: the supplier
+
+    And the notification has the following message:
+    """
+    Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has COMPLETED their product order of <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>. The tracking number is: "<tracking_number>"
+    """
+
+    And a tracking_number_format exists with seller: the seller
+    When I text "<message_text>" from "66354668874"
+
+    Then the supplier_order's tracking_number should be "re123456789th"
+    And the supplier_order should be completed
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "154674"
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Nok (+66354668874) has COMPLETED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #154673. The tracking number is: "re123456789th"
+    """
+
+  Examples:
+    | message_text                                      |
+    | supplier_order complete 1234 154674 re123456789th |
+#    | product_order complete 1234 154674 re123456789th  |
+#    | supplier_order c 1234 154674 re123456789th        |
+#    | product_order c 1234 154674 re123456789th         |
+#    | complete_supplier_order 1234 154674 re123456789th |
+#    | complete_product_order 1234 154674 re123456789th  |
+#    | po complete 1234 154674 re123456789th             |
+#    | po c 1234 154674 re123456789th                    |
+#    | cpo 1234 154674 re123456789th                     |
+#    | supplier_order complete 1234 re123456789th        |
+#    | product_order complete 1234 re123456789th         |
+#    | supplier_order c 1234 re123456789th               |
+#    | product_order c 1234 re123456789th                |
+#    | complete_supplier_order 1234 re123456789th        |
+#    | complete_product_order 1234 re123456789th         |
+#    | po complete 1234 re123456789th                    |
+#    | po c 1234 re123456789th                           |
+#    | cpo 1234 re123456789th                            |
 
   Scenario Outline: Try to complete an order forgetting the pin code or suppling an incorrect a pin code
     Given a supplier_order exists with id: 154674, product_id: the product, status: "accepted"

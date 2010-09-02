@@ -49,17 +49,25 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
     validates :tracking_number,
               :presence => true
 
-    def validate
-      if tracking_number
-        errors.add(:tracking_number, :format) unless
-          tracking_number =~ Regexp.new(@tracking_number_format)
+    validate :tracking_number_format
+
+    def initialize(supplier_order, tracking_number_format, params)
+      @tracking_number_format = tracking_number_format
+      unless params[0].nil? || (params.count == 1 && params[0].to_i == supplier_order.id)
+        @tracking_number = (params[0].to_i == supplier_order.id) ?
+          params[1..-1] : params[0..-1]
+        @tracking_number = @tracking_number.join(" ")
       end
     end
 
-    def initialize(tracking_number_format)
-      @tracking_number_format = tracking_number_format
-      @tracking_number = params[1]
-    end
+    private
+      def tracking_number_format
+        errors.add(:tracking_number, :format) unless tracking_number.nil? ||
+          tracking_number =~ Regexp.new(
+            @tracking_number_format.format,
+            @tracking_number_format.ignore_case?
+          )
+      end
   end
 
   def accept
@@ -94,17 +102,26 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
       if supplier_order.incomplete?
         seller = supplier_order.seller_order.seller
         product = supplier_order.product
-        tracking_number_format = seller.tracking_number_formats(
+        tracking_number_format = seller.tracking_number_formats.find_for(
           :product => product,
           :supplier => user
-        )
+        ).first
         if tracking_number_format
           message = CompleteSupplierOrderMessage.new(
-            tracking_number_format.format,
+            supplier_order,
+            tracking_number_format,
             params
           )
           if message.valid?
-            will_complete = true
+            supplier_order.tracking_number = message.tracking_number
+            if supplier_order.save
+              will_complete = true
+            else
+              say I18n.t(
+                "notifications.messages.built_in.this_tracking_number_was_already_used_by_you",
+                :supplier_name => user.name
+              )
+            end
           else
             say I18n.t(
             "notifications.messages.",

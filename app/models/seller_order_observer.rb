@@ -55,7 +55,7 @@ class SellerOrderObserver < ActiveRecord::Observer
         seller_order_notification.notify(
           notification,
           :seller => seller,
-          :customer_order => seller_order,
+          :seller_order => seller_order,
           :order_notification => seller_order.order_notification
         )
       end

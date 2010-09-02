@@ -22,3 +22,8 @@ Given /^#{capture_model} should have a message which is a translation of: "([^\"
   notification.message.should == message
 end
 
+Given /^#{capture_model} has the following message:$/ do |notification, message|
+  notification = model!(notification)
+  notification.update_attributes!(:message => message)
+end
+

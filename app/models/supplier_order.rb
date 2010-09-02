@@ -51,6 +51,10 @@ class SupplierOrder < ActiveRecord::Base
     self.update_attributes!(:accepted_at => Time.now)
   end
 
+  def complete
+    self.update_attributes!(:completed_at => Time.now)
+  end
+
   def status
     if !self.completed_at.nil?
       "completed"
