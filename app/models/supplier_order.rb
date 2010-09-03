@@ -27,6 +27,10 @@ class SupplierOrder < ActiveRecord::Base
   validates :product_id,
             :uniqueness => {:scope => :seller_order_id}
 
+  validates :tracking_number,
+            :uniqueness => {:scope => :supplier_id, :case_sensitive => false},
+            :allow_nil => true
+
   def supplier_total
     product.supplier_price * quantity
   end

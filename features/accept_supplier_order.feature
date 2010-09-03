@@ -56,7 +56,7 @@ Feature: Accept supplier order
     | apo 1234 3 hy456n                          |
 
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
-    Given a supplier_order: "second order" exists with id: 154675, product: the product, quantity: 3
+    Given a supplier_order: "second order" exists, product: the product
 
     When I text "<message_text>" from "66354668874"
 
@@ -93,19 +93,20 @@ Feature: Accept supplier order
 
   Scenario Outline: Try to accept an order as a seller when the seller is also the supplier for the product
 
-    Given a product exists with number: "190287626892", name: "Vietnamese Pig", verification_code: "hy456m", supplier: the seller, seller: the seller
-    And a supplier_order: "second order" exists with id: 154675, product: the product, quantity: 3, seller_order: the seller_order
+    Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
+    And a supplier_order exists with id: 154675, product: the product, quantity: 3, seller_order: the seller_order
+    And no outgoing_text_messages exist with mobile_number_id: mobile_number: "Mara's number"
 
     When I text "<message_text>" from "66354668789"
 
-    Then the supplier_order: "second order" should not be accepted
-    And the most recent outgoing text message destined for mobile_number: "Mara's number" should not be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Mara", processed: "accepted", supplier_order_number: 154675
+    Then the supplier_order should not be accepted
+    And 0 outgoing_text_messages should exist with mobile_number_id: mobile_number: "Mara's number"
 
   Examples:
-    | message_text                        |
-    | po accept 1234 3 hy456m             |
-    | po a 1234 2 hy456m                  |
-    | apo 1234 3 hy456x                   |
+    | message_text                      |
+    | po accept 1234 154675 3 hy456m    |
+    | po a 1234 154675 3 hy456m         |
+    | apo 1234 154675 3 hy456x          |
 
   Scenario Outline: Try to accept an order giving the wrong order number
     When I text "<message_text>" from "66354668874"

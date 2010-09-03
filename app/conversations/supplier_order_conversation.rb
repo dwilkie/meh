@@ -62,11 +62,8 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
 
     private
       def tracking_number_format
-        errors.add(:tracking_number, :format) unless tracking_number.nil? ||
-          tracking_number =~ Regexp.new(
-            @tracking_number_format.format,
-            @tracking_number_format.ignore_case?
-          )
+        errors.add(:tracking_number, :invalid) unless tracking_number.nil? ||
+          tracking_number =~ Regexp.new(@tracking_number_format, true)
       end
   end
 
@@ -101,40 +98,53 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
     if supplier_order = find_supplier_order(:incomplete, :complete)
       if supplier_order.incomplete?
         seller = supplier_order.seller_order.seller
-        product = supplier_order.product
-        tracking_number_format = seller.tracking_number_formats.find_for(
-          :product => product,
-          :supplier => user
-        ).first
-        if tracking_number_format
-          message = CompleteSupplierOrderMessage.new(
-            supplier_order,
-            tracking_number_format,
-            params
-          )
-          if message.valid?
-            supplier_order.tracking_number = message.tracking_number
-            if supplier_order.save
-              will_complete = true
+        if user == seller || supplier_order.accepted?
+          product = supplier_order.product
+          tracking_number_format = seller.tracking_number_formats.find_for(
+            :product => product,
+            :supplier => user
+          ).first
+          if tracking_number_format && tracking_number_format.required?
+            message = CompleteSupplierOrderMessage.new(
+              supplier_order,
+              tracking_number_format.format,
+              params
+            )
+            if message.valid?
+              supplier_order.tracking_number = message.tracking_number
+              if supplier_order.save
+                will_complete = true
+              else
+                say I18n.t(
+                  "notifications.messages.built_in.this_tracking_number_was_already_used_by_you",
+                  :supplier_name => user.name
+                )
+              end
             else
               say I18n.t(
-                "notifications.messages.built_in.this_tracking_number_was_already_used_by_you",
-                :supplier_name => user.name
+                "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
+                :supplier_name => user.name,
+                :errors => message.errors.full_messages.to_sentence.downcase,
+                :topic => self.topic,
+                :action => self.action,
+                :supplier_order_number => supplier_order.id.to_s
               )
             end
           else
-            say I18n.t(
-            "notifications.messages.",
-            :name => user.name,
-            :errors => errors
-          )
+            will_complete = true
+          end
+          if will_complete
+            say successfully("completed", supplier_order)
+            supplier_order.complete
           end
         else
-          will_complete = true
-        end
-        if will_complete
-          say successfully("completed", supplier_order)
-          supplier_order.complete
+          say I18n.t(
+            "notifications.messages.built_in.you_must_accept_the_supplier_order_first",
+            :supplier_name => user.name,
+            :topic => self.topic,
+            :supplier_order_number => supplier_order.id.to_s,
+            :quantity => supplier_order.quantity.to_s
+          )
         end
       else
         say already_processed(supplier_order)

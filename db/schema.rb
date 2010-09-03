@@ -192,8 +192,8 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "text_message_delivery_receipts", ["params"], :name => "index_text_message_delivery_receipts_on_params", :unique => true
 
   create_table "tracking_number_formats", :force => true do |t|
-    t.string   "format",      :null => false
-    t.boolean  "ignore_case", :null => false
+    t.string   "format"
+    t.boolean  "required",    :null => false
     t.integer  "seller_id",   :null => false
     t.integer  "supplier_id"
     t.integer  "product_id"

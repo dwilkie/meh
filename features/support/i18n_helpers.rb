@@ -43,6 +43,16 @@ module I18nHelpers
     when /^you successfully processed the supplier order$/
       "notifications.messages.built_in.you_successfully_processed_the_supplier_order"
 
+    when /^this tracking number was already used by you$/
+      "notifications.messages.built_in.this_tracking_number_was_already_used_by_you"
+
+    when /^the tracking number is missing or invalid$/
+      "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid"
+
+    when /^you must accept the supplier order first$/
+      "notifications.messages.built_in.you_must_accept_the_supplier_order_first"
+
+
     when /^is incorrect$/
       "errors.messages.incorrect"
 

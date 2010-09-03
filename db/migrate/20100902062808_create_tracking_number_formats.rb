@@ -1,8 +1,8 @@
 class CreateTrackingNumberFormats < ActiveRecord::Migration
   def self.up
     create_table :tracking_number_formats do |t|
-      t.string     :format,       :null => false
-      t.boolean    :ignore_case,  :null => false
+      t.string     :format
+      t.boolean    :required,     :null => false
       t.references :seller,       :null => false
       t.references :supplier
       t.references :product

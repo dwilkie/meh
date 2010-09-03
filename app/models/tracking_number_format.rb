@@ -8,7 +8,10 @@ class TrackingNumberFormat < ActiveRecord::Base
              :class_name => "User"
 
   validates  :format,
-             :presence => true
+             :presence => true,
+             :if => Proc.new { |t|
+               t.required?
+             }
 
   validates  :seller_id,
              :uniqueness => {
@@ -19,12 +22,12 @@ class TrackingNumberFormat < ActiveRecord::Base
              },
              :presence => true
 
-  validates  :ignore_case,
+  validates  :required,
              :inclusion => {:in => [true, false]}
 
   before_validation(:on => :create) do
     self.format = "\\w+" if self.format.nil?
-    self.ignore_case = true if self.ignore_case.nil?
+    self.required = true if self.required.nil?
   end
 
   def self.find_for(options = {})

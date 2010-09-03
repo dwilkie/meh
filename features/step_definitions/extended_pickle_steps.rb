@@ -21,3 +21,7 @@ When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
   model!(name).send(transition.singularize) unless transition == "dreams_about"
 end
 
+Then(/^#{capture_model}s (\w+) (should(?: not)?) be #{capture_value}$/) do |name, attribute, expectation, expected|
+  Then "#{name}'s #{attribute} #{expectation} be #{expected}"
+end
+
