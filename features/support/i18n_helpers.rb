@@ -25,14 +25,11 @@ module I18nHelpers
     when /^you do not have any supplier orders$/
       "notifications.messages.built_in.you_do_not_have_any_supplier_orders"
 
-    when /^supplier order was already confirmed$/
-      "notifications.messages.built_in.supplier_order_was_already_confirmed"
+    when /^supplier order was already processed$/
+      "notifications.messages.built_in.supplier_order_was_already_processed"
 
     when /^be specific about the supplier order number$/
       "notifications.messages.built_in.be_specific_about_the_supplier_order_number"
-
-    when /^your pin number is incorrect$/
-      "notifications.messages.built_in.your_pin_number_is_incorrect"
 
     when /^invalid action given for the supplier order$/
       "notifications.messages.built_in.invalid_action_for_supplier_order"

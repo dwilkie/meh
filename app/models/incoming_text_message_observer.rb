@@ -6,11 +6,10 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
       phoneable = User.new
       phoneable.mobile_number = mobile_number
     end
-    message_text = incoming_text_message.text
     incoming_text_message_conversation = IncomingTextMessageConversation.new(
       :with => phoneable
     )
-    incoming_text_message_conversation.move_along(message_text)
+    incoming_text_message_conversation.move_along(incoming_text_message)
   end
 end
 

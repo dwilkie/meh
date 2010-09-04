@@ -19,7 +19,11 @@ class OutgoingTextMessage < ActiveRecord::Base
   end
 
   def recipients
-    [smsable.to_s]
+    [mobile_number.to_s]
+  end
+
+  def user_field
+    Rails.application.config.secret_token
   end
 
   def send_message

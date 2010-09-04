@@ -22,5 +22,6 @@ Given(/^a supplier order exists? for product: #{capture_model}(?: with #{capture
   )
   paypal_ipn.save!
   find_model!("a supplier order", fields)
+  find_model!("a paypal ipn")
 end
 

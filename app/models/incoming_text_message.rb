@@ -12,17 +12,26 @@ class IncomingTextMessage < ActiveRecord::Base
             :presence => true
 
   before_validation(:on => :create) do
-    self.from = self.params["from"] if self.params
+    self.from = SMSNotifier.connection.sender(self.params) if self.params
   end
 
   def text
-    self.params[:msg]
+    SMSNotifier.connection.message_text(self.params)
+  end
+
+  def authenticated?
+    SMSNotifier.connection.authenticated?(
+      self.params,
+      Rails.application.config.secret_token
+    )
   end
 
   private
     def link_to_mobile_number
       self.mobile_number = MobileNumber.where("number = ?", from).first
-      self.mobile_number = MobileNumber.create!(:number => from) unless self.mobile_number
+      self.mobile_number = MobileNumber.create!(
+        :number => from
+      ) unless self.mobile_number
     end
 end
 

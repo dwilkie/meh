@@ -26,8 +26,6 @@ end
 
 Factory.define :mobile_number do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
-  f.password "1234"
-  f.password_confirmation { |m| m.password }
 end
 
 Factory.define :product do |f|

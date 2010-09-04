@@ -1,11 +1,5 @@
 class MobileNumber < ActiveRecord::Base
 
-  devise :database_authenticatable
-
-  # this is a white list of attributes that are permitted to be mass assigned
-  # all others have to be assigned using writer methods
-  attr_accessible :number, :password, :password_confirmation
-
   #############################################################################
   # CALLBACKS
   #############################################################################
@@ -122,19 +116,6 @@ class MobileNumber < ActiveRecord::Base
               }
             }
 
-  validates :password,
-            :presence => true,
-            :confirmation => true,
-            :if => :password_required?,
-            :format => /^\d{4}$/,
-            :length => { :is => 4 },
-            :numericality => { :only_integer => true},
-            :allow_nil => true
-
-  validates :password_confirmation,
-            :presence => true,
-            :if => :password_required?
-
   attr_accessor :request_new_verification_code, :request_new_activation_code
 
   def humanize
@@ -250,12 +231,5 @@ class MobileNumber < ActiveRecord::Base
       self.activation_code == self.activation_code_confirmation
     end
 
-    # Checks whether a password is needed or not. For validations only.
-    # Passwords are always required if it's a new record and a phoneable
-    # is already defined, or if the password
-    # or confirmation are being set somewhere.
-    def password_required?
-      (!persisted? && phoneable) || !password.nil? || !password_confirmation.nil?
-    end
 end
 

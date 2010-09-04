@@ -8,27 +8,27 @@ en:
 
   We'll send you more details about the items in this order shortly. Your customer order number is: #<customer_order_number>"
         supplier_order_was_sent_to: "Hi <seller_name>, FYI: a new product order for <product_order_quantity> x <product_number> (<product_name>) was sent to <supplier_name> (<supplier_mobile_number>). The item belongs to your customer order: #<customer_order_number>"
-        new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, you have a new product order: #<product_order_number>, from <seller_name> (<seller_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>). To accept the order, look up the product verification code for this item and reply with: \"po a <pin number> <product_order_number> <product_order_quantity> <product verification code>\""
-        your_customer_bought_the_following_item: "Hi <supplier_name>, the customer bought <product_order_quantity> x <product_number> (<product_name>) as part of the customer order: #<customer_order_number>. A new product order: #<product_order_number>, was created to help you track the progress of this item. To mark this product order as completed, reply with: \"po complete <pin number> <product_order_number>\""
+        new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, you have a new product order: #<product_order_number>, from <seller_name> (<seller_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>). To accept the order, look up the product verification code for this item and reply with: \"po a <product_order_number> <product_order_quantity> <product verification code>\""
+        your_customer_bought_the_following_item: "Hi <supplier_name>, the customer bought <product_order_quantity> x <product_number> (<product_name>) as part of the customer order: #<customer_order_number>. A new product order: #<product_order_number>, was created to help you track the progress of this item. To mark this product order as completed, reply with: \"po complete <product_order_number>\""
         your_supplier_processed_their_supplier_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} their product order of <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>"
         send_the_product_to: "Hi <supplier_name>, please send the product order: #<product_order_number>, to the following address:
 
         <customer_address>
 
-        then reply with: \"po complete <pin number> <product_order_number>\""
+        then reply with: \"po complete <product_order_number>\""
         your_mobile_number_pin_code_is_invalid: "Hi <user_name>, the pin code you supplied is invalid"
       built_in:
         you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
-        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <pin number> <product order number> ..."
+        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
         supplier_order_was_already_processed: "Sorry %{supplier_name}, this product order was already %{status}"
-        your_pin_number_is_incorrect: "Sorry, your pin number is incorrect. Please try again with: %{topic} %{action} <pin number> ..."
+        incoming_text_message_was_not_authenticated: "Hi, can you please try again by replying to this SMS with: %{topic} %{action} ..."
         invalid_action_for_supplier_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ... or %{topic} complete ..."
         no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
-        you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} <pin number> %{supplier_order_number} %{quantity} <product verification code>"
+        you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} %{quantity} <product verification code>"
         you_successfully_processed_the_supplier_order: "Hi %{supplier_name}, you successfully %{processed} the product order: #%{supplier_order_number}"
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this tracking number before"
-        the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} <pin number> %{supplier_order_number} <tracking number>"
-        you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} accept <pin number> %{supplier_order_number} %{quantity} <product verification code>"
+        the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
+        you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} accept %{supplier_order_number} %{quantity} <product verification code>"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""

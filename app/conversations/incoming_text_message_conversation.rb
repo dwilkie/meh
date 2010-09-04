@@ -2,9 +2,10 @@ class IncomingTextMessageConversation < Conversation
 
   attr_accessor :action, :params
 
-  def move_along(message_text)
+  def move_along(incoming_text_message)
+    message_text = incoming_text_message.text
     message_words = message_text.split
-    resource = message_words[0].try(:downcase)
+    resource = message_words[0]
     self.topic = resource
     self.action = message_words[1].try(:downcase)
     self.params = message_words[2..-1]
@@ -21,7 +22,9 @@ class IncomingTextMessageConversation < Conversation
     conversation = details
     if topic_defined?
       if action && conversation.respond_to?(action)
-        conversation.send(action) if conversation.authenticate
+        conversation.send(action) if conversation.authenticate(
+          incoming_text_message
+        )
       else
         conversation.invalid_action(action)
       end
