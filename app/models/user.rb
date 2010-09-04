@@ -19,9 +19,11 @@ class User < ActiveRecord::Base
 
   # General Associations
 
-  has_one    :mobile_number,
-             :as => :phoneable,
-             :dependent => :destroy
+  has_one    :active_mobile_number,
+             :foreign_key => "active_user_id",
+             :class_name => "MobileNumber"
+
+  has_many   :mobile_numbers
 
   # Seller Associations
 

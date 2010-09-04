@@ -28,7 +28,8 @@ gem 'httparty'
 gem 'delayed_job'
 #gem 'action_sms',          :git => 'git://github.com/dwilkie/action_sms.git'
 gem 'action_sms'
-gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
+#gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
+gem 'action_sms_gateways', ">=0.0.2"
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'

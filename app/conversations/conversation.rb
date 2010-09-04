@@ -6,7 +6,7 @@ class Conversation
 
   converse do |with, notice|
     OutgoingTextMessage.create!(
-      :mobile_number => with.mobile_number,
+      :mobile_number => with.active_mobile_number,
       :body => notice
     )
   end

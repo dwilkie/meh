@@ -1,4 +1,4 @@
-class SupplierOrderConversation < AbstractAuthenticatedConversation
+class SupplierOrderConversation < IncomingTextMessageConversation
 
   class AcceptSupplierOrderMessage
     include ActiveModel::Validations
@@ -166,6 +166,14 @@ class SupplierOrderConversation < AbstractAuthenticatedConversation
         :topic => self.topic
       )
     end
+  end
+
+  def require_user?
+    true
+  end
+
+  def require_verified_mobile_number?
+    true
   end
 
   private

@@ -1,12 +1,10 @@
 class CreateMobileNumbers < ActiveRecord::Migration
   def self.up
     create_table :mobile_numbers do |t|
-      t.string     :number,               :limit => 20,                  :null => false
-      t.string     :verification_code,                                   :null => false
-      t.string     :activation_code
-      t.string     :locale
-      t.string     :state,                                               :null => false
-      t.references :phoneable, :polymorphic => true
+      t.string     :number,               :null => false
+      t.datetime   :verified_at
+      t.references :user
+      t.references :active_user
       t.timestamps
     end
     add_index :mobile_numbers, :number, :unique => true
