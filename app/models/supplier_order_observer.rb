@@ -72,15 +72,18 @@ class SupplierOrderObserver < ActiveRecord::Observer
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
-        GeneralNotification.new(:with => with).notify(
-          notification,
-          :product => product,
-          :supplier_order => supplier_order,
-          :seller_order => seller_order,
-          :seller => seller,
-          :supplier => supplier,
-          :order_notification => order_notification
-        )
+        active_mobile_number = with.active_mobile_number
+        if active_mobile_number && active_mobile_number.verified?
+          GeneralNotification.new(:with => with).notify(
+            notification,
+            :product => product,
+            :supplier_order => supplier_order,
+            :seller_order => seller_order,
+            :seller => seller,
+            :supplier => supplier,
+            :order_notification => order_notification
+          )
+        end
       end
     end
 end

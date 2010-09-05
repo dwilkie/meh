@@ -26,6 +26,10 @@ class MobileNumber < ActiveRecord::Base
     verified_at.nil?
   end
 
+  def verified?
+    !unverified?
+  end
+
   private
     def normalize_number
       if number
