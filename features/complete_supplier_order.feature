@@ -5,13 +5,9 @@ Feature: Complete a supplier order
 
   Background:
     Given a supplier exists with name: "Nok"
-    And a mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
-    And the mobile number was already verified
-    And the supplier's active_mobile_number is the mobile number
+    And a verified active mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And a seller exists with name: "Mara"
-    And a mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And the mobile number was already verified
-    And the seller's active_mobile_number is the mobile number
+    And a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
     And a supplier order exists for product: the product with quantity: 3
     And the supplier order was already accepted

@@ -4,8 +4,8 @@ Feature: Create a seller order from an order notification
   I want a new seller order to be created when a order notification is verified and the payment is completed
 
   Background:
-    Given a mobile_number exists
-    And a seller exists with name: "Mara", email: "mara@example.com", mobile_number: the mobile_number
+    Given a seller exists with name: "Mara", email: "mara@example.com"
+    And a verified active mobile number exists with user: the seller
 
   Scenario Outline: The payment status is completed
     Given an <order_notification> exists with payment_status: <payment_status>
