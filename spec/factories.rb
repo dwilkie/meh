@@ -33,6 +33,13 @@ Factory.define :verified_active_mobile_number, :class => MobileNumber do |f|
   }
 end
 
+Factory.define :active_mobile_number, :class => MobileNumber do |f|
+  f.sequence(:number) {|n| "+618148229#{n}" }
+  f.active { |mn|
+    mn.user_id
+  }
+end
+
 Factory.define :product do |f|
   f.association :supplier
   f.association :seller
