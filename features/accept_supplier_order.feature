@@ -5,10 +5,10 @@ Feature: Accept supplier order
 
   Background:
     Given a supplier exists with name: "Nok"
-    And a seller exists with name: "Mara"
     And a mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And the mobile number was already verified
     And the supplier's active_mobile_number is the mobile number
+    And a seller exists with name: "Mara"
     And a mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And the mobile number was already verified
     And the seller's active_mobile_number is the mobile number
@@ -191,7 +191,7 @@ Feature: Accept supplier order
     | apo 3 hY456n            |
     | ProductOrder a 3 HY456N |
 
- Scenario: Try to explicity accept an order which was already completed
+ Scenario: Try to explicity accept an order which I already completed
     Given the supplier order was already completed
 
     When I text "apo 1 3 hy456n" from "66354668874"
@@ -199,7 +199,7 @@ Feature: Accept supplier order
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
 
- Scenario: Try to implicitly accept an order which was already completed
+ Scenario: Try to implicitly accept an order which I already completed
     Given the supplier order was already completed
 
     When I text "apo 3 hy456n" from "66354668874"
@@ -207,7 +207,7 @@ Feature: Accept supplier order
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
 
- Scenario: Try to explicitly accept an order which was already accepted
+ Scenario: Try to explicitly accept an order which I already accepted
     Given the supplier order was already accepted
 
     When I text "apo 1 3 hy456n" from "66354668874"
@@ -215,7 +215,7 @@ Feature: Accept supplier order
     Then the supplier order should be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "accepted", supplier_name: "Nok"
 
- Scenario: Try to implicitly accept an order which was already accepted
+ Scenario: Try to implicitly accept an order which I already accepted
     Given the supplier order was already accepted
 
     When I text "apo 3 hy456n" from "66354668874"

@@ -8,6 +8,10 @@ Given /^#{capture_model} was already (\w+)$/ do |name, status|
   model!(name).update_attribute("#{status}_at", Time.now)
 end
 
+Given /^#{capture_model} is not yet (\w+)$/ do |name, status|
+  model!(name).update_attribute("#{status}_at", nil)
+end
+
 Given /^#{capture_model} has the following params: "([^\"]*)"$/ do |name, params|
   model_instance = model!(name)
   model_instance.update_attributes!(
