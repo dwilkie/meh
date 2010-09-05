@@ -3,8 +3,8 @@ class CreateMobileNumbers < ActiveRecord::Migration
     create_table :mobile_numbers do |t|
       t.string     :number,               :null => false
       t.datetime   :verified_at
+      t.integer    :active
       t.references :user
-      t.references :active_user
       t.timestamps
     end
     add_index :mobile_numbers, :number, :unique => true

@@ -3,7 +3,6 @@ Factory.define :user do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Maggot"
-  f.association :mobile_number
 end
 
 Factory.define :seller, :class => User do |f|
@@ -12,7 +11,6 @@ Factory.define :seller, :class => User do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Chris"
-  f.association :mobile_number
 end
 
 Factory.define :supplier, :class => User do |f|
@@ -21,7 +19,6 @@ Factory.define :supplier, :class => User do |f|
   f.password "foobar"
   f.password_confirmation { |u| u.password }
   f.name "Bob"
-  f.association :mobile_number
 end
 
 Factory.define :mobile_number do |f|

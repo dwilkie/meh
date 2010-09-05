@@ -1,7 +1,3 @@
-Given /^#{capture_model} was already (\w+)$/ do |name, status|
-  model!(name).update_attribute("#{status}_at", Time.now)
-end
-
 # override pickle step for this special case
 Given(/^a supplier order exists? for product: #{capture_model}(?: with #{capture_fields})?$/) do |name, fields|
   product = model!(name)

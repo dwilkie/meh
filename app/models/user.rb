@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   # General Associations
 
   has_one    :active_mobile_number,
-             :foreign_key => "active_user_id",
+             :foreign_key => "active",
              :class_name => "MobileNumber"
 
   has_many   :mobile_numbers
@@ -97,9 +97,6 @@ class User < ActiveRecord::Base
              :through => :payment_agreements_with_sellers
 
   validates :name, :presence => true
-
-  validates :mobile_number,
-            :presence => true
 
   validates :password_confirmation,
             :presence => true,

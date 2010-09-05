@@ -75,7 +75,7 @@ class Notification < ActiveRecord::Base
         options[:seller].name
       },
       :seller_mobile_number => Proc.new { |options|
-        options[:seller].mobile_number.humanize
+        options[:seller].active_mobile_number.humanize
       },
       :seller_email => Proc.new { |options|
         options[:seller].email
@@ -86,7 +86,7 @@ class Notification < ActiveRecord::Base
         options[:supplier].name
       },
       :supplier_mobile_number => Proc.new { |options|
-        options[:supplier].mobile_number.humanize
+        options[:supplier].active_mobile_number.humanize
       },
       :supplier_email => Proc.new { |options|
         options[:supplier].email

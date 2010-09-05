@@ -4,10 +4,14 @@ Feature: Accept supplier order
   I want to be able to accept a supplier order by sending in a text message
 
   Background:
-    Given a mobile number: "Nok's number" exists with number: "66354668874"
-    And a supplier exists with name: "Nok", mobile_number: mobile_number: "Nok's number"
-    And a mobile number: "Mara's number" exists with number: "66354668789"
-    And a seller exists with name: "Mara", mobile_number: mobile_number: "Mara's number"
+    Given a supplier exists with name: "Nok"
+    And a seller exists with name: "Mara"
+    And a mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
+    And the mobile number was already verified
+    And the supplier's active_mobile_number is the mobile number
+    And a mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And the mobile number was already verified
+    And the seller's active_mobile_number is the mobile number
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a supplier order exists for product: the product with quantity: 3
     And the paypal ipn has the following params: "{'address_name' => 'Ho Chi Minh', 'address_street' => '4 Chau Minh Lane', 'address_city' => 'Hanoi', 'address_state' => 'Hanoi Province', 'address_country' => 'Viet Nam', 'address_zip' => '52321'}"
@@ -25,7 +29,7 @@ Feature: Accept supplier order
     Hanoi,
     Hanoi Province,
     Viet Nam 52321
-    then reply with: "po complete 1"
+    then reply with: "po complete"
     """
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """

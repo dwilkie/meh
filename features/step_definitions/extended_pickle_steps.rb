@@ -4,6 +4,10 @@ Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |
   end
 end
 
+Given /^#{capture_model} was already (\w+)$/ do |name, status|
+  model!(name).update_attribute("#{status}_at", Time.now)
+end
+
 Given /^#{capture_model} has the following params: "([^\"]*)"$/ do |name, params|
   model_instance = model!(name)
   model_instance.update_attributes!(
@@ -11,6 +15,12 @@ Given /^#{capture_model} has the following params: "([^\"]*)"$/ do |name, params
       instance_eval(params)
     ).with_indifferent_access
   )
+end
+
+Given(/^#{capture_model}'s (\w+) is #{capture_model}$/) do |name, attribute, value|
+  resource = model(name)
+  resource.send("#{attribute}=", model(value))
+  resource.save!
 end
 
 When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|

@@ -38,10 +38,10 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
-    t.string   "number",         :null => false
+    t.string   "number",      :null => false
     t.datetime "verified_at"
+    t.integer  "active"
     t.integer  "user_id"
-    t.integer  "active_user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

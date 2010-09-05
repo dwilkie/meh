@@ -40,13 +40,15 @@ class IncomingTextMessageConversation < Conversation
     end
 
     def activate(mobile_number)
-      user.active_mobile_number = mobile_number
-      user.save! unless mobile_number.unverified?
+      unless mobile_number == user.active_mobile_number
+        user.active_mobile_number = mobile_number
+        user.save! unless mobile_number.unverified?
+      end
     end
 
     def require_user?(conversation)
       if conversation.require_user? && user.new_record?
-        say I18.t
+        say I18n.t
         (
           "notifications.messsages.built_in.you_must_register_to_use_this_service"
         )
@@ -56,7 +58,7 @@ class IncomingTextMessageConversation < Conversation
     def require_verified_mobile_number?(conversation)
       if conversation.require_verified_mobile_number? &&
         user.active_mobile_number.unverified?
-        say I18.t
+        say I18n.t
         (
           "notifications.messsages.built_in.you_must_verify_your_mobile_number_to_use_this_service"
         )

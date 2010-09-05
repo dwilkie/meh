@@ -4,9 +4,6 @@ class MobileNumber < ActiveRecord::Base
 
   belongs_to  :user
 
-  belongs_to  :active_user,
-              :class_name => "User"
-
   has_many   :outgoing_text_messages
   has_many   :incoming_text_messages
 
@@ -22,12 +19,19 @@ class MobileNumber < ActiveRecord::Base
   end
 
   def to_s
-    self.number
+    number
+  end
+
+  def unverified?
+    verified_at.nil?
   end
 
   private
     def normalize_number
-      self.number.gsub!(/[^\d]/, "").slice!(/^0+/) if number
+      if number
+        number.gsub!(/\D/, "")
+        number.slice!(/^0+/)
+      end
     end
 end
 

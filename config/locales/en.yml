@@ -15,7 +15,7 @@ en:
 
         <customer_address>
 
-        then reply with: \"cpo\""
+        then reply with: \"po complete\""
       built_in:
         you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
         be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
@@ -28,6 +28,7 @@ en:
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
         you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
         you_must_register_to_use_this_service: "Sorry, you must register at meh.example.com to use this service"
+        you_must_verify_your_mobile_number_to_use_this_service: "Sorry, you must verify your mobile number to use this service. Try simply replying with your name"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""
