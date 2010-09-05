@@ -75,7 +75,12 @@ class Notification < ActiveRecord::Base
         options[:seller].name
       },
       :seller_mobile_number => Proc.new { |options|
-        options[:seller].active_mobile_number.humanize
+        active_mobile_number = options[:seller].active_mobile_number
+        active_mobile_number && active_mobile_number.verified? ?
+        active_mobile_number.humanize :
+        I18n.t(
+          "notifications.messages.custom.attributes.mobile_number.not_verified"
+        )
       },
       :seller_email => Proc.new { |options|
         options[:seller].email
@@ -86,10 +91,24 @@ class Notification < ActiveRecord::Base
         options[:supplier].name
       },
       :supplier_mobile_number => Proc.new { |options|
-        options[:supplier].active_mobile_number.humanize
+        active_mobile_number = options[:supplier].active_mobile_number
+        active_mobile_number && active_mobile_number.verified? ?
+        active_mobile_number.humanize :
+        I18n.t(
+          "notifications.messages.custom.attributes.mobile_number.not_verified"
+        )
       },
       :supplier_email => Proc.new { |options|
         options[:supplier].email
+      },
+      :and_or_but_not_sent => Proc.new { |options|
+        active_mobile_number = options[:supplier].active_mobile_number
+        active_mobile_number && active_mobile_number.verified? ?
+        I18n.t(
+          "notifications.messages.custom.attributes.and_or_but_not_sent.and_sent"
+        ) : I18n.t(
+          "notifications.messages.custom.attributes.and_or_but_not_sent.but_not_sent"
+        )
       }
     },
     :user => {

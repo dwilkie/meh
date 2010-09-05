@@ -51,7 +51,7 @@ Feature: Create a seller order from an order notification
     When the <order_notification> is verified
 
     Then a seller order should exist
-    But an outgoing_text_message should not exist
+    But an outgoing text message should not exist
 
     Examples:
       | order_notification | payment_status | params |
@@ -66,7 +66,7 @@ Feature: Create a seller order from an order notification
     When the <order_notification> is verified
 
     Then a seller order should exist
-    But an outgoing_text_message should not exist with mobile_number_id: the mobile number
+    But an outgoing text message should not exist with mobile_number_id: the mobile number
 
     Examples:
       | order_notification | payment_status | params |
@@ -80,9 +80,9 @@ Feature: Create a seller order from an order notification
     When the <order_notification> is verified
 
     Then a seller order should exist
-    But an outgoing_text_message should not exist with mobile_number_id: the active mobile number
+    But an outgoing text message should not exist with mobile_number_id: the mobile number
 
     Examples:
       | order_notification | payment_status | params |
-      | paypal_ipn         | Completed      | {'receiver_email' => 'mara@example.com'}                                 |
+      | paypal_ipn         | Completed      | {'receiver_email' => 'mara@example.com'}                                  |
 
