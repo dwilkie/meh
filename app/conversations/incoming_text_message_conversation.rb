@@ -3,7 +3,7 @@ class IncomingTextMessageConversation < Conversation
   attr_accessor :action, :params
 
   def process(incoming_text_message)
-    activate(incoming_text_message.mobile_number)
+    incoming_text_message.mobile_number.activate!
     conversation = find_conversation(incoming_text_message.text)
     conversation.process unless require_user?(conversation) &&
       require_verified_mobile_number?(conversation)
@@ -28,13 +28,6 @@ class IncomingTextMessageConversation < Conversation
       end
       self.topic = resource unless topic_defined?
       details
-    end
-
-    def activate(mobile_number)
-      unless mobile_number == user.active_mobile_number
-        user.active_mobile_number = mobile_number
-        user.save! unless mobile_number.unverified?
-      end
     end
 
     def require_user?(conversation)

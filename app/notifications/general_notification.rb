@@ -1,6 +1,10 @@
 class GeneralNotification < Conversation
   def notify(notification, options = {})
-    say notification.parse_message(options)
+    if notification.is_a?(Notification)
+      say notification.parse_message(options)
+    elsif notification.is_a?(String)
+      say notification
+    end
   end
 end
 

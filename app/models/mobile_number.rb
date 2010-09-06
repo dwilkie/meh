@@ -14,6 +14,8 @@ class MobileNumber < ActiveRecord::Base
             :allow_nil => true,
             :allow_blank => true
 
+  before_save :activate
+
   def humanize
     '+' + self.to_s
   end
@@ -30,7 +32,19 @@ class MobileNumber < ActiveRecord::Base
     !unverified?
   end
 
+  def activate!
+    activate
+    save! if active_changed?
+  end
+
   private
+    def activate
+      user = self.user
+      if user && self.active != user.id
+        user.active_mobile_number = self
+      end
+    end
+
     def normalize_number
       if number
         number.gsub!(/\D/, "")

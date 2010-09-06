@@ -35,6 +35,7 @@ en:
         you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
         you_must_register_to_use_this_service: "Sorry, you must register at meh.example.com to use this service"
         you_must_verify_your_mobile_number_to_use_this_service: "Sorry, you must verify your mobile number to use this service. Try simply replying with your name"
+        verify_your_mobile_number: "Hi, please verify your number by replying to this message with your name"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""

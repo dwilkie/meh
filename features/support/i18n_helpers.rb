@@ -49,6 +49,8 @@ module I18nHelpers
     when /^you must accept the supplier order first$/
       "notifications.messages.built_in.you_must_accept_the_supplier_order_first"
 
+    when /^verify your mobile number$/
+      "notifications.messages.built_in.verify_your_mobile_number"
 
     when /^is incorrect$/
       "errors.messages.incorrect"

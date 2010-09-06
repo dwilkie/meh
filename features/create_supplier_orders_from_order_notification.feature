@@ -37,9 +37,9 @@ Feature: Create supplier orders from an order notification
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                                                       |
 
   # From here on the payment status is always completed
-  Scenario Outline: Both the seller and supplier have verified active mobile numbers
-    Given a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a verified active mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
+  Scenario Outline: Both the seller and supplier have verified mobile numbers
+    Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -58,9 +58,9 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed    | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                                                       |
 
-  Scenario Outline: The seller has an active and verified mobile number but the supplier's active mobile number is not yet verified
-    Given a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And an active mobile number: "Dave's number" exists with user: the supplier
+  Scenario Outline: The seller has a verified mobile number but the supplier's active mobile number is not yet verified
+    Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a mobile number: "Dave's number" exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -70,14 +70,13 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Dingy) was created but not sent to Dave (No verified number!). The item belongs to your customer order: #1
     """
-    But an outgoing text message should not exist with mobile_number_id: mobile number: "Dave's number"
 
     Examples:
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed    | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                                                       |
 
-  Scenario Outline: The seller has an active and verified mobile number but the supplier does not have any mobile numbers
-    Given a verified active mobile number exists with number: "66354668789", user: the seller
+  Scenario Outline: The seller has a verified mobile number but the supplier does not have any mobile numbers
+    Given a verified mobile number exists with number: "66354668789", user: the seller
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -92,9 +91,9 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed    | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                                                       |
 
-  Scenario Outline: The supplier has an active and verified mobile number but the seller's active mobile number is not yet verified
-    Given an active mobile number: "Mara's number" exists with user: the seller
-    And a verified active mobile number: "Dave's number" exists with user: the supplier
+  Scenario Outline: The supplier has a verified mobile number but the seller's active mobile number is not yet verified
+    Given a mobile number: "Mara's number" exists with user: the seller
+    And a verified mobile number: "Dave's number" exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -104,14 +103,13 @@ Feature: Create supplier orders from an order notification
     """
     Hi Dave, you have a new product order: #1, from Mara (No verified number!) for 1 x 12345790063 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
-    But an outgoing text message should not exist with mobile_number_id: mobile number: "Mara's number"
 
     Examples:
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed    | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                                                       |
 
-  Scenario Outline: The supplier has an active and verified mobile number but the seller does not have any mobile numbers
-    Given a verified active mobile number exists with user: the supplier
+  Scenario Outline: The supplier has a verified mobile number but the seller does not have any mobile numbers
+    Given a verified mobile number exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -143,8 +141,8 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790069', 'item_name1' => 'Model Ship - The Titanic', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                 |
 
-  Scenario Outline: The supplier is also the seller of this product and they have a verified active mobile number
-    Given a verified active mobile number exists with user: the seller
+  Scenario Outline: The supplier is also the seller of this product and their active mobile number is verified
+    Given a verified mobile number exists with user: the seller
 
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
@@ -155,20 +153,6 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, the customer bought 1 x 12345790069 (Model Ship - The Titanic) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
     """
-
-    Examples:
-      | order_notification | payment_status | params                       |
-      | paypal_ipn         | Completed      | {'item_number1'=>'12345790069', 'item_name1' => 'Model Ship - The Titanic', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items' => '1'}                                 |
-
-  Scenario Outline: The supplier is also the seller of this product but their active mobile number is not yet verified
-    Given an active mobile number exists with user: the seller
-
-    And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
-
-    When the <order_notification> is verified
-
-    Then an outgoing text message should not exist with mobile_number_id: the mobile number
 
     Examples:
       | order_notification | payment_status | params                       |
@@ -191,8 +175,8 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790062', 'item_name1' => 'Model Ship - The Rubber Ducky', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}                                   |
 
-  Scenario Outline: The seller has not registered this product but they have a verified active mobile number
-    Given a verified active mobile number exists with user: the seller
+  Scenario Outline: The seller has not registered this product but their active number is verified
+    Given a verified mobile number exists with user: the seller
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -202,16 +186,6 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, the customer bought 1 x 12345790062 (Model Ship - The Rubber Ducky) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
     """
-
-  Scenario Outline: The seller has not registered this product and their active mobile number is not yet verified
-    Given an active mobile number exists with user: the seller
-    And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
-
-    When the <order_notification> is verified
-
-    Then an outgoing text message should not exist with mobile_number_id: the mobile number
-
 
   Scenario Outline: The seller has registered this product name but the product number is different
     Given an <order_notification> exists with payment_status: "<payment_status>"
@@ -231,9 +205,9 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790062', 'item_name1' => 'Model Ship - The Rubber Dingy', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}                                   |
 
-  Scenario Outline: The seller has registered this product name but the product number is different and both the seller and supplier have verified active mobile numbers
-    Given a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a verified active mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
+  Scenario Outline: The seller has registered this product name but the product number is different and both the seller and supplier's active mobile numbers are verified
+    Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -269,9 +243,9 @@ Feature: Create supplier orders from an order notification
       | order_notification | payment_status | params                       |
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Rubber Ducky', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}                                   |
 
-  Scenario Outline: The seller has registered this product number but the product name is different and both the seller and supplier have verified active mobile numbers
-    Given a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a verified active mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
+  Scenario Outline: The seller has registered this product number but the product name is different and both the seller and supplier's active mobile numbers are verified
+    Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"
 
@@ -311,8 +285,8 @@ Feature: Create supplier orders from an order notification
       | paypal_ipn         | Completed      | {'item_number1'=>'12345790063', 'item_name1' => 'Model Ship - The Titanic', 'receiver_email'=>'mara@example.com', 'quantity1'=>'1', 'num_cart_items'=>'1'}                                   |
 
   Scenario Outline: The seller has registered this product number with a different product name and has also registered this product name with a different product number
-    Given a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a verified active mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
+    Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
     And an <order_notification> exists with payment_status: "<payment_status>"
     And the <order_notification> has the following params: "<params>"

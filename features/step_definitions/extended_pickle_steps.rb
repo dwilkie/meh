@@ -35,6 +35,10 @@ When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
   model!(name).send(transition.singularize) unless transition == "dreams_about"
 end
 
+When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|
+  model!(name).update_attributes!(parse_fields(fields))
+end
+
 Then(/^#{capture_model}s (\w+) (should(?: not)?) be #{capture_value}$/) do |name, attribute, expectation, expected|
   Then "#{name}'s #{attribute} #{expectation} be #{expected}"
 end

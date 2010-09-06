@@ -5,9 +5,9 @@ Feature: Accept supplier order
 
   Background:
     Given a supplier exists with name: "Nok"
-    And a verified active mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
+    And a verified mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And a seller exists with name: "Mara"
-    And a verified active mobile number: "Mara's number" exists with number: "66354668789", user: the seller
+    And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a supplier order exists for product: the product with quantity: 3
     And the paypal ipn has the following params: "{'address_name' => 'Ho Chi Minh', 'address_street' => '4 Chau Minh Lane', 'address_city' => 'Hanoi', 'address_state' => 'Hanoi Province', 'address_country' => 'Viet Nam', 'address_zip' => '52321'}"
