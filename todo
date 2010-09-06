@@ -1,20 +1,10 @@
-# 1 ensure that the transaction has actually been completed
+Add scenarios for an unauthorized incoming text message
+Move general scenarios for supplier order conversation out into a new feature
+Investigate moving the devise mailout into the delayed_job queue
+Clean up pay4order (remove the feature)
+Ensure that all cucumber scenarios are running
+Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
+Launch staging app (read heroku email)
+Live testing
+Launch Beta
 
-ebay sends notification when payment complete is marked by the buyer on it's side
-this does not necessarily mean that the user has actually paid for the item
-
-<eBayPaymentStatus>PayPalPaymentInProcess</eBayPaymentStatus>
-
-PayPalPaymentInProcess
-(out) The payment from buyer to seller is in PayPal process, but has not yet been completed.
-
-For this I need to use IPN from paypal....
-
-This opens up some other features...
-If the buyer does not pay with paypal then we cannot use IPN
-The seller must be notified by SMS to check to see whether they received payment
-Then they must send an SMS to confirm payment and get the product shipped...
-
-# 2 fix hack in meh_steps simply replacing the file contents of the raw xml
-
-Let's use REXML instead

@@ -8,7 +8,7 @@ class IncomingTextMessageObserver < ActiveRecord::Observer
     incoming_text_message_conversation = IncomingTextMessageConversation.new(
       :with => phoneable_user
     )
-    incoming_text_message_conversation.move_along(incoming_text_message)
+    incoming_text_message_conversation.process(incoming_text_message)
   end
 end
 

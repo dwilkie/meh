@@ -2,21 +2,11 @@ class IncomingTextMessageConversation < Conversation
 
   attr_accessor :action, :params
 
-  def move_along(incoming_text_message)
+  def process(incoming_text_message)
     activate(incoming_text_message.mobile_number)
     conversation = find_conversation(incoming_text_message.text)
-    unless require_user?(conversation)
-      unless require_verified_mobile_number?(conversation)
-        if topic_defined?
-          (action && conversation.respond_to?(action)) ?
-            conversation.send(action) :
-            conversation.invalid_action(action)
-        else
-          self.topic = resource
-          conversation.move_along
-        end
-      end
-    end
+    conversation.process unless require_user?(conversation) &&
+      require_verified_mobile_number?(conversation)
   end
 
   private
@@ -32,10 +22,11 @@ class IncomingTextMessageConversation < Conversation
         self.action = topic_words[0]
         unless topic_defined?
           self.topic = resource[1..-1]
-          self.action = resource[0]
+          self.action = resource[0].try(:downcase)
         end
         self.params = message_words[1..-1]
       end
+      self.topic = resource unless topic_defined?
       details
     end
 

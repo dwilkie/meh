@@ -135,9 +135,10 @@ Feature: Accept supplier order
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "invalid action given for the supplier order" in "en" (English) where topic: "<topic>", action: "<action>"
 
   Examples:
-    | message_text                    | topic         | action |
-    | product_order z                 | product_order | z      |
-    | po 4                            | po            | 4      |
+    | message_text                    | topic         | action         |
+    | product_order z                 | product_order | z              |
+    | po 4                            | po            | 4              |
+    | po invalid_action               | po            | invalid_action |
 
   Scenario Outline: Try to accept an order giving the wrong quantity
     When I text "<message_text>" from "66354668874"
