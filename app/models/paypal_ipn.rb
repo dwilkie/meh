@@ -23,7 +23,7 @@ class PaypalIpn < ActiveRecord::Base
             :presence => true,
             :uniqueness => true
 
-  validate :seller_exists, :at_least_one_cart_item
+  validate :seller_exists, :at_least_one_cart_item, :on => :create
 
   # Instance methods that must be implemented for all order notifications
 
@@ -102,7 +102,7 @@ class PaypalIpn < ActiveRecord::Base
 
   private
     def seller_exists
-      errors[:base] << "Receiver must be registered as a seller" if self.params && find_seller.nil?
+      errors[:base] << "Receiver must be registered as a seller" if params && find_seller.nil?
     end
 
     def at_least_one_cart_item
