@@ -34,10 +34,10 @@ class SupplierOrderConversation < IncomingTextMessageConversation
         @supplier_order = supplier_order
         unless params.count == 1 && params[0].to_i == supplier_order.id
           if params.count > 2
-            @quantity = params[1].to_i
+            @quantity = params[1]
             @product_verification_code = params[2]
           else # 0 or 2
-            @quantity = params[0].to_i if params[0]
+            @quantity = params[0] if params[0]
             @product_verification_code = params[1]
           end
         end
@@ -48,7 +48,7 @@ class SupplierOrderConversation < IncomingTextMessageConversation
           errors.add(
             :quantity,
             :incorrect
-          ) unless quantity.nil? || quantity == @supplier_order.quantity
+          ) unless quantity.nil? || quantity.to_i == @supplier_order.quantity
         end
 
         def product_verification_code_is_correct
@@ -97,12 +97,12 @@ class SupplierOrderConversation < IncomingTextMessageConversation
             message = AcceptSupplierOrderMessage.new(supplier_order, params)
             if message.valid?
               say successfully("accepted", supplier_order)
-              supplier_order.accept
+              supplier_order.accept!
             else
               say I18n.t(
               "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order",
                 :supplier_name => user.name,
-                :errors => message.errors.full_messages.to_sentence.downcase,
+                :errors => message.errors.full_messages.to_sentence,
                 :topic => self.topic,
                 :action => self.action,
                 :supplier_order_number => supplier_order.id.to_s,
@@ -146,7 +146,7 @@ class SupplierOrderConversation < IncomingTextMessageConversation
                 say I18n.t(
                   "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
                   :supplier_name => user.name,
-                  :errors => message.errors.full_messages.to_sentence.downcase,
+                  :errors => message.errors.full_messages.to_sentence,
                   :topic => self.topic,
                   :action => self.action,
                   :supplier_order_number => supplier_order.id.to_s
@@ -157,7 +157,7 @@ class SupplierOrderConversation < IncomingTextMessageConversation
             end
             if will_complete
               say successfully("completed", supplier_order)
-              supplier_order.complete
+              supplier_order.complete!
             end
           else
             say I18n.t(

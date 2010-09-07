@@ -4,3 +4,6 @@ end
 class ProductOrderConversation < SupplierOrderConversation
 end
 
+class MnConversation < MobileNumberConversation
+end
+

@@ -30,15 +30,20 @@ en:
         no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
         you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} %{quantity} <product verification code>"
         you_successfully_processed_the_supplier_order: "Hi %{supplier_name}, you successfully %{processed} the product order: #%{supplier_order_number}"
-        this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this tracking number before"
+        this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
         you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
         you_must_register_to_use_this_service: "Sorry, you must register at meh.example.com to use this service"
-        you_must_verify_your_mobile_number_to_use_this_service: "Sorry, you must verify your mobile number to use this service. Try simply replying with your name"
-        verify_your_mobile_number: "Hi, please verify your number by replying to this message with your name"
+        you_must_verify_your_mobile_number_to_use_this_service: "Sorry, you must verify your mobile number to use this service. Try replying with: mn v <your name>"
+        verify_your_mobile_number: "Hi, please verify your number by replying with: mn v <your name>"
+        invalid_action_for_mobile_number: "Sorry \"%{action}\" is not a valid option. To verify your mobile number number, try: %{topic} verify <your name>"
+        no_action_for_mobile_number: "To verify your mobile number, try: %{topic} verify <your name>"
+        you_successfully_verified_your_mobile_number: "Congratulations %{name_supplied}, you successfully verified your mobile number"
+        the_name_is_missing_or_incorrect: "Sorry, your %{errors}. Try again with: %{topic} %{action} <your registered name>"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""
+      blank: "is required"
   activemodel:
     errors:
       models:
@@ -47,11 +52,10 @@ en:
             quantity:
               blank: "must be confirmed"
             product_verification_code:
-              blank: "is required"
-        'supplier_order_conversation/complete_supplier_order_message':
+        'mobile_number_conversation/verify_mobile_number_message':
           attributes:
-            tracking_number:
-              blank: "is required"
+            name:
+              incorrect: "wasn't registered as \"%{value}\""
   support:
     array:
       words_connector: ", the "

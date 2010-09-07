@@ -51,11 +51,11 @@ class SupplierOrder < ActiveRecord::Base
     self.accepted_at.nil? && self.completed_at.nil?
   end
 
-  def accept
+  def accept!
     self.update_attributes!(:accepted_at => Time.now)
   end
 
-  def complete
+  def complete!
     self.update_attributes!(:completed_at => Time.now)
   end
 

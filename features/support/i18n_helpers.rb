@@ -52,14 +52,29 @@ module I18nHelpers
     when /^verify your mobile number$/
       "notifications.messages.built_in.verify_your_mobile_number"
 
+    when /^invalid action for mobile number$/
+      "notifications.messages.built_in.invalid_action_for_mobile_number"
+
+    when /^no action for mobile number$/
+      "notifications.messages.built_in.no_action_for_mobile_number"
+
+    when /^you successfully verified your mobile number$/
+      "notifications.messages.built_in.you_successfully_verified_your_mobile_number"
+
+    when /^the name is missing or incorrect$/
+      "notifications.messages.built_in.the_name_is_missing_or_incorrect"
+
+    when /^name is incorrect$/
+      "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
+
     when /^is incorrect$/
       "errors.messages.incorrect"
 
-    when /^order quantity is blank$/
+    when /^order quantity must be confirmed$/
       "activemodel.errors.models.supplier_order_conversation/accept_supplier_order_message.attributes.quantity.blank"
 
-    when /^product verification code is blank$/
-      "activemodel.errors.models.supplier_order_conversation/accept_supplier_order_message.attributes.product_verification_code.blank"
+    when /^is required$/
+      "errors.messages.blank"
 
 
 

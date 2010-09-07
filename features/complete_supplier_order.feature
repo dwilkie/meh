@@ -134,7 +134,7 @@ Feature: Complete a supplier order
 
     Then the supplier order should not be completed
     And the supplier order's tracking_number should be nil
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "tracking number is invalid", topic: "<topic>", action: "<action>", supplier_order_number: "1"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "Tracking number is invalid", topic: "<topic>", action: "<action>", supplier_order_number: "1"
 
   Examples:
     | message_text                          | topic          | action   |
@@ -152,7 +152,7 @@ Feature: Complete a supplier order
 
     Then the supplier order should not be completed
     And the supplier order's tracking_number should be nil
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "tracking number is required", topic: "<topic>", action: "<action>", supplier_order_number: "1"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "Tracking number is required", topic: "<topic>", action: "<action>", supplier_order_number: "1"
 
   Examples:
     | message_text            | topic          | action   |

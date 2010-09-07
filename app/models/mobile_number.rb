@@ -37,6 +37,10 @@ class MobileNumber < ActiveRecord::Base
     save! if active_changed?
   end
 
+  def verify!
+    self.update_attributes!(:verified_at => Time.now)
+  end
+
   private
     def activate
       user = self.user

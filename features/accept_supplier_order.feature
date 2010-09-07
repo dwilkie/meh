@@ -144,38 +144,40 @@ Feature: Accept supplier order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should not be accepted
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "<response>" in "en" (English) <where>
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
 
   Examples:
-    | message_text            |  response    | where             |
-    | apo 1 2 hy456n          | is incorrect | where value: "2"  |
-    | apo 2 hy456n            | is incorrect | where value: "2"  |
-    | ProductOrder a 2 hy456n | is incorrect | where value: "2"  |
+    | message_text            | value  |
+    | apo 1 1 hy456n          | 1      |
+    | apo 2 hy456n            | 2      |
+    | ProductOrder a 4 hy456n | 4      |
+    | apo maggot hy456n       | maggot |
+    | apo 1 maggot hy456n     | maggot |
 
   Scenario Outline: Try to accept an order omitting the quantity
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should not be accepted
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "<response>" in "en" (English)
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "order quantity must be confirmed" in "en" (English)
 
   Examples:
-    | message_text   |  response                   |
-    | apo 1          | order quantity is blank     |
-    | apo            | order quantity is blank     |
-    | ProductOrder a | order quantity is blank     |
-
+    | message_text   |
+    | apo 1          |
+    | apo            |
+    | ProductOrder a |
 
   Scenario Outline: Try to accept an order giving the wrong product verification code
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should not be accepted
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "<response>" in "en" (English) <where>
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
 
   Examples:
-    | message_text            | response     | where                 |
-    | apo 154674 3 hy456      | is incorrect | where value: "hy456"  |
-    | apo 3 hy456m            | is incorrect | where value: "hy456m" |
-    | ProductOrder a 3 hy456p | is incorrect | where value: "hy456p" |
+    | message_text            | value  |
+    | apo 154674 3 hy456      | hy456  |
+    | apo 3 hy456m            | hy456m |
+    | ProductOrder a 3 hy456p | hy456p |
+    | apo 3 HY456Q            | HY456Q |
 
   Scenario Outline: Accept an order giving the correct product verification code but the incorrect case
     When I text "<message_text>" from "66354668874"
