@@ -22,10 +22,6 @@ class OutgoingTextMessage < ActiveRecord::Base
     [mobile_number.to_s]
   end
 
-  def user_field
-    Rails.application.config.secret_token
-  end
-
   def send_message
     gateway_response = SMSNotifier.deliver(self)
     gateway_message_id = SMSNotifier.connection.message_id(gateway_response)

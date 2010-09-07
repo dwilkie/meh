@@ -11,7 +11,7 @@ class IncomingTextMessage < ActiveRecord::Base
   validates :from,
             :presence => true
 
-  validate :authenticate
+  validate :authenticate, :on => :create
 
   before_validation(:on => :create) do
     self.from = SMSNotifier.connection.sender(self.params) if self.params
@@ -31,10 +31,7 @@ class IncomingTextMessage < ActiveRecord::Base
 
     def authenticate
       errors[:base] << "Not authenticated" unless
-        SMSNotifier.connection.authenticated?(
-          self.params,
-          Rails.application.config.secret_token
-        )
+        SMSNotifier.connection.authenticate(params)
     end
 end
 

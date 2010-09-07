@@ -5,8 +5,9 @@
 
 ActionSms::Base.establish_connection(
   :adapter => "sms_global",
-  :user => "ENV['SMS_GLOBAL_USER']",
-  :password => "ENV['SMS_GLOBAL_PASSWORD']",
+  :user => ENV['SMS_GLOBAL_USER'],
+  :password => ENV['SMS_GLOBAL_PASSWORD'],
+  :authentication_key => ENV['SMS_AUTHENTICATION_KEY'],
   :use_ssl => true
 )
 

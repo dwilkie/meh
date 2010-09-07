@@ -82,11 +82,12 @@ end
 
 Factory.define :incoming_text_message do |f|
   f.sequence(:params) { |n|
+    userfield = ENV["SMS_AUTHENTICATION_KEY"]
     {
       "to" => "61447100308",
       "from" => "61447100310",
       "msg"=> "Endia kasdf ofeao",
-      "userfield" => "123456",
+      "userfield" => userfield,
       "date" => "2010-05-13 23:59:#{n}"
     }
   }

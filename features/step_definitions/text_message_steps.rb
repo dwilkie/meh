@@ -20,7 +20,7 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   post path_to("create incoming text message"), params
 end
 
-When /^a text message delivery receipt is received with: "([^"]*)"$/ do |params|
+When /^a text message delivery receipt is received with:$/ do |params|
   params = instance_eval(params)
   begin
     post(
@@ -32,8 +32,11 @@ When /^a text message delivery receipt is received with: "([^"]*)"$/ do |params|
   end
 end
 
-When /^an incoming text message is received with: "([^"]*)"$/ do |params|
+When /^an (authentic )?incoming text message is received with:$/ do |authentic, params|
   params = instance_eval(params)
+  params["incoming_text_message"].merge!(
+    "userfield" => ENV["SMS_AUTHENTICATION_KEY"]
+  ) if authentic
   begin
     post(
       path_to("create incoming text message"),
