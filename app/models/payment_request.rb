@@ -28,9 +28,10 @@ class PaymentRequest < ActiveRecord::Base
     handle_asynchronously :verify
   end
 
-  after_create :request_remote_payment
-  before_create :build_params
   belongs_to :payment
+
+  before_create :build_params
+  after_create :request_remote_payment
 
   serialize   :params
   serialize   :notification

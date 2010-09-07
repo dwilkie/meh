@@ -10,7 +10,10 @@ Feature: Create supplier orders from an order notification
 
   Scenario Outline: The payment status is not completed
     Given an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -41,7 +44,10 @@ Feature: Create supplier orders from an order notification
     Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -62,7 +68,10 @@ Feature: Create supplier orders from an order notification
     Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a mobile number: "Dave's number" exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -78,7 +87,10 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The seller has a verified mobile number but the supplier does not have any mobile numbers
     Given a verified mobile number exists with number: "66354668789", user: the seller
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -95,7 +107,10 @@ Feature: Create supplier orders from an order notification
     Given a mobile number: "Mara's number" exists with user: the seller
     And a verified mobile number: "Dave's number" exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -111,7 +126,10 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The supplier has a verified mobile number but the seller does not have any mobile numbers
     Given a verified mobile number exists with user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -127,7 +145,10 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The supplier is also the seller of this product
     Given a product exists with seller: the seller, supplier: the seller, number: "12345790069", name: "Model Ship - The Titanic"
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -145,7 +166,10 @@ Feature: Create supplier orders from an order notification
     Given a verified mobile number exists with user: the seller
 
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -160,7 +184,10 @@ Feature: Create supplier orders from an order notification
 
   Scenario Outline: The seller has not registered this product
     Given an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -178,7 +205,10 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The seller has not registered this product but their active number is verified
     Given a verified mobile number exists with user: the seller
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -189,7 +219,10 @@ Feature: Create supplier orders from an order notification
 
   Scenario Outline: The seller has registered this product name but the product number is different
     Given an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -209,7 +242,10 @@ Feature: Create supplier orders from an order notification
     Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -228,7 +264,11 @@ Feature: Create supplier orders from an order notification
 
   Scenario Outline: The seller has registered this product number but the product name is different
     Given an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
+
     When the <order_notification> is verified
 
     Then the product's number should be "12345790063"
@@ -247,7 +287,10 @@ Feature: Create supplier orders from an order notification
     Given a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -267,7 +310,10 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The seller has registered this product number with a different product name and has also registered this product name with a different product number
     Given a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 
@@ -289,7 +335,10 @@ Feature: Create supplier orders from an order notification
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
     And an <order_notification> exists with payment_status: "<payment_status>"
-    And the <order_notification> has the following params: "<params>"
+    And the <order_notification> has the following params:
+    """
+    <params>
+    """
 
     When the <order_notification> is verified
 

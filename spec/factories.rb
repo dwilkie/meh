@@ -130,6 +130,8 @@ Factory.define :payment do |f|
 end
 
 Factory.define :payment_agreement do |f|
+  f.association :seller
+  f.association :supplier
 end
 
 Factory.define :payment_request do |f|

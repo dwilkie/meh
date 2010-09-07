@@ -32,7 +32,7 @@ When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fiel
 end
 
 When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
-  model!(name).send(transition.singularize) unless transition == "dreams_about"
+  model!(name).send("#{transition.singularize}!")
 end
 
 When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|

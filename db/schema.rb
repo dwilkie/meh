@@ -75,18 +75,14 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id"
 
   create_table "payment_agreements", :force => true do |t|
-    t.boolean  "automatic",                :default => true,  :null => false
-    t.boolean  "confirm",                  :default => false, :null => false
-    t.string   "payment_trigger_on_order"
-    t.integer  "supplier_id"
-    t.integer  "seller_id"
+    t.boolean  "enabled",     :null => false
+    t.string   "event"
+    t.integer  "supplier_id", :null => false
+    t.integer  "seller_id",   :null => false
     t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "payment_agreements", ["product_id"], :name => "index_payment_agreements_on_product_id", :unique => true
-  add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
   create_table "payment_applications", :force => true do |t|
     t.string   "uri",        :null => false

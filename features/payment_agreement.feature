@@ -1,29 +1,28 @@
 Feature: Payment Agreement
   In order to pay my suppliers for orders they have processed
   As a seller
-  I want to be able to set up payment agreements to pay suppliers automatically with or without confirmation when they process an order
+  I want to be able to set up payment agreements to pay suppliers automatically after they accept or complete a supplier order
 
   Background:
     Given a seller exists with name: "Dave"
     And a supplier exists with name: "Fon"
-    And a mobile_number: "Dave's number" exists with phoneable: the seller
-    And a mobile_number: "Fon's number" exists with phoneable: the supplier, number: "66789098763"
-    And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB", external_id: 244654
-    And a seller_order exists with id: 154673
-    And a supplier_order exists with id: 154674, supplier: the supplier, status: "unconfirmed", quantity: "4", product: the product, seller_order: the seller_order
+    And a mobile_number: "Dave's number" exists with user: the seller
+    And a mobile_number: "Fon's number" exists with user: the supplier, number: "66789098763"
+    And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB"
+    And a supplier order exists for product: the product with quantity: 4
 
-  Scenario Outline: Payment agreement between the seller and supplier is set to automatic
-    Given there is a payment agreement set to automatic and to trigger when an order is <processed> with seller: the seller, supplier: the supplier
-    And a supplier_order exists with supplier: the supplier, status: "<status>", quantity: "4", product: the product
+  Scenario Outline: A payment agreement exists between me and my supplier
+    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "<event>"
+    And the supplier order <supplier_order_status>
 
-    When the supplier <processes> the supplier_order
+    When the supplier <processes> the supplier order
 
-    Then a payment should exist with supplier_order_id: the supplier_order, cents: "920000", currency: "THB", seller_id: the seller, supplier_id: the supplier
+    Then a payment should exist with supplier_order_id: the supplier order, cents: "920000", currency: "THB", seller_id: the seller, supplier_id: the supplier
 
     Examples:
-      | status       | processes  | processed |
-      | unconfirmed  | accepts    | accepted  |
-      | accepted     | completes  | completed |
+     | event                   | supplier_order_status | processes |
+     | product_order_accepted  | is not yet accepted   | accepts   |
+#     | product_order_completed | was already accepted  | completes |
 
   Scenario: Automatic payment when the seller also has an active payment application
     Given there is a payment agreement set to automatic and to trigger when an order is accepted with seller: the seller, supplier: the supplier

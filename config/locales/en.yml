@@ -40,6 +40,7 @@ en:
         no_action_for_mobile_number: "To verify your mobile number, try: %{topic} verify <your name>"
         you_successfully_verified_your_mobile_number: "Congratulations %{name_supplied}, you successfully verified your mobile number"
         the_name_is_missing_or_incorrect: "Sorry, your %{errors}. Try again with: %{topic} %{action} <your registered name>"
+        we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{supplier_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""

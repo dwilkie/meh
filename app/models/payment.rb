@@ -36,11 +36,5 @@ class Payment < ActiveRecord::Base
   validates :supplier,
             :presence => true
 
-  validates :status,
-            :presence => true
-
-  state_machine :status, :initial => :payment_not_requested do
-  end
-
 end
 

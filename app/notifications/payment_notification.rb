@@ -24,13 +24,11 @@ class PaymentNotification < Conversation
     supplier = supplier_order.supplier
     supplier_contact_details = contact_details(supplier)
     say I18n.t(
-      "messages.payment_invalid",
+      "messages.notifications.built_in.we_did_not_pay_your_supplier",
       :seller => user.name,
       :supplier => supplier.name,
-      :supplier_contact_details => supplier_contact_details,
-      :supplier_order_number => supplier_order.id,
-      :customer_order_number => supplier_order.seller_order.id,
-      :quantity => supplier_order.quantity,
+      :supplier_mobile_number => supplier.mobile_number.humanize,
+      :seller_order_number => supplier_order.seller_order.id,
       :product_code => supplier_order.product.external_id,
       :processed => supplier_order.status,
       :errors => payment.errors.full_messages.to_sentence

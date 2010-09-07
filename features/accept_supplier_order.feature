@@ -10,7 +10,17 @@ Feature: Accept supplier order
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a supplier order exists for product: the product with quantity: 3
-    And the paypal ipn has the following params: "{'address_name' => 'Ho Chi Minh', 'address_street' => '4 Chau Minh Lane', 'address_city' => 'Hanoi', 'address_state' => 'Hanoi Province', 'address_country' => 'Viet Nam', 'address_zip' => '52321'}"
+    And the paypal ipn has the following params:
+    """
+    {
+      'address_name' => 'Ho Chi Minh',
+      'address_street' => '4 Chau Minh Lane',
+      'address_city' => 'Hanoi',
+      'address_state' => 'Hanoi Province',
+      'address_country' => 'Viet Nam',
+      'address_zip' => '52321'
+    }
+    """
 
   Scenario Outline: Successfully accept an order
     When I text "<message_text>" from "66354668874"
