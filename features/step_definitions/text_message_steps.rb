@@ -13,7 +13,7 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
       "to"=>"61447100308",
       "from"=> sender,
       "msg"=> message,
-      "userfield"=> Rails.application.config.secret_token,
+      "userfield"=> ENV["SMS_AUTHENTICATION_KEY"],
       "date"=>"2010-05-13 23:59:58"
     }
   }

@@ -13,13 +13,13 @@ class TextMessageDeliveryReceipt < ActiveRecord::Base
 
   before_validation(:on => :create) do
     self.outgoing_text_message = OutgoingTextMessage.find_by_delivery_receipt(
-      self.params
-    ) if self.params
+      params
+    ) if params
   end
 
   private
     def set_status
-      self.status = SMSNotifier.connection.status(self.params)
+      self.status = SMSNotifier.connection.status(params)
     end
 end
 

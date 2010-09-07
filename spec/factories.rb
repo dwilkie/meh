@@ -74,7 +74,7 @@ Factory.define :tracking_number_format do |f|
 end
 
 Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
-  f.association :smsable, :factory => :mobile_number
+  f.association :mobile_number
   f.sequence(:gateway_message_id) { |n|
     "SMSGlobalMsgID:694274449499974#{n}"
   }
