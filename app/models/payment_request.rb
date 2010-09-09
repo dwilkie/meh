@@ -28,23 +28,27 @@ class PaymentRequest < ActiveRecord::Base
     handle_asynchronously :verify
   end
 
+  attr_accessor :payment_application
+
   belongs_to :payment
 
-  before_create :build_params
+  before_create :build_params, :set_remote_payment_application_uri
   after_create :request_remote_payment
 
   serialize   :params
   serialize   :notification
 
-  validates :application_uri,
-            :presence => true
-            #:format => # add format here
-
   validates :payment,
-            :presence => true
+            :presence => true,
+            :if => :payment_application_verified?
 
   validates :payment_id,
             :uniqueness => true
+
+  validates :payment_application,
+            :presence => true
+
+  validate :verified_payment_application, :on => :create
 
   def notify!(notification)
     remote_id = notification.try(:delete, "id")
@@ -54,7 +58,9 @@ class PaymentRequest < ActiveRecord::Base
         :notification => notification,
         :notified_at => Time.now
       )
-      RemotePaymentRequest.new(application_uri).verify(self)
+      RemotePaymentRequest.new(
+        remote_payment_application_uri
+      ).verify(self)
     else
       self.mark_as_fraudulent
     end
@@ -74,7 +80,7 @@ class PaymentRequest < ActiveRecord::Base
         remote_application_error.keys.first.to_s,
         :supplier => payment.supplier.name,
         :currency => payment.currency,
-        :application_uri => self.application_uri
+        :application_uri => remote_payment_application_uri
       )
     end
   end
@@ -114,7 +120,24 @@ class PaymentRequest < ActiveRecord::Base
 
     def request_remote_payment
       request_params = self.params.merge({"id" => self.id})
-      RemotePaymentRequest.new(application_uri).create(request_params)
+      RemotePaymentRequest.new(
+        remote_payment_application_uri
+      ).create(request_params)
+    end
+
+    def verified_payment_application
+      errors.add(
+        :payment_application,
+        :unverified
+      ) if payment_application && payment_application.unverified?
+    end
+
+    def payment_application_verified?
+      payment_application && payment_application.verified?
+    end
+
+    def set_remote_payment_application_uri
+      self.remote_payment_application_uri = payment_application.uri
     end
 end
 

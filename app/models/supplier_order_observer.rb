@@ -17,49 +17,13 @@ class SupplierOrderObserver < ActiveRecord::Observer
       pay_for supplier_order, event
     end
 
-    def pay_supplier_and_notify_seller(supplier_order, transition)
-      product = supplier_order.product
-      seller = supplier_order.seller_order.seller
-      supplier = supplier_order.supplier
-      if seller != supplier
-        payment_agreement = find_payment_agreement(product, seller, supplier)
-        if payment_agreement &&
-           payment_agreement.automatic? &&
-           payment_agreement.payment_trigger_on_order == transition.to
-
-
-          if payment.valid?
-            if payment_agreement.confirm?
-              PaymentNotification.new(:with => seller).confirm(payment)
-            else
-              payment.save!
-              payment_application = seller.payment_application
-              if payment_application && payment_application.active?
-                payment.build_payment_request(
-                  :application_uri => payment_application.uri
-                ).save!
-              else
-                PaymentApplicationNotification.new(
-                  :with => seller
-                ).invalid(payment_application, payment)
-              end
-            end
-          else
-            PaymentNotification.new(:with => seller).invalid(payment)
-          end
-        else
-          notify_seller(order)
-        end
-      end
-    end
-
     def pay_for(supplier_order, event)
       supplier = supplier_order.supplier
       seller = supplier_order.seller_order.seller
       product = supplier_order.product
-      payment_agreement = supplier.payment_agreements.for_event(
+      payment_agreement = seller.payment_agreements_with_suppliers.for_event(
         event,
-        seller,
+        supplier,
         product
       ).first
       if payment_agreement && payment_agreement.enabled?
@@ -68,24 +32,14 @@ class SupplierOrderObserver < ActiveRecord::Observer
           :supplier => supplier,
           :amount => supplier_order.supplier_total
         )
-        unless payment.save
-          notification = GeneralNotification.new(:with => seller)
-          supplier_mobile_number = Notification::EVENT_ATTRIBUTES[
-            :supplier
-          ][:supplier_mobile_number].call(:supplier => supplier)
-          notification.notify(
-            I18n.t(
-              "messages.we_did_not_pay_your_supplier",
-              :seller_name => seller.name,
-              :supplier_name => supplier.name,
-              :supplier_mobile_number => supplier_mobile_number,
-              :supplier_order_quantity => supplier_order.quantity,
-              :product_number => product.number,
-              :product_name => product.name,
-              :errors => payment.errors.full_messages.to_sentence
-            )
-          )
-        end
+        payment.save
+        PaymentNotification.new(:with => seller).did_not_pay(
+          payment,
+          :supplier => supplier,
+          :seller => seller,
+          :product => product,
+          :errors => payment.errors
+        ) unless payment.valid? || seller.cannot_text?
       end
     end
 
@@ -109,8 +63,7 @@ class SupplierOrderObserver < ActiveRecord::Observer
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
-        active_mobile_number = with.active_mobile_number
-        if active_mobile_number && active_mobile_number.verified?
+        if with.can_text?
           GeneralNotification.new(:with => with).notify(
             notification,
             :product => product,

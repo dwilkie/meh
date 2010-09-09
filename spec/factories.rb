@@ -130,6 +130,9 @@ Factory.define :payment do |f|
 end
 
 Factory.define :payment_agreement do |f|
+  f.event {
+    PaymentAgreement::EVENTS.first
+  }
   f.association :seller
   f.association :supplier
 end
@@ -140,7 +143,13 @@ Factory.define :payment_request do |f|
 end
 
 Factory.define :payment_application do |f|
-  f.uri "http://example.appspot.com"
+  f.uri "http://payment_app.example.com"
   f.association :seller
+end
+
+Factory.define :verified_payment_application, :class => PaymentApplication do |f|
+  f.uri "http://payment_app.example.com"
+  f.association :seller
+  f.verified_at Time.now
 end
 

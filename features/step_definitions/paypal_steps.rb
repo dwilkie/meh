@@ -35,8 +35,3 @@ Then /^a job should exist to verify the ipn came from paypal$/ do
   )
 end
 
-Then /^the paypal_ipn should (not )?be marked as verified$/ do |unverified|
-  condition = unverified ? "" : "_not"
-  model!("paypal_ipn").verified_at.send("should#{condition}", be_nil)
-end
-

@@ -1,43 +1,22 @@
 class PaymentNotification < Conversation
-  def confirm(payment)
-    supplier_order = payment.supplier_order
-    supplier = payment.supplier
-    supplier_contact_details = contact_details(supplier)
-    amount = payment.amount
-    amount = amount.format(:symbol => false) << " " << amount.currency.iso_code
+  def did_not_pay(payment, options = {})
+    options[:seller] ||= payment.seller
+    options[:supplier] ||= payment.supplier
+    options[:supplier_mobile_number] ||= Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier])
+    options[:supplier_order] ||= payment.supplier_order
+    options[:product] ||= options[:supplier_order].product
+    options[:errors] ||= payment.errors
+
     say I18n.t(
-      "messages.confirm_payment_notification",
-      :seller => user.name,
-      :supplier => supplier.name,
-      :supplier_contact_details => supplier_contact_details,
-      :supplier_order_number => supplier_order.id,
-      :customer_order_number => supplier_order.seller_order.id,
-      :quantity => supplier_order.quantity,
-      :product_code => supplier_order.product.external_id,
-      :processed => supplier_order.status,
-      :amount => amount
+      "notifications.messages.built_in.we_did_not_pay_your_supplier",
+      :seller_name => options[:seller].name,
+      :supplier_name => options[:supplier].name,
+      :supplier_mobile_number => Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier]),
+      :supplier_order_quantity => options[:supplier_order].quantity,
+      :product_number => options[:product].number,
+      :product_name => options[:product].name,
+      :errors => options[:errors].full_messages.to_sentence
     )
   end
-
-  def invalid(payment)
-    supplier_order = payment.supplier_order
-    supplier = supplier_order.supplier
-    supplier_contact_details = contact_details(supplier)
-    say I18n.t(
-      "messages.notifications.built_in.we_did_not_pay_your_supplier",
-      :seller => user.name,
-      :supplier => supplier.name,
-      :supplier_mobile_number => supplier.mobile_number.humanize,
-      :seller_order_number => supplier_order.seller_order.id,
-      :product_code => supplier_order.product.external_id,
-      :processed => supplier_order.status,
-      :errors => payment.errors.full_messages.to_sentence
-    )
-  end
-
-  private
-    def contact_details(user)
-      user.mobile_number.nil? ? user.email : user.mobile_number.humanize
-    end
 end
 

@@ -47,8 +47,7 @@ class SellerOrderObserver < ActiveRecord::Observer
 
     def notify(seller_order)
       seller = seller_order.seller
-      active_mobile_number = seller.active_mobile_number
-      if active_mobile_number && active_mobile_number.verified?
+      if seller.can_text?
         notifications = seller.notifications.for_event(
           "customer_order_created"
         )

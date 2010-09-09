@@ -102,8 +102,13 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :password_required?
 
-  def payment_agreement_with_supplier(supplier)
-    self.payment_agreements_with_suppliers.where(:supplier => supplier).first
+  def can_text?
+    active_mobile_number = self.active_mobile_number
+    active_mobile_number && active_mobile_number.verified?
+  end
+
+  def cannot_text?
+    !can_text?
   end
 
   def roles=(roles)

@@ -36,5 +36,6 @@ class Payment < ActiveRecord::Base
   validates :supplier,
             :presence => true
 
+
 end
 

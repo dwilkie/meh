@@ -463,22 +463,6 @@
       },
       :errors => {
         :models => {
-          :payment => {
-            :attributes => {
-              :cents => {
-                :greater_than => "must be greater than %{count} (check that u have set a supplier price for this product)"
-              },
-              :supplier_order_id => {
-                :taken => lambda {|key, options|
-                  "already has a payment (text (" <<
-                  I18n.t(
-                    "messages.commands.templates.paymentdetails",
-                    :supplier_order_number => options[:value]
-                  ) << ") to check its status)"
-                }
-              }
-            }
-          },
           :payment_agreement => {
             :attributes => {
               :supplier => {

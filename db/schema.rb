@@ -85,9 +85,9 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   end
 
   create_table "payment_applications", :force => true do |t|
-    t.string   "uri",        :null => false
-    t.string   "status",     :null => false
-    t.integer  "seller_id",  :null => false
+    t.string   "uri",         :null => false
+    t.integer  "seller_id",   :null => false
+    t.datetime "verified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -96,9 +96,9 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "payment_applications", ["uri"], :name => "index_payment_applications_on_uri", :unique => true
 
   create_table "payment_requests", :force => true do |t|
-    t.string   "application_uri",          :null => false
-    t.integer  "payment_id",               :null => false
-    t.text     "params",                   :null => false
+    t.string   "remote_payment_application_uri", :null => false
+    t.integer  "payment_id",                     :null => false
+    t.text     "params",                         :null => false
     t.integer  "remote_id"
     t.text     "notification"
     t.datetime "notified_at"
@@ -113,7 +113,6 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   create_table "payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency",                         :null => false
-    t.string   "status",                           :null => false
     t.integer  "supplier_id",                      :null => false
     t.integer  "seller_id",                        :null => false
     t.integer  "supplier_order_id",                :null => false

@@ -3,6 +3,7 @@ class CreatePaymentApplications < ActiveRecord::Migration
     create_table :payment_applications do |t|
       t.string      :uri,             :null => false
       t.references  :seller,          :null => false
+      t.datetime    :verified_at
       t.timestamps
     end
     add_index :payment_applications, :uri,        :unique => true

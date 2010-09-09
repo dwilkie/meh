@@ -57,6 +57,18 @@ en:
           attributes:
             name:
               incorrect: "wasn't registered as \"%{value}\""
+  activerecord:
+    errors:
+      models:
+        payment:
+          attributes:
+            cents:
+              greater_than: "would have been %{count}"
+        payment_request:
+          attributes:
+            payment_application:
+              blank: "settings have not yet been configured"
+              unverified: "settings have not yet been verified"
   support:
     array:
       words_connector: ", the "

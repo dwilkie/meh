@@ -53,8 +53,8 @@ class PaymentAgreement < ActiveRecord::Base
 
   before_validation :link_seller_and_supplier
 
-  def self.for_event(seller, product)
-    scope = where(:seller_id => seller.id)
+  def self.for_event(event, supplier, product)
+    scope = where(:event => event, :supplier_id => supplier.id)
     product_scope = scope.where(:product_id => product.id)
     product_scope.count > 0 ? product_scope : scope
   end
