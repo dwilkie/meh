@@ -10,10 +10,6 @@ class PaymentApplication < ActiveRecord::Base
              :presence => true
              # add format here
 
-  def verified?
-    !unverified?
-  end
-
   def unverified?
     verified_at.nil?
   end

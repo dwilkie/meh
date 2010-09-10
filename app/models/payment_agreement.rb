@@ -20,9 +20,6 @@ class PaymentAgreement < ActiveRecord::Base
     end
   end
 
-  validates  :seller_id,
-             :presence => true
-
   validates  :supplier_id,
              :uniqueness => {
                :scope => [
@@ -54,15 +51,17 @@ class PaymentAgreement < ActiveRecord::Base
   before_validation :link_seller_and_supplier
 
   def self.for_event(event, supplier, product)
-    scope = where(:event => event, :supplier_id => supplier.id)
-    product_scope = scope.where(:product_id => product.id)
-    product_scope.count > 0 ? product_scope : scope
+    product_scope = where(:product_id => product.id)
+    product_scope.empty? ? where(
+      :event => event,
+      :supplier_id => supplier.id
+    ) : product_scope.where(:event => event)
   end
 
   private
     def link_seller_and_supplier
       if product
-        self.seller = product.supplier
+        self.seller = product.seller
         self.supplier = product.supplier
       end
     end

@@ -39,14 +39,14 @@ class PaymentRequest < ActiveRecord::Base
   serialize   :notification
 
   validates :payment,
-            :presence => true,
-            :if => :payment_application_verified?
+            :presence => true
 
   validates :payment_id,
             :uniqueness => true
 
   validates :payment_application,
-            :presence => true
+            :presence => true,
+            :on => :create
 
   validate :verified_payment_application, :on => :create
 
@@ -130,10 +130,6 @@ class PaymentRequest < ActiveRecord::Base
         :payment_application,
         :unverified
       ) if payment_application && payment_application.unverified?
-    end
-
-    def payment_application_verified?
-      payment_application && payment_application.verified?
     end
 
     def set_remote_payment_application_uri

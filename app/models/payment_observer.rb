@@ -2,7 +2,8 @@ class PaymentObserver < ActiveRecord::Observer
   def before_create(payment)
     seller = payment.seller
     payment_request = payment.build_payment_request(
-      :payment_application => seller.payment_application
+      :payment_application => seller.payment_application,
+      :payment => payment
     )
     unless payment_request.valid?
       PaymentNotification.new(:with => seller).did_not_pay(
