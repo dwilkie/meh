@@ -1,6 +1,6 @@
 # override pickle step for this special case
-Given(/^a supplier order exists? for product: #{capture_model}(?: with #{capture_fields})?$/) do |name, fields|
-  product = model!(name)
+Given(/^a supplier order exists? for #{capture_model}(?: with #{capture_fields})?$/) do |product_name, fields|
+  product = model!(product_name)
   seller = product.seller
   paypal_ipn = Factory.build(
     :paypal_ipn,
@@ -17,8 +17,13 @@ Given(/^a supplier order exists? for product: #{capture_model}(?: with #{capture
     }
   )
   paypal_ipn.save!
-  supplier_order = find_model!("a supplier order", "product_id: #{name}")
+  supplier_order = find_model!("a supplier order", "product_id: #{product_name}")
   supplier_order.update_attributes!(fields_hash)
   find_model!("a paypal ipn", "id: #{paypal_ipn.id}")
+end
+
+When(/^a supplier order is created for #{capture_model}(?: with #{capture_fields})?$/) do |product_name, fields|
+  step = "a supplier order exists for #{product_name}"
+  fields ? Given(step) : Given("#{step} with #{fields}")
 end
 

@@ -31,7 +31,7 @@ When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fiel
   create_model(name, fields)
 end
 
-When /^(?:I|the \w+) (\w+) #{capture_model}$/ do |transition, name|
+When /^(?:I|#{capture_model}) (\w+) #{capture_model}$/ do |actor, transition, name|
   model!(name).send("#{transition.singularize}!")
 end
 

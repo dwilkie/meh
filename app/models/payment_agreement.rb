@@ -54,7 +54,8 @@ class PaymentAgreement < ActiveRecord::Base
     product_scope = where(:product_id => product.id)
     product_scope.empty? ? where(
       :event => event,
-      :supplier_id => supplier.id
+      :supplier_id => supplier.id,
+      :product_id => nil
     ) : product_scope.where(:event => event)
   end
 
