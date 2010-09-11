@@ -124,7 +124,10 @@ end
 Factory.define :payment do |f|
   f.association :supplier_order
   f.association :supplier
-  f.association :seller
+  f.seller { |payment|
+    payment_application = Factory(:verified_payment_application)
+    payment_application.seller
+  }
   f.cents 100000
   f.currency "THB"
 end
@@ -138,18 +141,19 @@ Factory.define :payment_agreement do |f|
 end
 
 Factory.define :payment_request do |f|
-  f.application_uri "http://example.appspot.com"
-  f.association :payment
 end
 
 Factory.define :payment_application do |f|
-  f.uri "http://payment_app.example.com"
+  f.uri "http://example.com"
   f.association :seller
 end
 
 Factory.define :verified_payment_application, :class => PaymentApplication do |f|
-  f.uri "http://payment_app.example.com"
+  f.uri "http://example.com"
   f.association :seller
   f.verified_at Time.now
+end
+
+Factory.define :job, :class => Delayed::Job do |f|
 end
 

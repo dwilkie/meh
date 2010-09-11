@@ -1,31 +1,81 @@
 class PaymentRequest < ActiveRecord::Base
   class RemotePaymentRequest # Represents the payment request on the remote side
-    include HTTParty
 
+    class AbstractRemotePaymentRequestJob < Struct.new(
+      :payment_request_id, :request_uri, :body
+    )
+      include HTTParty
+
+      MAX_ATTEMPTS = 8
+
+      attr_reader :attempt_job
+
+      def before(job)
+        @attempt_job = job.attempts < MAX_ATTEMPTS
+      end
+
+      def failure(job, exception)
+        if job.attempts >= MAX_ATTEMPTS - 1
+          payment_request.give_up!(exception, job.attempts)
+        end
+      end
+
+      protected
+        def payment_request
+          PaymentRequest.find(payment_request_id)
+        end
+    end
+
+    class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
+      def perform
+        self.class.post(request_uri, :body => body) if attempt_job
+      end
+
+      def after(job)
+        payment_request.mark_first_attempt_to_send_to_remote_application! if
+          job.attempts == 0
+      end
+    end
+
+    class VerifyRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
+      def perform
+        if attempt_job
+          self.class.head(request_uri).code == 200 ?
+            payment_request.notification_verified! :
+            payment_request.mark_as_fraudulent!
+        end
+      end
+    end
+
+    attr_accessor :payment_request
     attr_accessor :application_uri
 
-    def initialize(application_uri)
-      @application_uri = application_uri
+    def initialize(payment_request)
+      @payment_request = payment_request
+      @application_uri = payment_request.remote_payment_application_uri
     end
 
     def create(params)
       request_uri = URI.join(application_uri, "payment_requests").to_s
-      self.class.post(request_uri, :body => {"payment_request" => params})
-    end
-    handle_asynchronously :create
+      body = {"payment_request" => params}
 
-    def verify(payment_request)
+      Delayed::Job.enqueue(
+        CreateRemotePaymentRequestJob.new(payment_request.id, request_uri, body)
+      )
+    end
+
+    def verify
       request_uri = URI.join(
         application_uri, "payment_requests/#{payment_request.remote_id}"
       )
       request_uri.query = payment_request.notification.to_query
-      if self.class.head(request_uri.to_s).code == 200
-        payment_request.update_attribute(:notification_verified_at, Time.now)
-      else
-        payment_request.mark_as_fraudulent
-      end
+      Delayed::Job.enqueue(
+        VerifyRemotePaymentRequestJob.new(
+          payment_request.id,
+          request_uri.to_s
+        )
+      )
     end
-    handle_asynchronously :verify
   end
 
   attr_accessor :payment_application
@@ -58,22 +108,37 @@ class PaymentRequest < ActiveRecord::Base
         :notification => notification,
         :notified_at => Time.now
       )
-      RemotePaymentRequest.new(
-        remote_payment_application_uri
-      ).verify(self)
+      RemotePaymentRequest.new(self).verify
     else
-      self.mark_as_fraudulent
+      mark_as_fraudulent!
     end
   end
 
+  def give_up!(exception, number_of_attempts)
+    self.update_attributes!(
+      :failure_error => exception.message,
+      :gave_up_at => Time.now
+    )
+  end
+
+  def mark_first_attempt_to_send_to_remote_application!
+    self.update_attributes!(
+      :first_attempt_to_send_to_remote_application_at => Time.now
+    )
+  end
+
+  def notification_verified!
+    self.update_attributes!(:notification_verified_at => Time.now)
+  end
+
   def successful?
-    self.notification["payment_response"].try(:[], "paymentExecStatus") == "COMPLETED"
+    notification["payment_response"].try(:[], "paymentExecStatus") == "COMPLETED"
   end
 
   def error
-    if payment_response = self.notification["payment_response"]
+    if payment_response = notification["payment_response"]
       payment_response["error(0).message"]
-    elsif remote_application_error = self.notification["errors"]
+    elsif remote_application_error = notification["errors"]
       payment = self.payment
       I18n.t(
         "activerecord.errors.models.payment_request.attributes.notification." <<
@@ -85,8 +150,8 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
-  def mark_as_fraudulent
-    self.update_attribute(:fraudulent, true)
+  def mark_as_fraudulent!
+    self.update_attributes!(:fraudulent => true)
   end
 
   def authorized?(params)
@@ -120,9 +185,7 @@ class PaymentRequest < ActiveRecord::Base
 
     def request_remote_payment
       request_params = self.params.merge({"id" => self.id})
-      RemotePaymentRequest.new(
-        remote_payment_application_uri
-      ).create(request_params)
+      RemotePaymentRequest.new(self).create(request_params)
     end
 
     def verified_payment_application

@@ -9,7 +9,7 @@ Feature: Complete a supplier order
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
-    And a supplier order exists for product: the product with quantity: 3
+    And a supplier order exists for the product with quantity: 3
     And the supplier order was already accepted
 
   Scenario Outline: Successfully complete an order without providing a tracking number
@@ -87,7 +87,7 @@ Feature: Complete a supplier order
   Scenario Outline: Try to complete an order implicitly with multiple incomplete supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller
-    And a supplier order exists for product: the product
+    And a supplier order exists for the product
 
     When I text "<message_text>" from "66354668874"
 
@@ -112,7 +112,7 @@ Feature: Complete a supplier order
     Then a supplier order: "first order" should exist with product_id: the product
     Given a tracking number format exists with seller: the seller
     Given a product exists with supplier: the supplier, seller: the seller
-    And a supplier order exists for product: the product with tracking_number: "re123456789th"
+    And a supplier order exists for the product with tracking_number: "re123456789th"
 
     When I text "<message_text>" from "66354668874"
 
@@ -215,7 +215,7 @@ Feature: Complete a supplier order
 
   Scenario Outline: Successfully complete an order which I have not yet accepted but I am also the seller of the product
     Given a product exists with supplier: the seller, seller: the seller
-    And a supplier order exists for product: the product
+    And a supplier order exists for the product
 
     When I text "<message_text>" from "66354668789"
 

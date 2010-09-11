@@ -1,7 +1,7 @@
-Feature: Pay a supplier for a supplier order
-  In order to pay my suppliers for orders they have processed
+Feature: Payment Agreement
+  In order to pay my suppliers automatically for orders they receive or process
   As a seller
-  I want to be able to pay suppliers automatically after they accept or complete a supplier order
+  I want to be able set up payment agreements to pay suppliers when a supplier order is created or after the supplier accepts or completes a supplier order
 
   Background:
     Given a seller exists with name: "Dave"

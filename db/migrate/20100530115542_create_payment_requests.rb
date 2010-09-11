@@ -8,6 +8,9 @@ class CreatePaymentRequests < ActiveRecord::Migration
       t.text        :notification
       t.datetime    :notified_at
       t.datetime    :notification_verified_at
+      t.datetime    :first_attempt_to_send_to_remote_application_at
+      t.string      :failure_error
+      t.datetime    :gave_up_at
       t.boolean     :fraudulent
       t.timestamps
     end

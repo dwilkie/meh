@@ -9,7 +9,7 @@ Feature: Accept supplier order
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
-    And a supplier order exists for product: the product with quantity: 3
+    And a supplier order exists for the product with quantity: 3
     And the paypal ipn has the following params:
     """
     {
@@ -66,7 +66,7 @@ Feature: Accept supplier order
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller
-    And a supplier order exists for product: the product
+    And a supplier order exists for the product
 
     When I text "<message_text>" from "66354668874"
 
@@ -102,7 +102,7 @@ Feature: Accept supplier order
   Scenario Outline: Try to accept an order as a seller when the seller is also the supplier for the product
 
     Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
-    And a supplier order exists for product: the product with quantity: 3
+    And a supplier order exists for the product with quantity: 3
     And no outgoing text messages exist with mobile_number_id: mobile_number: "Mara's number"
 
     When I text "<message_text>" from "66354668789"
