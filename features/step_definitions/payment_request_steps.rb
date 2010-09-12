@@ -1,8 +1,3 @@
-Given /^the payment request already received a notification$/ do
-  payment_request = model!("payment_request")
-  payment_request.update_attribute(:notified_at, Time.now)
-end
-
 # new
 Given /^the remote #{capture_model} application(?: is (up|down)| .+)$/ do | payment_name, status |
   uri = model!(
@@ -36,8 +31,10 @@ Given /^the payment request got the following notification: "([^"]*)"$/ do |noti
   )
 end
 
-When /^a payment request verification is made for (\d+)(?: with: "([^\"]*)")?$/ do |id, fields|
-  fields = instance_eval(fields) if fields
+# new
+When /^a verification request is made for an? (non)?existent #{capture_model} with:$/ do |nonexistent, payment_request_name, fields|
+  id = nonexistent ? 999 : model!(payment_request_name).id
+  fields = instance_eval(fields)
   @response = head(
     path_to("payment request with id: #{id}"),
     fields

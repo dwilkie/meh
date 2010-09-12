@@ -32,7 +32,7 @@ Feature: Payment Request
     And a mobile number exists with user: the seller
     And the mobile number <is_not_yet_or_was_already> verified
     And a verified payment application exists with seller: the seller, uri: "http://dave-payment-app-example.com"
-    And a product exists with number: "120848121933", name: "A Rubber Dingy", seller: the seller, supplier: the supplier, cents: "200"
+    And a product exists with number: "120848121933", name: "A Rubber Dingy", seller: the seller, supplier: the supplier
     And a supplier order exists for the product with quantity: 1
 
     When a payment is created with supplier_order: the supplier order, seller: the seller, supplier: the supplier
@@ -46,7 +46,7 @@ Feature: Payment Request
 
     Then the job should be deleted from the queue
     And the payment request should have given_up
-    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "url (http://dave-payment-app-example.com/payment_requests) can't be found"
+    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "payment url (http://dave-payment-app-example.com/payment_requests) can't be found"
 
     Examples:
      | is_status | works_off | is_not_yet_or_was_already   | be_or_not_be |
