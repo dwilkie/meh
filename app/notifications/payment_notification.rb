@@ -5,9 +5,13 @@ class PaymentNotification < Conversation
     options[:supplier_mobile_number] ||= Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier])
     options[:supplier_order] ||= payment.supplier_order
     options[:product] ||= options[:supplier_order].product
+
     options[:errors] ||= payment.errors
     options[:errors] = options[:errors].full_messages.to_sentence if
       options[:errors].is_a?(Array)
+    error_words = options[:errors].split
+    options[:errors] = error_words[1..-1].join(" ") if
+      error_words.first.downcase == "the"
 
     say I18n.t(
       "notifications.messages.built_in.we_did_not_pay_your_supplier",

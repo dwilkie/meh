@@ -8,7 +8,7 @@ class PaymentRequest < ActiveRecord::Base
 
       MAX_ATTEMPTS = 8
 
-      attr_reader :attempt_job
+      attr_reader :attempt_job, :response
 
       def before(job)
         @attempt_job = job.attempts < MAX_ATTEMPTS
@@ -28,10 +28,12 @@ class PaymentRequest < ActiveRecord::Base
 
     class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
       def perform
-        if attempt_job
-          response = self.class.post(request_uri, :body => body)
-          payment_request.give_up!(response.message) unless response.code == 200
-        end
+        @response = self.class.post(request_uri, :body => body) if attempt_job
+      end
+
+      def success(job)
+        payment_request.give_up!(response.message) if
+          response && response.code != 200
       end
 
       def after(job)
@@ -40,13 +42,13 @@ class PaymentRequest < ActiveRecord::Base
       end
     end
 
-    class VerifyRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
+    class VerifyRemotePaymentRequestNotificationJob < AbstractRemotePaymentRequestJob
       def perform
-        if attempt_job
-          self.class.head(request_uri).code == 200 ?
-            payment_request.notification_verified! :
-            payment_request.mark_as_fraudulent!
-        end
+        @response = self.class.head(request_uri) if attempt_job
+      end
+
+      def success(job)
+        payment_request.verify_notification! if response.code == 200
       end
     end
 
@@ -58,8 +60,10 @@ class PaymentRequest < ActiveRecord::Base
       @application_uri = payment_request.remote_payment_application_uri
     end
 
-    def payment_requests_uri
-      URI.join(application_uri, "payment_requests").to_s
+    def payment_requests_uri(id = nil)
+      path = "payment_requests"
+      path << "/#{id.to_s}" if id
+      URI.join(application_uri, path).to_s
     end
 
     def create(params)
@@ -72,13 +76,11 @@ class PaymentRequest < ActiveRecord::Base
       )
     end
 
-    def verify
-      request_uri = URI.join(
-        payment_requests_uri, payment_request.remote_id
-      )
+    def verify_notification
+      request_uri = URI.parse(payment_requests_uri(payment_request.remote_id))
       request_uri.query = payment_request.notification.to_query
       Delayed::Job.enqueue(
-        VerifyRemotePaymentRequestJob.new(
+        VerifyRemotePaymentRequestNotificationJob.new(
           payment_request.id,
           request_uri.to_s
         )
@@ -110,15 +112,13 @@ class PaymentRequest < ActiveRecord::Base
 
   def notify!(notification)
     remote_id = notification.try(:delete, "id")
-    if remote_id
+    if remote_id && !completed?
       self.update_attributes!(
         :remote_id => remote_id,
         :notification => notification,
         :notified_at => Time.now
       )
-      RemotePaymentRequest.new(self).verify
-    else
-      mark_as_fraudulent!
+      RemotePaymentRequest.new(self).verify_notification
     end
   end
 
@@ -150,18 +150,20 @@ class PaymentRequest < ActiveRecord::Base
     )
   end
 
-  def notification_verified!
+  def verify_notification!
     self.update_attributes!(:notification_verified_at => Time.now)
   end
 
-  def successful?
-    notification["payment_response"].try(:[], "paymentExecStatus") == "COMPLETED"
+  def successful_payment?
+    notification.try(
+      :[], "payment_response"
+    ).try(:[], "paymentExecStatus") == "COMPLETED"
   end
 
-  def error
-    if payment_response = notification["payment_response"]
+  def notification_errors
+    if payment_response = notification.try(:[], "payment_response")
       payment_response["error(0).message"]
-    elsif remote_application_error = notification["errors"]
+    elsif remote_application_error = notification.try(:[], "errors")
       payment = self.payment
       I18n.t(
         "activerecord.errors.models.payment_request.attributes.notification." <<
@@ -173,18 +175,22 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
-  def mark_as_fraudulent!
-    self.update_attributes!(:fraudulent => true)
-  end
-
   def authorized?(params)
     merged_params = params.merge(self.params)
-    merged_params == params && !notified?
+    merged_params == params && !completed?
+  end
+
+  def notification_verified?
+    !self.notification_verified_at.nil?
   end
 
   private
     def notified?
       !notified_at.nil?
+    end
+
+    def completed?
+      notified? && notification_verified?
     end
 
     def build_params

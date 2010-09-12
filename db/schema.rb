@@ -101,12 +101,11 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.text     "params",                                         :null => false
     t.integer  "remote_id"
     t.text     "notification"
+    t.datetime "first_attempt_to_send_to_remote_application_at"
     t.datetime "notified_at"
     t.datetime "notification_verified_at"
-    t.datetime "first_attempt_to_send_to_remote_application_at"
-    t.string   "failure_error"
     t.datetime "gave_up_at"
-    t.boolean  "fraudulent"
+    t.string   "failure_error"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

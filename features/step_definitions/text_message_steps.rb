@@ -2,11 +2,6 @@ Given /^the SMS Gateway will respond with: "([^\"]*)"$/ do |body|
   register_outgoing_text_message_uri(:body => body)
 end
 
-Given /^all outgoing text messages have been sent$/ do
-  register_outgoing_text_message_uri
-  When "the worker completes its job"
-end
-
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   params = {
     "incoming_text_message" => {

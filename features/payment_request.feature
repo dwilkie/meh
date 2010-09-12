@@ -9,16 +9,16 @@ Feature: Payment Request
     Then a payment request should exist with payment_id: the payment
     And the most recent job in the queue should be to create a remote payment request
 
-  Scenario: The remote payment application is up
-    Given the remote payment application is up
+  Scenario: The remote payment application for the payment request is up
+    Given the remote payment application for the payment request is up
 
     When the worker works off the job
 
     Then the job should be deleted from the queue
     And the time when the first attempt to contact the remote payment application occurred should be recorded
 
-  Scenario: The remote payment application is down
-    Given the remote payment application is down
+  Scenario: The remote payment application for the payment request is down
+    Given the remote payment application for the payment request is down
 
     When the worker works off the job
 
@@ -26,7 +26,7 @@ Feature: Payment Request
     And the job's attempts should be "1"
     And the time when the first attempt to contact the remote payment application occurred should be recorded
 
-  Scenario Outline: The worker gives up trying to contact the remote payment application
+  Scenario Outline: The worker gives up trying to contact the remote payment application for this payment request
     Given a seller exists with name: "Dave"
     And a supplier exists with name: "Fon"
     And a mobile number exists with user: the seller
@@ -40,7 +40,7 @@ Feature: Payment Request
     Then a payment request should exist with payment_id: the payment
     And the most recent job in the queue should be to create a remote payment request
 
-    Given the remote payment application <is_status>
+    Given the remote payment application for the payment request <is_status>
 
     When the worker <works_off> the job
 
@@ -52,6 +52,6 @@ Feature: Payment Request
      | is_status | works_off | is_not_yet_or_was_already   | be_or_not_be |
      | is down   | tries 9 times to work off | is not yet  | not be       |
      | is down   | tries 9 times to work off | was already | be           |
-     | does not respond to the create remote payments url with status code 200 | works off | is not yet       | not be |
-     | does not respond to the create remote payments url with status code 200 | works off | was already      | be     |
+     | is up but does not respond to the create remote payments url with status code 200 | works off | is not yet       | not be |
+     | is up but does not respond to the create remote payments url with status code 200 | works off | was already      | be     |
 
