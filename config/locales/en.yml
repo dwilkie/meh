@@ -65,6 +65,7 @@ en:
             cents:
               greater_than: "would have been %{count}"
         payment_request:
+          gave_up: "url (%{uri}) can't be found"
           attributes:
             payment_application:
               blank: "settings have not yet been configured"

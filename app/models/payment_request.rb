@@ -16,7 +16,7 @@ class PaymentRequest < ActiveRecord::Base
 
       def failure(job, exception)
         if job.attempts >= MAX_ATTEMPTS - 1
-          payment_request.give_up!(exception, job.attempts)
+          payment_request.give_up!(exception.message)
         end
       end
 
@@ -28,7 +28,10 @@ class PaymentRequest < ActiveRecord::Base
 
     class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
       def perform
-        self.class.post(request_uri, :body => body) if attempt_job
+        if attempt_job
+          response = self.class.post(request_uri, :body => body)
+          payment_request.give_up!(response.message) unless response.code == 200
+        end
       end
 
       def after(job)
@@ -55,18 +58,23 @@ class PaymentRequest < ActiveRecord::Base
       @application_uri = payment_request.remote_payment_application_uri
     end
 
+    def payment_requests_uri
+      URI.join(application_uri, "payment_requests").to_s
+    end
+
     def create(params)
-      request_uri = URI.join(application_uri, "payment_requests").to_s
       body = {"payment_request" => params}
 
       Delayed::Job.enqueue(
-        CreateRemotePaymentRequestJob.new(payment_request.id, request_uri, body)
+        CreateRemotePaymentRequestJob.new(
+          payment_request.id, payment_requests_uri, body
+        )
       )
     end
 
     def verify
       request_uri = URI.join(
-        application_uri, "payment_requests/#{payment_request.remote_id}"
+        payment_requests_uri, payment_request.remote_id
       )
       request_uri.query = payment_request.notification.to_query
       Delayed::Job.enqueue(
@@ -114,11 +122,26 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
-  def give_up!(exception, number_of_attempts)
+  def give_up!(reason)
     self.update_attributes!(
-      :failure_error => exception.message,
+      :failure_error => reason,
       :gave_up_at => Time.now
     )
+  end
+
+  def seller_failure_error
+    I18n.t(
+      "activerecord.errors.models.payment_request.gave_up",
+      :uri => RemotePaymentRequest.new(self).payment_requests_uri
+    )
+  end
+
+  def given_up?
+    !still_trying?
+  end
+
+  def still_trying?
+    self.gave_up_at.nil?
   end
 
   def mark_first_attempt_to_send_to_remote_application!

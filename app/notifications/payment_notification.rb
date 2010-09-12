@@ -6,6 +6,8 @@ class PaymentNotification < Conversation
     options[:supplier_order] ||= payment.supplier_order
     options[:product] ||= options[:supplier_order].product
     options[:errors] ||= payment.errors
+    options[:errors] = options[:errors].full_messages.to_sentence if
+      options[:errors].is_a?(Array)
 
     say I18n.t(
       "notifications.messages.built_in.we_did_not_pay_your_supplier",
@@ -15,7 +17,7 @@ class PaymentNotification < Conversation
       :supplier_order_quantity => options[:supplier_order].quantity,
       :product_number => options[:product].number,
       :product_name => options[:product].name,
-      :errors => options[:errors].full_messages.to_sentence
+      :errors => options[:errors]
     )
   end
 end
