@@ -35,14 +35,14 @@ en:
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
         you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
-        you_must_register_to_use_this_service: "Sorry, you must register at meh.example.com to use this service"
-        you_must_verify_your_mobile_number_to_use_this_service: "Sorry, you must verify your mobile number to use this service. Try replying with: mn v <your name>"
+        you_must_verify_your_mobile_number_to_use_this_feature: "Sorry, you must verify your mobile number to use this feature. Try replying with: mn v <your name>"
         verify_your_mobile_number: "Hi, please verify your number by replying with: mn v <your name>"
         invalid_action_for_mobile_number: "Sorry \"%{action}\" is not a valid option. To verify your mobile number number, try: %{topic} verify <your name>"
         no_action_for_mobile_number: "To verify your mobile number, try: %{topic} verify <your name>"
         you_successfully_verified_your_mobile_number: "Congratulations %{name_supplied}, you successfully verified your mobile number"
         the_name_is_missing_or_incorrect: "Sorry, your %{errors}. Try again with: %{topic} %{action} <your registered name>"
         we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{supplier_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
+        valid_message_commands_are: "Hi%{user_name}, valid message commands include:\n\"mn\" (Mobile Number)\n\"po\" (Product Order)"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""

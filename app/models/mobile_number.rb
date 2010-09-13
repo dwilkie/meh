@@ -14,6 +14,9 @@ class MobileNumber < ActiveRecord::Base
             :allow_nil => true,
             :allow_blank => true
 
+  validates :user,
+            :presence => true
+
   before_save :activate
 
   def humanize

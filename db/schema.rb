@@ -28,8 +28,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "incoming_text_messages", :force => true do |t|
-    t.string   "from",             :null => false
-    t.text     "params"
+    t.text     "params",           :null => false
     t.integer  "mobile_number_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -41,7 +40,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "number",      :null => false
     t.datetime "verified_at"
     t.integer  "active"
-    t.integer  "user_id"
+    t.integer  "user_id",     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -68,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "gateway_message_id"
     t.string   "from"
     t.integer  "mobile_number_id",   :null => false
+    t.datetime "sent_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

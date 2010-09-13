@@ -2,20 +2,16 @@ class IncomingTextMessage < ActiveRecord::Base
   serialize  :params
   belongs_to :mobile_number
 
-  before_create :link_to_mobile_number
-
   validates :params,
             :presence => true,
             :uniqueness => true
 
-  validates :from,
+  validates :mobile_number,
             :presence => true
 
-  validate :authenticate, :on => :create
+  before_validation :link_to_mobile_number, :on => :create
 
-  before_validation(:on => :create) do
-    self.from = SMSNotifier.connection.sender(self.params) if self.params
-  end
+  validate :authenticate, :on => :create
 
   def text
     SMSNotifier.connection.message_text(self.params)
@@ -23,10 +19,10 @@ class IncomingTextMessage < ActiveRecord::Base
 
   private
     def link_to_mobile_number
-      self.mobile_number = MobileNumber.where("number = ?", from).first
-      self.mobile_number = MobileNumber.create!(
-        :number => from
-      ) unless self.mobile_number
+      if params
+        from = SMSNotifier.connection.sender(params)
+        self.mobile_number = MobileNumber.where("number = ?", from).first if from
+      end
     end
 
     def authenticate

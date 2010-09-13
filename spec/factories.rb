@@ -23,11 +23,13 @@ end
 
 Factory.define :mobile_number do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
+  f.association :user
 end
 
 Factory.define :verified_mobile_number, :class => MobileNumber do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
   f.verified_at Time.now
+  f.association :user
 end
 
 Factory.define :product do |f|
@@ -81,14 +83,16 @@ Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
 end
 
 Factory.define :incoming_text_message do |f|
-  f.sequence(:params) { |n|
+  f.association :mobile_number
+  f.params { |itm|
     userfield = ENV["SMS_AUTHENTICATION_KEY"]
+    mobile_number = itm.mobile_number.number
     {
       "to" => "61447100308",
-      "from" => "61447100310",
+      "from" => mobile_number,
       "msg"=> "Endia kasdf ofeao",
       "userfield" => userfield,
-      "date" => "2010-05-13 23:59:#{n}"
+      "date" => "2010-05-13 23:59:11"
     }
   }
 end

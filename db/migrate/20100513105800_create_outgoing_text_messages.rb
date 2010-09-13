@@ -6,6 +6,7 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
       t.string     :gateway_message_id
       t.string     :from
       t.references :mobile_number, :null => false
+      t.datetime   :sent_at
       t.timestamps
     end
     add_index :outgoing_text_messages, :gateway_message_id

@@ -10,10 +10,6 @@ class SupplierOrderConversation < IncomingTextMessageConversation
     end
   end
 
-  def require_user?
-    true
-  end
-
   def require_verified_mobile_number?
     true
   end

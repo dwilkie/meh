@@ -1,8 +1,4 @@
-Add scenarios for an unauthorized incoming text message
-Move general scenarios for supplier order conversation out into a new feature
 Investigate moving the devise mailout into the delayed_job queue
-Clean up pay4order (remove the feature)
-Ensure that all cucumber scenarios are running
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
 Launch staging app (read heroku email)
 Live testing

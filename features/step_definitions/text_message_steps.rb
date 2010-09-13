@@ -42,8 +42,10 @@ When /^an (authentic )?incoming text message is received with:$/ do |authentic, 
   end
 end
 
-Then /^a job should exist to send the text message$/ do
-  Delayed::Job.last.name.should match(/^OutgoingTextMessage#send_message/)
+Then /^the most recent job in the queue should be to send the text message$/ do
+  last_job = Delayed::Job.last
+  last_job.name.should match(/^OutgoingTextMessage#send_message/)
+  Then "a job should exist with id: #{last_job.id}"
 end
 
 Then /^a new outgoing text message should be created destined for #{capture_model}$/ do |destination|
@@ -61,9 +63,11 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message desti
   )
   reverse = reverse ? "_not" : ""
   text_message.body.send("should#{reverse}") == expected_text
-  puts "\n"
-  puts text_message.body
-  puts "\n"
+  if reverse.blank?
+    puts "\n"
+    puts text_message.body
+    puts "\n"
+  end
 end
 
 Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message_index, mobile_number, text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
@@ -85,9 +89,6 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message desti
     message = expected_text
   end
   text_message.body.should_not include("translation missing")
-  puts "\n"
-  puts text_message.body
-  puts "\n"
   if exact_or_includes == "be"
      unless reverse
        text_message.body.should == message
@@ -100,6 +101,11 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message desti
     else
       text_message.body.should_not include(message)
     end
+  end
+  if reverse.blank?
+    puts "\n"
+    puts text_message.body
+    puts "\n"
   end
 end
 

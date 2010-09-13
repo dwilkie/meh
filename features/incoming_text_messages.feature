@@ -3,14 +3,14 @@ Feature: Incoming Text Messages
   I want to check that the incoming text message is in reply to a message sent from this application
 
   Scenario Outline: An incoming text message is received that is in reply to a text message sent by this application
+    Given a mobile number exists with number: "66322345211"
 
     When an authentic incoming text message is received with:
     """
     { 'incoming_text_message' => <params> }
     """
 
-    Then a mobile number should exist with number: "66322345211"
-    And an incoming text message should exist with mobile_number_id: the mobile number
+    Then an incoming text message should exist with mobile_number_id: the mobile number
     And the incoming text message should have the following params:
     """
     <params>
@@ -21,21 +21,36 @@ Feature: Incoming Text Messages
       | {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'date'=>'2010-05-13 23:59:58'}                  |
 
   Scenario: An incoming text message is received that is not in reply to a text message sent by this application
+    Given a mobile number exists with number: "66322345211"
 
-  When an incoming text message is received with:
-  """
-  {
-    'incoming_text_message' => {
-      'to'=>'61447100308',
-      'from'=> '66322345211',
-      'msg'=> 'Endiad ad y les',
-      'date'=>'2010-05-13 23:59:58'
+    When an incoming text message is received with:
+    """
+    {
+      'incoming_text_message' => {
+        'to'=>'61447100308',
+        'from'=> '66322345211',
+        'msg'=> 'Endiad ad y les',
+        'date'=>'2010-05-13 23:59:58'
+      }
     }
-  }
-  """
+    """
 
-  Then a mobile number should not exist
-  And an incoming text message should not exist
+    Then an incoming text message should not exist
+
+  Scenario: An incoming text message is received for an unknown mobile number
+    When an incoming text message is received with:
+    """
+    {
+      'incoming_text_message' => {
+        'to'=>'61447100308',
+        'from'=> '66322345211',
+        'msg'=> 'Endiad ad y les',
+        'date'=>'2010-05-13 23:59:58'
+      }
+    }
+    """
+
+    Then an incoming text message should not exist
 
   Scenario Outline: A duplicate incoming text message is received
     Given an incoming text message exists
@@ -54,5 +69,5 @@ Feature: Incoming Text Messages
 
     Examples:
       | params                                  |
-      | {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'date'=>'2010-05-13 23:59:58'}                  |
+      | {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'date'=>'2010-05-13 23:59:58'}            |
 

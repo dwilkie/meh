@@ -27,7 +27,8 @@ class OutgoingTextMessage < ActiveRecord::Base
     gateway_message_id = SMSNotifier.connection.message_id(gateway_response)
     self.update_attributes(
       :gateway_response => gateway_response,
-      :gateway_message_id => gateway_message_id
+      :gateway_message_id => gateway_message_id,
+      :sent_at => Time.now
     )
   end
   handle_asynchronously :send_message

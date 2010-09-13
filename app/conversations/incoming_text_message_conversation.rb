@@ -5,8 +5,7 @@ class IncomingTextMessageConversation < Conversation
   def process(incoming_text_message)
     incoming_text_message.mobile_number.activate!
     conversation = find_conversation(incoming_text_message.text)
-    conversation.process unless require_user?(conversation) &&
-      require_verified_mobile_number?(conversation)
+    conversation.process unless require_verified_mobile_number?(conversation)
   end
 
   private
@@ -30,21 +29,11 @@ class IncomingTextMessageConversation < Conversation
       details
     end
 
-    def require_user?(conversation)
-      if conversation.require_user? && user.new_record?
-        say I18n.t
-        (
-          "notifications.messsages.built_in.you_must_register_to_use_this_service"
-        )
-      end
-    end
-
     def require_verified_mobile_number?(conversation)
       if conversation.require_verified_mobile_number? &&
         user.active_mobile_number.unverified?
-        say I18n.t
-        (
-          "notifications.messsages.built_in.you_must_verify_your_mobile_number_to_use_this_service"
+        say I18n.t(
+          "notifications.messages.built_in.you_must_verify_your_mobile_number_to_use_this_feature"
         )
       end
     end

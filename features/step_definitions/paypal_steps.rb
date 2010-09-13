@@ -25,13 +25,15 @@ When /^a paypal ipn is received with:$/ do |params|
   end
 end
 
-When /^the paypal_ipn is verified$/ do
+When /^the paypal ipn is verified$/ do
   model!("paypal_ipn").update_attributes!(:verified_at => Time.now)
 end
 
-Then /^a job should exist to verify the ipn came from paypal$/ do
-  Delayed::Job.last.name.should match(
+Then /^the most recent job in the queue should be to verify the paypal ipn$/ do
+  last_job = Delayed::Job.last
+  last_job.name.should match(
     /^PaypalIpn#verify/
   )
+  Then "a job should exist with id: #{last_job.id}"
 end
 

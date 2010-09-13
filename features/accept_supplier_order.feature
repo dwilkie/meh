@@ -23,6 +23,8 @@ Feature: Accept supplier order
     """
 
   Scenario Outline: Successfully accept an order
+    Given the mobile number: "Mara's number" <is_not_yet_already> verified
+
     When I text "<message_text>" from "66354668874"
 
     Then the supplier_order should be accepted
@@ -37,31 +39,31 @@ Feature: Accept supplier order
     Viet Nam 52321
     then reply with: "po complete"
     """
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_be>
     """
     Hi Mara, Nok (+66354668874) has ACCEPTED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
 
   Examples:
-    | message_text                          |
-    | supplier_order accept 154674 3 hy456n |
-    | product_order accept 154674 3 hy456n  |
-    | supplier_order a 154674 3 hy456n      |
-    | product_order a 154674 3 hy456n       |
-    | accept_supplier_order 154674 3 hy456n |
-    | accept_product_order 154674 3 hy456n  |
-    | po accept 154674 3 hy456n             |
-    | po a 154674 3 hy456n                  |
-    | apo 154674 3 hy456n                   |
-    | supplier_order accept 3 hy456n        |
-    | product_order accept 3 hy456n         |
-    | supplier_order a 3 hy456n             |
-    | product_order a 3 hy456n              |
-    | accept_supplier_order 3 hy456n        |
-    | accept_product_order 3 hy456n         |
-    | po accept 3 hy456n                    |
-    | po a 3 hy456n                         |
-    | apo 3 hy456n                          |
+    | message_text                          | is_not_yet_already | should_be     |
+    | supplier_order accept 154674 3 hy456n | was already        | should be     |
+    | product_order accept 154674 3 hy456n  | is not yet         | should not be |
+    | supplier_order a 154674 3 hy456n      | was already        | should be     |
+    | product_order a 154674 3 hy456n       | is not yet         | should not be |
+    | accept_supplier_order 154674 3 hy456n | was already        | should be     |
+    | accept_product_order 154674 3 hy456n  | is not yet         | should not be |
+    | po accept 154674 3 hy456n             | was already        | should be     |
+    | po a 154674 3 hy456n                  | is not yet         | should not be |
+    | apo 154674 3 hy456n                   | was already        | should be     |
+    | supplier_order accept 3 hy456n        | is not yet         | should not be |
+    | product_order accept 3 hy456n         | was already        | should be     |
+    | supplier_order a 3 hy456n             | is not yet         | should not be |
+    | product_order a 3 hy456n              | was already        | should be     |
+    | accept_supplier_order 3 hy456n        | is not yet         | should not be |
+    | accept_product_order 3 hy456n         | was already        | should be     |
+    | po accept 3 hy456n                    | is not yet         | should not be |
+    | po a 3 hy456n                         | was already        | should be     |
+    | apo 3 hy456n                          | is not yet         | should not be |
 
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
@@ -126,29 +128,6 @@ Feature: Accept supplier order
     | po accept 9999 3 hy456n        |
     | po a 9999 3 hy456n             |
     | apo 4355 3 hy456n              |
-
-  Scenario Outline: Try to accept an order forgetting to supply an action
-    When I text "<message_text>" from "66354668874"
-
-    Then the supplier order should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "what would you like to do with the supplier order?" in "en" (English) where topic: "<message_text>"
-
-  Examples:
-    | message_text                   |
-    | product_order                  |
-    | po                             |
-
-  Scenario Outline: Try to accept an order supplying an invalid action
-    When I text "<message_text>" from "66354668874"
-
-    Then the supplier order should not be accepted
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "invalid action given for the supplier order" in "en" (English) where topic: "<topic>", action: "<action>"
-
-  Examples:
-    | message_text                    | topic         | action         |
-    | product_order z                 | product_order | z              |
-    | po 4                            | po            | 4              |
-    | po invalid_action               | po            | invalid_action |
 
   Scenario Outline: Try to accept an order giving the wrong quantity
     When I text "<message_text>" from "66354668874"

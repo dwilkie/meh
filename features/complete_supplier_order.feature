@@ -13,36 +13,37 @@ Feature: Complete a supplier order
     And the supplier order was already accepted
 
   Scenario Outline: Successfully complete an order without providing a tracking number
+    Given the mobile number: "Mara's number" <is_not_yet_already> verified
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should be completed
     And the supplier order's tracking_number should be nil
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "1"
-    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" <should_be>
     """
     Hi Mara, Nok (+66354668874) has COMPLETED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
 
   Examples:
-    | message_text              |
-    | supplier_order complete 1 |
-    | product_order complete 1  |
-    | supplier_order c 1        |
-    | product_order c 1         |
-    | complete_supplier_order 1 |
-    | complete_product_order 1  |
-    | po complete 1             |
-    | po c 1                    |
-    | cpo 1                     |
-    | supplier_order complete   |
-    | product_order complete    |
-    | supplier_order c          |
-    | product_order c           |
-    | complete_supplier_order   |
-    | complete_product_order    |
-    | po complete               |
-    | po c                      |
-    | cpo                       |
+    | message_text              | is_not_yet_already | should_be     |
+    | supplier_order complete 1 | was already        | should be     |
+    | product_order complete 1  | is not yet         | should not be |
+    | supplier_order c 1        | was already        | should be     |
+    | product_order c 1         | is not yet         | should not be |
+    | complete_supplier_order 1 | was already        | should be     |
+    | complete_product_order 1  | is not yet         | should not be |
+    | po complete 1             | was already        | should be     |
+    | po c 1                    | is not yet         | should not be |
+    | cpo 1                     | was already        | should be     |
+    | supplier_order complete   | is not yet         | should not be |
+    | product_order complete    | was already        | should be     |
+    | supplier_order c          | is not yet         | should not be |
+    | product_order c           | was already        | should be     |
+    | complete_supplier_order   | is not yet         | should not be |
+    | complete_product_order    | was already        | should be     |
+    | po complete               | is not yet         | should not be |
+    | po c                      | was already        | should be     |
+    | cpo                       | is not yet         | should not be |
 
   Scenario Outline: Successfully complete an order providing a tracking number
     Given a notification exists with event: "product_order_completed", for: "seller", purpose: "to inform me when a supplier completes a product order", seller: the seller, supplier: the supplier
@@ -263,4 +264,17 @@ Feature: Complete a supplier order
 
     Then the supplier order should be completed
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "complete", supplier_name: "Nok", status: "incomplete"
+
+  Scenario Outline: Successfully complete an order even when giving the wrong order number
+    Given the supplier order was already accepted
+
+    When I text "<message_text>" from "66354668874"
+
+    Then the supplier order should be completed
+
+  Examples:
+    | message_text                   |
+    | po complete 9999               |
+    | po c 9999                      |
+    | cpo 4355                       |
 

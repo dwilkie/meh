@@ -4,7 +4,7 @@ class CreateMobileNumbers < ActiveRecord::Migration
       t.string     :number,               :null => false
       t.datetime   :verified_at
       t.integer    :active
-      t.references :user
+      t.references :user,                 :null => false
       t.timestamps
     end
     add_index :mobile_numbers, :number, :unique => true

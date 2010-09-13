@@ -1,10 +1,10 @@
 class UnknownTopicConversation < Conversation
   def process
-
-  end
-
-  def require_user?
-    false
+    user_name = user.active_mobile_number.verified? ? " #{user.name}" : ""
+    say I18n.t(
+      "notifications.messages.built_in.valid_message_commands_are",
+      :user_name => user_name
+    )
   end
 
   def require_verified_mobile_number?

@@ -1,8 +1,7 @@
 class CreateIncomingTextMessages < ActiveRecord::Migration
   def self.up
     create_table :incoming_text_messages do |t|
-      t.string     :from,        :null => false
-      t.text       :params
+      t.text       :params       , :null => false
       t.references :mobile_number, :null => false
       t.timestamps
     end

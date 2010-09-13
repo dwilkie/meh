@@ -49,6 +49,12 @@ module I18nHelpers
     when /^the name is missing or incorrect$/
       "notifications.messages.built_in.the_name_is_missing_or_incorrect"
 
+    when /^you must verify your mobile number to use this feature$/
+      "notifications.messages.built_in.you_must_verify_your_mobile_number_to_use_this_feature"
+
+    when /^valid message commands are$/
+      "notifications.messages.built_in.valid_message_commands_are"
+
     when /^name is incorrect$/
       "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
 

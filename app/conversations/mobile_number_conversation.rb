@@ -8,10 +8,6 @@ class MobileNumberConversation < IncomingTextMessageConversation
     end
   end
 
-  def require_user?
-    true
-  end
-
   def require_verified_mobile_number?
     false
   end

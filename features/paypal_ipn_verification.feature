@@ -3,24 +3,22 @@ Feature: Paypal IPN Verification
   As a seller
   I want to post back all fields to paypal for verification
 
-  Scenario: A Paypal IPN is created
+  Background:
     When a paypal ipn is created
-    Then a job should exist to verify the ipn came from paypal
+    Then the most recent job in the queue should be to verify the paypal ipn
 
   Scenario: Paypal sent an IPN with a payment status of completed
-    Given a paypal ipn exists
-    And paypal sent the IPN
+    Given paypal sent the IPN
 
-    When the worker completes its job
+    When the worker works off the job
 
     Then the paypal ipn should be verified
     And the paypal ipn should not be fraudulent
 
   Scenario: Paypal did not send the IPN
-    Given a paypal ipn exists
-    And paypal did not send the IPN
+    Given paypal did not send the IPN
 
-    When the worker completes its job
+    When the worker works off the job
 
     Then the paypal ipn should not be verified
     And the paypal ipn should be fraudulent
