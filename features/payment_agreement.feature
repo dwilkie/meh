@@ -63,7 +63,7 @@ Feature: Payment Agreement
 
     Then a payment should not exist
     And a payment request should not exist
-    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "19022331123", product_name: "Model Ship - The Titanic", errors: "Payment application settings have not yet been configured"
+    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "19022331123", product_name: "Model Ship - The Titanic", errors: "payment application settings have not yet been configured"
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |
@@ -80,7 +80,7 @@ Feature: Payment Agreement
 
     Then a payment should not exist
     And a payment request should not exist
-    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "19022331123", product_name: "Model Ship - The Titanic", errors: "Payment application settings have not yet been verified"
+    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "19022331123", product_name: "Model Ship - The Titanic", errors: "payment application settings have not yet been verified"
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |

@@ -2,7 +2,10 @@ class Payment < ActiveRecord::Base
 
   composed_of :amount,
               :class_name => "Money",
-              :mapping => [%w(cents cents), %w(currency currency_as_string)]
+              :mapping => [%w(cents cents), %w(currency currency_as_string)],
+              :constructor => Proc.new { |cents, currency|
+                Money.new(cents || 0, currency || Money.default_currency)
+              }
 
   belongs_to  :supplier,
               :class_name => "User"
@@ -14,15 +17,9 @@ class Payment < ActiveRecord::Base
 
   has_one     :payment_request
 
-  validates :cents,
+  validates :amount,
             :presence => true,
-            :numericality => {:only_integer => true, :greater_than => 0}
-
-  validates :currency,
-            :presence => true,
-            :unless => Proc.new { |payment|
-              payment.cents <= 0
-            }
+            :numericality => {:greater_than => 0}
 
   validates :supplier_order,
             :presence => true

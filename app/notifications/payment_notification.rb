@@ -8,10 +8,12 @@ class PaymentNotification < Conversation
 
     options[:errors] ||= payment.errors
     options[:errors] = options[:errors].full_messages.to_sentence if
-      options[:errors].is_a?(Array)
+      options[:errors].is_a?(Hash)
     error_words = options[:errors].split
-    options[:errors] = error_words[1..-1].join(" ") if
-      error_words.first.downcase == "the"
+    error_words.first.try(:downcase!)
+    error_words = error_words.first == "the" ?
+      error_words[1..-1] : error_words
+    options[:errors] = error_words.join(" ")
 
     say I18n.t(
       "notifications.messages.built_in.we_did_not_pay_your_supplier",

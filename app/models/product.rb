@@ -2,7 +2,10 @@ class Product < ActiveRecord::Base
 
   composed_of :supplier_price,
               :class_name => "Money",
-              :mapping => [%w(cents cents), %w(currency currency_as_string)]
+              :mapping => [%w(cents cents), %w(currency currency_as_string)],
+              :constructor => Proc.new { |cents, currency|
+                Money.new(cents || 0, currency || Money.default_currency)
+              }
 
   belongs_to  :supplier,
               :class_name => "User"
@@ -17,12 +20,9 @@ class Product < ActiveRecord::Base
 
   has_one     :payment_agreement
 
-  validates :cents,
+  validates :supplier_price,
             :presence => true,
-            :numericality => {
-              :only_integer => true,
-              :greater_than_or_equal_to => 0
-            }
+            :numericality => {:greater_than_or_equal_to => 0}
 
   validates :number, :name,
             :uniqueness => {:scope => :seller_id, :case_sensitive => false},
