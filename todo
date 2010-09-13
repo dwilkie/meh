@@ -1,4 +1,5 @@
 Investigate moving the devise mailout into the delayed_job queue
+Investigate more than two columns for a unique index SQLite3 / POSTRES
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
 Launch staging app (read heroku email)
 Live testing

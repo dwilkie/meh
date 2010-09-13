@@ -16,6 +16,9 @@ class CreateNotifications < ActiveRecord::Migration
       :notifications,
       [:seller_id, :supplier_id, :product_id, :purpose, :event, :for], :unique => true
     )
+
+    #execute "CREATE UNIQUE INDEX user_andor_company_company_key ON user_andor_company (company) WHERE user IS NOT NULL"
+
     # add indexes to ensure nulls are also considered the same (to complement model)
     # see postrsql unique index documentation
   end
