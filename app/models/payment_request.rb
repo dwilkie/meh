@@ -32,12 +32,12 @@ class PaymentRequest < ActiveRecord::Base
       end
 
       def success(job)
-        payment_request.give_up!(response.message) if
-          response && response.code != 200
+        response.code == 200 ? payment_request.remote_application_received! :
+          payment_request.give_up!(response.message) if response
       end
 
       def after(job)
-        payment_request.mark_first_attempt_to_send_to_remote_application! if
+        payment_request.first_attempt_to_send_to_remote_application! if
           job.attempts == 0
       end
     end
@@ -48,7 +48,7 @@ class PaymentRequest < ActiveRecord::Base
       end
 
       def success(job)
-        payment_request.verify_notification! if response.code == 200
+        payment_request.verify_notification! if response && response.code == 200
       end
     end
 
@@ -112,7 +112,7 @@ class PaymentRequest < ActiveRecord::Base
 
   def notify!(notification)
     remote_id = notification.try(:delete, "id")
-    if remote_id && !completed?
+    if remote_id && !completed? && remote_application_received?
       self.update_attributes!(
         :remote_id => remote_id,
         :notification => notification,
@@ -144,10 +144,20 @@ class PaymentRequest < ActiveRecord::Base
     self.gave_up_at.nil?
   end
 
-  def mark_first_attempt_to_send_to_remote_application!
+  def first_attempt_to_send_to_remote_application!
     self.update_attributes!(
       :first_attempt_to_send_to_remote_application_at => Time.now
     )
+  end
+
+  def remote_application_received!
+    self.update_attributes!(
+      :remote_application_received_at => Time.now
+    )
+  end
+
+  def remote_application_received?
+    !self.remote_application_received_at.nil?
   end
 
   def verify_notification!
@@ -165,19 +175,21 @@ class PaymentRequest < ActiveRecord::Base
       payment_response["error(0).message"]
     elsif remote_application_error = notification.try(:[], "errors")
       payment = self.payment
+      supplier = payment.supplier
       I18n.t(
         "activerecord.errors.models.payment_request.attributes.notification." <<
         remote_application_error.keys.first.to_s,
-        :supplier => payment.supplier.name,
+        :supplier_name => supplier.name,
+        :supplier_email => supplier.email,
         :currency => payment.currency,
-        :application_uri => remote_payment_application_uri
+        :uri => remote_payment_application_uri,
       )
     end
   end
 
   def authorized?(params)
     merged_params = params.merge(self.params)
-    merged_params == params && !completed?
+    merged_params == params && remote_application_received?
   end
 
   def notification_verified?
@@ -190,7 +202,7 @@ class PaymentRequest < ActiveRecord::Base
     end
 
     def completed?
-      notified? && notification_verified?
+      remote_application_received? && notification_verified?
     end
 
     def build_params

@@ -48,12 +48,13 @@ When /^the notification gets verified$/ do
 end
 
 # new
-Then /^the most recent job in the queue should be to (.+)$/ do |action|
+Then /^the most recent job in the queue should (not )?be to (create|verify).+payment request$/ do |expectation, action|
+  expectation = expectation ? "_not" : ""
   job_name = action.split.first == "create" ? /CreateRemotePaymentRequestJob$/ :
     /VerifyRemotePaymentRequestNotificationJob$/
   last_job = Delayed::Job.last
-  last_job.name.should match(job_name)
-  Then "a job should exist with id: #{last_job.id}"
+  last_job.name.send("should#{expectation}", match(job_name))
+  Then "a job should exist with id: #{last_job.id}" if expectation.blank?
 end
 
 # new
@@ -67,12 +68,6 @@ Then /^a job should (not )?exist to verify it came from the remote application f
   last_job.name.send("should#{condition}", match(
     /^PaymentRequest::RemotePaymentRequest#verify/
   )) if last_job || no_job.blank?
-end
-
-# new
-Then /^#{capture_model} notification should( not)? be verified$/ do |notification_name, expected|
-  expected = expected ? false : true
-  model!(notification_name).notification_verified?.should send("be_#{expected}")
 end
 
 Then /^the response should be (\d+)$/ do |response|

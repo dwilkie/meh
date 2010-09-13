@@ -7,6 +7,7 @@ class CreatePaymentRequests < ActiveRecord::Migration
       t.integer     :remote_id
       t.text        :notification
       t.datetime    :first_attempt_to_send_to_remote_application_at
+      t.datetime    :remote_application_received_at
       t.datetime    :notified_at
       t.datetime    :notification_verified_at
       t.datetime    :gave_up_at

@@ -11,8 +11,8 @@ Feature: Payment Request Verification
     Then a payment request should exist with payment_id: the payment
 
   Scenario Outline: Verification request is received with correct parameters
-    Given the payment request <was_notified> notified
-    And the payment request <notification_was_verified> notification_verified
+    Given the payment request <is_not_yet_or_was_already> remote_application_received
+
     When a verification request is received for <existence> payment request with:
     """
     {
@@ -28,16 +28,19 @@ Feature: Payment Request Verification
         'currency' => 'THB'}
       }
     """
+
     Then the response should be <status_code>
 
     Examples:
-      | was_notified | notification_was_verified | status_code | existence     |
-      | is not yet   | is not yet                | 200         | an existent   |
-      | was already  | is not yet                | 200         | an existent   |
-      | was already  | was already               | 404         | an existent   |
-      | is not yet   | is not yet                | 404         | a nonexistent |
+      | is_not_yet_or_was_already | status_code | existence     |
+      | was already               | 200         | an existent   |
+      | is not yet                | 404         | an existent   |
+      | was already               | 404         | a nonexistent |
+      | is not yet                | 404         | a nonexistent |
 
   Scenario Outline: Verification request is received for an existent payment request with an incorrect parameters
+    Given the payment request was already remote_application_received
+
     When a verification request is received for an existent payment request with:
     """
     {
@@ -54,6 +57,7 @@ Feature: Payment Request Verification
       }
     }
     """
+
     Then the response should be 404
 
     Examples:

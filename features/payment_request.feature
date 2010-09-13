@@ -16,6 +16,7 @@ Feature: Payment Request
 
     Then the job should be deleted from the queue
     And the time when the first attempt to contact the remote payment application occurred should be recorded
+    And the payment request should be remote_application_received
 
   Scenario: The remote payment application for the payment request is down
     Given the remote payment application for the payment request is down
@@ -25,8 +26,9 @@ Feature: Payment Request
     Then the job should not be deleted from the queue
     And the job's attempts should be "1"
     And the time when the first attempt to contact the remote payment application occurred should be recorded
+    And the payment request should not be remote_application_received
 
-  Scenario Outline: The worker gives up trying to contact the remote payment application for this payment request
+  Scenario Outline: The worker gives up trying to reach the remote payment application for this payment request
     Given a seller exists with name: "Dave"
     And a supplier exists with name: "Fon"
     And a mobile number exists with user: the seller
@@ -46,6 +48,7 @@ Feature: Payment Request
 
     Then the job should be deleted from the queue
     And the payment request should have given_up
+    And the payment request should not be remote_application_received
     And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "payment url (http://dave-payment-app-example.com/payment_requests) can't be found"
 
     Examples:

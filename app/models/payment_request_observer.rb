@@ -6,7 +6,10 @@ class PaymentRequestObserver < ActiveRecord::Observer
         did_not_pay(payment_request, payment_request.notification_errors)
       end
     elsif given_up?(payment_request)
-      did_not_pay(payment_request, payment_request.seller_failure_error)
+      did_not_pay(
+        payment_request,
+        payment_request.seller_failure_error
+      ) unless payment_request.remote_application_received?
     end
   end
 
