@@ -9,23 +9,31 @@ Feature: Incoming Text Messages
 
     And the job's priority should be "2"
 
-  Scenario Outline: An incoming text message is received that is in reply to a text message sent by this application
+  Scenario: An incoming text message is received that is in reply to a text message sent by this application
     Given a mobile number exists with number: "66322345211"
 
     When an authentic incoming text message is received with:
     """
-    { 'incoming_text_message' => <params> }
+    {
+      'incoming_text_message' => {
+        'to'=>'61447100308',
+        'from'=> '66322345211',
+        'msg'=> 'Endiad ad y les',
+        'date'=>'2010-05-13 23:59:58'
+      }
+    }
     """
 
     Then an incoming text message should exist with mobile_number_id: the mobile number
     And the incoming text message should have the following params:
     """
-    <params>
+    {
+      'to'=>'61447100308',
+      'from'=> '66322345211',
+      'msg'=> 'Endiad ad y les',
+      'date'=>'2010-05-13 23:59:58'
+    }
     """
-
-    Examples:
-      | params                                  |
-      | {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'date'=>'2010-05-13 23:59:58'}       |
 
   Scenario: An incoming text message is received that is not in reply to a text message sent by this application
     Given a mobile number exists with number: "66322345211"
@@ -59,22 +67,31 @@ Feature: Incoming Text Messages
 
     Then an incoming text message should not exist
 
-  Scenario Outline: A duplicate incoming text message is received
-    Given an incoming text message exists
+  Scenario: A duplicate incoming text message is received
+    Given a mobile number exists with number: "66322345211"
+    And an incoming text message exists
 
     And the incoming text message has the following params:
     """
-    <params>
+    {
+      'to'=>'61447100308',
+      'from'=> '66322345211',
+      'msg'=> 'Endiad ad y les',
+      'date'=>'2010-05-13 23:59:58'
+    }
     """
 
-    When an authentic incoming text message is received with:
+    When an authentic but duplicate incoming text message is received with:
     """
-    { 'incoming_text_message' => <params> }
+    {
+      'incoming_text_message' => {
+        'to'=>'61447100308',
+        'from'=> '66322345211',
+        'msg'=> 'Endiad ad y les',
+        'date'=>'2010-05-13 23:59:58'
+      }
+    }
     """
 
     Then 1 incoming text messages should exist
-
-    Examples:
-      | params                                  |
-      | {'to'=>'61447100308', 'from'=> '66322345211', 'msg'=> 'Endiad ad y les', 'date'=>'2010-05-13 23:59:58'}       |
 

@@ -18,23 +18,28 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
   Then "the job should be deleted from the queue"
 end
 
-When /^a text message delivery receipt is received with:$/ do |params|
+When /^a text message delivery receipt is received$/ do
+  post path_to("create text message delivery receipt")
+end
+
+When /^a (duplicate )?text message delivery receipt is received with:$/ do |duplicate, params|
+  expectation = duplicate ? " not" : ""
   params = instance_eval(params)
-  begin
-    post(
-      path_to("create text message delivery receipt"),
-      params
-    )
-  rescue ActiveRecord::RecordInvalid
-  rescue ActiveRecord::RecordNotUnique
-  end
+  post(
+    path_to("create text message delivery receipt"),
+    params
+  )
+  Then "the most recent job in the queue should be to create the text message delivery receipt"
+  When "the worker works off the job"
+  Then "the job should#{expectation} be deleted from the queue"
 end
 
 When /^an incoming text message is received$/ do
   post path_to("create incoming text message")
 end
 
-When /^an (authentic )?incoming text message is received with:$/ do |authentic, params|
+When /^an (authentic )?((?:but )duplicate )?incoming text message is received with:$/ do |authentic, duplicate, params|
+  expectation = duplicate ? " not" : ""
   params = instance_eval(params)
   params["incoming_text_message"].merge!(
     "userfield" => ENV["SMS_AUTHENTICATION_KEY"]
@@ -42,7 +47,7 @@ When /^an (authentic )?incoming text message is received with:$/ do |authentic, 
   post(path_to("create incoming text message"), params)
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
-  Then "the job should be deleted from the queue"
+  Then "the job should#{expectation} be deleted from the queue"
 end
 
 Then /^the most recent job in the queue should be to send the text message$/ do
@@ -51,9 +56,12 @@ Then /^the most recent job in the queue should be to send the text message$/ do
   Then "a job should exist with id: #{last_job.id}"
 end
 
-Then /^the most recent job in the queue should be to create the incoming text message$/ do
+Then /^the most recent job in the queue should be to create the (incoming text message|text message delivery receipt)$/ do |resource|
+  job_name = resource == "incoming text message" ?
+    /CreateIncomingTextMessageJob$/ :
+    /CreateTextMessageDeliveryReceiptJob$/
   last_job = Delayed::Job.last
-  last_job.name.should match(/CreateIncomingTextMessageJob$/)
+  last_job.name.should match(job_name)
   Then "a job should exist with id: #{last_job.id}"
 end
 
