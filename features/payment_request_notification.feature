@@ -14,6 +14,11 @@ Feature: Payment Request Notification
     When a payment is created with cents: "50000", currency: "THB", supplier_order: the supplier order, seller: the seller, supplier: the supplier
     Then a payment request should exist with payment_id: the payment
 
+  Scenario: A notification is received
+    When a notification is received for the payment request
+
+    Then the most recent job in the queue should be to notify the payment request
+
   Scenario Outline: A notification is received
     Given the payment request was already remote_application_received
 
@@ -117,6 +122,7 @@ Feature: Payment Request Notification
       }
     }
     """
+
     Then the most recent job in the queue should be to verify the notification came from the remote payment application for this payment request
 
     Given the remote payment application for the payment request sent the notification and is currently up
@@ -146,6 +152,7 @@ Feature: Payment Request Notification
       }
     }
     """
+
     Then the most recent job in the queue should be to verify the notification came from the remote payment application for this payment request
 
     Given the remote payment application for the payment request sent the notification and is currently up

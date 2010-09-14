@@ -88,6 +88,21 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
+  class NotifyPaymentRequestJob < Struct.new(:id, :params)
+    attr_reader :attempt_job
+
+    MAX_ATTEMPTS = 1
+
+    def before(job)
+      @attempt_job = job.attempts < MAX_ATTEMPTS
+    end
+
+    def perform
+      payment_request = PaymentRequest.find_by_id(id)
+      payment_request.notify!(params) if attempt_job && payment_request
+    end
+  end
+
   attr_accessor :payment_application
 
   belongs_to :payment
@@ -109,6 +124,12 @@ class PaymentRequest < ActiveRecord::Base
             :on => :create
 
   validate :verified_payment_application, :on => :create
+
+  def self.notify_later(id, params)
+    Delayed::Job.enqueue(
+      NotifyPaymentRequestJob.new(id, params)
+    )
+  end
 
   def notify!(notification)
     remote_id = notification.try(:delete, "id")

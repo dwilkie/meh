@@ -5,8 +5,9 @@ class PaymentRequestsController < ApplicationController
   end
 
   def update
-    payment_request = PaymentRequest.find_by_id(params[:id])
-    payment_request.notify!(params["payment_request"]) if payment_request
+    PaymentRequest.notify_later(
+      params[:id], params["payment_request"]
+    )
     render :nothing => true
   end
 end

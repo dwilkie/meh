@@ -23,6 +23,10 @@ Given /^the remote payment application for #{capture_model} (sent|did not send) 
   ) unless status == "down"
 end
 
+When /^a notification is received for #{capture_model}$/ do |name|
+  put(path_to("payment request with id: #{model!(name).id}"))
+end
+
 When /^a (verification request|notification) (?:is|was) received for an? (non)?existent #{capture_model} with:$/ do |request_type, nonexistent, payment_request_name, fields|
   id = nonexistent ? 999 : model!(payment_request_name).id
   fields = instance_eval(fields)
@@ -32,12 +36,23 @@ When /^a (verification request|notification) (?:is|was) received for an? (non)?e
     path_to("payment request with id: #{id}"),
     fields
   )
+  if request == "put"
+    Then "the most recent job in the queue should be to notify the payment request"
+    When "the worker works off the job"
+    Then "the job should be deleted from the queue"
+  end
 end
 
-Then /^the most recent job in the queue should (not )?be to (create|verify).+payment request$/ do |expectation, action|
+Then /^the most recent job in the queue should (not )?be to (create|verify|notify).+payment request$/ do |expectation, action|
   expectation = expectation ? "_not" : ""
-  job_name = action.split.first == "create" ? /CreateRemotePaymentRequestJob$/ :
-    /VerifyRemotePaymentRequestNotificationJob$/
+  case action
+    when "create"
+      job_name = /CreateRemotePaymentRequestJob$/
+    when "verify"
+      job_name = /VerifyRemotePaymentRequestNotificationJob$/
+    when "notify"
+      job_name = /NotifyPaymentRequestJob$/
+  end
   last_job = Delayed::Job.last
   last_job.name.send("should#{expectation}", match(job_name))
   Then "a job should exist with id: #{last_job.id}" if expectation.blank?

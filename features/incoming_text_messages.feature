@@ -3,11 +3,9 @@ Feature: Incoming Text Messages
   I want to check that the incoming text message is in reply to a message sent from this application
 
   Scenario: An incoming text message is received
-    When an incoming text message is received with:
-    """
-    """
+    When an incoming text message is received
 
-    Then the most recent job in the queue should be to save the incoming text message
+    Then the most recent job in the queue should be to create the incoming text message
 
     And the job's priority should be "2"
 
@@ -19,12 +17,7 @@ Feature: Incoming Text Messages
     { 'incoming_text_message' => <params> }
     """
 
-    Then the most recent job in the queue should be to save the incoming text message
-
-    When the worker works off the job
-
-    Then the job should be deleted from the queue
-    And an incoming text message should exist with mobile_number_id: the mobile number
+    Then an incoming text message should exist with mobile_number_id: the mobile number
     And the incoming text message should have the following params:
     """
     <params>
@@ -49,12 +42,7 @@ Feature: Incoming Text Messages
     }
     """
 
-    Then the most recent job in the queue should be to save the incoming text message
-
-    When the worker works off the job
-
-    Then the job should be deleted from the queue
-    And an incoming text message should not exist
+    Then an incoming text message should not exist
 
   Scenario: An incoming text message is received for an unknown mobile number
     When an incoming text message is received with:
@@ -69,12 +57,7 @@ Feature: Incoming Text Messages
     }
     """
 
-    Then the most recent job in the queue should be to save the incoming text message
-
-    When the worker works off the job
-
-    Then the job should be deleted from the queue
-    And an incoming text message should not exist
+    Then an incoming text message should not exist
 
   Scenario Outline: A duplicate incoming text message is received
     Given an incoming text message exists
@@ -89,12 +72,7 @@ Feature: Incoming Text Messages
     { 'incoming_text_message' => <params> }
     """
 
-    Then the most recent job in the queue should be to save the incoming text message
-
-    When the worker works off the job
-    Then the job should be deleted from the queue
-
-    And 1 incoming text messages should exist
+    Then 1 incoming text messages should exist
 
     Examples:
       | params                                  |
