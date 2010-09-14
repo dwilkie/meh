@@ -52,7 +52,7 @@ end
 
 Then /^the most recent job in the queue should be to send the text message$/ do
   last_job = Delayed::Job.last
-  last_job.name.should match(/^OutgoingTextMessage#send_message/)
+  last_job.name.should match(/SendOutgoingTextMessageJob$/)
   Then "a job should exist with id: #{last_job.id}"
 end
 

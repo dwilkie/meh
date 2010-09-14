@@ -1,4 +1,17 @@
 class OutgoingTextMessage < ActiveRecord::Base
+  class SendOutgoingTextMessageJob < Struct.new(:id)
+    def perform
+      outgoing_text_message = OutgoingTextMessage.find(id)
+      gateway_response = SMSNotifier.deliver(outgoing_text_message)
+      gateway_message_id = SMSNotifier.connection.message_id(gateway_response)
+      outgoing_text_message.update_attributes(
+        :gateway_response => gateway_response,
+        :gateway_message_id => gateway_message_id,
+        :sent_at => Time.now
+      )
+    end
+  end
+
   belongs_to :mobile_number
   has_many :text_message_delivery_receipts
 
@@ -23,14 +36,9 @@ class OutgoingTextMessage < ActiveRecord::Base
   end
 
   def send_message
-    gateway_response = SMSNotifier.deliver(self)
-    gateway_message_id = SMSNotifier.connection.message_id(gateway_response)
-    self.update_attributes(
-      :gateway_response => gateway_response,
-      :gateway_message_id => gateway_message_id,
-      :sent_at => Time.now
+     Delayed::Job.enqueue(
+      SendOutgoingTextMessageJob.new(self.id), 1
     )
   end
-  handle_asynchronously :send_message
 end
 

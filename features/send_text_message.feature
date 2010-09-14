@@ -6,6 +6,7 @@ Feature: Send text message
     Given an outgoing text message exists
 
     Then the most recent job in the queue should be to send the text message
+    And the job's priority should be "1"
 
     Given the SMS Gateway will respond with: "OK: 0; Sent queued message ID: 86b1a945370734f4 SMSGlobalMsgID:6942744494999745"
 
