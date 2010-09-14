@@ -1,4 +1,18 @@
 class PaypalIpn < ActiveRecord::Base
+  class CreatePaypalIpnJob < Struct.new(:params)
+    attr_reader :attempt_job
+
+    MAX_ATTEMPTS = 1
+
+    def before(job)
+      @attempt_job = job.attempts < MAX_ATTEMPTS
+    end
+
+    def perform
+      PaypalIpn.create(params) if attempt_job
+    end
+  end
+
   include HTTParty
 
   has_one :seller_order, :as => :order_notification
@@ -24,6 +38,12 @@ class PaypalIpn < ActiveRecord::Base
             :uniqueness => true
 
   validate :seller_exists, :at_least_one_cart_item, :on => :create
+
+  def self.create_later(params)
+    Delayed::Job.enqueue(
+      CreatePaypalIpnJob.new(params)
+    )
+  end
 
   # Instance methods that must be implemented for all order notifications
 

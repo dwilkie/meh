@@ -2,6 +2,10 @@ Feature: Paypal IPN
   In order to avoid unregistered and duplicate Paypal IPNs from having an adverse affect on the system
   I want to ignore Paypal IPNs where the recipient is not a registered seller and where the Paypal IPN is a duplicate and I want to verify all other Paypal IPNs
 
+  Scenario: A paypel IPN is received
+    When a paypal ipn is received
+    Then the most recent job in the queue should be to create the paypal ipn
+
   Scenario Outline: A real paypal IPN is received for a registered seller
     Given a seller exists with email: "mara@example.com"
 
