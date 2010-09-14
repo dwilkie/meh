@@ -13,6 +13,9 @@ When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
     }
   }
   post path_to("create incoming text message"), params
+  Then "the most recent job in the queue should be to save the incoming text message"
+  When "the worker works off the job"
+  Then "the job should be deleted from the queue"
 end
 
 When /^a text message delivery receipt is received with:$/ do |params|
@@ -45,6 +48,12 @@ end
 Then /^the most recent job in the queue should be to send the text message$/ do
   last_job = Delayed::Job.last
   last_job.name.should match(/^OutgoingTextMessage#send_message/)
+  Then "a job should exist with id: #{last_job.id}"
+end
+
+Then /^the most recent job in the queue should be to save the incoming text message$/ do
+  last_job = Delayed::Job.last
+  last_job.name.should match(/CreateIncomingTextMessageJob$/)
   Then "a job should exist with id: #{last_job.id}"
 end
 

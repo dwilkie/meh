@@ -1,4 +1,19 @@
 class IncomingTextMessage < ActiveRecord::Base
+
+  class CreateIncomingTextMessageJob < Struct.new(:params)
+    attr_reader :attempt_job
+
+    MAX_ATTEMPTS = 1
+
+    def before(job)
+      @attempt_job = job.attempts < MAX_ATTEMPTS
+    end
+
+    def perform
+      IncomingTextMessage.create(params) if attempt_job
+    end
+  end
+
   serialize  :params
   belongs_to :mobile_number
 
@@ -12,6 +27,12 @@ class IncomingTextMessage < ActiveRecord::Base
   before_validation :link_to_mobile_number, :on => :create
 
   validate :authenticate, :on => :create
+
+  def self.create_later(params)
+    Delayed::Job.enqueue(
+      CreateIncomingTextMessageJob.new(params), 2
+    )
+  end
 
   def text
     SMSNotifier.connection.message_text(self.params)

@@ -27,7 +27,7 @@ Given(/^#{capture_model}'s (\w+) is #{capture_model}$/) do |name, attribute, val
   resource.save!
 end
 
-When(/^#{capture_model} is created(?: with #{capture_fields})?$/) do |name, fields|
+When /^#{capture_model} is created(?: with #{capture_fields})?$/ do |name, fields|
   create_model(name, fields)
 end
 
