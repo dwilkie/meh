@@ -55,20 +55,21 @@ class PaypalIpn < ActiveRecord::Base
     self.verified_at
   end
 
-  def item_name(index)
-    self.params["item_name#{index + 1}"]
+  def item_name(index = nil)
+    item_attribute_value("item_name", index)
   end
 
-  def item_quantity(index)
-    self.params["quantity#{index + 1}"].to_i
+  def item_quantity(index = nil)
+    item_attribute_value("quantity", index).to_i
   end
-.to_s
-  def item_number(index)
-    self.params["item_number#{index + 1}"]
+
+  def item_number(index = nil)
+    item_attribute_value("item_number", index).to_s
   end
 
   def number_of_cart_items
-    self.params["num_cart_items"].to_i
+    num_cart_items = self.params["num_cart_items"] || 1
+    num_cart_items.to_i
   end
 
   def customer_address(delimeter = ",\n")
@@ -121,20 +122,30 @@ class PaypalIpn < ActiveRecord::Base
   handle_asynchronously :verify
 
   private
+
+    def item_attribute_value(key, index = nil)
+      non_indexed_value = params[key]
+      index ?
+        (params["#{key}#{index + 1}"] || non_indexed_value)
+      : non_indexed_value
+    end
+
     def seller_exists
-      errors[:base] << "Receiver must be registered as a seller" if params && find_seller.nil?
+      errors[:base] << "Receiver must be registered as a seller" unless params.nil? || find_seller
     end
 
     def at_least_one_cart_item
-      errors[:base] << "Must be at least one cart item" if self.params && (self.number_of_cart_items < 1 || self.item_name(0).nil? || self.item_number(0).nil? || self.item_quantity(0).nil?)
+      errors[:base] << "Must be at least one cart item" unless params.nil? ||
+        (item_name && item_number && item_quantity)
     end
 
     def set_payment_status
-      self.payment_status = self.params["payment_status"] if self.params
+      self.payment_status = params["payment_status"] if self.params
     end
 
     def link_seller
-      self.seller = find_seller if self.verified_at_changed? && self.verified? && self.payment_completed?
+      self.seller = find_seller if verified_at_changed? &&
+        verified? && payment_completed?
     end
 
     def find_seller

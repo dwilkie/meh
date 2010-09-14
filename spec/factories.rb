@@ -117,10 +117,9 @@ Factory.define :paypal_ipn do |f|
       "payment_status" => paypal_ipn.payment_status,
       "receiver_email" => seller.email,
       "txn_id" => paypal_ipn.transaction_id,
-      "item_number1" => "12345790062",
-      "item_name1" => "Model Ship - The Rubber Dingy",
-      "quantity1" => "1",
-      "num_cart_items" => "1"
+      "item_number" => "12345790062",
+      "item_name" => "Model Ship - The Rubber Dingy",
+      "quantity" => "1"
     }
   }
 end
