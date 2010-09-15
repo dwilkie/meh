@@ -67,14 +67,13 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "body"
     t.string   "gateway_response"
     t.string   "gateway_message_id"
-    t.string   "from"
     t.integer  "mobile_number_id",   :null => false
     t.datetime "sent_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id"
+  add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id", :unique => true
 
   create_table "payment_agreements", :force => true do |t|
     t.boolean  "enabled",     :null => false

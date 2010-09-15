@@ -128,10 +128,7 @@ class Test
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all
-     TextMessageDeliveryReceipt.delete_all
-     OutgoingTextMessage.delete_all
      IncomingTextMessage.delete_all
-     MobileNumber.delete_all
    end
 
    def self.clear_jobs

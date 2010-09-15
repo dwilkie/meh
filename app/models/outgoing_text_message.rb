@@ -31,8 +31,8 @@ class OutgoingTextMessage < ActiveRecord::Base
     ).first
   end
 
-  def recipients
-    [mobile_number.to_s]
+  def recipient
+    mobile_number.to_s
   end
 
   def send_message

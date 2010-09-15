@@ -4,12 +4,11 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
       t.string     :body
       t.string     :gateway_response
       t.string     :gateway_message_id
-      t.string     :from
       t.references :mobile_number, :null => false
       t.datetime   :sent_at
       t.timestamps
     end
-    add_index :outgoing_text_messages, :gateway_message_id
+    add_index :outgoing_text_messages, :gateway_message_id, :unique => true
   end
 
   def self.down

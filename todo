@@ -1,5 +1,4 @@
 Write feature to verify remote payment applications
-Look into the Outgoing SMS Status Error
 Rename meh messager to meh notifier
 Launch staging app
 Investigate moving the devise mailout into the delayed_job queue
