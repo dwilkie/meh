@@ -10,7 +10,7 @@ def create_mobile_number(role)
   number = Test.create_mobile_number(role, String.new(number)) unless number.blank?
 end
 
-puts "This script will create mobile numbers which will trigger text messages to be sent. THIS WILL COST MONEY. Type 'yes' to continue..."
+puts "This script will create mobile numbers which may trigger text messages to be sent. THIS WILL COST MONEY. Type 'yes' to continue..."
 response = gets
 if response.chomp.downcase == "yes"
   create_mobile_number(:seller)

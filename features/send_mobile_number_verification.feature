@@ -7,6 +7,7 @@ Feature: Send mobile number verification
     Given a user exists
 
     When a mobile number is created with user: the user
+
     Then the mobile number should be the user's active_mobile_number
     And the most recent outgoing text message destined for the mobile number should be a translation of "verify your mobile number" in "en" (English)
 

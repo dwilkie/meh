@@ -1,4 +1,4 @@
-Feature: Paypal IPN Verification
+Feature: Verify Paypal Ipn
   In order to verify that a Paypal IPN intended for me actually originated from Paypal and was not spoofed
   As a seller
   I want to post back all fields to paypal for verification

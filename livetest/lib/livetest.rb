@@ -69,9 +69,10 @@ class Test
 
   def self.create_mobile_number(role, number)
     user = find_or_create_user!(role)
-    MobileNumber.new(
+    mobile_number = user.mobile_numbers.find_by_number(number)
+    MobileNumber.create(
       :number => number, :user => user
-    ).save
+    ) unless mobile_number
   end
 
   private

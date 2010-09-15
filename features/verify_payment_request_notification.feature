@@ -1,4 +1,4 @@
-Feature: Payment Request Verification
+Feature: Verify Payment Request Notification
   In order to prevent unauthorized payment requests made to my external payment application from being executed
   As a seller
   I want to verify that the payment request was made by this application

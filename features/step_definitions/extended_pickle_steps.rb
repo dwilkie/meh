@@ -21,18 +21,12 @@ Given /^#{capture_model} has the following params:$/ do |name, params|
   )
 end
 
-Given(/^#{capture_model}'s (\w+) is #{capture_model}$/) do |name, attribute, value|
-  resource = model(name)
-  resource.send("#{attribute}=", model(value))
-  resource.save!
-end
-
 When /^#{capture_model} is created(?: with #{capture_fields})?$/ do |name, fields|
   create_model(name, fields)
 end
 
-When /^(?:I|#{capture_model}) (\w+) #{capture_model}$/ do |actor, transition, name|
-  model!(name).send("#{transition.singularize}!")
+When /^I create #{capture_model}(?: with #{capture_fields})?$/ do |name, fields|
+  create_model(name, fields)
 end
 
 When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|

@@ -1,4 +1,4 @@
-When /^the worker (?:tries (\d+) times to )?works? off #{capture_model}$/ do |attempts, job|
+When /^the worker (?:tries (\d+) times to )?works? off #{capture_model}(?: again)?$/ do |attempts, job|
   job = model!(job)
   attempts ||= 1
   attempts.to_i.times do
