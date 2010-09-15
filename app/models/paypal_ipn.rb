@@ -68,7 +68,7 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   def number_of_cart_items
-    num_cart_items = self.params["num_cart_items"] || 1
+    num_cart_items = params["num_cart_items"] || 1
     num_cart_items.to_i
   end
 
@@ -125,8 +125,8 @@ class PaypalIpn < ActiveRecord::Base
 
     def item_attribute_value(key, index = nil)
       non_indexed_value = params[key]
-      index ?
-        (params["#{key}#{index + 1}"] || non_indexed_value)
+      index && params["num_cart_items"] ?
+        params["#{key}#{index + 1}"]
       : non_indexed_value
     end
 
@@ -140,17 +140,17 @@ class PaypalIpn < ActiveRecord::Base
     end
 
     def set_payment_status
-      self.payment_status = params["payment_status"] if self.params
+      self.payment_status = params["payment_status"] if params
     end
 
     def link_seller
       self.seller = find_seller if verified_at_changed? &&
-        verified? && payment_completed?
+        verified? && verified_at_was.nil? && payment_completed?
     end
 
     def find_seller
       User.with_role("seller").where(
-        ["email = ?", self.params["receiver_email"]]
+        ["email = ?", params["receiver_email"]]
       ).first
     end
 end

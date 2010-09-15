@@ -1,6 +1,6 @@
 # Usage
 # rails runner create_mobile_numbers.rb
-require File.expand_path(File.dirname(__FILE__) + '/live_testing')
+require File.expand_path(File.dirname(__FILE__) + '/lib/livetest')
 
 def create_mobile_number(role)
   default_number = Test::PARAMS["#{role.to_s}_mobile_number".to_sym]

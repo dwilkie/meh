@@ -8,13 +8,11 @@ class CreateTrackingNumberFormats < ActiveRecord::Migration
       t.references :product
       t.timestamps
     end
+    # name => max length is 64 chars
     add_index(:tracking_number_formats,
-      [:seller_id, :supplier_id, :product_id], :unique => true
+      [:seller_id, :supplier_id, :product_id], :unique => true,
+      :name => "index_tracking_number_formats_unique"
     )
-
-    # add indexes to ensure nulls are also considered the same (to complement model)
-    # see postrsql unique index documentation
-    #execute "CREATE UNIQUE INDEX _key ON tracking_number_formats (seller_id) WHERE supplier_id IS NOT NULL"
   end
 
   def self.down

@@ -12,15 +12,13 @@ class CreateNotifications < ActiveRecord::Migration
       t.references :product
       t.timestamps
     end
+    # name => max length is 64 chars
     add_index(
       :notifications,
-      [:seller_id, :supplier_id, :product_id, :purpose, :event, :for], :unique => true
+      [:seller_id, :supplier_id, :product_id, :purpose, :event, :for],
+      :unique => true,
+      :name => "index_notifications_unique"
     )
-
-    #execute "CREATE UNIQUE INDEX user_andor_company_company_key ON user_andor_company (company) WHERE user IS NOT NULL"
-
-    # add indexes to ensure nulls are also considered the same (to complement model)
-    # see postrsql unique index documentation
   end
 
   def self.down

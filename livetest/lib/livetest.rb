@@ -1,19 +1,25 @@
 # Sets up the development environment ready for a live paypal ipn simulation
+# store mobile numbers in ~/.bashrc
 require 'factory_girl'
-require File.expand_path(File.dirname(__FILE__) + '/../spec/factories')
+require File.expand_path(File.dirname(__FILE__) + '/../../spec/factories')
 require 'ruby-debug'
 class Test
-  TEST_USERS = {
-    :paypal_sandbox_seller_email => "mehsel_1273155831_biz@gmail.com",
-    :paypal_sandbox_supplier_email => "mehsau_1273220241_biz@gmail.com"
+  PARAMS = {
+    :test_users => {
+      :paypal_sandbox_seller_email => "mehsel_1273155831_biz@gmail.com",
+      :paypal_sandbox_supplier_email => "mehsau_1273220241_biz@gmail.com"
+    },
+    :payment_application_uri => "http://meh-payment-processor.appspot.com",
+    :paypal_item_number => "AK-1234",
+    :seller_mobile_number => ENV['LIVE_TESTING_SELLER_MOBILE_NUMBER'].clone
   }
-  PAYPAL_ITEM_NUMBER = "AK-1234"
 
   def self.setup
     seller = find_or_create_user!(:seller)
     supplier = find_or_create_user!(:supplier)
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
+    find_or_create_payment_application!(seller)
     delete_old_records
     clear_jobs
   end
@@ -38,12 +44,12 @@ class Test
         "address_state" => "CA",
         "address_city" => "San Jose",
         "address_street" => "123, any street",
-        "business" => TEST_USERS[:paypal_sandbox_seller_email],
-        "receiver_email" => TEST_USERS[:paypal_sandbox_seller_email],
+        "business" => PARAMS[:test_users][:paypal_sandbox_seller_email],
+        "receiver_email" => PARAMS[:test_users][:paypal_sandbox_seller_email],
         "receiver_id" => "TESTSELLERID1",
         "residence_country" => "US",
         "item_name" => "something",
-        "item_number" => PAYPAL_ITEM_NUMBER,
+        "item_number" => PARAMS[:paypal_item_number],
         "quantity" => "1",
         "shipping" => "3.04",
         "tax" => "2.02",
@@ -56,22 +62,28 @@ class Test
         "custom" => "xyz123",
         "invoice" => "abc1234",
         "charset" => "windows-1252",
-        "verify_sign" => "AwosIUsaPEUAEVNwAoOiHlnOoVztAdW5yH1b32smu56j83xs0nC1clwX"
+        "verify_sign" => "Al7mV6GyvDK8l7eTXLC6nVSXyKxXAZ6i5PT53tze8XPlm.B8n-2X-DV2"
       }
     }.to_query
  end
 
+  def self.create_mobile_number(role, number)
+    user = find_or_create_user!(role)
+    MobileNumber.new(
+      :number => number, :user => user
+    ).save
+  end
+
   private
+    def self.find_or_create_user!(role)
+      user = User.with_role(role).first || Factory.build(role)
+      user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
+      user.save!
+      user
+    end
 
-   def self.find_or_create_user!(role)
-     user = User.with_role(role).first || Factory.build(role)
-     user.email = TEST_USERS["paypal_sandbox_#{role.to_s}_email".to_sym]
-     user.save!
-     user
-   end
-
-   def self.find_or_create_payment_agreement!(seller, supplier)
-     payment_agreement = PaymentAgreement.where(
+    def self.find_or_create_payment_agreement!(seller, supplier)
+      payment_agreement = PaymentAgreement.where(
        :seller_id => seller.id,
        :supplier_id => supplier.id
      ).first || Factory.build(
@@ -93,11 +105,21 @@ class Test
        :seller => seller,
        :supplier => supplier
      )
-     product.cents = 50000
+     product.cents = 2000
      product.currency = "AUD"
-     product.number = PAYPAL_ITEM_NUMBER
+     product.number = PARAMS[:paypal_item_number]
      product.save!
      product
+   end
+
+   def self.find_or_create_payment_application!(seller)
+     payment_application = seller.payment_application ||
+       Factory.build(
+         :payment_application,
+         :seller => seller
+       )
+     payment_application.uri = PARAMS[:payment_application_uri]
+     payment_application.save!
    end
 
    def self.delete_old_records
@@ -106,6 +128,10 @@ class Test
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all
+     TextMessageDeliveryReceipt.delete_all
+     OutgoingTextMessage.delete_all
+     IncomingTextMessage.delete_all
+     MobileNumber.delete_all
    end
 
    def self.clear_jobs

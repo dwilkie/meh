@@ -1,4 +1,5 @@
 # Simulates an incoming text message
+require File.expand_path(File.dirname(__FILE__) + '/lib/livetest')
 puts "Enter your text message and press 'ENTER'"
 message = gets.chomp
 default_seller_number = Test::PARAMS["seller_mobile_number".to_sym]

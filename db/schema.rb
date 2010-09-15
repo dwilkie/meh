@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "updated_at"
   end
 
+  add_index "notifications", ["seller_id", "supplier_id", "product_id", "purpose", "event", "for"], :name => "index_notifications_unique", :unique => true
+
   create_table "outgoing_text_messages", :force => true do |t|
     t.string   "body"
     t.string   "gateway_response"
@@ -193,6 +195,8 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tracking_number_formats", ["seller_id", "supplier_id", "product_id"], :name => "index_tracking_number_formats_unique", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
