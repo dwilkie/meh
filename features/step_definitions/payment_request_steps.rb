@@ -1,9 +1,9 @@
 Given /^the remote payment application for #{capture_model} is (up|down)( but)?/ do |payment_request_name, status, exception|
-  uri = model!(payment_request_name).remote_payment_application_uri
+  uri = model!(payment_request_name).payment_application.payment_request_uri
   http_status = (status == "up" && exception.nil?) ? ["200", "OK"] : ["404", "Not Found"]
   FakeWeb.register_uri(
     :post,
-    URI.join(uri, "payment_requests").to_s,
+    uri,
     :status => http_status
   ) unless status == "down"
 end

@@ -1,90 +1,52 @@
 class PaymentRequest < ActiveRecord::Base
-  class RemotePaymentRequest # Represents the payment request on the remote side
 
-    class AbstractRemotePaymentRequestJob < Struct.new(
-      :payment_request_id, :request_uri, :body
-    )
-      include HTTParty
+  class AbstractRemotePaymentRequestJob < Struct.new(:payment_request_id)
+    include HTTParty
 
-      MAX_ATTEMPTS = 8
+    MAX_ATTEMPTS = 8
 
-      attr_reader :attempt_job, :response
+    attr_reader :attempt_job, :response
 
-      def before(job)
-        @attempt_job = job.attempts < MAX_ATTEMPTS
-      end
-
-      def failure(job, exception)
-        if job.attempts >= MAX_ATTEMPTS - 1
-          payment_request.give_up!(exception.message)
-        end
-      end
-
-      protected
-        def payment_request
-          PaymentRequest.find(payment_request_id)
-        end
+    def before(job)
+      @attempt_job = job.attempts < MAX_ATTEMPTS
     end
 
-    class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
-      def perform
-        @response = self.class.post(request_uri, :body => body) if attempt_job
-      end
-
-      def success(job)
-        response.code == 200 ? payment_request.remote_application_received! :
-          payment_request.give_up!(response.message) if response
-      end
-
-      def after(job)
-        payment_request.first_attempt_to_send_to_remote_application! if
-          job.attempts == 0
+    def failure(job, exception)
+      if job.attempts >= MAX_ATTEMPTS - 1
+        payment_request.give_up!(exception.message)
       end
     end
 
-    class VerifyRemotePaymentRequestNotificationJob < AbstractRemotePaymentRequestJob
-      def perform
-        @response = self.class.head(request_uri) if attempt_job
+    protected
+      def payment_request
+        PaymentRequest.find(payment_request_id)
       end
+  end
 
-      def success(job)
-        payment_request.verify_notification! if response && response.code == 200
-      end
+  class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
+    def perform
+      @response = self.class.post(payment_request.remote_uri) if
+        attempt_job
     end
 
-    attr_accessor :payment_request
-    attr_accessor :application_uri
-
-    def initialize(payment_request)
-      @payment_request = payment_request
-      @application_uri = payment_request.remote_payment_application_uri
+    def success(job)
+      response.code == 200 ? payment_request.remote_application_received! :
+        payment_request.give_up!(response.message) if response
     end
 
-    def payment_requests_uri(id = nil)
-      path = "payment_requests"
-      path << "/#{id.to_s}" if id
-      URI.join(application_uri, path).to_s
+    def after(job)
+      payment_request.first_attempt_to_send_to_remote_application! if
+        job.attempts == 0
+    end
+  end
+
+  class VerifyPaymentRequestNotificationJob < AbstractRemotePaymentRequestJob
+    def perform
+      @response = self.class.head(payment_request.remote_uri) if attempt_job
     end
 
-    def create(params)
-      body = {"payment_request" => params}
-
-      Delayed::Job.enqueue(
-        CreateRemotePaymentRequestJob.new(
-          payment_request.id, payment_requests_uri, body
-        )
-      )
-    end
-
-    def verify_notification
-      request_uri = URI.parse(payment_requests_uri(payment_request.remote_id))
-      request_uri.query = payment_request.notification.to_query
-      Delayed::Job.enqueue(
-        VerifyRemotePaymentRequestNotificationJob.new(
-          payment_request.id,
-          request_uri.to_s
-        )
-      )
+    def success(job)
+      payment_request.verify_notification! if response && response.code == 200
     end
   end
 
@@ -103,11 +65,10 @@ class PaymentRequest < ActiveRecord::Base
     end
   end
 
-  attr_accessor :payment_application
-
   belongs_to :payment
+  belongs_to :payment_application
 
-  before_create :build_params, :set_remote_payment_application_uri
+  before_create :build_params
   after_create :request_remote_payment
 
   serialize   :params
@@ -139,7 +100,9 @@ class PaymentRequest < ActiveRecord::Base
         :notification => notification,
         :notified_at => Time.now
       )
-      RemotePaymentRequest.new(self).verify_notification
+      Delayed::Job.enqueue(
+        VerifyPaymentRequestNotificationJob.new(self.id)
+      )
     end
   end
 
@@ -153,7 +116,7 @@ class PaymentRequest < ActiveRecord::Base
   def seller_failure_error
     I18n.t(
       "activerecord.errors.models.payment_request.gave_up",
-      :uri => RemotePaymentRequest.new(self).payment_requests_uri
+      :uri => payment_application.payment_requests_uri
     )
   end
 
@@ -217,6 +180,15 @@ class PaymentRequest < ActiveRecord::Base
     !self.notification_verified_at.nil?
   end
 
+  def remote_uri
+    payment_application.payment_request_uri(
+      :remote_id => remote_id,
+      :params => {
+        "payment_request" => params.merge({"id" => self.id})
+      }
+    )
+  end
+
   private
     def notified?
       !notified_at.nil?
@@ -246,8 +218,9 @@ class PaymentRequest < ActiveRecord::Base
     end
 
     def request_remote_payment
-      request_params = self.params.merge({"id" => self.id})
-      RemotePaymentRequest.new(self).create(request_params)
+      Delayed::Job.enqueue(
+        CreateRemotePaymentRequestJob.new(self.id)
+      )
     end
 
     def verified_payment_application
@@ -255,10 +228,6 @@ class PaymentRequest < ActiveRecord::Base
         :payment_application,
         :unverified
       ) if payment_application && payment_application.unverified?
-    end
-
-    def set_remote_payment_application_uri
-      self.remote_payment_application_uri = payment_application.uri
     end
 end
 

@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "payment_applications", ["uri"], :name => "index_payment_applications_on_uri", :unique => true
 
   create_table "payment_requests", :force => true do |t|
-    t.string   "remote_payment_application_uri",                 :null => false
     t.integer  "payment_id",                                     :null => false
+    t.integer  "payment_application_id",                         :null => false
     t.text     "params",                                         :null => false
     t.integer  "remote_id"
     t.text     "notification"

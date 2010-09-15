@@ -1,8 +1,8 @@
 class CreatePaymentRequests < ActiveRecord::Migration
   def self.up
     create_table    :payment_requests do |t|
-      t.string      :remote_payment_application_uri, :null => false
       t.references  :payment, :null => false
+      t.references  :payment_application, :null => false
       t.text        :params,  :null => false
       t.integer     :remote_id
       t.text        :notification
