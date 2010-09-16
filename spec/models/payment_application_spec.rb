@@ -14,6 +14,10 @@ describe PaymentApplication do
       payment_application.uri = "http://something.example_app.com"
       payment_application.should_not be_valid
     end
+    it "should not be valid without a http or https uri" do
+      payment_application.uri = "ftp://example.com"
+      payment_application.should_not be_valid
+    end
     it "should not be valid without a seller" do
       payment_application.seller = nil
       payment_application.should_not be_valid

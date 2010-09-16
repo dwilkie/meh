@@ -25,7 +25,9 @@ class PaymentApplication < ActiveRecord::Base
   class UriValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       begin
-        URI.parse(value)
+        uri = URI.parse(value)
+        record.errors.add(attribute, :invalid) unless
+          uri.scheme =~ /^https?$/
       rescue URI::InvalidURIError
         record.errors.add attribute, :invalid
       end
