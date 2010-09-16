@@ -1,4 +1,3 @@
-Fix up refactor of payment request so that all tests pass
 Add validation on format for payment application
 Modify validation and devise mailout for users (allow suppliers to be created with just a name)
 Rename meh messager to meh notifier

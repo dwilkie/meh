@@ -59,9 +59,3 @@ Then /^the response should be (\d+)$/ do |response|
   @response.should == response.to_i
 end
 
-Then /^the last request should contain #{capture_model} params$/ do |name|
-  model!(name).remote_params.should == Rack::Utils.parse_nested_query(
-    FakeWeb.last_request.body
-  )
-end
-

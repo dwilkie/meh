@@ -183,7 +183,7 @@ class PaymentRequest < ActiveRecord::Base
   end
 
   def remote_params
-    { "payment_request" => params.merge("id" => self.id.to_s) }
+    { "payment_request" => params.merge("id" => self.id) }
   end
 
   def remote_uri(request_type = :post)

@@ -14,6 +14,7 @@ Feature: Verify Paypal Ipn
 
     Then the paypal ipn should be verified
     And the paypal ipn should not be fraudulent
+    And the last request should contain the paypal ipn params
 
   Scenario: Paypal did not send the IPN
     Given paypal did not send the IPN
@@ -22,4 +23,5 @@ Feature: Verify Paypal Ipn
 
     Then the paypal ipn should not be verified
     And the paypal ipn should be fraudulent
+    And the last request should contain the paypal ipn params
 
