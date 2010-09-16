@@ -52,12 +52,12 @@ Feature: Verify payment application
     Then the job should be deleted from the queue
     And the payment application should not be verified
 
- Scenario: I enter a url that does not have a 'payment_requests' resource
+ Scenario: I enter a url that does not resolve to a valid payment application
     When I create a payment application
 
     Then the most recent job in the queue should be to verify the payment application
 
-    Given the url does not have a "payment_requests" resource
+    Given the url does not resolve to a valid payment application
 
     When the worker works off the job
 

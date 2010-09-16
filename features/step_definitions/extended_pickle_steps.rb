@@ -29,6 +29,10 @@ When /^I create #{capture_model}(?: with #{capture_fields})?$/ do |name, fields|
   create_model(name, fields)
 end
 
+When /^(?:I|#{capture_model}) (?!create)(\w+) #{capture_model}$/ do |actor, action, name|
+  model!(name).send("#{action.singularize}!")
+end
+
 When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|
   model!(name).update_attributes!(parse_fields(fields))
 end

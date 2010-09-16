@@ -11,9 +11,9 @@ Given(/^a supplier order exists? for #{capture_model}(?: with #{capture_fields})
   item_quantity = fields_hash["quantity"] if fields_hash["quantity"]
   paypal_ipn.params = paypal_ipn.params.merge(
     {
-      "item_name1" => product.name,
-      "item_number1" => product.number.to_s,
-      "quantity1" => item_quantity.to_s
+      "item_name" => product.name,
+      "item_number" => product.number.to_s,
+      "quantity" => item_quantity.to_s
     }
   )
   paypal_ipn.save!

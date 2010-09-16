@@ -38,6 +38,7 @@ Feature: Payment Request Notification
     When the worker works off the job
 
     Then the job should be deleted from the queue
+
     And the payment request <should_or_should_not> have a notification_verified
 
     Examples:

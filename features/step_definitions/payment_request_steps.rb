@@ -1,24 +1,17 @@
 Given /^the remote payment application for #{capture_model} is (up|down)( but)?/ do |payment_request_name, status, exception|
-  uri = model!(payment_request_name).payment_application.payment_request_uri
   http_status = (status == "up" && exception.nil?) ? ["200", "OK"] : ["404", "Not Found"]
   FakeWeb.register_uri(
     :post,
-    uri,
+    model!(payment_request_name).remote_uri,
     :status => http_status
   ) unless status == "down"
 end
 
 Given /^the remote payment application for #{capture_model} (sent|did not send) the notification (?:(?:and|but) is currently (up|down))$/ do |payment_request_name, genuine, status|
-  payment_request = model!(payment_request_name)
-  uri = URI.join(
-    payment_request.remote_payment_application_uri,
-    "payment_requests/#{payment_request.remote_id}"
-  )
-  uri.query = payment_request.notification.to_query
   http_status = genuine == "sent" ? ["200", "OK"] : ["404", "Not Found"]
   FakeWeb.register_uri(
     :head,
-    uri.to_s,
+    model!(payment_request_name).remote_uri(:head),
     :status => http_status
   ) unless status == "down"
 end
@@ -49,7 +42,7 @@ Then /^the most recent job in the queue should (not )?be to (create|verify|notif
     when "create"
       job_name = /CreateRemotePaymentRequestJob$/
     when "verify"
-      job_name = /VerifyRemotePaymentRequestNotificationJob$/
+      job_name = /VerifyPaymentRequestNotificationJob$/
     when "notify"
       job_name = /NotifyPaymentRequestJob$/
   end
@@ -64,5 +57,11 @@ end
 
 Then /^the response should be (\d+)$/ do |response|
   @response.should == response.to_i
+end
+
+Then /^the last request should contain #{capture_model} params$/ do |name|
+  model!(name).remote_params.should == Rack::Utils.parse_nested_query(
+    FakeWeb.last_request.body
+  )
 end
 

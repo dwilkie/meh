@@ -19,14 +19,16 @@ class PaymentRequest < ActiveRecord::Base
 
     protected
       def payment_request
-        PaymentRequest.find(payment_request_id)
+        @payment_request || @payment_request = PaymentRequest.find(payment_request_id)
       end
   end
 
   class CreateRemotePaymentRequestJob < AbstractRemotePaymentRequestJob
     def perform
-      @response = self.class.post(payment_request.remote_uri) if
-        attempt_job
+      @response = self.class.post(
+        payment_request.remote_uri,
+        :body => payment_request.remote_params
+      ) if attempt_job
     end
 
     def success(job)
@@ -42,7 +44,7 @@ class PaymentRequest < ActiveRecord::Base
 
   class VerifyPaymentRequestNotificationJob < AbstractRemotePaymentRequestJob
     def perform
-      @response = self.class.head(payment_request.remote_uri) if attempt_job
+      @response = self.class.head(payment_request.remote_uri(:head)) if attempt_job
     end
 
     def success(job)
@@ -116,7 +118,7 @@ class PaymentRequest < ActiveRecord::Base
   def seller_failure_error
     I18n.t(
       "activerecord.errors.models.payment_request.gave_up",
-      :uri => payment_application.payment_requests_uri
+      :uri => remote_uri
     )
   end
 
@@ -166,7 +168,7 @@ class PaymentRequest < ActiveRecord::Base
         :supplier_name => supplier.name,
         :supplier_email => supplier.email,
         :currency => payment.currency,
-        :uri => remote_payment_application_uri,
+        :uri => payment_application.uri
       )
     end
   end
@@ -180,13 +182,16 @@ class PaymentRequest < ActiveRecord::Base
     !self.notification_verified_at.nil?
   end
 
-  def remote_uri
-    payment_application.payment_request_uri(
+  def remote_params
+    { "payment_request" => params.merge("id" => self.id.to_s) }
+  end
+
+  def remote_uri(request_type = :post)
+    options = request_type == :head ? {
       :remote_id => remote_id,
-      :params => {
-        "payment_request" => params.merge({"id" => self.id})
-      }
-    )
+      :query => notification
+    } : {}
+    payment_application.payment_request_uri(options)
   end
 
   private
