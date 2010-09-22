@@ -1,6 +1,6 @@
 Given /^paypal (did not send|sent) the IPN$/ do |fraudulent|
   body = fraudulent =~ /sent/ ? "VERIFIED" : "INVALID"
-  request_uri = URI.parse(APP_CONFIG["paypal_ipn_postback_uri"])
+  request_uri = Paypal::Ipn.postback_uri
   request_uri.scheme = "https"
   FakeWeb.register_uri(
     :post,
@@ -26,14 +26,17 @@ When /^a paypal ipn is received with:$/ do |params|
   Then "the job should be deleted from the queue"
 end
 
-When /^the paypal ipn is verified$/ do
-  model!("paypal_ipn").update_attributes!(:verified_at => Time.now)
+When /^the #{capture_model} is verified$/ do |name|
+  model!(name).update_attributes!(:verified_at => Time.now)
 end
 
-Then /^the most recent job in the queue should be to (create|verify) the paypal ipn$/ do |action|
-  job_name = action == "create" ? /CreatePaypalIpnJob$/ : /^PaypalIpn#verify/
+Then /^the most recent job in the queue should (not )?be to (create|verify) the paypal ipn$/ do |expectation, action|
   last_job = Delayed::Job.last
-  last_job.name.should match(job_name)
-  Then "a job should exist with id: #{last_job.id}"
+  expectation = expectation ? "_not" : ""
+  job_name = action == "create" ? /CreatePaypalIpnJob$/ : /PaypalIpn#verify/
+  if last_job
+    last_job.name.send("should#{expectation}", match(job_name))
+    Then "a job should exist with id: #{last_job.id}"
+  end
 end
 

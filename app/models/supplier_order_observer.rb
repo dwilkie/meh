@@ -27,19 +27,19 @@ class SupplierOrderObserver < ActiveRecord::Observer
         product
       ).first
       if payment_agreement && payment_agreement.enabled?
-        payment = seller.outgoing_payments.build(
+        supplier_payment = seller.outgoing_supplier_payments.build(
           :supplier_order => supplier_order,
           :supplier => supplier,
           :amount => supplier_order.supplier_total
         )
-        payment.save
-        PaymentNotification.new(:with => seller).did_not_pay(
-          payment,
+        supplier_payment.save
+        SupplierPaymentNotification.new(:with => seller).did_not_pay(
+          supplier_payment,
           :supplier => supplier,
           :seller => seller,
           :product => product,
-          :errors => payment.errors
-        ) unless payment.valid? || seller.cannot_text?
+          :errors => supplier_payment.errors
+        ) unless supplier_payment.valid? || seller.cannot_text?
       end
     end
 

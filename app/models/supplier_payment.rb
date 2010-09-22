@@ -1,4 +1,6 @@
-class Payment < ActiveRecord::Base
+class SupplierPayment < ActiveRecord::Base
+
+  include Paypal::Masspay
 
   composed_of :amount,
               :class_name => "Money",
@@ -15,7 +17,7 @@ class Payment < ActiveRecord::Base
 
   belongs_to  :supplier_order
 
-  has_one     :payment_request
+  belongs_to  :notification, :polymorphic => true
 
   validates :amount,
             :presence => true,
@@ -33,6 +35,23 @@ class Payment < ActiveRecord::Base
   validates :supplier,
             :presence => true
 
+  after_create :pay
 
+  private
+    def pay
+      payment_response = masspay(
+        seller.email,
+        supplier.email,
+        amount.to_s,
+        amount.currency.to_s,
+        I18n.t(
+          "activerecord.payment.note",
+          :supplier_order_number => supplier_order.id.to_s
+        ),
+        self.id.to_s
+      )
+      self.update_attributes!(:payment_response => payment_response)
+    end
+    handle_asynchronously :pay
 end
 

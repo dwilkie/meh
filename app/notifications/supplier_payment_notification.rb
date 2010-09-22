@@ -1,12 +1,12 @@
-class PaymentNotification < Conversation
-  def did_not_pay(payment, options = {})
-    options[:seller] ||= payment.seller
-    options[:supplier] ||= payment.supplier
+class SupplierPaymentNotification < Conversation
+  def did_not_pay(supplier_payment, options = {})
+    options[:seller] ||= supplier_payment.seller
+    options[:supplier] ||= supplier_payment.supplier
     options[:supplier_mobile_number] ||= Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier])
-    options[:supplier_order] ||= payment.supplier_order
+    options[:supplier_order] ||= supplier_payment.supplier_order
     options[:product] ||= options[:supplier_order].product
 
-    options[:errors] ||= payment.errors
+    options[:errors] ||= supplier_payment.errors
     options[:errors] = options[:errors].full_messages.to_sentence if
       options[:errors].is_a?(Hash)
     error_words = options[:errors].split

@@ -10,7 +10,7 @@ Feature: Accept supplier order
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
     And a supplier order exists for the product with quantity: 3
-    And the paypal ipn has the following params:
+    And the seller order paypal ipn has the following params:
     """
     {
       'address_name' => 'Ho Chi Minh',

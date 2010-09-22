@@ -1,12 +1,9 @@
-Feature: Paypal IPN
-  In order to avoid unregistered and duplicate Paypal IPNs from having an adverse affect on the system
-  I want to ignore Paypal IPNs where the recipient is not a registered seller and where the Paypal IPN is a duplicate and I want to verify all other Paypal IPNs
+Feature: Seller Order Paypal IPN
+  In order to receive notifications about payments made to me from my customers
+  As a seller
+  I want to keep a record of all paypal ipns where I am the receiver
 
-  Scenario: A paypel IPN is received
-    When a paypal ipn is received
-    Then the most recent job in the queue should be to create the paypal ipn
-
-  Scenario Outline: A real paypal IPN is received for a registered seller
+  Scenario Outline: A paypal ipn is received for a registered seller
     Given a seller exists with email: "mara@example.com"
 
     When a paypal ipn is received with:
@@ -66,6 +63,7 @@ Feature: Paypal IPN
 
     Then a paypal ipn should exist with transaction_id: "45D21472YD1820048"
     And the paypal ipn's payment_status should <be_or_not_be> "Completed"
+    And the most recent job in the queue should <be_or_not_be> to verify the paypal ipn
     And the paypal ipn should have the following params:
     """
     {
@@ -124,7 +122,7 @@ Feature: Paypal IPN
      | Completed      | be           |
      | Pending        | not be       |
 
-  Scenario: A Paypal IPN is received for an unregistered seller
+  Scenario: A paypal ipn is received for an unregistered seller
     When a paypal ipn is received with:
     """
     {
@@ -140,23 +138,20 @@ Feature: Paypal IPN
     """
     Then a paypal ipn should not exist
 
-  Scenario: A Paypal IPN is received for a duplicate transaction id
-    Given a seller exists with email: "mara@example.com"
-    And a paypal ipn exists with seller: the seller, transaction_id: "45D21472YD1820048"
+  Scenario Outline: A paypal ipn is received with a completed payment status
+    When a payment completed seller order paypal ipn is created
+    Then the most recent job in the queue should be to verify the paypal ipn
 
-    When a paypal ipn is received with:
-    """
-    {
-      'paypal_ipn' => {
-        'receiver_email'=>'mara@example.com',
-        'txn_id'=>'45D21472YD1820048',
-        'item_number1'=>'12345790063',
-        'quantity1'=>'1',
-        'num_cart_items'=>'1',
-        'item_name1'=>'Yet another piece of mank'
-      }
-    }
-    """
+    Given paypal <sent_or_did_not_send> the IPN
 
-    Then 1 paypal ipns should exist
+    When the worker works off the job
+
+    Then the payment completed seller order paypal ipn should <be_or_not_be_verified>
+    And the payment completed seller order paypal ipn should <be_or_not_be_fraudulent>
+    And the last request should contain the payment completed seller order paypal ipn params
+
+    Examples:
+      | sent_or_did_not_send | be_or_not_be_verified | be_or_not_be_fraudulent |
+      | sent | be verified | not be fraudulent |
+      | did not send | not be verified | be fraudulent |
 

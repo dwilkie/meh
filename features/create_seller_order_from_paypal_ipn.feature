@@ -9,8 +9,8 @@ Feature: Create a seller order from an order notification
 
   Scenario Outline: The payment status is completed
     Given the mobile number <is_not_yet_or_was_already> verified
-    And a paypal ipn exists with payment_status: "Completed"
-    And the paypal ipn has the following params:
+    And a payment completed seller order paypal ipn exists
+    And the payment completed seller order paypal ipn has the following params:
     """
     {
       'receiver_email' => 'mara@example.com',
@@ -23,11 +23,11 @@ Feature: Create a seller order from an order notification
     }
     """
 
-    When the paypal ipn is verified
+    When the payment completed seller order paypal ipn is verified
 
     Then a seller order should exist
-    And the seller order should be the paypal ipn's seller_order
-    And the seller should be the paypal ipn's seller
+    And the seller order should be the payment completed seller order paypal ipn's seller_order
+    And the seller should be the payment completed seller order paypal ipn's seller
     And the seller order should be amongst the seller's seller_orders
     And the 2nd most recent outgoing text message destined for the mobile number <should_or_should_not_be>
     """
@@ -46,15 +46,15 @@ Feature: Create a seller order from an order notification
       | is not yet                | should not be           |
 
   Scenario: The payment status is not completed
-    Given a paypal ipn exists with payment_status: "Pending"
-    And the paypal ipn has the following params:
+    Given a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
       'receiver_email' => 'mara@example.com'
     }
     """
 
-    When the paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then a seller order should not exist
 

@@ -10,5 +10,15 @@ class SellerOrder < ActiveRecord::Base
   validates :seller,
             :order_notification,
             :presence => true
+
+  def order_notification_with_type
+    order_notification = order_notification_without_type
+    order_notification.respond_to?(:type) ?
+      order_notification.type :
+      order_notification
+  end
+
+  alias_method_chain :order_notification, :type
+
 end
 

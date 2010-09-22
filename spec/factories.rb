@@ -2,23 +2,15 @@ Factory.define :user do |f|
   f.sequence(:email) {|n| "user#{n}@example.com" }
   f.password "foobar"
   f.password_confirmation { |u| u.password }
-  f.name "Maggot"
+  f.name "Mara"
 end
 
-Factory.define :seller, :class => User do |f|
-  f.sequence(:email) {|n| "seller#{n}@example.com" }
+Factory.define :seller, :parent => :user do |f|
   f.roles ["seller"]
-  f.password "foobar"
-  f.password_confirmation { |u| u.password }
-  f.name "Chris"
 end
 
-Factory.define :supplier, :class => User do |f|
-  f.sequence(:email) {|n| "supplier#{n}@example.com" }
+Factory.define :supplier, :parent => :user do |f|
   f.roles ["supplier"]
-  f.password "foobar"
-  f.password_confirmation { |u| u.password }
-  f.name "Bob"
 end
 
 Factory.define :mobile_number do |f|
@@ -26,10 +18,8 @@ Factory.define :mobile_number do |f|
   f.association :user
 end
 
-Factory.define :verified_mobile_number, :class => MobileNumber do |f|
-  f.sequence(:number) {|n| "+618148229#{n}" }
+Factory.define :verified_mobile_number, :parent => :mobile_number do |f|
   f.verified_at Time.now
-  f.association :user
 end
 
 Factory.define :product do |f|
@@ -43,7 +33,7 @@ end
 Factory.define :seller_order do |f|
   f.association :seller
   f.order_notification {|seller_order|
-    seller_order.association(:paypal_ipn, :seller => seller_order.seller)
+    seller_order.association(:seller_order_paypal_ipn, :seller => seller_order.seller)
   }
 end
 
@@ -55,6 +45,12 @@ end
 
 Factory.define :outgoing_text_message do |f|
   f.association :mobile_number
+end
+
+Factory.define :sent_outgoing_text_message, :parent => :outgoing_text_message do |f|
+  f.sequence(:gateway_message_id) { |n|
+    "SMSGlobalMsgID:694274449499974#{n}"
+  }
 end
 
 Factory.define :notification do |f|
@@ -73,13 +69,6 @@ end
 
 Factory.define :tracking_number_format do |f|
   f.association :seller
-end
-
-Factory.define :sent_outgoing_text_message, :class => OutgoingTextMessage do |f|
-  f.association :mobile_number
-  f.sequence(:gateway_message_id) { |n|
-    "SMSGlobalMsgID:694274449499974#{n}"
-  }
 end
 
 Factory.define :incoming_text_message do |f|
@@ -111,26 +100,57 @@ end
 
 Factory.define :paypal_ipn do |f|
   f.sequence(:transaction_id) {|n| "45D21472YD182004#{n}" }
+end
+
+Factory.define :seller_order_paypal_ipn, :class => SellerOrderPaypalIpn, :parent => :paypal_ipn do |f|
   f.params { |paypal_ipn|
-    seller = paypal_ipn.seller || Factory.create(:seller)
     {
-      "payment_status" => paypal_ipn.payment_status,
-      "receiver_email" => seller.email,
-      "txn_id" => paypal_ipn.transaction_id,
       "item_number" => "12345790062",
       "item_name" => "Model Ship - The Rubber Dingy",
       "quantity" => "1"
     }
   }
+  f.after_build { |paypal_ipn|
+    seller = paypal_ipn.seller || Factory.create(:seller)
+    paypal_ipn.params.merge!(
+      "txn_id" => paypal_ipn.transaction_id,
+      "receiver_email" => seller.email
+    )
+  }
 end
 
-Factory.define :payment do |f|
+Factory.define :payment_completed_seller_order_paypal_ipn, :parent => :seller_order_paypal_ipn do |f|
+  f.after_build { |paypal_ipn|
+    paypal_ipn.params.merge!("payment_status" => "Completed")
+  }
+end
+
+Factory.define :supplier_payment_paypal_ipn, :class => SupplierPaymentPaypalIpn, :parent => :paypal_ipn do |f|
+  f.params { |paypal_ipn|
+    supplier_payment = paypal_ipn.supplier_payment ||
+      Factory.create(:supplier_payment)
+    { "txn_type" => "masspay" }
+  }
+  f.after_build { |paypal_ipn|
+    supplier_payment = paypal_ipn.supplier_payment ||
+      Factory.create(:supplier_payment)
+    paypal_ipn.params.merge!(
+      "masspay_txn_id_1" => paypal_ipn.transaction_id,
+      "unique_id_1"    => supplier_payment.id.to_s
+    )
+  }
+end
+
+Factory.define :payment_completed_supplier_payment_paypal_ipn, :parent => :supplier_payment_paypal_ipn do |f|
+  f.after_build { |paypal_ipn|
+    paypal_ipn.params.merge!("payment_status" => "Completed")
+  }
+end
+
+Factory.define :supplier_payment do |f|
   f.association :supplier_order
   f.association :supplier
-  f.seller { |payment|
-    payment_application = Factory(:verified_payment_application)
-    payment_application.seller
-  }
+  f.association :seller
   f.cents 100000
   f.currency "THB"
 end
@@ -141,20 +161,6 @@ Factory.define :payment_agreement do |f|
   }
   f.association :seller
   f.association :supplier
-end
-
-Factory.define :payment_request do |f|
-end
-
-Factory.define :payment_application do |f|
-  f.uri "http://example.com"
-  f.association :seller
-end
-
-Factory.define :verified_payment_application, :class => PaymentApplication do |f|
-  f.uri "http://example.com"
-  f.association :seller
-  f.verified_at Time.now
 end
 
 Factory.define :job, :class => Delayed::Job do |f|

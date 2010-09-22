@@ -21,6 +21,7 @@ gem 'httparty'
 gem 'delayed_job', ' >=2.1.0.pre2'
 gem 'action_sms', ">=0.0.2"
 gem 'action_sms_gateways', ">=0.0.4"
+gem 'paypal', :path => "/home/dave/work/plugins/paypal"
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'

@@ -3,7 +3,7 @@ Given(/^a supplier order exists? for #{capture_model}(?: with #{capture_fields})
   product = model!(product_name)
   seller = product.seller
   paypal_ipn = Factory.build(
-    :paypal_ipn,
+    :seller_order_paypal_ipn,
     :seller => seller
   )
   fields_hash = parse_fields(fields)
@@ -19,7 +19,7 @@ Given(/^a supplier order exists? for #{capture_model}(?: with #{capture_fields})
   paypal_ipn.save!
   supplier_order = find_model!("a supplier order", "product_id: #{product_name}")
   supplier_order.update_attributes!(fields_hash)
-  find_model!("a paypal ipn", "id: #{paypal_ipn.id}")
+  find_model!("a seller order paypal ipn", "id: #{paypal_ipn.id}")
 end
 
 When(/^a supplier order is created for #{capture_model}(?: with #{capture_fields})?$/) do |product_name, fields|

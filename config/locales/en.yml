@@ -60,22 +60,14 @@ en:
             name:
               incorrect: "wasn't registered as \"%{value}\""
   activerecord:
+    payment:
+      note: "Payment for supplier order #%{supplier_order_number}"
     errors:
       models:
-        payment:
+        supplier_payment:
           attributes:
             amount:
               greater_than: "would have been %{count}"
-        payment_request:
-          gave_up: "payment url (%{uri}) can't be found"
-          attributes:
-            payment_application:
-              blank: "settings have not yet been configured"
-              unverified: "settings have not yet been verified"
-            notification:
-              payee_not_found: "list of payees (configured at: %{uri}) does not include %{supplier_name} (%{supplier_email})"
-              payee_maximum_amount_exceeded: "maximum payment amount (configured at: %{uri}) for %{supplier_name} was exceeded"
-              payee_currency_invalid: "payment currency (configured at: %{uri}) for %{supplier_name} is not %{currency}"
   support:
     array:
       words_connector: ", the "

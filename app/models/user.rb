@@ -47,9 +47,9 @@ class User < ActiveRecord::Base
   has_many   :tracking_number_formats,
              :foreign_key => "seller_id"
 
-  has_many   :outgoing_payments,
+  has_many   :outgoing_supplier_payments,
              :foreign_key => "seller_id",
-             :class_name => "Payment"
+             :class_name => "SupplierPayment"
 
   # this sets up seller.payment_agreements_with_suppliers
   # the foreign key should be seller_id because its on the seller's side
@@ -61,9 +61,6 @@ class User < ActiveRecord::Base
   # and this sets up seller.suppliers_with_payment_agreements
   has_many   :suppliers_with_payment_agreements,
              :through => :payment_agreements_with_suppliers
-
-  has_one    :payment_application,
-             :foreign_key => "seller_id"
 
   # Supplier Associations
 
@@ -83,7 +80,7 @@ class User < ActiveRecord::Base
 
   has_many   :incoming_payments,
              :foreign_key => "supplier_id",
-             :class_name => "Payment"
+             :class_name => "SupplierPayment"
 
   # this sets up supplier.payment_agreements_with_sellers
   # the foreign key should be supplier_id because its on the supplier's side

@@ -1,18 +1,20 @@
-class CreatePayments < ActiveRecord::Migration
+class CreateSupplierPayments < ActiveRecord::Migration
   def self.up
-    create_table :payments do |t|
+    create_table :supplier_payments do |t|
       t.integer     :cents,   :default => 0, :null => false
       t.string      :currency,               :null => false
+      t.text        :pay_response
       t.references  :supplier,               :null => false
       t.references  :seller,                 :null => false
       t.references  :supplier_order,         :null => false
+      t.references  :notification,           :polymorphic => true
       t.timestamps
     end
-    add_index :payments, :supplier_order_id, :unique => true
+    add_index :supplier_payments, :supplier_order_id, :unique => true
   end
 
   def self.down
-    drop_table :payments
+    drop_table :supplier_payments
   end
 end
 
