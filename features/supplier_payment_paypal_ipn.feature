@@ -26,8 +26,8 @@ Feature: Supplier Payment Paypal IPN
         'payment_fee_1' => '',
         'payer_id' => '6TFGKMB94YKU2',
         'payer_business_name' => "Johnnie Cash's Test Store",
-        'payment_status' => '<payment_status>',
-        'status_1' => 'Completed',
+        'payment_status' => 'Completed',
+        'status_1' => '<payment_status>',
         'mc_gross_1' => '100.00',
         'charset' => 'windows-1252',
         'notify_version' => '3.0',
@@ -37,10 +37,10 @@ Feature: Supplier Payment Paypal IPN
     }
     """
 
-    Then a paypal ipn should exist with transaction_id: "88F92775HW360771N"
-    And the paypal ipn's payment_status should <be_or_not_be> "Completed"
+    Then a supplier payment paypal ipn should exist with transaction_id: "88F92775HW360771N"
+    And the supplier payment paypal ipn's payment_status should <be_or_not_be> "Completed"
     And the most recent job in the queue should be to verify the paypal ipn
-    And the paypal ipn should have the following params:
+    And the supplier payment paypal ipn should have the following params:
     """
     {
       'txn_type' => 'masspay',
@@ -59,8 +59,8 @@ Feature: Supplier Payment Paypal IPN
       'payment_fee_1' => '',
       'payer_id' => '6TFGKMB94YKU2',
       'payer_business_name' => "Johnnie Cash's Test Store",
-      'payment_status' => '<payment_status>',
-      'status_1' => 'Completed',
+      'payment_status' => 'Completed',
+      'status_1' => '<payment_status>',
       'mc_gross_1' => '100.00',
       'charset' => 'windows-1252',
       'notify_version' => '3.0',
@@ -74,35 +74,94 @@ Feature: Supplier Payment Paypal IPN
       | Completed      | be           |
       | Processed      | not be       |
 
-  Scenario Outline: A paypal ipn is received for a duplicate transaction id
-    Given a supplier payment paypal ipn exists with transaction_id: "45D21472YD1820048"
+  Scenario Outline: A paypal ipn is received with an existing transaction id belonging to a verified paypal ipn with a 'Completed' payment status
+    Given a supplier payment exists with id: 134232
+    And a supplier payment paypal ipn exists
     And the supplier payment paypal ipn has the following params:
     """
     {
       'txn_type' => 'masspay',
-      'masspay_txn_id_1'=>'45D21472YD1820048',
-      'payment_status' => '<original_payment_status>'
+      'masspay_txn_id_1'=>'35D21472YD1820048',
+      'payment_status' => 'Completed',
+      'unique_id_1' => '134232'
     }
     """
+    And the supplier payment paypal ipn was already verified
+
     When a paypal ipn is received with:
     """
     {
       'paypal_ipn' => {
         'txn_type' => 'masspay',
-        'masspay_txn_id_1'=>'45D21472YD1820048',
-        'payment_status' => '<new_payment_status>',
-        'unique_id_1' => '1'
+        'masspay_txn_id_1'=>'35D21472YD1820048',
+        'payment_status' => '<payment_status>',
+        'unique_id_1' => '134232'
       }
     }
     """
-
-    Then the supplier payment paypal ipn's payment_status should be "Completed"
-    And the most recent job in the queue should be to verify the paypal ipn
+    Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
+    And the supplier payment paypal ipn should have the following params:
+    """
+    {
+      'txn_type' => 'masspay',
+      'masspay_txn_id_1'=>'35D21472YD1820048',
+      'payment_status' => 'Completed',
+      'unique_id_1' => '134232'
+    }
+    """
+    And the supplier payment paypal ipn should be verified
 
     Examples:
-      | original_payment_status | new_payment_status |
-      | Processed               | Completed          |
-      | Completed               | Processed          |
+      | payment_status |
+      | Processed      |
+      | Unclaimed      |
+
+  Scenario Outline: A paypal ipn is received with an existing transaction id belonging to a paypal ipn that is fraudulent or has an uncompleted payment status
+    Given a supplier payment exists with id: 134232
+    And a supplier payment paypal ipn exists
+    And the supplier payment paypal ipn has the following params:
+    """
+    {
+      'payment_status' => '<original_payment_status>',
+      'txn_type' => 'masspay',
+      'masspay_txn_id_1'=>'35D21472YD1820048',
+      'unique_id_1' => '134232'
+    }
+    """
+    And the supplier payment paypal ipn <is_not_yet_or_was_already> fraudulent
+
+    When a paypal ipn is received with:
+    """
+    {
+      'paypal_ipn' => {
+        'payment_status' => '<updated_payment_status>',
+        'txn_type' => 'masspay',
+        'masspay_txn_id_1'=>'35D21472YD1820048',
+        'unique_id_1' => '134232'
+      }
+    }
+    """
+    Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
+    And the supplier payment paypal ipn should have the following params:
+    """
+    {
+      'payment_status' => '<updated_payment_status>',
+      'txn_type' => 'masspay',
+      'masspay_txn_id_1'=>'35D21472YD1820048',
+      'unique_id_1' => '134232'
+    }
+    """
+    And the supplier payment paypal ipn should not be verified
+    And the supplier payment paypal ipn should not be fraudulent
+    And the most recent job in the queue should be to verify the paypal ipn
+    And the 2nd most recent job in the queue should be to verify the paypal ipn
+
+    Examples:
+      | is_not_yet_or_was_already | original_payment_status | updated_payment_status |
+      | was already | Completed | Unclaimed  |
+      | is not yet  | Unclaimed | Completed  |
+      | is not yet  | Processed | Unclaimed  |
+      | is not yet  | Unclaimed | Completed  |
 
   Scenario Outline: A paypal ipn is received
     When a supplier payment paypal ipn is created

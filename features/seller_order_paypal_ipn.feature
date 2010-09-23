@@ -38,7 +38,7 @@ Feature: Seller Order Paypal IPN
         'quantity'=>'1',
         'verify_sign'=>'Aa4P7UnWW85EE9W0YVKVAc7z1v8OAkejFXqE2AlDChXtbvZRHTHaiH4C',
         'payer_email'=>'mehbuy_1272942317_per@gmail.com',
-        'txn_id'=>'45D21472YD1820048',
+        'txn_id'=>'35D21472YD1820048',
         'payment_type'=>'instant',
         'last_name'=>'User',
         'item_name1'=>'Yet another piece of mank',
@@ -61,7 +61,7 @@ Feature: Seller Order Paypal IPN
     }
     """
 
-    Then a paypal ipn should exist with transaction_id: "45D21472YD1820048"
+    Then a paypal ipn should exist with transaction_id: "35D21472YD1820048"
     And the paypal ipn's payment_status should <be_or_not_be> "Completed"
     And the most recent job in the queue should be to verify the paypal ipn
     And the paypal ipn should have the following params:
@@ -95,7 +95,7 @@ Feature: Seller Order Paypal IPN
       'quantity'=>'1',
       'verify_sign'=>'Aa4P7UnWW85EE9W0YVKVAc7z1v8OAkejFXqE2AlDChXtbvZRHTHaiH4C',
       'payer_email'=>'mehbuy_1272942317_per@gmail.com',
-      'txn_id'=>'45D21472YD1820048',
+      'txn_id'=>'35D21472YD1820048',
       'payment_type'=>'instant',
       'last_name'=>'User',
       'item_name1'=>'Yet another piece of mank',
@@ -128,7 +128,7 @@ Feature: Seller Order Paypal IPN
     {
       'paypal_ipn' => {
         'receiver_email'=>'mara@example.com',
-        'txn_id'=>'45D21472YD1820048',
+        'txn_id'=>'35D21472YD1820048',
         'item_number1'=>'12345790063',
         'quantity1'=>'1',
         'num_cart_items'=>'1',
@@ -145,7 +145,7 @@ Feature: Seller Order Paypal IPN
     """
     {
       'receiver_email'=>'mara@example.com',
-      'txn_id'=>'45D21472YD1820048',
+      'txn_id'=>'35D21472YD1820048',
       'payment_status' => 'Completed',
       'item_number'=>'12345790063',
       'quantity'=>'1',
@@ -160,19 +160,19 @@ Feature: Seller Order Paypal IPN
       'paypal_ipn' => {
         'payment_status' => '<payment_status>',
         'receiver_email'=>'mara@example.com',
-        'txn_id'=>'45D21472YD1820048',
+        'txn_id'=>'35D21472YD1820048',
         'item_number'=>'435665322343',
         'quantity'=>'5',
         'item_name'=>'Some other item name'
       }
     }
     """
-    Then 1 seller order paypal ipns should exist
+    Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
     And the seller order paypal ipn should have the following params:
     """
     {
       'receiver_email'=>'mara@example.com',
-      'txn_id'=>'45D21472YD1820048',
+      'txn_id'=>'35D21472YD1820048',
       'payment_status' => 'Completed',
       'item_number'=>'12345790063',
       'quantity'=>'1',
@@ -193,7 +193,7 @@ Feature: Seller Order Paypal IPN
     """
     {
       'receiver_email'=>'mara@example.com',
-      'txn_id'=>'45D21472YD1820048',
+      'txn_id'=>'35D21472YD1820048',
       'payment_status' => '<original_payment_status>',
       'item_number'=>'12345790063',
       'quantity'=>'1',
@@ -208,20 +208,20 @@ Feature: Seller Order Paypal IPN
       'paypal_ipn' => {
         'payment_status' => '<updated_payment_status>',
         'receiver_email'=>'mara@example.com',
-        'txn_id'=>'45D21472YD1820048',
+        'txn_id'=>'35D21472YD1820048',
         'item_number'=>'435665322343',
         'quantity'=>'5',
         'item_name'=>'Some other item name'
       }
     }
     """
-    Then 1 seller order paypal ipns should exist
+    Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
     And the seller order paypal ipn should have the following params:
     """
     {
       'payment_status' => '<updated_payment_status>',
       'receiver_email'=>'mara@example.com',
-      'txn_id'=>'45D21472YD1820048',
+      'txn_id'=>'35D21472YD1820048',
       'item_number'=>'435665322343',
       'quantity'=>'5',
       'item_name'=>'Some other item name'
