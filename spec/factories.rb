@@ -98,52 +98,32 @@ Factory.define :text_message_delivery_receipt do |f|
   }
 end
 
-Factory.define :paypal_ipn do |f|
-  f.sequence(:transaction_id) {|n| "45D21472YD182004#{n}" }
+Factory.sequence :transaction_id do |n|
+  "45D21472YD182004#{n}"
 end
 
-Factory.define :seller_order_paypal_ipn, :class => SellerOrderPaypalIpn, :parent => :paypal_ipn do |f|
+Factory.define :seller_order_paypal_ipn do |f|
   f.params { |paypal_ipn|
+    seller = paypal_ipn.seller || Factory.create(:seller)
     {
+      "txn_id" => Factory.next(:transaction_id),
+      "receiver_email" => seller.email,
       "item_number" => "12345790062",
       "item_name" => "Model Ship - The Rubber Dingy",
       "quantity" => "1"
     }
   }
-  f.after_build { |paypal_ipn|
-    seller = paypal_ipn.seller || Factory.create(:seller)
-    paypal_ipn.params.merge!(
-      "txn_id" => paypal_ipn.transaction_id,
-      "receiver_email" => seller.email
-    )
-  }
 end
 
-Factory.define :payment_completed_seller_order_paypal_ipn, :parent => :seller_order_paypal_ipn do |f|
-  f.after_build { |paypal_ipn|
-    paypal_ipn.params.merge!("payment_status" => "Completed")
-  }
-end
-
-Factory.define :supplier_payment_paypal_ipn, :class => SupplierPaymentPaypalIpn, :parent => :paypal_ipn do |f|
+Factory.define :supplier_payment_paypal_ipn do |f|
   f.params { |paypal_ipn|
     supplier_payment = paypal_ipn.supplier_payment ||
       Factory.create(:supplier_payment)
-    { "txn_type" => "masspay" }
-  }
-  f.after_build { |paypal_ipn|
-    supplier_payment = paypal_ipn.supplier_payment ||
-      Factory.create(:supplier_payment)
-    paypal_ipn.params.merge!(
-      "masspay_txn_id_1" => paypal_ipn.transaction_id,
-      "unique_id_1"    => supplier_payment.id.to_s
-    )
-  }
-end
-
-Factory.define :payment_completed_supplier_payment_paypal_ipn, :parent => :supplier_payment_paypal_ipn do |f|
-  f.after_build { |paypal_ipn|
-    paypal_ipn.params.merge!("payment_status" => "Completed")
+      {
+        "txn_type" => "masspay",
+        "masspay_txn_id_1" => Factory.next(:transaction_id),
+        "unique_id_1" => supplier_payment.id.to_s
+      }
   }
 end
 

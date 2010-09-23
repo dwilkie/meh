@@ -3,7 +3,7 @@ class CreateSupplierPayments < ActiveRecord::Migration
     create_table :supplier_payments do |t|
       t.integer     :cents,   :default => 0, :null => false
       t.string      :currency,               :null => false
-      t.text        :pay_response
+      t.text        :payment_response
       t.references  :supplier,               :null => false
       t.references  :seller,                 :null => false
       t.references  :supplier_order,         :null => false

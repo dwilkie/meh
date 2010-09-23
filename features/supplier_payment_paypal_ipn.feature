@@ -1,7 +1,7 @@
-Feature: Seller Order Paypal IPN
+Feature: Supplier Payment Paypal IPN
   In order to receive notifications about payments made from me to my suppliers
   As a seller
-  I want to keep a record of all masspay paypal ipns where I am the sender
+  I want to keep a record of all paypal ipns relating to my supplier payments
 
   Scenario Outline: A paypal ipn is received for a supplier payment
     Given a supplier payment exists with id: 125632
@@ -39,7 +39,7 @@ Feature: Seller Order Paypal IPN
 
     Then a paypal ipn should exist with transaction_id: "88F92775HW360771N"
     And the paypal ipn's payment_status should <be_or_not_be> "Completed"
-    And the most recent job in the queue should <be_or_not_be> to verify the paypal ipn
+    And the most recent job in the queue should be to verify the paypal ipn
     And the paypal ipn should have the following params:
     """
     {
@@ -104,18 +104,17 @@ Feature: Seller Order Paypal IPN
       | Processed               | Completed          |
       | Completed               | Processed          |
 
-  @current
-  Scenario Outline: A paypal ipn is received with a completed payment status
-    When a payment completed supplier payment paypal ipn is created
+  Scenario Outline: A paypal ipn is received
+    When a supplier payment paypal ipn is created
     Then the most recent job in the queue should be to verify the paypal ipn
 
     Given paypal <sent_or_did_not_send> the IPN
 
     When the worker works off the job
 
-    Then the payment completed supplier payment paypal ipn should <be_or_not_be_verified>
-    And the payment completed supplier payment paypal ipn should <be_or_not_be_fraudulent>
-    And the last request should contain the payment completed supplier payment paypal ipn params
+    Then the supplier payment paypal ipn should <be_or_not_be_verified>
+    And the supplier payment paypal ipn should <be_or_not_be_fraudulent>
+    And the last request should contain the supplier payment paypal ipn params
 
     Examples:
       | sent_or_did_not_send | be_or_not_be_verified | be_or_not_be_fraudulent |

@@ -8,10 +8,6 @@ class SupplierPaymentPaypalIpn < PaypalIpn
 
   validate :payment_exists
 
-  def self.transaction_id(params)
-    masspay_txn_id(params)
-  end
-
   private
     def find_payment
       SupplierPayment.find_by_id(unique_id)
@@ -25,7 +21,7 @@ class SupplierPaymentPaypalIpn < PaypalIpn
     def link_payment
       self.supplier_payment = find_payment if
         verified_at_changed? && verified? &&
-        verified_at_was.nil? && payment_completed?
+        verified_at_was.nil?
     end
 end
 

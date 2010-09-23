@@ -4,12 +4,13 @@ Given(/^no #{capture_plural_factory} exists?(?: with #{capture_fields})?$/) do |
   end
 end
 
-Given /^#{capture_model} was already (\w+)$/ do |name, status|
-  model!(name).update_attribute("#{status}_at", Time.now)
-end
-
-Given /^#{capture_model} is not yet (\w+)$/ do |name, status|
-  model!(name).update_attribute("#{status}_at", nil)
+Given /^#{capture_model} (is not yet|was already) (\w+)$/ do |name, status, attribute|
+  model_instance = model!(name)
+  timestamp = "#{attribute}_at"
+  attribute = timestamp if model_instance.respond_to?(timestamp)
+  value = (status == "was already")
+  value = attribute == timestamp ? Time.now : nil if value
+  model_instance.update_attribute(attribute, value)
 end
 
 Given /^#{capture_model} has the following params:$/ do |name, params|

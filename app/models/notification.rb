@@ -114,12 +114,12 @@ class Notification < ActiveRecord::Base
     :tracking_number => Proc.new { |options|
       options[:supplier_order].tracking_number.to_s
     },
-    :payment => {
-      :payment_amount => Proc.new { |options|
-        options[:payment].amount.to_s
+    :supplier_payment => {
+      :supplier_payment_amount => Proc.new { |options|
+        options[:supplier_payment].amount.to_s
       },
-      :payment_currency => Proc.new { |options|
-        options[:payment].amount.currency.to_s
+      :supplier_payment_currency => Proc.new { |options|
+        options[:supplier_payment].amount.currency.to_s
       }
     }
   }
@@ -162,9 +162,9 @@ class Notification < ActiveRecord::Base
       ),
       :send_notification_to => User.roles(3)
     },
-    :payment_successfully_completed => {
+    :supplier_payment_successfully_completed => {
       :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
-        EVENT_ATTRIBUTES[:payment]
+        EVENT_ATTRIBUTES[:supplier_payment]
       ),
       :send_notification_to => User.roles(3)
     }
@@ -352,15 +352,15 @@ class Notification < ActiveRecord::Base
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "payment_successfully_completed",
+      :event => "supplier_payment_successfully_completed",
       :for => "seller",
       :purpose => "to inform me that my supplier has been paid",
       :message => I18n.t(
-        "notifications.messages.custom.your_payment_was_successful"
+        "notifications.messages.custom.your_supplier_payment_was_successful"
       )
     )
     create!(
-      :event => "payment_successfully_completed",
+      :event => "supplier_payment_successfully_completed",
       :for => "supplier",
       :purpose => "to inform my supplier that they have been paid",
       :message => I18n.t(

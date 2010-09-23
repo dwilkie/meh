@@ -11,10 +11,6 @@ class SellerOrderPaypalIpn < PaypalIpn
   validate :seller_exists,
            :at_least_one_cart_item
 
-  def self.transaction_id(params)
-    txn_id(params)
-  end
-
   private
     def at_least_one_cart_item
       errors[:base] << "Must be at least one cart item" unless

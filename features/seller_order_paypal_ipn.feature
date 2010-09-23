@@ -63,7 +63,7 @@ Feature: Seller Order Paypal IPN
 
     Then a paypal ipn should exist with transaction_id: "45D21472YD1820048"
     And the paypal ipn's payment_status should <be_or_not_be> "Completed"
-    And the most recent job in the queue should <be_or_not_be> to verify the paypal ipn
+    And the most recent job in the queue should be to verify the paypal ipn
     And the paypal ipn should have the following params:
     """
     {
@@ -138,17 +138,118 @@ Feature: Seller Order Paypal IPN
     """
     Then a paypal ipn should not exist
 
-  Scenario Outline: A paypal ipn is received with a completed payment status
-    When a payment completed seller order paypal ipn is created
+  Scenario Outline: A paypal ipn is received with an existing transaction id belonging to a verified paypal ipn with a 'Completed' payment status
+    Given a seller exists with email: "mara@example.com"
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
+    """
+    {
+      'receiver_email'=>'mara@example.com',
+      'txn_id'=>'45D21472YD1820048',
+      'payment_status' => 'Completed',
+      'item_number'=>'12345790063',
+      'quantity'=>'1',
+      'item_name'=>'Yet another piece of mank'
+    }
+    """
+    And the seller order paypal ipn was already verified
+
+    When a paypal ipn is received with:
+    """
+    {
+      'paypal_ipn' => {
+        'payment_status' => '<payment_status>',
+        'receiver_email'=>'mara@example.com',
+        'txn_id'=>'45D21472YD1820048',
+        'item_number'=>'435665322343',
+        'quantity'=>'5',
+        'item_name'=>'Some other item name'
+      }
+    }
+    """
+    Then 1 seller order paypal ipns should exist
+    And the seller order paypal ipn should have the following params:
+    """
+    {
+      'receiver_email'=>'mara@example.com',
+      'txn_id'=>'45D21472YD1820048',
+      'payment_status' => 'Completed',
+      'item_number'=>'12345790063',
+      'quantity'=>'1',
+      'item_name'=>'Yet another piece of mank'
+    }
+    """
+    And the seller order paypal ipn should be verified
+
+    Examples:
+      | payment_status |
+      | Processed      |
+      | Unclaimed      |
+
+  Scenario Outline: A paypal ipn is received with an existing transaction id belonging to a paypal ipn that is fraudulent or has an uncompleted payment status
+    Given a seller exists with email: "mara@example.com"
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
+    """
+    {
+      'receiver_email'=>'mara@example.com',
+      'txn_id'=>'45D21472YD1820048',
+      'payment_status' => '<original_payment_status>',
+      'item_number'=>'12345790063',
+      'quantity'=>'1',
+      'item_name'=>'Yet another piece of mank'
+    }
+    """
+    And the seller order paypal ipn <is_not_yet_or_was_already> fraudulent
+
+    When a paypal ipn is received with:
+    """
+    {
+      'paypal_ipn' => {
+        'payment_status' => '<updated_payment_status>',
+        'receiver_email'=>'mara@example.com',
+        'txn_id'=>'45D21472YD1820048',
+        'item_number'=>'435665322343',
+        'quantity'=>'5',
+        'item_name'=>'Some other item name'
+      }
+    }
+    """
+    Then 1 seller order paypal ipns should exist
+    And the seller order paypal ipn should have the following params:
+    """
+    {
+      'payment_status' => '<updated_payment_status>',
+      'receiver_email'=>'mara@example.com',
+      'txn_id'=>'45D21472YD1820048',
+      'item_number'=>'435665322343',
+      'quantity'=>'5',
+      'item_name'=>'Some other item name'
+    }
+    """
+    And the seller order paypal ipn should not be verified
+    And the seller order paypal ipn should not be fraudulent
+    And the most recent job in the queue should be to verify the paypal ipn
+    And the 2nd most recent job in the queue should be to verify the paypal ipn
+
+    Examples:
+      | is_not_yet_or_was_already | original_payment_status | updated_payment_status |
+      | was already | Completed | Unclaimed  |
+      | is not yet  | Unclaimed | Completed  |
+      | is not yet  | Processed | Unclaimed  |
+      | is not yet  | Unclaimed | Completed  |
+
+  Scenario Outline: A paypal ipn is created
+    When a seller order paypal ipn is created
     Then the most recent job in the queue should be to verify the paypal ipn
 
     Given paypal <sent_or_did_not_send> the IPN
 
     When the worker works off the job
 
-    Then the payment completed seller order paypal ipn should <be_or_not_be_verified>
-    And the payment completed seller order paypal ipn should <be_or_not_be_fraudulent>
-    And the last request should contain the payment completed seller order paypal ipn params
+    Then the seller order paypal ipn should <be_or_not_be_verified>
+    And the seller order paypal ipn should <be_or_not_be_fraudulent>
+    And the last request should contain the seller order paypal ipn params
 
     Examples:
       | sent_or_did_not_send | be_or_not_be_verified | be_or_not_be_fraudulent |

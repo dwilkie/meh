@@ -13,9 +13,13 @@ class PaypalIpn < ActiveRecord::Base
     def perform
       if attempt_job
         paypal_ipn_class = PaypalIpn.type(params)
-        transaction_id = paypal_ipn_class.transaction_id(params)
-        paypal_ipn = paypal_ipn_class.find_or_initialize_by_transaction_id(transaction_id)
-        unless paypal_ipn.payment_completed?
+        new_paypal_ipn = paypal_ipn_class.new(:params => params)
+        paypal_ipn = paypal_ipn_class.find_or_initialize_by_transaction_id(
+          new_paypal_ipn.transaction_id
+        )
+        unless (paypal_ipn.payment_completed? ||
+        new_paypal_ipn.payment_status == paypal_ipn.payment_status) &&
+        paypal_ipn.verified?
           paypal_ipn.update_attributes(
             :params => params,
             :verified_at => nil,
@@ -30,6 +34,7 @@ class PaypalIpn < ActiveRecord::Base
 
   before_save :set_payment_status
   after_save  :verify_ipn_later
+  before_validation :set_transaction_id
 
   validates :params,
             :presence => true
@@ -59,7 +64,7 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   def verify_ipn_later
-    verify_ipn if !verified? && !fraudulent? && payment_completed?
+    verify_ipn if !verified? && !fraudulent?
   end
 
   def verify_ipn
@@ -72,6 +77,10 @@ class PaypalIpn < ActiveRecord::Base
   private
     def set_payment_status
       self.payment_status = payment_status
+    end
+
+    def set_transaction_id
+      self.transaction_id = transaction_id
     end
 end
 

@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   create_table "supplier_payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency",                         :null => false
-    t.text     "pay_response"
+    t.text     "payment_response"
     t.integer  "supplier_id",                      :null => false
     t.integer  "seller_id",                        :null => false
     t.integer  "supplier_order_id",                :null => false

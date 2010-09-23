@@ -1,11 +1,7 @@
 Given /^paypal (did not send|sent) the IPN$/ do |fraudulent|
   body = fraudulent =~ /sent/ ? "VERIFIED" : "INVALID"
-  request_uri = Paypal::Ipn.postback_uri
-  request_uri.scheme = "https"
   FakeWeb.register_uri(
-    :post,
-    request_uri.to_s,
-    :body => body
+    :post, Paypal::Ipn.postback_uri, :body => body
   )
 end
 
@@ -30,13 +26,13 @@ When /^the #{capture_model} is verified$/ do |name|
   model!(name).update_attributes!(:verified_at => Time.now)
 end
 
-Then /^the most recent job in the queue should (not )?be to (create|verify) the paypal ipn$/ do |expectation, action|
-  last_job = Delayed::Job.last
+Then /^(?:the (\d+)?(?:|st |th |nd |rd ))?most recent job in the queue should (not )?be to (create|verify) the paypal ipn$/ do |job_number, expectation, action|
+  job = Delayed::Job.all[-1-job_number.to_i]
   expectation = expectation ? "_not" : ""
   job_name = action == "create" ? /CreatePaypalIpnJob$/ : /PaypalIpn#verify/
-  if last_job
-    last_job.name.send("should#{expectation}", match(job_name))
-    Then "a job should exist with id: #{last_job.id}"
+  if job
+    job.name.send("should#{expectation}", match(job_name))
+    Then "a job should exist with id: #{job.id}"
   end
 end
 

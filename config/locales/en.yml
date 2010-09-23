@@ -16,8 +16,8 @@ en:
         <customer_address>
 
         then reply with: \"po complete\""
-        your_payment_was_successful: "Hi <seller_name>, a payment of <payment_amount> <payment_currency> was made to <supplier_name> (<supplier_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>"
-        you_have_received_a_payment: "Hi <supplier_name>, you have received a payment of <payment_amount> <payment_currency> from <seller_name> (<seller_mobile_number>) for your product order: #<product_order_number>"
+        your_supplier_payment_was_successful: "Hi <seller_name>, a payment of <supplier_payment_amount> <supplier_payment_currency> was made to <supplier_name> (<supplier_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>"
+        you_have_received_a_payment: "Hi <supplier_name>, you have received a payment of <supplier_payment_amount> <supplier_payment_currency> from <seller_name> (<seller_mobile_number>) for your product order: #<product_order_number>"
         attributes:
           mobile_number:
             not_verified: "No verified number!"
@@ -60,14 +60,18 @@ en:
             name:
               incorrect: "wasn't registered as \"%{value}\""
   activerecord:
-    payment:
-      note: "Payment for supplier order #%{supplier_order_number}"
+    models:
+      supplier_payment:
+        payment_note: "Payment for supplier order #%{supplier_order_number}"
     errors:
       models:
         supplier_payment:
           attributes:
             amount:
               greater_than: "would have been %{count}"
+          payment:
+            unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
+            insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
   support:
     array:
       words_connector: ", the "

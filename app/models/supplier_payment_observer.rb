@@ -1,31 +1,29 @@
 class SupplierPaymentObserver < ActiveRecord::Observer
   def after_update(supplier_payment)
-    if supplier_payment_notification_created?(supplier_payment)
-      successfully_paid(supplier_payment)
-    elsif pay_response_set?
-      did_not_pay(supplier_payment) if supplier_payment.unsuccessful?
+    if supplier_payment.notification_id_changed?
+      successfully_paid(supplier_payment) if supplier_payment.completed_payment?
+    elsif pay_response_set?(supplier_payment)
+      did_not_pay(supplier_payment) unless supplier_payment.successful_payment?
     end
   end
 
   private
     def supplier_payment_notification_created?(supplier_payment)
-      supplier_payment.notification_id_changed? &&
-      supplier_payment.notification_id? &&
-      supplier_payment.notification_id_was.nil?
+      supplier_payment.notification_id_changed?
     end
 
     def pay_response_set?(supplier_payment)
-      supplier_payment.pay_response_changed? &&
-      supplier_payment.pay_response? &&
-      supplier_payment.pay_response_was.nil?
+      supplier_payment.payment_response_changed? &&
+      supplier_payment.payment_response? &&
+      supplier_payment.payment_response_was.nil?
     end
 
     def did_not_pay(supplier_payment)
       seller = supplier_payment.seller
-      Notification.new(:with => seller).did_not_pay(
+      SupplierPaymentNotification.new(:with => seller).did_not_pay(
         supplier_payment,
         :seller => seller,
-        :errors => supplier_payment.pay_errors
+        :errors => supplier_payment.payment_error
       ) if seller.can_text?
     end
 

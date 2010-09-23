@@ -31,10 +31,11 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The payment status is completed
     Given the mobile number: "Mara's number" <seller_number_verified> verified
     And the mobile number: "Dave's number" <supplier_number_verified> verified
-    And a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790063',
       'item_name1' => 'Model Ship - The Rubber Dingy',
       'receiver_email'=>'mara@example.com',
@@ -43,7 +44,7 @@ Feature: Create supplier orders from an order notification
     }
     """
 
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then a seller order should exist
     And a supplier order should exist with product_id: the product, quantity: 1, seller_order_id: the seller order
@@ -69,10 +70,11 @@ Feature: Create supplier orders from an order notification
   Scenario Outline: The supplier is also the seller of this product
     Given the mobile number: "Mara's number" <is_not_yet_or_was_already> verified
     And a product exists with seller: the seller, supplier: the seller, number: "12345790069", name: "Model Ship - The Titanic"
-    And a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790069',
       'item_name1' => 'Model Ship - The Titanic',
       'receiver_email'=>'mara@example.com',
@@ -81,7 +83,7 @@ Feature: Create supplier orders from an order notification
     }
     """
 
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then a seller_order should exist
     And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
@@ -100,10 +102,11 @@ Feature: Create supplier orders from an order notification
 
   Scenario Outline: The seller has not registered this product
     Given the mobile number: "Mara's number" <is_not_yet_or_was_already> verified
-    And a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790062',
       'item_name1' => 'Model Ship - The Rubber Ducky',
       'receiver_email'=>'mara@example.com',
@@ -112,7 +115,7 @@ Feature: Create supplier orders from an order notification
     }
     """
 
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then a product should exist with number: "12345790062", name: "Model Ship - The Rubber Ducky", seller_id: the seller, supplier_id: the seller
     And a seller_order should exist
@@ -131,10 +134,11 @@ Feature: Create supplier orders from an order notification
       | is not yet                | should not be           |
 
   Scenario: The seller has registered this product name but the product number is different
-    Given a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    Given a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790062',
       'item_name1' => 'Model Ship - The Rubber Dingy',
       'receiver_email' => 'mara@example.com',
@@ -143,7 +147,7 @@ Feature: Create supplier orders from an order notification
     }
     """
 
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then the product's number should be "12345790062"
     And the product's name should be "Model Ship - The Rubber Dingy"
@@ -162,10 +166,11 @@ Feature: Create supplier orders from an order notification
     """
 
   Scenario: The seller has registered this product number but the product name is different
-    Given a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    Given a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790063',
       'item_name1' => 'Model Ship - The Rubber Ducky',
       'receiver_email' => 'mara@example.com',
@@ -174,7 +179,7 @@ Feature: Create supplier orders from an order notification
     }
     """
 
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then the product's number should be "12345790063"
     And the product's name should be "Model Ship - The Rubber Ducky"
@@ -194,10 +199,11 @@ Feature: Create supplier orders from an order notification
 
   Scenario: The seller has registered this product number with a different product name and has also registered this product name with a different product number
     Given a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
-    And a payment completed seller order paypal ipn exists
-    And the payment completed seller order paypal ipn has the following params:
+    And a seller order paypal ipn exists
+    And the seller order paypal ipn has the following params:
     """
     {
+      'payment_status' => 'Completed',
       'item_number1' => '12345790063',
       'item_name1' => 'Model Ship - The Titanic',
       'receiver_email' => 'mara@example.com',
@@ -205,7 +211,7 @@ Feature: Create supplier orders from an order notification
       'num_cart_items' => '1'
     }
     """
-    When the payment completed seller order paypal ipn is verified
+    When the seller order paypal ipn is verified
 
     Then 1 products should exist
     And the product: "Rubber Dingy"'s number should be "12345790063"

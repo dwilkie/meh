@@ -2,6 +2,8 @@ class SupplierPayment < ActiveRecord::Base
 
   include Paypal::Masspay
 
+  serialize :payment_response
+
   composed_of :amount,
               :class_name => "Money",
               :mapping => [%w(cents cents), %w(currency currency_as_string)],
@@ -35,6 +37,28 @@ class SupplierPayment < ActiveRecord::Base
   validates :supplier,
             :presence => true
 
+  def notification_with_type
+    notification = notification_without_type
+    notification.respond_to?(:type) ?
+      notification.type :
+      notification
+  end
+
+  alias_method_chain :notification, :type
+
+  def payment_error
+    payment_error = payment_error_type
+    I18n.t(
+      "activerecord.errors.models.supplier_payment.payment.#{payment_error.to_s}",
+      :seller_email => seller.email,
+      :currency => amount.currency.to_s
+    ) if payment_error
+  end
+
+  def completed_payment?
+    notification.payment_completed?
+  end
+
   after_create :pay
 
   private
@@ -45,12 +69,14 @@ class SupplierPayment < ActiveRecord::Base
         amount.to_s,
         amount.currency.to_s,
         I18n.t(
-          "activerecord.payment.note",
+          "activerecord.models.supplier_payment.payment_note",
           :supplier_order_number => supplier_order.id.to_s
         ),
         self.id.to_s
       )
-      self.update_attributes!(:payment_response => payment_response)
+      self.update_attributes!(
+        :payment_response => Rack::Utils.parse_nested_query(payment_response)
+      )
     end
     handle_asynchronously :pay
 end
