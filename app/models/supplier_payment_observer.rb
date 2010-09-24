@@ -1,15 +1,22 @@
 class SupplierPaymentObserver < ActiveRecord::Observer
   def after_update(supplier_payment)
-    if supplier_payment.notification_id_changed?
-      successfully_paid(supplier_payment) if supplier_payment.completed_payment?
+    if notification_set?(supplier_payment)
+      if supplier_payment.completed?
+        successfully_paid(supplier_payment)
+      elsif supplier_payment.unclaimed?
+        unclaimed(supplier_payment)
+      end
     elsif pay_response_set?(supplier_payment)
-      did_not_pay(supplier_payment) unless supplier_payment.successful_payment?
+      did_not_pay(supplier_payment) unless supplier_payment.successful?
     end
   end
 
   private
-    def supplier_payment_notification_created?(supplier_payment)
-      supplier_payment.notification_id_changed?
+
+    def notification_set?(supplier_payment)
+      supplier_payment.notification_id_changed? &&
+      supplier_payment.notification &&
+      supplier_payment.notification_id_was.nil?
     end
 
     def pay_response_set?(supplier_payment)
@@ -25,6 +32,19 @@ class SupplierPaymentObserver < ActiveRecord::Observer
         :seller => seller,
         :errors => supplier_payment.payment_error
       ) if seller.can_text?
+    end
+
+    def unclaimed(supplier_payment)
+      unclaimed_for(supplier_payment, :seller)
+      unclaimed_for(supplier_payment, :supplier)
+    end
+
+    def unclaimed_for(supplier_payment, role)
+      role = role.to_s
+      actor = supplier_payment.send(role)
+      SupplierPaymentNotification.new(
+        :with => actor
+      ).send("unclaimed_for_#{role}", supplier_payment) if actor.can_text?
     end
 
     def successfully_paid(supplier_payment)

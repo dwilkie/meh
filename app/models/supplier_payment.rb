@@ -55,8 +55,16 @@ class SupplierPayment < ActiveRecord::Base
     ) if payment_error
   end
 
-  def completed_payment?
+  def completed?
     notification.payment_completed?
+  end
+
+  def successful?
+    successful_payment?
+  end
+
+  def unclaimed?
+    notification.payment_unclaimed?
   end
 
   after_create :pay

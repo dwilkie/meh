@@ -22,7 +22,7 @@ When /^a paypal ipn is received with:$/ do |params|
   Then "the job should be deleted from the queue"
 end
 
-When /^the #{capture_model} is verified$/ do |name|
+When /^#{capture_model} is verified$/ do |name|
   model!(name).update_attributes!(:verified_at => Time.now)
 end
 

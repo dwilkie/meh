@@ -4,7 +4,7 @@ class SupplierPaymentPaypalIpn < PaypalIpn
 
   has_one :supplier_payment, :as => :notification
 
-  after_update  :link_payment
+  after_update  :link_payment, :unlink_payment
 
   validate :payment_exists
 
@@ -18,9 +18,17 @@ class SupplierPaymentPaypalIpn < PaypalIpn
       params.nil? || find_payment
     end
 
+    def unlink_payment
+      self.supplier_payment = nil if
+        verified_at_changed? &&
+        !verified? &&
+        !verified_at_was.nil?
+    end
+
     def link_payment
       self.supplier_payment = find_payment if
-        verified_at_changed? && verified? &&
+        verified_at_changed? &&
+        verified? &&
         verified_at_was.nil?
     end
 end

@@ -46,6 +46,12 @@ module I18nHelpers
     when /^we did not pay your supplier$/
       "notifications.messages.built_in.we_did_not_pay_your_supplier"
 
+    when /^we paid your supplier but the payment was unclaimed$/
+      "notifications.messages.built_in.we_paid_your_supplier_but_the_payment_was_unclaimed"
+
+    when /^open a paypal account to claim your payment$/
+      "notifications.messages.built_in.open_a_paypal_account_to_claim_your_payment"
+
     when /^the name is missing or incorrect$/
       "notifications.messages.built_in.the_name_is_missing_or_incorrect"
 
