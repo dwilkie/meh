@@ -47,12 +47,12 @@ class SupplierPayment < ActiveRecord::Base
   alias_method_chain :notification, :type
 
   def payment_error
-    payment_error = payment_error_type
     I18n.t(
-      "activerecord.errors.models.supplier_payment.payment.#{payment_error.to_s}",
+      "activerecord.errors.models.supplier_payment.payment.#{payment_error_type.to_s}",
       :seller_email => seller.email,
-      :currency => amount.currency.to_s
-    ) if payment_error
+      :currency => amount.currency.to_s,
+      :error => payment_error_message
+    )
   end
 
   def completed?

@@ -49,3 +49,13 @@ Feature: Supplier Payment
      | is not yet                | not be       |
      | was already               | be           |
 
+  @current
+  Scenario: Paypal returns an unkown error
+    Given the mobile number: "Dave's number" was already verified
+    And paypal will not accept the payment request
+
+    When the worker works off the job
+
+    Then the job should be deleted from the queue
+    And the most recent outgoing text message destined for the mobile number: "Dave's number" should include "paypal account returned the following unexpected error: "
+

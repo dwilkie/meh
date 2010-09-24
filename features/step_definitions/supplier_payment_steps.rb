@@ -10,6 +10,11 @@ Given /^the seller has not permitted supplier payments$/ do
   FakeWeb.register_uri(:post, Paypal.nvp_uri, :body => body)
 end
 
+Given /^paypal will not accept the payment request$/ do
+  body = "TIMESTAMP=2010%2d09%2d24T05%3a14%3a42Z&CORRELATIONID=92b6bdb97ba3e&ACK=Failure&VERSION=2%2e3&BUILD=1518114&L_ERRORCODE0=10004&L_SHORTMESSAGE0=Transaction%20refused%20because%20of%20an%20invalid%20argument%2e%20See%20additional%20error%20messages%20for%20details%2e&L_LONGMESSAGE0=Currency%20is%20not%20supported&L_SEVERITYCODE0=Error"
+  FakeWeb.register_uri(:post, Paypal.nvp_uri, :body => body)
+end
+
 Then /^the most recent job in the queue should (not )?be to send the supplier payment$/ do |expectation|
   last_job = Delayed::Job.last
   expectation = expectation ? "_not" : ""

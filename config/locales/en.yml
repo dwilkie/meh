@@ -73,6 +73,7 @@ en:
           payment:
             unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
             insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
+            unknown: "the paypal account returned the following unexpected error: %{error}"
   support:
     array:
       words_connector: ", the "
