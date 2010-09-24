@@ -6,12 +6,12 @@ require 'ruby-debug'
 class Test
   PARAMS = {
     :test_users => {
-      :paypal_sandbox_seller_email => "mehsel_1273155831_biz@gmail.com",
-      :paypal_sandbox_supplier_email => "mehsau_1273220241_biz@gmail.com"
+      :paypal_sandbox_seller_email => "mehsau_1273220241_biz@gmail.com",
+      :paypal_sandbox_supplier_email => "mehbuy_1272942317_per@gmail.com"
     },
-    :payment_application_uri => "http://meh-payment-processor.appspot.com",
     :paypal_item_number => "AK-1234",
-    :seller_mobile_number => ENV['LIVE_TESTING_SELLER_MOBILE_NUMBER'].clone
+    :seller_mobile_number => ENV['LIVE_TESTING_SELLER_MOBILE_NUMBER'].clone,
+    :supplier_mobile_number => ENV['LIVE_TESTING_SUPPLIER_MOBILE_NUMBER'].clone
   }
 
   def self.setup
@@ -19,7 +19,6 @@ class Test
     supplier = find_or_create_user!(:supplier)
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-    find_or_create_payment_application!(seller)
     delete_old_records
     clear_jobs
   end
@@ -113,18 +112,7 @@ class Test
      product
    end
 
-   def self.find_or_create_payment_application!(seller)
-     payment_application = seller.payment_application ||
-       Factory.build(
-         :payment_application,
-         :seller => seller
-       )
-     payment_application.uri = PARAMS[:payment_application_uri]
-     payment_application.save!
-   end
-
    def self.delete_old_records
-     PaymentRequest.delete_all
      Payment.delete_all
      SupplierOrder.delete_all
      SellerOrder.delete_all

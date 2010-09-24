@@ -49,7 +49,6 @@ Feature: Supplier Payment
      | is not yet                | not be       |
      | was already               | be           |
 
-  @current
   Scenario: Paypal returns an unkown error
     Given the mobile number: "Dave's number" was already verified
     And paypal will not accept the payment request

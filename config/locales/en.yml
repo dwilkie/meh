@@ -44,6 +44,7 @@ en:
         we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{supplier_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
         we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) (%{supplier_email}) of %{supplier_payment_amount} %{supplier_payment_currency} for %{supplier_order_quantity} x %{product_number} (%{product_name}) was UNCLAIMED because %{supplier_name} does not yet have a paypal account with this email. The item belongs to your customer order: #%{seller_order_number}"
         open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, you have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for your product order: #%{supplier_order_number}. To claim it, register at paypal.com"
+        valid_message_commands_are: "Hi%{user_name}, valid message commands include:\n\"mn\" (Mobile Number)\n\"po\" (Product Order)"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""
@@ -61,9 +62,6 @@ en:
             name:
               incorrect: "wasn't registered as \"%{value}\""
   activerecord:
-    models:
-      supplier_payment:
-        payment_note: "Payment for supplier order #%{supplier_order_number}"
     errors:
       models:
         supplier_payment:
@@ -74,6 +72,7 @@ en:
             unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
             insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
             unknown: "the paypal account returned the following unexpected error: %{error}"
+  supplier_payment_note: "Payment for product order: #%{supplier_order_number}"
   support:
     array:
       words_connector: ", the "

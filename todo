@@ -1,9 +1,5 @@
 Message credits
 Design for signup (now we know its paypals permissions API)
-Scrap entire custom payment system in favour of MassPay (test first) it works! omg
-Clean up paypal ipns - Make subclasses of web_accept customer payment and seller payment or perhaps remove these classes
-Move Paypal logic to paypal gem
-Rename payment to supplier payment
 Modify validation and devise mailout for users (allow suppliers to be created with just a name) read the devise readme in detail!
 Rename meh messager to meh notifier
 Launch staging app
