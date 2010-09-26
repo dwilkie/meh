@@ -19,21 +19,33 @@ class Test
     supplier = find_or_create_user!(:supplier)
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-    delete_old_records
+#    delete_old_records
     clear_jobs
   end
 
- def self.paypal_ipn_query_string
+  def self.incoming_text_message_query_string
+    {
+      "incoming_text_message" => {
+        "to" => "61447100308",
+        "from" => "9999999999",
+        "msg" => "Change me",
+        "userfield" => ENV["SMS_AUTHENTICATION_KEY"],
+        "date" => Time.now
+      }
+    }.to_query
+  end
+
+  def self.paypal_ipn_query_string
     {
       "paypal_ipn" => {
         "test_ipn" => "1",
-        "payment_type" => "echeck",
-        "payment_date" => "00:22:48 Sep 14, 2010 PDT",
+        "payment_type" => "instant",
+        "payment_date" => "04:18:32 Sep 26, 2010 PDT",
         "payment_status" => "Completed",
         "address_status" => "confirmed",
         "payer_status" => "verified",
-        "first_name" => "John",
-        "last_name" => "Smith",
+        "first_name" => "Johnny",
+        "last_name" => "Cash",
         "payer_email" => "buyer@paypalsandbox.com",
         "payer_id" => "TESTBUYERID01",
         "address_name" => "John Smith",
@@ -55,16 +67,46 @@ class Test
         "mc_currency" => "USD",
         "mc_fee" => "0.44",
         "mc_gross" => "12.34",
+        "mc_gross_1" => "9.34",
         "txn_type" => "web_accept",
-        "txn_id" => "48914722",
+        "txn_id" => "329261118",
         "notify_version" => "2.1",
         "custom" => "xyz123",
-        "invoice" => "abc1234",
         "charset" => "windows-1252",
-        "verify_sign" => "Al7mV6GyvDK8l7eTXLC6nVSXyKxXAZ6i5PT53tze8XPlm.B8n-2X-DV2"
+        "verify_sign" => "AsB.P43alevcO3d40zFHcFtj820jAQtFf-UFrzn4uOboKhpgz6ovAGqS"
       }
     }.to_query
- end
+  end
+
+  def self.masspay_ipn_query_string
+    {
+      "paypal_ipn" => {
+        "txn_type" => "masspay",
+        "payment_gross_1" => "",
+        "payment_date" => "04:53:59 Sep 26, 2010 PDT",
+        "last_name" => "Wilkie",
+        "mc_fee_1" => "0.40",
+        "masspay_txn_id_1" => "5WA05208GC054924K",
+        "receiver_email_1" => PARAMS[:test_users][:paypal_sandbox_supplier_email],
+        "residence_country" => "AU",
+        "verify_sign" => "An5ns1Kso7MWUdW4ErQKJJJ4qi4-AW3EFP4h.HWz6XXTRyfP27RKAfwb",
+        "payer_status" => "verified",
+        "test_ipn" => "1",
+        "payer_email" => "mehsau_1273220241_biz@gmail.com",
+        "first_name" => "David",
+        "payment_fee_1" => "",
+        "payer_id" => "6TFGKMB94YKU2",
+        "payer_business_name" => "David Wilkie's Test Store",
+        "payment_status" => "Completed",
+        "status_1" => "Completed",
+        "mc_gross_1" => "20.00",
+        "charset" => "windows-1252",
+        "notify_version" => "3.0",
+        "mc_currency_1" => "AUD",
+        "unique_id_1" => "2"
+      }
+    }.to_query
+  end
 
   def self.create_mobile_number(role, number)
     user = find_or_create_user!(role)
@@ -113,7 +155,7 @@ class Test
    end
 
    def self.delete_old_records
-     Payment.delete_all
+     SupplierPayment.delete_all
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all

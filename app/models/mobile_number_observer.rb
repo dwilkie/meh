@@ -1,7 +1,7 @@
 class MobileNumberObserver < ActiveRecord::Observer
   def after_save(mobile_number)
-      request_verification(mobile_number) unless
-        mobile_number.number_was == mobile_number.number
+    request_verification(mobile_number) unless
+      mobile_number.number_was == mobile_number.number
   end
 
   private

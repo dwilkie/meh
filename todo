@@ -1,7 +1,8 @@
+Investigate why numbers are not being sent with the + symbol
+Modify max split in smsglobal adapter
 Message credits
 Design for signup (now we know its paypals permissions API)
 Modify validation and devise mailout for users (allow suppliers to be created with just a name) read the devise readme in detail!
-Rename meh messager to meh notifier
 Launch staging app
 Investigate moving the devise mailout into the delayed_job queue
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)

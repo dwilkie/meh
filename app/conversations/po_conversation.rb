@@ -1,0 +1,3 @@
+class PoConversation < SupplierOrderConversation
+end
+

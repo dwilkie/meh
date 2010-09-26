@@ -1,0 +1,3 @@
+class MnConversation < MobileNumberConversation
+end
+
