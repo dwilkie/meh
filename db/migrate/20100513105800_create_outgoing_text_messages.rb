@@ -5,6 +5,8 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
       t.string     :gateway_response
       t.string     :gateway_message_id
       t.references :mobile_number, :null => false
+      t.references :payer
+      t.integer    :credits, :null => false, :default => 0
       t.datetime   :sent_at
       t.timestamps
     end

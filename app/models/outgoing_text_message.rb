@@ -9,12 +9,18 @@ class OutgoingTextMessage < ActiveRecord::Base
         :gateway_message_id => gateway_message_id,
         :sent_at => Time.now
       )
+      payer = outgoing_text_message.payer
+      payer.update_attributes(
+        :message_credits => payer.message_credits - outgoing_text_message.credits
+      ) if SMSNotifier.connection.delivery_request_successful?(gateway_response)
     end
   end
 
   belongs_to :mobile_number
+  belongs_to :payer
   has_many :text_message_delivery_receipts
 
+  before_create :link_payer, :calculate_credits
   after_create :send_message
 
   validates :gateway_message_id,
@@ -35,10 +41,20 @@ class OutgoingTextMessage < ActiveRecord::Base
     mobile_number.to_s
   end
 
-  def send_message
-     Delayed::Job.enqueue(
-      SendOutgoingTextMessageJob.new(self.id), 1
-    )
-  end
+  private
+    def calculate_credits
+      message_length = message_text.to_s.length
+      credits = message_length <= 160 ? 1 : 1 + (message_length - 1) / 153
+    end
+
+    def link_payer
+      payer = self.mobile_number.user unless payer
+    end
+
+    def send_message
+      Delayed::Job.enqueue(
+        SendOutgoingTextMessageJob.new(self.id), 1
+      ) if payer.message_credits >= credits
+    end
 end
 

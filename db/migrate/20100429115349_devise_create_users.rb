@@ -5,8 +5,9 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.confirmable
       t.recoverable
       t.rememberable
-      t.integer :roles_mask
-      t.string :name
+      t.integer :roles_mask, :default => 0, :null => false
+      t.string  :name, :null => false
+      t.integer :message_credits, :default => 0, :null => false
       # t.trackable
 
       # t.lockable :lock_strategy => :failed_attempts, :unlock_strategy => :both
@@ -25,3 +26,4 @@ class DeviseCreateUsers < ActiveRecord::Migration
     drop_table :users
   end
 end
+

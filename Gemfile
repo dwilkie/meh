@@ -46,6 +46,6 @@ group :test do
   gem 'cucumber-rails'
   gem 'spork'
   gem 'fakeweb'
-  gem 'ruby-debug19'
+  #gem 'ruby-debug19'
 end
 

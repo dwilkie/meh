@@ -51,6 +51,10 @@ class User < ActiveRecord::Base
              :foreign_key => "seller_id",
              :class_name => "SupplierPayment"
 
+  has_many   :outgoing_text_messages_paid_for,
+             :foreign_key => "payer_id",
+             :class_name => "OutgoingTextMessage"
+
   # this sets up seller.payment_agreements_with_suppliers
   # the foreign key should be seller_id because its on the seller's side
   # of the association
