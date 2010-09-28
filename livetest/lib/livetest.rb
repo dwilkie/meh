@@ -19,7 +19,7 @@ class Test
     supplier = find_or_create_user!(:supplier)
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-#    delete_old_records
+    delete_old_records
     clear_jobs
   end
 

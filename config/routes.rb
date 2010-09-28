@@ -2,7 +2,6 @@ Meh::Application.routes.draw do
   resources :paypal_ipns, :only => :create
   resources :incoming_text_messages, :only => :create
   resources :text_message_delivery_receipts, :only => :create
-  resources :payment_requests, :only => [:show, :update]
 
   devise_for :users
 
