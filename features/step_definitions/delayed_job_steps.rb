@@ -1,6 +1,7 @@
-When /^the worker (?:tries (\d+) times to )?works? off #{capture_model}(?: again)?$/ do |attempts, job|
+When /^the worker (?:tries (\d+) times to |(permanently) fails to )?works? off #{capture_model}(?: again)?$/ do |attempts, permanent, job|
   job = model!(job)
   attempts ||= 1
+  attempts = Delayed::Worker.max_attempts if permanent
   attempts.to_i.times do
     Delayed::Worker.new.run(job)
   end

@@ -1,5 +1,9 @@
-Given /^the SMS Gateway will respond with: "([^\"]*)"$/ do |body|
-  register_outgoing_text_message_uri(:body => body)
+Given /^the sms gateway is (?:up|down)$/ do
+  # This is deliberately blank
+end
+
+Given /^there are (not )?enough credits available in the sms gateway$/ do |expectation|
+  register_outgoing_text_message_uri(:for_failure => expectation)
 end
 
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
@@ -48,6 +52,16 @@ When /^an (authentic )?((?:but )duplicate )?incoming text message is received wi
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
   Then "the job should#{expectation} be deleted from the queue"
+end
+
+When /^#{capture_model} (\d+) characters long is created(?: with #{capture_fields})?$/ do |name, num_chars, fields|
+  num_chars = num_chars.to_i
+  body = ActiveSupport::SecureRandom.base64(num_chars).tr(
+    '+/=', '-_ '
+  ).strip.delete("\n")
+  step = "#{name} exists with body: \"#{body}\""
+  step << ", #{fields}" if fields
+  Given step
 end
 
 Then /^the most recent job in the queue should be to send the text message$/ do
@@ -124,5 +138,10 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message desti
     puts text_message.body
     puts "\n"
   end
+end
+
+Then /^#{capture_model} should (not )?be sent$/ do |name, expectation|
+  expectation = expectation ? "" : "_not"
+  model!(name).sent_at.send("should#{expectation}", be_nil)
 end
 

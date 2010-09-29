@@ -112,6 +112,16 @@ class User < ActiveRecord::Base
     !can_text?
   end
 
+  def add_message_credits(credits)
+    self.message_credits += credits
+    self.save
+  end
+
+  def deduct_message_credits(credits)
+    self.message_credits -= credits
+    self.save
+  end
+
   def roles=(roles)
     self.roles_mask = (roles & ROLES).map { |r| 2**ROLES.index(r) }.sum
   end

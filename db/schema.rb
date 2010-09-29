@@ -67,7 +67,9 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "body"
     t.string   "gateway_response"
     t.string   "gateway_message_id"
-    t.integer  "mobile_number_id",   :null => false
+    t.integer  "mobile_number_id",                  :null => false
+    t.integer  "payer_id",                          :null => false
+    t.integer  "credits",            :default => 0, :null => false
     t.datetime "sent_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -181,8 +183,9 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
-    t.integer  "roles_mask"
-    t.string   "name"
+    t.integer  "roles_mask",                          :default => 0,  :null => false
+    t.string   "name",                                                :null => false
+    t.integer  "message_credits",                     :default => 0,  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -16,7 +16,7 @@ class PaymentAgreement < ActiveRecord::Base
   class IsNotTheSellerValidator < ActiveModel::EachValidator
     def validate_each(record, attribute, value)
       record.errors.add(attribute, :is_the_seller) if
-      record.seller.== value
+      record.seller == value
     end
   end
 

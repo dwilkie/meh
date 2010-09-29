@@ -1,9 +1,13 @@
+PATH
+  remote: /home/dave/work/plugins/action_sms_gateways
+  specs:
+    action_sms_gateways (0.0.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
     abstract (1.0.0)
     action_sms (0.0.2)
-    action_sms_gateways (0.0.4)
     actionmailer (3.0.0)
       actionpack (= 3.0.0)
       mail (~> 2.2.5)
@@ -159,7 +163,7 @@ PLATFORMS
 
 DEPENDENCIES
   action_sms (>= 0.0.2)
-  action_sms_gateways (>= 0.0.4)
+  action_sms_gateways (>= 0.0.4)!
   capybara
   conversational
   cucumber-rails

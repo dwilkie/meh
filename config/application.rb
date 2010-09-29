@@ -27,7 +27,8 @@ module Meh
       :incoming_text_message_observer,
       :user_observer,
       :mobile_number_observer,
-      :supplier_payment_observer
+      :supplier_payment_observer,
+      :outgoing_text_message_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.

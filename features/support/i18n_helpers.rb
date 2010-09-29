@@ -61,6 +61,9 @@ module I18nHelpers
     when /^valid message commands are$/
       "notifications.messages.built_in.valid_message_commands_are"
 
+    when /^you do not have enough credits left$/
+      "notifications.messages.built_in.you_do_not_have_enough_message_credits_left"
+
     when /^name is incorrect$/
       "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
 
