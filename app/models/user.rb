@@ -36,7 +36,8 @@ class User < ActiveRecord::Base
   # a seller is supplied by many suppliers
   # this adds user.suppliers
   has_many   :suppliers,
-             :through => :selling_products
+             :through => :selling_products,
+             :uniq => true
 
   has_many   :seller_orders,
              :foreign_key => "seller_id"
@@ -77,7 +78,8 @@ class User < ActiveRecord::Base
   # a supplier supplies many sellers
   # this adds user.sellers
   has_many   :sellers,
-             :through => :supplying_products
+             :through => :supplying_products,
+             :uniq => true
 
   has_many   :supplier_orders,
              :foreign_key => "supplier_id"

@@ -88,7 +88,8 @@ class SupplierOrderConversation < IncomingTextMessageConversation
 
     def accept
       if supplier_order = find_supplier_order(:unconfirmed, :accept)
-        unless user == supplier_order.seller_order.seller
+        self.payer = supplier_order.seller_order.seller
+        unless user == payer
           if supplier_order.unconfirmed?
             message = AcceptSupplierOrderMessage.new(supplier_order, params)
             if message.valid?
@@ -171,18 +172,20 @@ class SupplierOrderConversation < IncomingTextMessageConversation
     end
 
     def invalid_action
-      if action
-        say I18n.t(
-          "notifications.messages.built_in.invalid_action_for_supplier_order",
-          :topic => topic,
-          :action => action
+      action ?
+        say(
+          I18n.t(
+            "notifications.messages.built_in.invalid_action_for_supplier_order",
+            :topic => topic,
+            :action => action
+          )
+        ) :
+        say(
+           I18n.t(
+            "notifications.messages.built_in.no_action_for_supplier_order",
+            :topic => topic
+          )
         )
-      else
-        say I18n.t(
-          "notifications.messages.built_in.no_action_for_supplier_order",
-          :topic => topic
-        )
-      end
     end
 
     def sanitize_id(value = nil)
@@ -237,6 +240,11 @@ class SupplierOrderConversation < IncomingTextMessageConversation
           :processed => processed,
           :supplier_order_number => supplier_order.id.to_s
         )
+    end
+
+    def say(message)
+      self.payer = user.sellers.first if payer.nil? && user.sellers.count == 1
+      super(message)
     end
 end
 

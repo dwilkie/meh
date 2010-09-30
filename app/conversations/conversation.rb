@@ -1,7 +1,7 @@
 class Conversation
   include Conversational::Conversation
 
-  attr_accessor :user, :force_send
+  attr_accessor :user, :force_send, :payer
   alias :user :with
 
   self.unknown_topic_subclass = UnknownTopicConversation
@@ -11,7 +11,8 @@ class Conversation
     def say(something)
       outgoing_text_message = OutgoingTextMessage.new(
         :mobile_number => user.active_mobile_number,
-        :body => something
+        :body => something,
+        :payer => payer
       )
       outgoing_text_message.force_send = force_send
       outgoing_text_message.save!

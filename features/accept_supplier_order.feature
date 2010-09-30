@@ -27,8 +27,9 @@ Feature: Accept supplier order
 
     When I text "<message_text>" from "66354668874"
 
-    Then the supplier_order should be accepted
+    Then the supplier order should be accepted
     And the 2nd most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "accepted", supplier_order_number: "1"
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
     Hi Nok, please send the product order: #1, to the following address:
@@ -39,10 +40,12 @@ Feature: Accept supplier order
     Viet Nam 52321
     then reply with: "po complete"
     """
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_be>
     """
     Hi Mara, Nok (+66354668874) has ACCEPTED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                          | is_not_yet_already | should_be     |
@@ -75,6 +78,7 @@ Feature: Accept supplier order
     Then the supplier order: "first order" should not be accepted
     And the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "accept", topic: "<topic>", action: "<action>"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                   | topic          | action |
@@ -94,6 +98,7 @@ Feature: Accept supplier order
     Then the supplier order should not be accepted
 
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Mara", status: "unconfirmed"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                   |
@@ -134,6 +139,7 @@ Feature: Accept supplier order
 
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text            | value  |
@@ -148,6 +154,7 @@ Feature: Accept supplier order
 
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "order quantity must be confirmed" in "en" (English)
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text   |
@@ -160,6 +167,7 @@ Feature: Accept supplier order
 
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text            | value  |
@@ -179,35 +187,39 @@ Feature: Accept supplier order
     | apo 3 hY456n            |
     | ProductOrder a 3 HY456N |
 
- Scenario: Try to explicity accept an order which I already completed
+  Scenario: Try to explicity accept an order which I already completed
     Given the supplier order was already completed
 
     When I text "apo 1 3 hy456n" from "66354668874"
 
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
+    And the seller should be that outgoing text message's payer
 
- Scenario: Try to implicitly accept an order which I already completed
+  Scenario: Try to implicitly accept an order which I already completed
     Given the supplier order was already completed
 
     When I text "apo 3 hy456n" from "66354668874"
 
     Then the supplier order should not be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
+    And the seller should be that outgoing text message's payer
 
- Scenario: Try to explicitly accept an order which I already accepted
+  Scenario: Try to explicitly accept an order which I already accepted
     Given the supplier order was already accepted
 
     When I text "apo 1 3 hy456n" from "66354668874"
 
     Then the supplier order should be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "accepted", supplier_name: "Nok"
+    And the seller should be that outgoing text message's payer
 
- Scenario: Try to implicitly accept an order which I already accepted
+  Scenario: Try to implicitly accept an order which I already accepted
     Given the supplier order was already accepted
 
     When I text "apo 3 hy456n" from "66354668874"
 
     Then the supplier order should be accepted
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
+    And the seller should be that outgoing text message's payer
 
