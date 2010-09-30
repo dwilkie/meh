@@ -46,7 +46,7 @@ Then /^#{capture_model} should have the following params:$/ do |name, params|
   model!(name).params.should == instance_eval(params)
 end
 
-Then /^#{capture_model} should (not )?(?:be|have) (\w+)$/ do |name, expectation, predicate|
+Then /^#{capture_model} should (not )?be marked as (\w+)$/ do |name, expectation, predicate|
   expectation = expectation ? "" : "_not"
   model!(name).send("#{predicate}_at").send("should#{expectation}", be_nil)
 end
