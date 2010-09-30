@@ -56,18 +56,20 @@ end
 
 When /^#{capture_model} (\d+) characters long is created(?: with #{capture_fields})?$/ do |name, num_chars, fields|
   num_chars = num_chars.to_i
-  body = ActiveSupport::SecureRandom.base64(num_chars).tr(
-    '+/=', '-_ '
-  ).strip.delete("\n")
+  body = ActiveSupport::SecureRandom.hex(num_chars/2)
+  body << "A" if num_chars.odd?
   step = "#{name} exists with body: \"#{body}\""
   step << ", #{fields}" if fields
   Given step
 end
 
-Then /^the most recent job in the queue should be to send the text message$/ do
-  last_job = Delayed::Job.last
-  last_job.name.should match(/SendOutgoingTextMessageJob$/)
-  Then "a job should exist with id: #{last_job.id}"
+Then /^(?:the (\d+)?(?:|st |th |nd |rd ))?most recent job in the queue should (not )?be to send the text message$/ do |job_index, expectation|
+  job = Delayed::Job.all[-1-job_index.to_i]
+  expectation = expectation ? "_not" : ""
+  if job
+    job.name.send("should#{expectation}", match(/SendOutgoingTextMessageJob$/))
+    Then "a job should exist with id: #{job.id}" if expectation.blank?
+  end
 end
 
 Then /^the most recent job in the queue should be to create the (incoming text message|text message delivery receipt)$/ do |resource|
@@ -86,26 +88,38 @@ Then /^a new outgoing text message should be created destined for #{capture_mode
   Then "an outgoing_text_message should exist with id: \"#{id}\""
 end
 
-Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should (not )?be$/ do |text_message_index, mobile_number, text_message, reverse, expected_text|
+Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent #{capture_model} destined for #{capture_model}|#{capture_model}) should (not )?be$/ do |text_message_index, name, mobile_number, text_message, expectation, expected_text|
   text_message = find_text_message(
     :text_message_index => text_message_index,
     :mobile_number => mobile_number,
-    :text_message => text_message
+    :text_message => text_message,
+    :name => name
   )
-  reverse = reverse ? "_not" : ""
-  text_message.body.send("should#{reverse}") == expected_text
-  if reverse.blank?
+  expectation = expectation ? "_not" : ""
+  text_message.body.send("should#{expectation}") == expected_text
+  if expectation.blank?
     puts "\n"
     puts text_message.body
     puts "\n"
   end
 end
 
-Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message destined for #{capture_model}|#{capture_model}) should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message_index, mobile_number, text_message, reverse, exact_or_includes, translate, expected_text, language, interpolations|
+Then /^the (\d+)?(?:|st |th |nd |rd )?most recent #{capture_model} destined for #{capture_model} should (not )?be #{capture_model}$/ do |text_message_index, name, mobile_number, expectation, text_message|
+  recent_text_message = find_text_message(
+    :text_message_index => text_message_index,
+    :mobile_number => mobile_number,
+    :name => name
+  )
+  expectation = expectation ? "_not" : ""
+  recent_text_message.send("should#{expectation}") == model!(text_message)
+end
+
+Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent #{capture_model} destined for #{capture_model}|#{capture_model}) should (not )?(be|include)( a translation of)? "([^\"]*)"(?: in "([^\"]*)"(?: \(\w+\))?)?(?: where #{capture_fields})?$/ do |text_message_index, name, mobile_number, text_message, expectation, exact_or_includes, translate, expected_text, language, interpolations|
   text_message = find_text_message(
     :text_message_index => text_message_index,
     :mobile_number => mobile_number,
-    :text_message => text_message
+    :text_message => text_message,
+    :name => name
   )
   if translate
     i18n_key = translation_key(expected_text)
@@ -121,27 +135,22 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent outgoing text message desti
   end
   text_message.body.should_not include("translation missing")
   if exact_or_includes == "be"
-     unless reverse
+     unless expectation
        text_message.body.should == message
      else
        text_message.body.should_not == message
      end
   else
-    unless reverse
+    unless expectation
       text_message.body.should include(message)
     else
       text_message.body.should_not include(message)
     end
   end
-  if reverse.blank?
+  if expectation.blank?
     puts "\n"
     puts text_message.body
     puts "\n"
   end
-end
-
-Then /^#{capture_model} should (not )?be sent$/ do |name, expectation|
-  expectation = expectation ? "" : "_not"
-  model!(name).sent_at.send("should#{expectation}", be_nil)
 end
 

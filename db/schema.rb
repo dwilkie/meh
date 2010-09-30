@@ -67,10 +67,13 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "body"
     t.string   "gateway_response"
     t.string   "gateway_message_id"
-    t.integer  "mobile_number_id",                  :null => false
-    t.integer  "payer_id",                          :null => false
-    t.integer  "credits",            :default => 0, :null => false
+    t.integer  "mobile_number_id",                             :null => false
+    t.integer  "payer_id",                                     :null => false
+    t.integer  "credits",                       :default => 0, :null => false
     t.datetime "sent_at"
+    t.datetime "last_failed_to_send_at"
+    t.datetime "permanently_failed_to_send_at"
+    t.datetime "queued_for_sending_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

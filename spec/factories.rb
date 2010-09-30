@@ -15,7 +15,7 @@ end
 
 Factory.define :mobile_number do |f|
   f.sequence(:number) {|n| "+618148229#{n}" }
-  f.association :user, :message_credits => 1
+  f.association :user
 end
 
 Factory.define :verified_mobile_number, :parent => :mobile_number do |f|

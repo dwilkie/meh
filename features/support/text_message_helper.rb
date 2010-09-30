@@ -13,6 +13,8 @@ module TextMessageHelper
     else
       text_message = model!(options[:text_message])
     end
+    find_model!(options[:name], :id => text_message.id)
+    text_message
   end
 end
 

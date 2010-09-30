@@ -17,7 +17,16 @@ class OutgoingTextMessage < ActiveRecord::Base
       )
     end
 
+    def failure(job, exception)
+      outgoing_text_message.update_attributes(
+        :last_failed_to_send_at => Time.now
+      )
+    end
+
     def on_permanent_failure
+      outgoing_text_message.update_attributes(
+        :permanently_failed_to_send_at => Time.now
+      )
       outgoing_text_message.payer.add_message_credits(
         outgoing_text_message.credits
       )
@@ -54,6 +63,12 @@ class OutgoingTextMessage < ActiveRecord::Base
     mobile_number.to_s
   end
 
+  def should_send?
+    @should_send || @should_send = (
+      force_send || payer.message_credits - credits >= 0
+    )
+  end
+
   private
     def calculate_credits
       message_length = body.to_s.length
@@ -65,10 +80,11 @@ class OutgoingTextMessage < ActiveRecord::Base
     end
 
     def send_message
-      if force_send || payer.message_credits - credits >= 0
+      if should_send?
         Delayed::Job.enqueue(
           SendOutgoingTextMessageJob.new(self.id), 1
         )
+        self.update_attributes!(:queued_for_sending_at => Time.now)
         payer.deduct_message_credits(credits)
       end
     end
