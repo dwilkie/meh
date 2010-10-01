@@ -44,6 +44,7 @@ Feature: Payment Agreement
 
     Then a supplier payment should not exist
     And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "amount would have been 0"
+    And the seller should be that outgoing text message's payer
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |
@@ -79,6 +80,7 @@ Feature: Payment Agreement
 
     Then 1 supplier payments should exist
     And the most recent outgoing text message destined for the mobile number should not include "we didn't pay"
+    And the seller should be that outgoing text message's payer
 
   Scenario: I have set up a payment agreement with another supplier who is not the supplier for this order
     Given a supplier exists

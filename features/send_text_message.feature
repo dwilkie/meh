@@ -3,7 +3,7 @@ Feature: Send text message
   I want to be able to communicate with users over sms and charge for the service
 
   Background:
-    Given a user exists
+    Given a user exists with name: "Dave"
     And a mobile number exists with user: the user
     And no jobs exist
 
@@ -38,7 +38,7 @@ Feature: Send text message
       | 999     | 0         | 998          |
 
   Scenario Outline: The payer does not have enough message credits
-    Given the user's name is <user_name_chars> characters long
+    Given the mobile number is verified
     And the user has <credits> message credits
     And the sms gateway is up
     And there are enough credits available in the sms gateway
@@ -46,6 +46,7 @@ Feature: Send text message
     When an outgoing text message: "order message" <num_chars> characters long is created with mobile_number: the mobile number
 
     Then the most recent outgoing text message: "not enough credits" destined for the mobile number should include "you don't have enough credits"
+    And that outgoing text message should include "Dave"
     And that outgoing text message should be marked as queued_for_sending
     And the most recent job in the queue should be to send the text message
     And the job's priority should be "1"
@@ -62,16 +63,41 @@ Feature: Send text message
     But the outgoing text message: "order message" should not be marked as sent
 
     Examples:
+      | credits | num_chars | credits_left |
+      | 0       | 0         | -1           |
+      | 0       | 159       | -1           |
+      | 0       | 160       | -1           |
+      | 1       | 161       |  0           |
+      | 1       | 306       |  0           |
+      | 2       | 307       |  1           |
+      | 2       | 459       |  1           |
+      | 3       | 460       |  2           |
+      | 9       | 1530      |  8           |
+
+  Scenario Outline: The payer has a long name
+    Given the mobile number is verified
+    And the user's name is <user_name_chars> characters long
+    And the user has <credits> message credits
+
+    When an outgoing text message: "order message" <num_chars> characters long is created with mobile_number: the mobile number
+
+    Then the most recent outgoing text message: "not enough credits" destined for the mobile number should include "you don't have enough credits"
+    And the user's message_credits should be "<credits_left>"
+
+    Examples:
       | credits | num_chars | credits_left | user_name_chars |
-      | 0       | 0         | -1           | 4               |
       | 0       | 159       | -2           | 146             |
-      | 0       | 160       | -1           | 4               |
       | 1       | 161       | -1           | 146             |
-      | 1       | 306       |  0           | 4               |
       | 2       | 307       |  0           | 146             |
-      | 2       | 459       |  1           | 4               |
       | 3       | 460       |  1           | 146             |
-      | 9       | 1530      |  8           | 4               |
+
+  Scenario: The payer does not have enough message credits and does not have a verified mobile number
+    Given the user has 0 message credits
+
+    When an outgoing text message is created with mobile_number: the mobile number
+
+    Then the most recent outgoing text message destined for the mobile number should include "you don't have enough credits"
+    But that outgoing text message should not include "Dave"
 
   Scenario: The user has a negative number of credits
     Given the user has -1 message credits
@@ -133,7 +159,7 @@ Feature: Send text message
     And the user's message_credits should be "10"
 
     Examples:
-      | num_chars | credits_left |
+      | num_chars            | credits_left         |
       | 0                    | 9                    |
       | 159                  | 9                    |
       | 160                  | 9                    |

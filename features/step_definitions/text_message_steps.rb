@@ -133,7 +133,7 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent #{capture_model} destined f
   else
     message = expected_text
   end
-  text_message.body.should_not include("translation missing")
+  text_message.body.to_s.should_not include("translation missing")
   if exact_or_includes == "be"
      unless expectation
        text_message.body.should == message
@@ -142,9 +142,9 @@ Then /^(?:the (\d+)?(?:|st |th |nd |rd )?most recent #{capture_model} destined f
      end
   else
     unless expectation
-      text_message.body.should include(message)
+      text_message.body.to_s.should include(message)
     else
-      text_message.body.should_not include(message)
+      text_message.body.to_s.should_not include(message)
     end
   end
   if expectation.blank?

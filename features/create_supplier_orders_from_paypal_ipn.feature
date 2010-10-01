@@ -7,8 +7,8 @@ Feature: Create supplier orders from an order notification
     Given a seller exists with name: "Mara", email: "mara@example.com"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a supplier exists with name: "Dave"
-    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
     And a product: "Rubber Dingy" exists with seller: the seller, supplier: the supplier, number: "12345790063", name: "Model Ship - The Rubber Dingy"
+    And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
 
   Scenario: The payment status is not completed
     Given a seller order paypal ipn exists
@@ -28,7 +28,6 @@ Feature: Create supplier orders from an order notification
 
     Then a supplier order should not exist
 
-  @current
   Scenario Outline: The payment status is completed
     Given the mobile number: "Mara's number" <seller_number_verified> verified
     And the mobile number: "Dave's number" <supplier_number_verified> verified
