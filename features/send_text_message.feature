@@ -3,8 +3,8 @@ Feature: Send text message
   I want to be able to communicate with users over sms and charge for the service
 
   Background:
-    Given a user exists with name: "Dave"
-    And a mobile number exists with user: the user
+    Given a user: "Dave" exists with name: "Dave"
+    And a mobile number: "Dave's number" exists with user: the user
     And no jobs exist
 
   Scenario Outline: The payer has enough message credits
@@ -109,6 +109,19 @@ Feature: Send text message
     And the most recent job in the queue should not be to send the text message
     And the outgoing text message should not be marked as sent
     And the user's message_credits should be "-1"
+
+  Scenario: The payer is not the same person as the receiver of the message
+    Given the user: "Dave" has 0 message credits
+    And another user exists with name: "Mara"
+    And another mobile number exists with user: the user
+
+    When an outgoing text message is created with mobile_number: the mobile number, payer: user: "Dave", body: "Hello"
+
+    Then the outgoing text message should not be marked as queued_for_sending
+    But the most recent outgoing text message destined for the mobile number: "Dave's number" should be a translation of "you do not have enough message credits left" in "en" (English) where payer_name: "", receiver_name: "Mara", truncated_message: "Hello"
+    And the outgoing text message should be marked as queued_for_sending
+    And the most recent job in the queue should be to send the text message
+    And the user: "Dave"s message_credits should be "-1"
 
   Scenario: The SMS Gateway is up but there are not enough credits available in the SMS Gateway
     Given the user has 1 message credit
