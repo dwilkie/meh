@@ -68,6 +68,7 @@ Feature: Accept supplier order
     | po a 3 hy456n                         | was already        | should be     |
     | apo 3 hy456n                          | is not yet         | should not be |
 
+  @current
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller
@@ -107,7 +108,6 @@ Feature: Accept supplier order
     | apo 3 hy456x                   |
 
   Scenario Outline: Try to accept an order as a seller when the seller is also the supplier for the product
-
     Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
     And a supplier order exists for the product with quantity: 3
     And no outgoing text messages exist with mobile_number_id: mobile_number: "Mara's number"

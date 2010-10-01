@@ -115,11 +115,11 @@ class SupplierOrderConversation < IncomingTextMessageConversation
 
     def complete
       if supplier_order = find_supplier_order(:incomplete, :complete)
+        self.payer = supplier_order.seller_order.seller
         if supplier_order.incomplete?
-          seller = supplier_order.seller_order.seller
-          if user == seller || supplier_order.accepted?
+          if user == payer || supplier_order.accepted?
             product = supplier_order.product
-            tracking_number_format = seller.tracking_number_formats.find_for(
+            tracking_number_format = payer.tracking_number_formats.find_for(
               :product => product,
               :supplier => user
             ).first

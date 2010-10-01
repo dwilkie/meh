@@ -28,6 +28,7 @@ Feature: Create supplier orders from an order notification
 
     Then a supplier order should not exist
 
+  @current
   Scenario Outline: The payment status is completed
     Given the mobile number: "Mara's number" <seller_number_verified> verified
     And the mobile number: "Dave's number" <supplier_number_verified> verified
@@ -55,10 +56,12 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Dingy) was created <and_or_but_not_sent> to Dave (<supplier_number>). The item belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" <supplier_message>
     """
     Hi Dave, you have a new product order: #1, from Mara (<seller_number>) for 1 x 12345790063 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
+    And the seller should be that outgoing text message's payer
 
     Examples:
       | seller_number_verified | seller_number | supplier_number_verified | supplier_number | seller_message | supplier_message | and_or_but_not_sent |
@@ -94,6 +97,7 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, the customer bought 1 x 12345790069 (Model Ship - The Titanic) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
     """
+    And the seller should be that outgoing text message's payer
 
     Examples:
       | is_not_yet_or_was_already | should_or_should_not_be |
@@ -127,6 +131,7 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, the customer bought 1 x 12345790062 (Model Ship - The Rubber Ducky) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
     """
+    And the seller should be that outgoing text message's payer
 
     Examples:
       | is_not_yet_or_was_already | should_or_should_not_be |
@@ -160,10 +165,12 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, FYI: a new product order for 1 x 12345790062 (Model Ship - The Rubber Dingy) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
     Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790062 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
+    And the seller should be that outgoing text message's payer
 
   Scenario: The seller has registered this product number but the product name is different
     Given a seller order paypal ipn exists
@@ -192,10 +199,12 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Ducky) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Dave's number" should be
     """
     Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Rubber Ducky). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
+    And the seller should be that outgoing text message's payer
 
   Scenario: The seller has registered this product number with a different product name and has also registered this product name with a different product number
     Given a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
@@ -225,8 +234,10 @@ Feature: Create supplier orders from an order notification
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Titanic) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Dave's number" should be
     """
     Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Titanic). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
+    And the seller should be that outgoing text message's payer
 

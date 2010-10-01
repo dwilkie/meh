@@ -76,7 +76,7 @@ class OutgoingTextMessage < ActiveRecord::Base
     end
 
     def link_payer
-      self.payer = mobile_number.user unless payer
+      self.payer = mobile_number.try(:user) unless payer
     end
 
     def send_message

@@ -40,6 +40,7 @@ Feature: Create a seller order from an order notification
     Viet Nam 52321
     We'll send you more details about the items in this order shortly. Your customer order number is: #1
     """
+    And the seller should be that outgoing text message's payer
 
     Examples:
       | is_not_yet_or_was_already | should_or_should_not_be |

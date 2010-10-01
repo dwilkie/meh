@@ -13,3 +13,9 @@ Given /^#{capture_model} has (\-?\d+) message credits?$/ do |name, num_credits|
   model_instance.save!
 end
 
+Given /^#{capture_model} is also a (\w+)$/ do |user, role|
+  user = model!(user)
+  user.new_role = role
+  user.save!
+end
+

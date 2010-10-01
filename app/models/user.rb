@@ -37,7 +37,8 @@ class User < ActiveRecord::Base
   # this adds user.suppliers
   has_many   :suppliers,
              :through => :selling_products,
-             :uniq => true
+             :uniq => true,
+             :readonly => false
 
   has_many   :seller_orders,
              :foreign_key => "seller_id"
@@ -79,7 +80,8 @@ class User < ActiveRecord::Base
   # this adds user.sellers
   has_many   :sellers,
              :through => :supplying_products,
-             :uniq => true
+             :uniq => true,
+             :readonly => false
 
   has_many   :supplier_orders,
              :foreign_key => "supplier_id"
@@ -129,7 +131,7 @@ class User < ActiveRecord::Base
   end
 
   def new_role=(role)
-    self.roles = self.roles << role.to_s
+    self.roles = roles << role.to_s
   end
 
   def roles

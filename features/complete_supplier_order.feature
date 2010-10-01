@@ -19,10 +19,12 @@ Feature: Complete a supplier order
     Then the supplier order should be completed
     And the supplier order's tracking_number should be nil
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "1"
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" <should_be>
     """
     Hi Mara, Nok (+66354668874) has COMPLETED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text              | is_not_yet_already | should_be     |
@@ -59,10 +61,12 @@ Feature: Complete a supplier order
     Then the supplier order's tracking_number should be "<tracking_number>"
     And the supplier order should be completed
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "1"
+    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Hi Mara, Nok (+66354668874) has COMPLETED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1. The tracking number is: "<tracking_number>"
     """
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                            | tracking_number |
@@ -94,8 +98,8 @@ Feature: Complete a supplier order
 
     Then the supplier order: "first order" should not be completed
     And the supplier order should not be completed
-    And a new outgoing text message should be created destined for the mobile_number: "Nok's number"
-    And the outgoing_text_message should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "complete", topic: "<topic>", action: "<action>"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "complete", topic: "<topic>", action: "<action>"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text            | topic          | action   |
@@ -120,6 +124,7 @@ Feature: Complete a supplier order
     Then the supplier order: "first order" should not be completed
     And the supplier_order: "first order"s tracking_number should be nil
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "this tracking number was already used by you" in "en" (English) where supplier_name: "Nok"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                |
@@ -136,6 +141,7 @@ Feature: Complete a supplier order
     Then the supplier order should not be completed
     And the supplier order's tracking_number should be nil
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "Tracking number is invalid", topic: "<topic>", action: "<action>", supplier_order_number: "1"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                          | topic          | action   |
@@ -154,6 +160,7 @@ Feature: Complete a supplier order
     Then the supplier order should not be completed
     And the supplier order's tracking_number should be nil
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "Tracking number is required", topic: "<topic>", action: "<action>", supplier_order_number: "1"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text            | topic          | action   |
@@ -205,8 +212,8 @@ Feature: Complete a supplier order
 
     Then the supplier order should not be completed
 
-    And a new outgoing text message should be created destined for the mobile_number: "Mara's number"
-    And the outgoing_text_message should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "complete", supplier_name: "Mara", status: "incomplete"
+    And the most recent outgoing text message destined for the mobile_number: "Mara's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "complete", supplier_name: "Mara", status: "incomplete"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text |
@@ -222,6 +229,7 @@ Feature: Complete a supplier order
 
     Then the supplier order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Mara", processed: "completed", supplier_order_number: "2"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text              |
@@ -239,6 +247,7 @@ Feature: Complete a supplier order
     Then the supplier order should not be completed
 
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you must accept the supplier order first" in "en" (English) where supplier_name: "Nok", topic: "<topic>", supplier_order_number: "1", quantity: "3"
+    And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text              | topic          |
@@ -256,6 +265,7 @@ Feature: Complete a supplier order
 
     Then the supplier order should be completed
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
+    And the seller should be that outgoing text message's payer
 
  Scenario: Try to implicitly complete an order which I already completed
     Given the supplier order was already completed
@@ -264,6 +274,7 @@ Feature: Complete a supplier order
 
     Then the supplier order should be completed
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "complete", supplier_name: "Nok", status: "incomplete"
+    And the seller should be that outgoing text message's payer
 
   Scenario Outline: Successfully complete an order even when giving the wrong order number
     Given the supplier order was already accepted
