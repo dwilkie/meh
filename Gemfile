@@ -18,7 +18,7 @@ gem 'money'
 gem 'httparty'
 gem 'delayed_job', ' >=2.1.0.pre2'
 gem 'action_sms', '>=0.0.2'
-gem 'action_sms_gateways', '>=0.0.4', :path => '/home/dave/work/plugins/action_sms_gateways'
+gem 'action_sms_gateways', '>=0.0.6'
 gem 'paypal-ipn', :require => 'paypal'
 
 # gem 'bj'
@@ -46,6 +46,6 @@ group :test do
   gem 'cucumber-rails'
   gem 'spork'
   gem 'fakeweb'
-  gem 'ruby-debug19'
+  # gem 'ruby-debug19'
 end
 
