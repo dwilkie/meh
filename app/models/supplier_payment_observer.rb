@@ -42,9 +42,9 @@ class SupplierPaymentObserver < ActiveRecord::Observer
     def unclaimed_for(supplier_payment, role)
       role = role.to_s
       actor = supplier_payment.send(role)
-      SupplierPaymentNotification.new(
-        :with => actor
-      ).send("unclaimed_for_#{role}", supplier_payment) if actor.can_text?
+      notifier = SupplierPaymentNotification.new(:with => actor)
+      notifier.payer = supplier_payment.seller
+      notifier.send("unclaimed_for_#{role}", supplier_payment) if actor.can_text?
     end
 
     def successfully_paid(supplier_payment)
@@ -63,7 +63,9 @@ class SupplierPaymentObserver < ActiveRecord::Observer
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
         if with.can_text?
-          GeneralNotification.new(:with => with).notify(
+          notifier = GeneralNotification.new(:with => with)
+          notifier.payer = seller
+          notifier.notify(
             notification,
             :product => product,
             :supplier_order => supplier_order,

@@ -29,6 +29,7 @@ Feature: Supplier Payment
 
     Then the job should be deleted from the queue
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "paypal account: dave@example.com does not have sufficient funds in THB"
+    And the seller should be that outgoing text message's payer
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |
@@ -43,6 +44,7 @@ Feature: Supplier Payment
 
     Then the job should be deleted from the queue
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
+   And the seller should be that outgoing text message's payer
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |
@@ -57,4 +59,5 @@ Feature: Supplier Payment
 
     Then the job should be deleted from the queue
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should include "paypal account returned the following unexpected error: "
+    And the seller should be that outgoing text message's payer
 

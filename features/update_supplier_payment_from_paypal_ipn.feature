@@ -7,8 +7,8 @@ Feature: Update supplier payment from paypal ipn
     Given a seller exists with name: "Dave"
     And a mobile number: "Dave's number" exists with number: "66354668789", user: the seller
     And a supplier exists with name: "Fon", email: "fon@example.com"
-    And a mobile number: "Fon's number" exists with number: "66123555331", user: the supplier
     And a product: "Rubber Dingy" exists with seller: the seller, supplier: the supplier, number: "12345790063", name: "Model Ship - A Rubber Dingy"
+    And a mobile number: "Fon's number" exists with number: "66123555331", user: the supplier
     And a supplier order exists for the product with quantity: 1
     And a supplier payment exists with supplier_order: the supplier order, supplier: the supplier, seller: the seller, cents: "50000", currency: "THB"
 
@@ -33,11 +33,14 @@ Feature: Update supplier payment from paypal ipn
     """
     Hi Dave, a payment of 500.00 THB was received by Fon (<supplier_number>) for 1 x 12345790063 (Model Ship - A Rubber Dingy) which belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
 
     And the most recent outgoing text message destined for the mobile number: "Fon's number" should <send_supplier_message>
     """
     Hi Fon, you have received a payment of 500.00 THB from Dave (<seller_number>) for your product order: #1
     """
+    And the seller should be that outgoing text message's payer
+
     Examples:
      | seller_number_verified | seller_number | supplier_number_verified |supplier_number | send_seller_message | send_supplier_message |
      | was already | +66354668789 | was already | +66123555331 | be | be |
@@ -92,8 +95,10 @@ Feature: Update supplier payment from paypal ipn
     Then the supplier payment should be the supplier payment paypal ipn's supplier_payment
 
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should <send_seller_message> a translation of "we paid your supplier but the payment was unclaimed" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "<supplier_number>", supplier_order_quantity: "1", product_number: "12345790063", product_name: "Model Ship - A Rubber Dingy", supplier_email: "fon@example.com", supplier_payment_amount: "500.00", supplier_payment_currency: "THB", seller_order_number: "1"
+    And the seller should be that outgoing text message's payer
 
     And the most recent outgoing text message destined for the mobile number: "Fon's number" should <send_supplier_message> a translation of "open a paypal account to claim your payment" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", seller_mobile_number: "<seller_number>", supplier_order_number: "1", supplier_payment_amount: "500.00", supplier_payment_currency: "THB"
+    And the seller should be that outgoing text message's payer
 
    Examples:
      | seller_number_verified | seller_number | supplier_number_verified |supplier_number | send_seller_message | send_supplier_message |
@@ -137,10 +142,12 @@ Feature: Update supplier payment from paypal ipn
     And the supplier payment should be the supplier payment paypal ipn's supplier_payment
 
     Then the most recent outgoing text message destined for the mobile number: "Dave's number" should be a translation of "we paid your supplier but the payment was unclaimed" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "+66123555331", supplier_order_quantity: "1", product_number: "12345790063", product_name: "Model Ship - A Rubber Dingy", supplier_email: "fon@example.com", supplier_payment_amount: "500.00", supplier_payment_currency: "THB", seller_order_number: "1"
+    And the seller should be that outgoing text message's payer
 
     But the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should not be a translation of "we paid your supplier but the payment was unclaimed" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "+66123555331", supplier_order_quantity: "1", product_number: "12345790063", product_name: "Model Ship - A Rubber Dingy", supplier_email: "fon@example.com", supplier_payment_amount: "500.00", supplier_payment_currency: "THB", seller_order_number: "1"
 
     And the most recent outgoing text message destined for the mobile number: "Fon's number" should be a translation of "open a paypal account to claim your payment" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", seller_mobile_number: "+66354668789", supplier_order_number: "1", supplier_payment_amount: "500.00", supplier_payment_currency: "THB"
+    And the seller should be that outgoing text message's payer
 
     But the 2nd most recent outgoing text message destined for the mobile number: "Fon's number" should not be a translation of "open a paypal account to claim your payment" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", seller_mobile_number: "+66354668789", supplier_order_number: "1", supplier_payment_amount: "500.00", supplier_payment_currency: "THB"
 
@@ -183,13 +190,17 @@ Feature: Update supplier payment from paypal ipn
     """
     Hi Dave, a payment of 500.00 THB was received by Fon (+66123555331) for 1 x 12345790063 (Model Ship - A Rubber Dingy) which belongs to your customer order: #1
     """
+    And the seller should be that outgoing text message's payer
 
     And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be a translation of "we paid your supplier but the payment was unclaimed" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "+66123555331", supplier_order_quantity: "1", product_number: "12345790063", product_name: "Model Ship - A Rubber Dingy", supplier_email: "fon@example.com", supplier_payment_amount: "500.00", supplier_payment_currency: "THB", seller_order_number: "1"
+    And the seller should be that outgoing text message's payer
 
     And the most recent outgoing text message destined for the mobile number: "Fon's number" should be
     """
     Hi Fon, you have received a payment of 500.00 THB from Dave (+66354668789) for your product order: #1
     """
+    And the seller should be that outgoing text message's payer
 
     And the 2nd most recent outgoing text message destined for the mobile number: "Fon's number" should be a translation of "open a paypal account to claim your payment" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", seller_mobile_number: "+66354668789", supplier_order_number: "1", supplier_payment_amount: "500.00", supplier_payment_currency: "THB"
+    And the seller should be that outgoing text message's payer
 
