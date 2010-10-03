@@ -19,37 +19,11 @@ Feature: Send mobile number verification
 
     When a mobile number is created with user: the supplier
 
-    Then the mobile number should be the supplier's active_mobile_number
-    And the most recent outgoing text message destined for the mobile number should be a translation of "verify your mobile number" in "en" (English)
+    Then the most recent outgoing text message destined for the mobile number should be a translation of "verify your mobile number" in "en" (English)
     And the seller should be that outgoing text message's payer
 
-  Scenario: A mobile number is created for a supplier who is also a seller
-    Given a seller exists
-    And a supplier exists with message_credits: 1
-    And the supplier is also a seller
-    And a product exists with seller: the seller, supplier: the supplier
-
-    When a mobile number is created with user: the supplier
-
-    Then the mobile number should be the supplier's active_mobile_number
-    And the most recent outgoing text message destined for the mobile number should be a translation of "verify your mobile number" in "en" (English)
-    And the supplier should be that outgoing text message's payer
-
-  Scenario: A mobile number is created for a supplier with more than one seller
-    Given a seller exists
-    And a supplier exists with message_credits: 1
-    And a product exists with seller: the seller, supplier: the supplier
-    And another seller exists
-    And another product exists with seller: that seller, supplier: the supplier
-
-    When a mobile number is created with user: the supplier
-
-    Then the mobile number should be the supplier's active_mobile_number
-    And the most recent outgoing text message destined for the mobile number should be a translation of "verify your mobile number" in "en" (English)
-    And the supplier should be that outgoing text message's payer
-
   Scenario: A mobile number is updated
-    Given a user exists
+    Given a user exists with message_credits: 2
     And a mobile number exists with number: "66122453311", user: the user
 
     When I update the mobile number with number: "66122453312"
@@ -61,7 +35,7 @@ Feature: Send mobile number verification
     And the user should be that outgoing text message's payer
 
   Scenario: A mobile number is updated with the same number
-    Given a user exists
+    Given a user exists with message_credits: 1
     And a mobile number exists with number: "66122453311", user: the user
 
     When I update the mobile number with number: "+006612-2453-311"
