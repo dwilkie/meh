@@ -70,5 +70,10 @@ class MobileNumberConversation < IncomingTextMessageConversation
         )
       end
     end
+
+    def say(message)
+      self.payer = user.outgoing_text_messages_payer
+      super(message)
+    end
 end
 
