@@ -32,6 +32,7 @@ class IncomingTextMessageConversation < Conversation
     def require_verified_mobile_number?(conversation)
       if conversation.require_verified_mobile_number? &&
         user.active_mobile_number.unverified?
+        self.payer = user.outgoing_text_messages_payer
         say I18n.t(
           "notifications.messages.built_in.you_must_verify_your_mobile_number_to_use_this_feature"
         )
