@@ -12,7 +12,7 @@ gem 'rails', '3.0.0'
 # gem 'capistrano'
 
 # Bundle the extra gems:
-gem 'devise'
+gem 'devise', :git => "git://github.com/plataformatec/devise.git"
 gem 'conversational'
 gem 'money'
 gem 'httparty'

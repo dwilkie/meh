@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/plataformatec/devise.git
+  revision: 69ecbd1fa30e390ea18e76f16cc33e86b643bd7e
+  specs:
+    devise (1.2.rc)
+      bcrypt-ruby (~> 2.1.2)
+      warden (~> 1.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -59,9 +67,6 @@ GEM
     delayed_job (2.1.0.pre2)
       activesupport (~> 3.0)
       daemons
-    devise (1.1.2)
-      bcrypt-ruby (~> 2.1.2)
-      warden (~> 0.10.7)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -150,7 +155,7 @@ GEM
       polyglot (>= 0.3.1)
     trollop (1.16.2)
     tzinfo (0.3.23)
-    warden (0.10.7)
+    warden (1.0.0)
       rack (>= 1.0.0)
     yard (0.6.1)
 
@@ -165,7 +170,7 @@ DEPENDENCIES
   cucumber-rails
   database_cleaner
   delayed_job (>= 2.1.0.pre2)
-  devise
+  devise!
   factory_girl_rails
   fakeweb
   httparty
