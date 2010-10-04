@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.0'
 
-gem 'devise'
+gem 'devise', :git => "git://github.com/plataformatec/devise.git"
 gem 'conversational'
 gem 'money'
 gem 'httparty'
