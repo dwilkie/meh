@@ -5,8 +5,30 @@ Given /^I want to sign up with paypal$/ do
   )
 end
 
+
+Given /^I have a paypal account(?: with #{capture_fields})?$/ do |fields|
+  body_template = "PAYERID=RK7XZT4AUY79C&FIRSTNAME=Mara&LASTNAME=kheam&EMAIL=cambodian_paypal1234%40gmail%2ecom&TIMESTAMP=2010%2d10%2d07T10%3a08%3a44Z&CORRELATIONID=83dfe25684ced&ACK=Success&VERSION=2%2e3&BUILD=1545724"
+  paypal_credentials = parse_fields(fields)
+  parsed_paypal_credentials = {}
+  paypal_credentials.each do |key, value|
+    parsed_paypal_credentials[key.classify.upcase] = value
+  end
+  paypal_credentials = parsed_paypal_credentials
+  paypal_response = Rack::Utils.parse_nested_query(body_template)
+  paypal_response.merge!(paypal_credentials)
+  response_body = Rack::Utils.build_nested_query(paypal_response)
+  paypal_credentials = parse_fields(fields)
+  FakeWeb.register_uri(
+    :post, Paypal.nvp_uri, :body => response_body
+  )
+end
+
 Then /^I should be redirected to sign in with paypal$/ do
-  # read oauth docs to see how to check the redirect
+  Then %{I should be at "#{Paypal.uri}"}
+  Then %{I should have the following query string:}, table(%{
+    | _cmd  | _access-permission-login |
+    | token | HA-H3Y5NAC5XV9LS         |
+  })
 end
 
 Then /^permission should be requested to grant access to the masspay api$/ do

@@ -20,9 +20,6 @@ module NavigationHelpers
     when /create incoming text message/
       incoming_text_messages_path
 
-    when /payment request with id: (\d+)/
-      payment_request_path($1)
-
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
