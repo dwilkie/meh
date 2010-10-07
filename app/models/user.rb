@@ -155,6 +155,16 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.find_for_paypal_auth(params)
+    user = self.find_or_initialize_by_email(params[:email])
+    if user.new_record
+      user.name = params[:first_name].capitalize
+      user.password = Devise.friendly_token
+      user.save
+    end
+    user
+  end
+
   private
     # Checks whether a password is needed or not. For validations only.
     # Passwords are always required if it's a new record, or if the password

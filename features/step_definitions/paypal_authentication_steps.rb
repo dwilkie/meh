@@ -5,9 +5,8 @@ Given /^I want to sign up with paypal$/ do
   )
 end
 
-
 Given /^I have a paypal account(?: with #{capture_fields})?$/ do |fields|
-  body_template = "PAYERID=RK7XZT4AUY79C&FIRSTNAME=Mara&LASTNAME=kheam&EMAIL=cambodian_paypal1234%40gmail%2ecom&TIMESTAMP=2010%2d10%2d07T10%3a08%3a44Z&CORRELATIONID=83dfe25684ced&ACK=Success&VERSION=2%2e3&BUILD=1545724"
+  body_template = "PAYERID=RK7XZT4AUY79C&TIMESTAMP=2010%2d10%2d07T10%3a08%3a44Z&CORRELATIONID=83dfe25684ced&ACK=Success&VERSION=2%2e3&BUILD=1545724"
   paypal_credentials = parse_fields(fields)
   parsed_paypal_credentials = {}
   paypal_credentials.each do |key, value|
@@ -21,6 +20,14 @@ Given /^I have a paypal account(?: with #{capture_fields})?$/ do |fields|
   FakeWeb.register_uri(
     :post, Paypal.nvp_uri, :body => response_body
   )
+end
+
+Given /^I sign into paypal and grant the required permissions$/ do
+  # this step is intentionally blank
+end
+
+When /^I am redirected back to the application from paypal$/ do
+  When "I go to the paypal permissions callback page"
 end
 
 Then /^I should be redirected to sign in with paypal$/ do

@@ -12,11 +12,12 @@ Feature: Signup new user with paypal
     Then I should be redirected to sign in with paypal
     And permission should be requested to grant access to the masspay api
 
+  @current
   Scenario: I grant the required permissions
     Given I have a paypal account with email: "mara@example.com", first_name: "Mara", last_name: "Mank"
     And I sign into paypal and grant the required permissions
 
-    When I am redirected back to the application
+    When I am redirected back to the application from paypal
 
     Then a user should exist with email: "mara@example.com", name: "Mara"
     And the user should be a seller
