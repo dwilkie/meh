@@ -19,3 +19,7 @@ Given /^#{capture_model} is also a (\w+)$/ do |user, role|
   user.save!
 end
 
+Then(/^"([^"]*)" should be (?:in|one of|amongst) #{capture_model}(?:'s)? (\w+)$/) do |target, owner, association|
+  model!(owner).send(association).should include(target)
+end
+
