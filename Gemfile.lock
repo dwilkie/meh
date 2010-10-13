@@ -7,6 +7,16 @@ GIT
       warden (~> 1.0.0)
 
 PATH
+  remote: /home/dave/work/plugins/action_sms
+  specs:
+    action_sms (0.0.2)
+
+PATH
+  remote: /home/dave/work/plugins/action_sms_gateways
+  specs:
+    action_sms_gateways (0.0.6)
+
+PATH
   remote: /home/dave/work/plugins/devise_paypal
   specs:
     devise_paypal (0.0.0)
@@ -23,8 +33,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     abstract (1.0.0)
-    action_sms (0.0.2)
-    action_sms_gateways (0.0.6)
     actionmailer (3.0.0)
       actionpack (= 3.0.0)
       mail (~> 2.2.5)
@@ -63,6 +71,8 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (>= 0.0.3)
+    childprocess (0.0.7)
+      ffi (~> 0.6.3)
     columnize (0.3.1)
     configuration (1.1.0)
     conversational (0.3.2)
@@ -113,7 +123,7 @@ GEM
       mime-types
       treetop (>= 1.4.5)
     mime-types (1.16)
-    money (3.1.0)
+    money (3.1.5)
     nokogiri (1.4.3.1)
     pickle (0.4.2)
       cucumber (>= 0.8)
@@ -140,18 +150,18 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
-    rspec (2.0.0.beta.22)
-      rspec-core (= 2.0.0.beta.22)
-      rspec-expectations (= 2.0.0.beta.22)
-      rspec-mocks (= 2.0.0.beta.22)
-    rspec-core (2.0.0.beta.22)
-    rspec-expectations (2.0.0.beta.22)
+    rspec (2.0.0.rc)
+      rspec-core (= 2.0.0.rc)
+      rspec-expectations (= 2.0.0.rc)
+      rspec-mocks (= 2.0.0.rc)
+    rspec-core (2.0.0.rc)
+    rspec-expectations (2.0.0.rc)
       diff-lcs (>= 1.1.2)
-    rspec-mocks (2.0.0.beta.22)
-      rspec-core (= 2.0.0.beta.22)
-      rspec-expectations (= 2.0.0.beta.22)
-    rspec-rails (2.0.0.beta.22)
-      rspec (= 2.0.0.beta.22)
+    rspec-mocks (2.0.0.rc)
+      rspec-core (= 2.0.0.rc)
+      rspec-expectations (= 2.0.0.rc)
+    rspec-rails (2.0.0.rc)
+      rspec (= 2.0.0.rc)
     ruby-debug-base19 (0.11.24)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -163,8 +173,9 @@ GEM
     ruby_core_source (0.1.4)
       archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.4)
-    selenium-webdriver (0.0.28)
-      ffi (>= 0.6.1)
+    selenium-webdriver (0.0.29)
+      childprocess (>= 0.0.7)
+      ffi (~> 0.6.3)
       json_pure
       rubyzip
     spork (0.8.4)
@@ -184,8 +195,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_sms (>= 0.0.2)
-  action_sms_gateways (>= 0.0.6)
+  action_sms!
+  action_sms_gateways!
   capybara
   conversational
   cucumber-rails

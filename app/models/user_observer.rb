@@ -8,7 +8,7 @@ class UserObserver < ActiveRecord::Observer
 
   private
     def allocate_free_credits(user)
-      user.add_message_credits(10)
+      user.add_message_credits(15)
     end
 end
 

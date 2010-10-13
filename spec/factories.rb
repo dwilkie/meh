@@ -74,15 +74,9 @@ end
 Factory.define :incoming_text_message do |f|
   f.association :mobile_number
   f.params { |itm|
-    userfield = ENV["SMS_AUTHENTICATION_KEY"]
-    mobile_number = itm.mobile_number.number
-    {
-      "to" => "61447100308",
-      "from" => mobile_number,
-      "msg"=> "Endia kasdf ofeao",
-      "userfield" => userfield,
-      "date" => "2010-05-13 23:59:11"
-    }
+    ActionSms::Base.connection.incoming_sms_factory_params(
+      :from => itm.mobile_number.number
+    )
   }
 end
 

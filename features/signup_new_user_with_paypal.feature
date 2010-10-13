@@ -26,7 +26,6 @@ Feature: Signup new user with paypal
   Scenario: I do not grant the required permissions
     Given I have a paypal account with email: "mara@example.com", first_name: "mara", last_name: "Mank"
     And I sign into paypal but do not grant the required permissions
-
     When I am redirected back to the application from paypal
 
     Then a user should not exist with email: "mara@example.com", name: "Mara"

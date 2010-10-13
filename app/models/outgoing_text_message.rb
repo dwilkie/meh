@@ -6,10 +6,11 @@ class OutgoingTextMessage < ActiveRecord::Base
     end
 
     def perform
-      gateway_response = SMSNotifier.deliver(outgoing_text_message)
-      gateway_message_id = SMSNotifier.connection.message_id(gateway_response)
+      gateway_adapter = SMSNotifier.connection
+      gateway_response = gateway_adapter.deliver(outgoing_text_message)
+      gateway_message_id = gateway_adapter.message_id(gateway_response)
       raise(Exception, gateway_response) unless
-        SMSNotifier.connection.delivery_request_successful?(gateway_response)
+        gateway_adapter.delivery_request_successful?(gateway_response)
       outgoing_text_message.update_attributes(
         :gateway_response => gateway_response,
         :gateway_message_id => gateway_message_id,

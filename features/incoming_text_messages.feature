@@ -12,84 +12,43 @@ Feature: Incoming Text Messages
   Scenario: An incoming text message is received that is in reply to a text message sent by this application
     Given a mobile number exists with number: "66322345211"
 
-    When an authentic incoming text message is received with:
-    """
-    {
-      'incoming_text_message' => {
-        'to'=>'61447100308',
-        'from'=> '66322345211',
-        'msg'=> 'Endiad ad y les',
-        'date'=>'2010-05-13 23:59:58'
-      }
-    }
-    """
+    When a reply from "66322345211" is received
 
     Then an incoming text message should exist with mobile_number_id: the mobile number
-    And the incoming text message should have the following params:
-    """
-    {
-      'to'=>'61447100308',
-      'from'=> '66322345211',
-      'msg'=> 'Endiad ad y les',
-      'date'=>'2010-05-13 23:59:58'
-    }
-    """
 
   Scenario: An incoming text message is received that is not in reply to a text message sent by this application
     Given a mobile number exists with number: "66322345211"
 
-    When an incoming text message is received with:
-    """
-    {
-      'incoming_text_message' => {
-        'to'=>'61447100308',
-        'from'=> '66322345211',
-        'msg'=> 'Endiad ad y les',
-        'date'=>'2010-05-13 23:59:58'
-      }
-    }
-    """
+    When an incoming text message from "66322345211" is received
 
     Then an incoming text message should not exist
 
   Scenario: An incoming text message is received for an unknown mobile number
-    When an incoming text message is received with:
-    """
-    {
-      'incoming_text_message' => {
-        'to'=>'61447100308',
-        'from'=> '66322345211',
-        'msg'=> 'Endiad ad y les',
-        'date'=>'2010-05-13 23:59:58'
-      }
-    }
-    """
+    When a reply from "66123456789" is received
 
     Then an incoming text message should not exist
 
   Scenario: A duplicate incoming text message is received
     Given a mobile number exists with number: "66322345211"
-    And an incoming text message exists
+    And an incoming text message exists with mobile_number: the mobile number
 
     And the incoming text message has the following params:
     """
     {
       'to'=>'61447100308',
-      'from'=> '66322345211',
-      'msg'=> 'Endiad ad y les',
-      'date'=>'2010-05-13 23:59:58'
+      'message'=> 'Endiad ad y les',
+      'date'=>'2010-05-13 23:59:58',
+      'sms_gateway_field' => 'something'
     }
     """
 
-    When an authentic but duplicate incoming text message is received with:
+    When a duplicate reply from "66322345211" is received with the following params:
     """
     {
-      'incoming_text_message' => {
-        'to'=>'61447100308',
-        'from'=> '66322345211',
-        'msg'=> 'Endiad ad y les',
-        'date'=>'2010-05-13 23:59:58'
-      }
+      'to'=>'61447100308',
+      'message'=> 'Endiad ad y les',
+      'date'=>'2010-05-13 23:59:58',
+      'sms_gateway_field' => 'something'
     }
     """
 
