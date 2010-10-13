@@ -22,16 +22,24 @@ When /^a text message delivery receipt is received$/ do
   post path_to("create text message delivery receipt")
 end
 
-When /^a (duplicate )?text message delivery receipt is received with:$/ do |duplicate, params|
-  expectation = duplicate ? " not" : ""
-  params = instance_eval(params)
+When /^a (duplicate )?text message delivery receipt is received for message id: "([^\"]*)"(?: with the following params: "([^\"]*)")?$/ do |duplicate, msg_id, receipt_params|
+  params = ActionSms::Base.connection.delivery_receipt_factory_params(
+    :message_id => msg_id
+  )
+  params.merge!(instance_eval(receipt_params)) if receipt_params
+  params = { "text_message_delivery_receipt" => params }
   post(
     path_to("create text message delivery receipt"),
     params
   )
+  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the text message delivery receipt"
   When "the worker works off the job"
   Then "the job should#{expectation} be deleted from the queue"
+end
+
+When /^a? (duplicate )?text message delivery receipt is received for message id: "([^\"]*)" with the following params:$/ do |duplicate, msg_id, message_params|
+  When %{a #{duplicate.to_s}text message delivery receipt is received for message id: "#{msg_id}" with the following params: "#{message_params}"}
 end
 
 When /^an incoming text message is received$/ do
@@ -44,9 +52,9 @@ When /^an? (duplicate )?(reply|incoming text message) from "([^\"]*)" is receive
     :reply => reply == "reply"
   )
   params.merge!(instance_eval(message_params)) if message_params
-  expectation = duplicate ? " not" : ""
   params = { "incoming_text_message" => params }
   post(path_to("create incoming text message"), params)
+  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
   Then "the job should#{expectation} be deleted from the queue"
@@ -54,17 +62,6 @@ end
 
 When /^an? (duplicate )?(reply|incoming text message) from "([^\"]*)" is received with the following params:$/ do |duplicate, reply, from, message_params|
   When %{a #{duplicate.to_s}#{reply} from "#{from}" is received with the following params: "#{message_params}"}
-end
-
-When /^an incoming text message is received from "([^\"]*)"$/ do |from|
-  params = instance_eval(params)
-  params["incoming_text_message"].merge!(
-    "userfield" => ENV["SMS_AUTHENTICATION_KEY"]
-  ) if authentic
-  post(path_to("create incoming text message"), params)
-  Then "the most recent job in the queue should be to create the incoming text message"
-  When "the worker works off the job"
-  Then "the job should be deleted from the queue"
 end
 
 When /^#{capture_model} (\d+) characters long is created(?: with #{capture_fields})?$/ do |name, num_chars, fields|

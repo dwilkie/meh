@@ -47,10 +47,15 @@ Factory.define :outgoing_text_message do |f|
   f.association :mobile_number
 end
 
+Factory.sequence :message_id do |n|
+  message_id = ActionSms::Base.connection.sample_message_id
+  message_id << n.to_s
+end
+
 Factory.define :sent_outgoing_text_message, :parent => :outgoing_text_message do |f|
-  f.sequence(:gateway_message_id) { |n|
-    "SMSGlobalMsgID:694274449499974#{n}"
-  }
+  f.gateway_message_id Factory.next(:message_id)
+  f.gateway_response ActionSms::Base.connection.sample_delivery_response
+  f.sent_at Time.now
 end
 
 Factory.define :notification do |f|
@@ -81,14 +86,13 @@ Factory.define :incoming_text_message do |f|
 end
 
 Factory.define :text_message_delivery_receipt do |f|
-  f.association :outgoing_text_message, :factory => :sent_outgoing_text_message
-  f.params { |text_message_delivery_receipt|
-    msgid = text_message_delivery_receipt.outgoing_text_message.gateway_message_id.gsub(
-      "SMSGlobalMsgID:", ""
+  f.association :outgoing_text_message
+  f.params { |tmdr|
+    ActionSms::Base.connection.delivery_receipt_factory_params(
+      :message_id => ActionSms::Base.connection.message_id(
+        tmdr.outgoing_text_message.gateway_message_id
+      )
     )
-    {
-      "msgid" => msgid
-    }
   }
 end
 

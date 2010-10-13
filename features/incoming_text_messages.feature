@@ -32,7 +32,7 @@ Feature: Incoming Text Messages
     Given a mobile number exists with number: "66322345211"
     And an incoming text message exists with mobile_number: the mobile number
 
-    And the incoming text message has the following params:
+    And the incoming text message also has the following params:
     """
     {
       'to'=>'61447100308',
@@ -53,4 +53,9 @@ Feature: Incoming Text Messages
     """
 
     Then 1 incoming text messages should exist
+
+  Scenario: The create resource url is hit with no payload
+    When an incoming text message is received
+
+    Then an incoming text message should not exist
 

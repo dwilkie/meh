@@ -13,7 +13,7 @@ Given /^#{capture_model} (is not yet|was already) (\w+)$/ do |name, status, attr
   model_instance.update_attribute(attribute, value)
 end
 
-Given /^#{capture_model} has the following params:$/ do |name, params|
+Given /^#{capture_model} (?:also )?has the following params:$/ do |name, params|
   model_instance = model!(name)
   model_instance.update_attributes!(
     :params => model_instance.params.merge(
