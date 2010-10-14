@@ -7,8 +7,7 @@ Feature: Text message delivery receipts
     Then the most recent job in the queue should be to create the text message delivery receipt
 
   Scenario: A text message delivery receipt is received for an existing outgoing text message
-    Given a sent outgoing text message exists with gateway_message_id: "12345"
-
+    Given a sent outgoing text message for message id: "12345" exists
     When a text message delivery receipt is received for message id: "12345"
 
     Then a text message delivery receipt should exist with outgoing_text_message_id: the outgoing text message
@@ -19,7 +18,7 @@ Feature: Text message delivery receipts
     Then a text message delivery receipt should not exist
 
   Scenario: A duplicate text message delivery receipt is received
-    Given a sent outgoing text message exists with gateway_message_id: "12345"
+    Given a sent outgoing text message for message id: "12345" exists
     And a text message delivery receipt exists with outgoing_text_message: the sent outgoing text message
     And the text message delivery receipt also has the following params:
     """

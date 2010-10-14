@@ -79,16 +79,16 @@ end
 Factory.define :incoming_text_message do |f|
   f.association :mobile_number
   f.params { |itm|
-    ActionSms::Base.connection.incoming_sms_factory_params(
+    ActionSms::Base.connection.sample_incoming_sms(
       :from => itm.mobile_number.number
     )
   }
 end
 
 Factory.define :text_message_delivery_receipt do |f|
-  f.association :outgoing_text_message
+  f.association :outgoing_text_message, :factory => :sent_outgoing_text_message
   f.params { |tmdr|
-    ActionSms::Base.connection.delivery_receipt_factory_params(
+    ActionSms::Base.connection.sample_delivery_receipt(
       :message_id => ActionSms::Base.connection.message_id(
         tmdr.outgoing_text_message.gateway_message_id
       )

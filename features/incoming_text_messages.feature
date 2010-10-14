@@ -9,22 +9,22 @@ Feature: Incoming Text Messages
 
     And the job's priority should be "2"
 
-  Scenario: An incoming text message is received that is in reply to a text message sent by this application
+  Scenario: An incoming text message is received that includes the correct authentication key
     Given a mobile number exists with number: "66322345211"
 
-    When a reply from "66322345211" is received
+    When an authentic text message from "66322345211" is received
 
     Then an incoming text message should exist with mobile_number_id: the mobile number
 
-  Scenario: An incoming text message is received that is not in reply to a text message sent by this application
+  Scenario: An incoming text message is received does not include the correct authentication key
     Given a mobile number exists with number: "66322345211"
 
-    When an incoming text message from "66322345211" is received
+    When a text message from "66322345211" is received
 
     Then an incoming text message should not exist
 
   Scenario: An incoming text message is received for an unknown mobile number
-    When a reply from "66123456789" is received
+    When an authentic text message from "66123456789" is received
 
     Then an incoming text message should not exist
 
@@ -42,7 +42,7 @@ Feature: Incoming Text Messages
     }
     """
 
-    When a duplicate reply from "66322345211" is received with the following params:
+    When a duplicate authentic text message from "66322345211" is received with the following params:
     """
     {
       'to'=>'61447100308',
