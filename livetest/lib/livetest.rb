@@ -1,7 +1,5 @@
 # Sets up the development environment ready for a live paypal ipn simulation
 # store mobile numbers in ~/.bashrc
-require 'factory_girl'
-require File.expand_path(File.dirname(__FILE__) + '/../../spec/factories')
 class Test
   PARAMS = {
     :test_users => {
@@ -117,7 +115,14 @@ class Test
 
   private
     def self.find_or_create_user!(role)
-      user = User.with_role(role).first || Factory.build(role)
+      user = User.with_role(role).first || User.new(
+        :password => "foobar",
+        :password_confirmation => "foobar"
+      )
+      if user.new_record?
+        role == :seller ? user.name = "Dave" : user.name = "Mara"
+        user.new_role = role
+      end
       user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
       user.save!
       user
@@ -127,8 +132,7 @@ class Test
       payment_agreement = PaymentAgreement.where(
        :seller_id => seller.id,
        :supplier_id => supplier.id
-     ).first || Factory.build(
-       :payment_agreement,
+     ).first || PaymentAgreement.new(
        :seller => seller,
        :supplier => supplier
      )
@@ -141,10 +145,11 @@ class Test
      product = Product.where(
        :seller_id => seller.id,
        :supplier_id => supplier.id
-     ).first || Factory.build(
-       :product,
+     ).first || Product.new(
        :seller => seller,
-       :supplier => supplier
+       :supplier => supplier,
+       :name => "Some product",
+       :verification_code => "XYZ123"
      )
      product.cents = 2000
      product.currency = "AUD"
