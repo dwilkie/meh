@@ -1,0 +1,11 @@
+en:
+  devise:
+    paypal_permissions_authable:
+      success: "Successfully authorized from paypal account."
+      failure: 'Could not authorize you from paypal because "%{reason}".'
+      skipped: 'Skipped authorization for paypal.'
+    paypal_authable:
+      success: "Signed in successfully"
+      failure: 'Could not authorize you from paypal because "%{reason}".'
+      skipped: 'Skipped authorization for paypal.'
+

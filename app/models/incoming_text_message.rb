@@ -47,7 +47,7 @@ class IncomingTextMessage < ActiveRecord::Base
     end
 
     def authenticate
-      errors[:base] << "Not authenticated" unless
+      errors[:base] << "Not authenticated" unless params.nil? ||
         SMSNotifier.connection.authenticate(params)
     end
 end

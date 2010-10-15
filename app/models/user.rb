@@ -9,8 +9,8 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
-  devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :validatable
+  devise :database_authenticatable, #:paypal_authable, :paypal_permissions_authable,
+         :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   # this is a white list of attributes that are permitted to be mass assigned
@@ -155,12 +155,21 @@ class User < ActiveRecord::Base
     end
   end
 
-  private
-    # Checks whether a password is needed or not. For validations only.
-    # Passwords are always required if it's a new record, or if the password
-    # or confirmation are being set somewhere.
-    def password_required?
-      !persisted? || !password.nil? || !password_confirmation.nil?
+  def self.find_for_paypal_auth(params)
+    if params
+      user = self.find_or_initialize_by_email(params[:email])
+      if user.new_record?
+        user.name = params[:first_name].capitalize
+        user.new_role = :seller
+        stubbed_password = Devise.friendly_token[0..password_length.max-1]
+        user.password = stubbed_password
+        user.password_confirmation = stubbed_password
+        user.save
+      end
+    else
+      user = self.new
     end
+    user
+  end
 end
 

@@ -6,16 +6,19 @@ Given /^there are (not )?enough credits available in the sms gateway$/ do |expec
   register_outgoing_text_message_uri(:for_failure => expectation)
 end
 
+Given /^a sent outgoing text message for message id: "([^"]*)" exists$/ do |msg_id|
+  sms_gateway = ActionSms::Base.connection
+  message_id = sms_gateway.sample_message_id(:message_id => msg_id)
+  delivery_response = sms_gateway.sample_delivery_response(:message_id => msg_id)
+  Given %{a sent outgoing text message exists with gateway_message_id: "#{message_id}", gateway_response: "#{delivery_response}"}
+end
+
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
-  params = {
-    "incoming_text_message" => {
-      "to"=>"61447100308",
-      "from"=> sender,
-      "msg"=> message,
-      "userfield"=> ENV["SMS_AUTHENTICATION_KEY"],
-      "date"=>"2010-05-13 23:59:58"
-    }
-  }
+  params = ActionSms::Base.connection.sample_incoming_sms(
+    :message => message,
+    :from => sender
+  )
+  params = { "incoming_text_message" => params }
   post path_to("create incoming text message"), params
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
@@ -26,32 +29,46 @@ When /^a text message delivery receipt is received$/ do
   post path_to("create text message delivery receipt")
 end
 
-When /^a (duplicate )?text message delivery receipt is received with:$/ do |duplicate, params|
-  expectation = duplicate ? " not" : ""
-  params = instance_eval(params)
+When /^a (duplicate )?text message delivery receipt is received for message id: "([^\"]*)"(?: with the following params: "([^\"]*)")?$/ do |duplicate, msg_id, receipt_params|
+  params = ActionSms::Base.connection.sample_delivery_receipt(
+    :message_id => msg_id
+  )
+  params.merge!(instance_eval(receipt_params)) if receipt_params
+  params = { "text_message_delivery_receipt" => params }
   post(
     path_to("create text message delivery receipt"),
     params
   )
+  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the text message delivery receipt"
   When "the worker works off the job"
   Then "the job should#{expectation} be deleted from the queue"
+end
+
+When /^a? (duplicate )?text message delivery receipt is received for message id: "([^\"]*)" with the following params:$/ do |duplicate, msg_id, message_params|
+  When %{a #{duplicate.to_s}text message delivery receipt is received for message id: "#{msg_id}" with the following params: "#{message_params}"}
 end
 
 When /^an incoming text message is received$/ do
   post path_to("create incoming text message")
 end
 
-When /^an (authentic )?((?:but )duplicate )?incoming text message is received with:$/ do |authentic, duplicate, params|
-  expectation = duplicate ? " not" : ""
-  params = instance_eval(params)
-  params["incoming_text_message"].merge!(
-    "userfield" => ENV["SMS_AUTHENTICATION_KEY"]
-  ) if authentic
+When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received(?: with the following params: "([^\"]*)")?$/ do |duplicate, authentic, from, message_params|
+  params = ActionSms::Base.connection.sample_incoming_sms(
+    :from => from,
+    :authentic => !authentic.nil?
+  )
+  params.merge!(instance_eval(message_params)) if message_params
+  params = { "incoming_text_message" => params }
   post(path_to("create incoming text message"), params)
+  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
   Then "the job should#{expectation} be deleted from the queue"
+end
+
+When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received with the following params:$/ do |duplicate, authentic, from, message_params|
+  When %{a #{duplicate.to_s}#{authentic.to_s}text message from "#{from}" is received with the following params: "#{message_params}"}
 end
 
 When /^#{capture_model} (\d+) characters long is created(?: with #{capture_fields})?$/ do |name, num_chars, fields|

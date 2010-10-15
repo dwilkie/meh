@@ -68,7 +68,6 @@ Feature: Accept supplier order
     | po a 3 hy456n                         | was already        | should be     |
     | apo 3 hy456n                          | is not yet         | should not be |
 
-  @current
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller

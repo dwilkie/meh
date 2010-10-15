@@ -1,8 +1,12 @@
 Investigate why numbers are not being sent with the + symbol
 Design for signup (now we know its paypals permissions API)
+Make extension for devise
+Store token in the session (retieve it asynchronously delayed job)
+Checkout devise token authenticatable for signing in users from paypal
+Build a paypal extension for devise instead of storing the code in your app
+Add logic to paypal gem to get token
 Modify validation and devise mailout for users (allow suppliers to be created with just a name) read the devise readme in detail!
 Launch staging app
-Investigate moving the devise mailout into the delayed_job queue
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
 Launch staging app (read heroku email)
 Live testing
