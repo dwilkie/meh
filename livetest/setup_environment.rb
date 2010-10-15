@@ -15,6 +15,13 @@ def clear_mobile_numbers?
   response == "y"
 end
 
+def test_locally?
+  puts "Are you testing on your development machine? y/n"
+  response = gets.chomp
+  response == "y"
+end
+
+test_locally = test_locally?
 clear_mobile_numbers = clear_mobile_numbers?
 seller_name = get_name(:seller)
 supplier_name = get_name(:supplier)
@@ -33,23 +40,25 @@ puts "*****************************************************************"
 puts "\n"
 puts "Congratulations! Your development environment is set up for live testing!"
 puts "\n"
-puts "Push db state to heroku: heroku db:push --remote staging"
+if test_locally
+  host = "http://localhost:3000"
+  puts "Boot the server: rails s"
+  puts "\n"
+  puts "Start a worker: rake jobs:work"
+  puts "\n"
+  puts "Simulate an incoming text message: curl -d \"#{Test.incoming_text_message_query_string(:normalized => test_locally)}\" #{host}/incoming_text_messages"
+  puts "\n"
+  puts "Simulate a masspay ipn: curl -d \"#{Test.masspay_ipn_query_string(:normalized => test_locally)}\" #{host}/paypal_ipns"
+else
+  host = "https://meh-notifier-staging.appspot.com"
+  puts "Push db state to heroku: heroku db:push --remote staging"
+  puts "\n"
+  puts "Turn on a worker: heroku workers 1 --remote staging"
+  puts "\n"
+  puts "Turn off workers: heroku workers 0 --remote staging"
+end
 puts "\n"
-puts "Turn on a worker: heroku workers 1 --remote staging"
-puts "\n"
-puts "Turn off workers: heroku workers 0 --remote staging"
-puts "\n"
-puts "Boot the server: rails s"
-puts "\n"
-puts "Start a worker: rake jobs:work"
-puts "\n"
-puts "Create mobile numbers: rails runner create_mobile_numbers.rb"
-puts "\n"
-puts "Simulate a supplier order paypal ipn: curl -d \"#{Test.paypal_ipn_query_string}\" https://meh-notifier-staging.appspot.com/paypal_ipns"
-puts "\n"
-puts "Simulate an incoming text message: curl -d \"#{Test.incoming_text_message_query_string}\" https://localhost:3000/incoming_text_messages"
-puts "\n"
-puts "Simulate a masspay ipn: curl -d \"#{Test.masspay_ipn_query_string}\" https://meh-notifier-staging.appspot.com/paypal_ipns"
+puts "Simulate a supplier order paypal ipn: curl -d \"#{Test.paypal_ipn_query_string(:normalized => test_locally)}\" #{host}/paypal_ipns"
 puts "\n"
 puts "*****************************************************************"
 
