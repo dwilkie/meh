@@ -7,7 +7,10 @@ class OutgoingTextMessage < ActiveRecord::Base
 
     def perform
       gateway_adapter = SMSNotifier.connection
-      gateway_response = gateway_adapter.deliver(outgoing_text_message)
+      gateway_response = gateway_adapter.deliver(
+        outgoing_text_message,
+        :filter_response => true
+      )
       gateway_message_id = gateway_adapter.message_id(gateway_response)
       raise(Exception, gateway_response) unless
         gateway_adapter.delivery_request_successful?(gateway_response)

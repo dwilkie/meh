@@ -15,7 +15,7 @@ PATH
   remote: /home/dave/work/plugins/action_sms_gateways
   specs:
     action_sms_gateways (0.0.7)
-      tropo_message (>= 0.0.4)
+      tropo_message
 
 PATH
   remote: /home/dave/work/plugins/devise_paypal
@@ -187,7 +187,7 @@ GEM
     treetop (1.4.8)
       polyglot (>= 0.3.1)
     trollop (1.16.2)
-    tropo_message (0.0.4)
+    tropo_message (0.0.5)
     tzinfo (0.3.23)
     warden (1.0.0)
       rack (>= 1.0.0)
