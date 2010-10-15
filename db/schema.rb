@@ -64,7 +64,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "notifications", ["seller_id", "supplier_id", "product_id", "purpose", "event", "for"], :name => "index_notifications_unique", :unique => true
 
   create_table "outgoing_text_messages", :force => true do |t|
-    t.string   "body"
+    t.text     "body"
     t.string   "gateway_response"
     t.string   "gateway_message_id"
     t.integer  "mobile_number_id",                             :null => false
