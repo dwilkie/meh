@@ -11,11 +11,11 @@ en:
         new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, you have a new product order: #<product_order_number>, from <seller_name> (<seller_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>). To accept the order, look up the product verification code for this item and reply with: \"apo <product_order_quantity> <product verification code>\""
         your_customer_bought_the_following_item: "Hi <supplier_name>, the customer bought <product_order_quantity> x <product_number> (<product_name>) as part of the customer order: #<customer_order_number>. A new product order: #<product_order_number>, was created to help you track the progress of this item. To mark this product order as completed, reply with: \"cpo\""
         your_supplier_processed_their_supplier_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} their product order of <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>"
-        send_the_product_to: "Hi <supplier_name>, please send the product order: #<product_order_number>, to the following address:
+        send_the_product_to: "Hi <supplier_name>, pls send the product order: #<product_order_number>, to this address:
 
         <customer_address>
 
-        then reply with: \"po complete\""
+        then reply with: \"cpo\""
         your_supplier_payment_was_successful: "Hi <seller_name>, a payment of <supplier_payment_amount> <supplier_payment_currency> was received by <supplier_name> (<supplier_mobile_number>) for <product_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>"
         you_have_received_a_payment: "Hi <supplier_name>, you have received a payment of <supplier_payment_amount> <supplier_payment_currency> from <seller_name> (<seller_mobile_number>) for your product order: #<product_order_number>"
         attributes:
@@ -26,7 +26,7 @@ en:
             but_not_sent: "but not sent"
       built_in:
         you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
-        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, please tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
+        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, pls tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
         supplier_order_was_already_processed: "Sorry %{supplier_name}, this product order was already %{status}"
         invalid_action_for_supplier_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ... or %{topic} complete ..."
         no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
@@ -36,7 +36,7 @@ en:
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
         you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
         you_must_verify_your_mobile_number_to_use_this_feature: "Sorry, you must verify your mobile number to use this feature. Try replying with: mn v <your name>"
-        verify_your_mobile_number: "Hi, please verify your number by replying with: mn v <your name>"
+        verify_your_mobile_number: "Hi, pls verify your number by replying with: mn v <your name>"
         invalid_action_for_mobile_number: "Sorry \"%{action}\" is not a valid option. To verify your mobile number number, try: %{topic} verify <your name>"
         no_action_for_mobile_number: "To verify your mobile number, try: %{topic} verify <your name>"
         you_successfully_verified_your_mobile_number: "Congratulations %{name_supplied}, you successfully verified your mobile number"
@@ -44,8 +44,8 @@ en:
         we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{supplier_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
         we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) (%{supplier_email}) of %{supplier_payment_amount} %{supplier_payment_currency} for %{supplier_order_quantity} x %{product_number} (%{product_name}) was UNCLAIMED because %{supplier_name} does not yet have a paypal account with this email. The item belongs to your customer order: #%{seller_order_number}"
         open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, you have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for your product order: #%{supplier_order_number}. To claim it, register at paypal.com"
-        valid_message_commands_are: "Hi%{user_name}, valid message commands include:\n\"mn\" (Mobile Number)\n\"po\" (Product Order)"
-        you_do_not_have_enough_message_credits_left: "Sorry%{payer_name}, the message: \"%{truncated_message}...\" could not be sent to %{receiver_name} because you don't have enough credits. Please top up"
+        valid_message_commands_are: "Hi%{user_name}, valid sms commands are:\n\n\"mn\" (Mobile Number)\n\n\"po\" (Product Order)"
+        you_do_not_have_enough_message_credits_left: "Sorry%{payer_name}, the sms: \"%{truncated_message}...\" could not be sent to %{receiver_name} because you don't have enough credits. Pls top up"
         words:
           you: "you"
   errors:
