@@ -1,7 +1,18 @@
 # Usage
 # rails runner setup_environment.rb
 require File.expand_path(File.dirname(__FILE__) + '/lib/livetest')
-Test.setup
+
+def get_name(role)
+  default_name = Test::PARAMS["#{role.to_s}_name".to_sym]
+  puts "Enter the #{role.to_s.upcase}'S name. Type: 'd' for default: '#{default_name}'"
+  response = gets.chomp
+  response == "d" ? default_name : response
+end
+
+seller_name = get_name(:seller)
+supplier_name = get_name(:supplier)
+
+Test.setup(:seller_name => seller_name, :supplier_name => supplier_name)
 puts "*****************************************************************"
 puts "\n"
 puts "Congratulations! Your development environment is set up for live testing!"

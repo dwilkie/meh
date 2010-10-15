@@ -8,12 +8,14 @@ class Test
     },
     :paypal_item_number => "AK-1234",
     :seller_mobile_number => ENV['LIVE_TESTING_SELLER_MOBILE_NUMBER'].clone,
-    :supplier_mobile_number => ENV['LIVE_TESTING_SUPPLIER_MOBILE_NUMBER'].clone
+    :supplier_mobile_number => ENV['LIVE_TESTING_SUPPLIER_MOBILE_NUMBER'].clone,
+    :seller_name => "Dave",
+    :supplier_name => "Mara"
   }
 
-  def self.setup
-    seller = find_or_create_user!(:seller)
-    supplier = find_or_create_user!(:supplier)
+  def self.setup(options = {})
+    seller = find_or_create_user!(:seller, :name => options[:seller_name])
+    supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
     delete_old_records
@@ -114,15 +116,15 @@ class Test
   end
 
   private
-    def self.find_or_create_user!(role)
+    def self.find_or_create_user!(role, options = {})
+      options[:name] ||= PARAMS["#{role}_name".to_sym]
       user = User.with_role(role).first || User.new(
         :password => "foobar",
         :password_confirmation => "foobar"
       )
-      if user.new_record?
-        role == :seller ? user.name = "Dave" : user.name = "Mara"
-        user.new_role = role
-      end
+      user.new_role = role
+      user.message_credits = 15
+      user.name = options[:name]
       user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
       user.save!
       user
