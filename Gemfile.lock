@@ -1,4 +1,24 @@
 GIT
+  remote: git://github.com/dwilkie/action_sms.git
+  revision: 58700d73af731f4ebb31eea2071c70cc215f256c
+  specs:
+    action_sms (0.0.3)
+
+GIT
+  remote: git://github.com/dwilkie/action_sms_gateways.git
+  revision: 58109ca3b343acb1f66dc58f24fae842c087db82
+  specs:
+    action_sms_gateways (0.0.7)
+      tropo_message
+
+GIT
+  remote: git://github.com/dwilkie/paypal.git
+  revision: 050981a8618d090d4bcb0dfe9210da00e87e7331
+  specs:
+    paypal-ipn (0.0.1)
+      httparty (>= 0.6.1)
+
+GIT
   remote: git://github.com/plataformatec/devise.git
   revision: 69ecbd1fa30e390ea18e76f16cc33e86b643bd7e
   specs:
@@ -10,9 +30,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     abstract (1.0.0)
-    action_sms (0.0.3)
-    action_sms_gateways (0.0.7)
-      tropo_message (>= 0.0.4)
     actionmailer (3.0.0)
       actionpack (= 3.0.0)
       mail (~> 2.2.5)
@@ -66,8 +83,6 @@ GEM
       treetop (>= 1.4.5)
     mime-types (1.16)
     money (3.1.0)
-    paypal-ipn (0.0.1)
-      httparty (>= 0.6.1)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -100,13 +115,13 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_sms
-  action_sms_gateways
+  action_sms!
+  action_sms_gateways!
   conversational
   delayed_job (>= 2.1.0.pre2)
   devise!
   haml-rails
   httparty
   money
-  paypal-ipn
+  paypal-ipn!
   rails (= 3.0.0)

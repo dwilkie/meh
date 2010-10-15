@@ -8,8 +8,8 @@ gem 'conversational'
 gem 'money'
 gem 'httparty'
 gem 'delayed_job', ' >=2.1.0.pre2'
-gem 'action_sms'
-gem 'action_sms_gateways'
-gem 'paypal-ipn', :require => 'paypal'
+gem 'action_sms', :git => 'git://github.com/dwilkie/action_sms.git'
+gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
+gem 'paypal-ipn', :require => 'paypal', :git => 'git://github.com/dwilkie/paypal.git'
 gem "haml-rails"
 
