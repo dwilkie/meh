@@ -18,7 +18,7 @@ class Test
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-    delete_old_records
+    delete_old_records(:clear_mobile_numbers => options[:clear_mobile_numbers])
     clear_jobs
   end
 
@@ -160,12 +160,14 @@ class Test
      product
    end
 
-   def self.delete_old_records
+   def self.delete_old_records(options = {})
      SupplierPayment.delete_all
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all
      IncomingTextMessage.delete_all
+     OutgoingTextMessage.delete_all
+     MobileNumber.delete_all if options[:clear_mobile_numbers]
    end
 
    def self.clear_jobs
