@@ -1,3 +1,4 @@
+Test locally with POSTRSQL
 Investigate why numbers are not being sent with the + symbol
 Design for signup (now we know its paypals permissions API)
 Make extension for devise
