@@ -11,17 +11,12 @@ class PaypalIpn < ActiveRecord::Base
     end
 
     def perform
-      logfile = File.new("#{Rails.root}/log/worker.log", 'w')
-      logfile.puts "attempt_job: #{attempt_job.to_s}"
       if attempt_job
         paypal_ipn_class = PaypalIpn.type(params)
-        logfile.puts "paypal_ipn_class: #{paypal_ipn_class.to_s}"
         new_paypal_ipn = paypal_ipn_class.new(:params => params)
         paypal_ipn = paypal_ipn_class.find_or_initialize_by_transaction_id(
           new_paypal_ipn.transaction_id
         )
-        logfile.puts "paypal_ipn: #{paypal_ipn.inspect}"
-        logfile.puts "passing_check: #{(paypal_ipn.payment_completed? || new_paypal_ipn.payment_status == paypal_ipn.payment_status) && paypal_ipn.verified?}"
         unless (paypal_ipn.payment_completed? ||
         new_paypal_ipn.payment_status == paypal_ipn.payment_status) &&
         paypal_ipn.verified?
@@ -30,11 +25,8 @@ class PaypalIpn < ActiveRecord::Base
             :verified_at => nil,
             :fraudulent => nil
           )
-          logfile.puts "paypal_ipn_after_save: #{paypal_ipn.inspect}"
-          logfile.puts "paypal_ipn errors: #{paypal_ipn.errors}"
         end
       end
-      logfile.close
     end
   end
 
@@ -72,10 +64,18 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   def verify_ipn_later
+    logfile = File.new("#{Rails.root}/log/worker.log", 'w')
+    logfile.puts("already verified?: #{verified?}")
+    logfile.puts("already fraudulent?: #{fraudulent?}")
+    logfile.puts("should verify: #{!verified? && !fraudulent?}")
+    logfile.close
     verify_ipn if !verified? && !fraudulent?
   end
 
   def verify_ipn
+    logfile = File.new("#{Rails.root}/log/worker.log", 'w+')
+    logfile.puts("about to verify...")
+    logfile.close
     verify ?
       self.update_attributes!(:verified_at => Time.now) :
       self.update_attributes!(:fraudulent => true)
