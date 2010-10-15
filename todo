@@ -1,4 +1,6 @@
 Test locally with POSTRSQL
+Change valid message commands to have more logic (i.e. only display command for verifying mobile number if mobile number is not verified etc)
+Change default behaviour of mn to be verify
 Investigate why numbers are not being sent with the + symbol
 Design for signup (now we know its paypals permissions API)
 Make extension for devise

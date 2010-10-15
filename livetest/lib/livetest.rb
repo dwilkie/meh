@@ -123,7 +123,7 @@ class Test
         :password_confirmation => "foobar"
       )
       user.new_role = role
-      user.message_credits = 15
+      user.message_credits = 50
       user.name = options[:name]
       user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
       user.save!
