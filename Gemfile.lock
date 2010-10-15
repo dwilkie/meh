@@ -1,34 +1,30 @@
 GIT
+  remote: git://github.com/dwilkie/action_sms.git
+  revision: 58700d73af731f4ebb31eea2071c70cc215f256c
+  specs:
+    action_sms (0.0.3)
+
+GIT
+  remote: git://github.com/dwilkie/action_sms_gateways.git
+  revision: 58109ca3b343acb1f66dc58f24fae842c087db82
+  specs:
+    action_sms_gateways (0.0.7)
+      tropo_message
+
+GIT
+  remote: git://github.com/dwilkie/paypal.git
+  revision: 050981a8618d090d4bcb0dfe9210da00e87e7331
+  specs:
+    paypal-ipn (0.0.1)
+      httparty (>= 0.6.1)
+
+GIT
   remote: git://github.com/plataformatec/devise.git
   revision: 69ecbd1fa30e390ea18e76f16cc33e86b643bd7e
   specs:
     devise (1.2.rc)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.0)
-
-PATH
-  remote: /home/dave/work/plugins/action_sms
-  specs:
-    action_sms (0.0.3)
-
-PATH
-  remote: /home/dave/work/plugins/action_sms_gateways
-  specs:
-    action_sms_gateways (0.0.7)
-      tropo_message
-
-PATH
-  remote: /home/dave/work/plugins/devise_paypal
-  specs:
-    devise_paypal (0.0.0)
-      devise
-      paypal-ipn
-
-PATH
-  remote: /home/dave/work/plugins/paypal
-  specs:
-    paypal-ipn (0.0.1)
-      httparty (>= 0.6.1)
 
 GEM
   remote: http://rubygems.org/
@@ -205,7 +201,6 @@ DEPENDENCIES
   database_cleaner
   delayed_job (>= 2.1.0.pre2)
   devise!
-  devise_paypal!
   factory_girl_rails
   fakeweb
   haml-rails
