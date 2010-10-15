@@ -64,18 +64,10 @@ class PaypalIpn < ActiveRecord::Base
   end
 
   def verify_ipn_later
-    logfile = File.new("#{Rails.root}/log/worker.log", 'a')
-    logfile.puts("already verified?: #{verified?}")
-    logfile.puts("already fraudulent?: #{fraudulent?}")
-    logfile.puts("should verify: #{!verified? && !fraudulent?}")
-    logfile.close
     verify_ipn if !verified? && !fraudulent?
   end
 
   def verify_ipn
-    logfile = File.new("#{Rails.root}/log/worker.log", 'a')
-    logfile.puts("about to verify...")
-    logfile.close
     verify ?
       self.update_attributes!(:verified_at => Time.now) :
       self.update_attributes!(:fraudulent => true)
