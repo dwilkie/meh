@@ -31,6 +31,7 @@ class PaypalIpn < ActiveRecord::Base
             :fraudulent => nil
           )
           logfile.puts "paypal_ipn_after_save: #{paypal_ipn.inspect}"
+          logfile.puts "paypal_ipn errors: #{paypal_ipn.errors}"
         end
       end
       logfile.close
