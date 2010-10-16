@@ -21,7 +21,7 @@ Feature: Accept supplier order
       'address_zip' => '52321'
     }
     """
-  @current
+
   Scenario Outline: Successfully accept an order
     Given the mobile number: "Mara's number" <is_not_yet_already> verified
 
@@ -50,23 +50,23 @@ Feature: Accept supplier order
   Examples:
     | message_text                          | is_not_yet_already | should_be     |
     | supplier_order accept 154674 3 hy456n | was already        | should be     |
-#    | product_order accept 154674 3 hy456n  | is not yet         | should not be |
-#    | supplier_order a 154674 3 hy456n      | was already        | should be     |
-#    | product_order a 154674 3 hy456n       | is not yet         | should not be |
-#    | accept_supplier_order 154674 3 hy456n | was already        | should be     |
-#    | accept_product_order 154674 3 hy456n  | is not yet         | should not be |
-#    | po accept 154674 3 hy456n             | was already        | should be     |
-#    | po a 154674 3 hy456n                  | is not yet         | should not be |
-#    | apo 154674 3 hy456n                   | was already        | should be     |
-#    | supplier_order accept 3 hy456n        | is not yet         | should not be |
-#    | product_order accept 3 hy456n         | was already        | should be     |
-#    | supplier_order a 3 hy456n             | is not yet         | should not be |
-#    | product_order a 3 hy456n              | was already        | should be     |
-#    | accept_supplier_order 3 hy456n        | is not yet         | should not be |
-#    | accept_product_order 3 hy456n         | was already        | should be     |
-#    | po accept 3 hy456n                    | is not yet         | should not be |
-#    | po a 3 hy456n                         | was already        | should be     |
-#    | apo 3 hy456n                          | is not yet         | should not be |
+    | product_order accept 154674 3 hy456n  | is not yet         | should not be |
+    | supplier_order a 154674 3 hy456n      | was already        | should be     |
+    | product_order a 154674 3 hy456n       | is not yet         | should not be |
+    | accept_supplier_order 154674 3 hy456n | was already        | should be     |
+    | accept_product_order 154674 3 hy456n  | is not yet         | should not be |
+    | po accept 154674 3 hy456n             | was already        | should be     |
+    | po a 154674 3 hy456n                  | is not yet         | should not be |
+    | apo 154674 3 hy456n                   | was already        | should be     |
+    | supplier_order accept 3 hy456n        | is not yet         | should not be |
+    | product_order accept 3 hy456n         | was already        | should be     |
+    | supplier_order a 3 hy456n             | is not yet         | should not be |
+    | product_order a 3 hy456n              | was already        | should be     |
+    | accept_supplier_order 3 hy456n        | is not yet         | should not be |
+    | accept_product_order 3 hy456n         | was already        | should be     |
+    | po accept 3 hy456n                    | is not yet         | should not be |
+    | po a 3 hy456n                         | was already        | should be     |
+    | apo 3 hy456n                          | is not yet         | should not be |
 
   Scenario Outline: Try to accept an order implicitly with multiple unconfirmed supplier orders
     Then a supplier order: "first order" should exist with product_id: the product
