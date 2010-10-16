@@ -14,12 +14,12 @@ class Test
   }
 
   def self.setup(options = {})
+    delete_old_records(:clear_all => options[:clear_all])
+    clear_jobs
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-    delete_old_records(:clear_mobile_numbers => options[:clear_mobile_numbers])
-    clear_jobs
   end
 
   def self.incoming_text_message_query_string(options = {})
@@ -167,7 +167,13 @@ class Test
      PaypalIpn.delete_all
      IncomingTextMessage.delete_all
      OutgoingTextMessage.delete_all
-     MobileNumber.delete_all if options[:clear_mobile_numbers]
+     if options[:clear_all]
+       MobileNumber.delete_all
+       Notification.delete_all
+       PaymentAgreement.delete_all
+       Product.delete_all
+       User.delete_all
+     end
    end
 
    def self.clear_jobs
