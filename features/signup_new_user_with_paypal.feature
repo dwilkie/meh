@@ -3,6 +3,7 @@ Feature: Signup new user with paypal
   As a seller
   I want to be able to signup using paypal
 
+  @current
   Scenario: I follow the 'sign up with paypal' link
     Given I am on the home page
     And I want to sign up with paypal
