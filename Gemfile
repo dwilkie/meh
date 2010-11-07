@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0'
+gem 'rails', '3.0.1'
 
 # Bundle edge Rails instead:
 #gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -18,8 +18,8 @@ gem 'conversational'
 gem 'money'
 gem 'httparty'
 gem 'delayed_job', ' >=2.1.0.pre2'
-gem 'action_sms', :git => 'git://github.com/dwilkie/action_sms.git'
-gem 'action_sms_gateways', :git => 'git://github.com/dwilkie/action_sms_gateways.git'
+gem 'action_sms', :path => '/home/dave/work/plugins/action_sms'
+#gem 'action_sms', :git => 'git://github.com/dwilkie/action_sms.git'
 gem 'paypal-ipn', :require => 'paypal', :path => '/home/dave/work/plugins/paypal'
 gem "haml-rails"
 
@@ -36,11 +36,11 @@ end
 ## Bundle gems for certain environments:
 group :test do
   gem 'test-unit'
-  gem 'rspec', ">=2.0.0.beta.22"
-  gem 'rspec-core', ">=2.0.0.beta.22"
-  gem 'rspec-mocks', ">=2.0.0.beta.22"
-  gem 'rspec-expectations', ">=2.0.0.beta.22"
-  gem 'rspec-rails', ">=2.0.0.beta.22"
+  gem 'rspec'
+  gem 'rspec-core'
+  gem 'rspec-mocks'
+  gem 'rspec-expectations'
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'database_cleaner'

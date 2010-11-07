@@ -48,13 +48,13 @@ Factory.define :outgoing_text_message do |f|
 end
 
 Factory.sequence :message_id do |n|
-  message_id = ActionSms::Base.connection.sample_message_id
+  message_id = ActionSms::Base.sample_message_id
   message_id << n.to_s
 end
 
 Factory.define :sent_outgoing_text_message, :parent => :outgoing_text_message do |f|
   f.gateway_message_id Factory.next(:message_id)
-  f.gateway_response ActionSms::Base.connection.sample_delivery_response
+  f.gateway_response ActionSms::Base.sample_delivery_response
   f.sent_at Time.now
 end
 
@@ -79,8 +79,9 @@ end
 Factory.define :incoming_text_message do |f|
   f.association :mobile_number
   f.params { |itm|
-    ActionSms::Base.connection.sample_incoming_sms(
-      :from => itm.mobile_number.number
+    ActionSms::Base.sample_incoming_sms(
+      :from => itm.mobile_number.number,
+      :authentic => true
     )
   }
 end
@@ -88,8 +89,8 @@ end
 Factory.define :text_message_delivery_receipt do |f|
   f.association :outgoing_text_message, :factory => :sent_outgoing_text_message
   f.params { |tmdr|
-    ActionSms::Base.connection.sample_delivery_receipt(
-      :message_id => ActionSms::Base.connection.message_id(
+    ActionSms::Base.sample_delivery_receipt(
+      :message_id => ActionSms::Base.message_id(
         tmdr.outgoing_text_message.gateway_message_id
       )
     )

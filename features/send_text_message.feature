@@ -7,6 +7,7 @@ Feature: Send text message
     And a mobile number: "Dave's number" exists with user: the user
     And no jobs exist
 
+  @current
   Scenario Outline: The payer has enough message credits
     Given the user has <credits> message credits
     And the sms gateway is up

@@ -35,20 +35,20 @@ class IncomingTextMessage < ActiveRecord::Base
   end
 
   def text
-    SMSNotifier.connection.message_text(self.params)
+    ActionSms::Base.message_text(self.params)
   end
 
   private
     def link_to_mobile_number
       if params
-        from = SMSNotifier.connection.sender(params)
+        from = ActionSms::Base.sender(params)
         self.mobile_number = MobileNumber.where("number = ?", from).first if from
       end
     end
 
     def authenticate
       errors[:base] << "Not authenticated" unless params.nil? ||
-        SMSNotifier.connection.authenticate(params)
+        ActionSms::Base.authenticate(params)
     end
 end
 

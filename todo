@@ -1,5 +1,7 @@
+Test against new ActionSMS and Action SMS Gateways
+Release new versions of ActionSMS and ActionSMS Gateways
+Fix live testing where custom name isn't being specified correctly
 Test locally with postgreSQL
-Fully spec out and document action_sms and action_sms gateways
 Change valid message commands to have more logic (i.e. only display command for verifying mobile number if mobile number is not verified etc)
 Change default behaviour of mn to be verify & change default action to be verify if the number is not verified
 Investigate why numbers are not being sent with the + symbol

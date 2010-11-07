@@ -39,7 +39,7 @@ class TextMessageDeliveryReceipt < ActiveRecord::Base
 
   private
     def set_status
-      self.status = SMSNotifier.connection.status(params)
+      self.status = ActionSms::Base.status(params)
     end
 end
 
