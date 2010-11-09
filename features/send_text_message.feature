@@ -1,3 +1,4 @@
+@action_sms
 Feature: Send text message
   In order to make money
   I want to be able to communicate with users over sms and charge for the service
@@ -7,7 +8,6 @@ Feature: Send text message
     And a mobile number: "Dave's number" exists with user: the user
     And no jobs exist
 
-  @current
   Scenario Outline: The payer has enough message credits
     Given the user has <credits> message credits
     And the sms gateway is up

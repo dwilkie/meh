@@ -1,3 +1,4 @@
+@action_sms
 Feature: Text message delivery receipts
   In order to keep track of the status of outgoing text messages
   I want to be notified with delivery receipts when outgoing text messages are delivered or fail to be delivered

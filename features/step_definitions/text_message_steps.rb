@@ -8,8 +8,8 @@ end
 
 Given /^a sent outgoing text message for message id: "([^"]*)" exists$/ do |msg_id|
   message_id = ActionSms::Base.sample_message_id(:message_id => msg_id)
-  delivery_response = ActionSms::Base.sample_delivery_response(
-    :message_id => msg_id
+  delivery_response = ActionSms::Base.sample_delivery_response_with_message_id(
+    msg_id
   )
   Given %{a sent outgoing text message exists with gateway_message_id: "#{message_id}", gateway_response: "#{delivery_response}"}
 end

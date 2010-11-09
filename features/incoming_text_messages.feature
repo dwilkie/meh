@@ -1,3 +1,4 @@
+@action_sms
 Feature: Incoming Text Messages
   In order to be sure that an incoming text message came from SMSGlobal
   I want to check that the incoming text message is in reply to a message sent from this application
@@ -28,7 +29,6 @@ Feature: Incoming Text Messages
 
     Then an incoming text message should not exist
 
-  @current
   Scenario: A duplicate incoming text message is received
     Given a mobile number exists with number: "66322345211"
     And an incoming text message exists with mobile_number: the mobile number
