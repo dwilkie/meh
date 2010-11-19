@@ -1,7 +1,6 @@
 # Usage
 # rails runner setup_environment.rb
 require File.expand_path(File.dirname(__FILE__) + '/lib/livetest')
-
 def get_name(role)
   default_name = Test::PARAMS["#{role.to_s}_name".to_sym]
   puts "Enter the #{role.to_s.upcase}'S name. Type: 'd' for default: '#{default_name}'"

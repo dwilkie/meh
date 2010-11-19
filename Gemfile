@@ -18,8 +18,7 @@ gem 'conversational'
 gem 'money'
 gem 'httparty'
 gem 'delayed_job', ' >=2.1.0.pre2'
-gem 'action_sms', :path => '/home/dave/work/plugins/action_sms'
-#gem 'action_sms', :git => 'git://github.com/dwilkie/action_sms.git'
+gem 'action_sms'
 gem 'paypal-ipn', :require => 'paypal', :path => '/home/dave/work/plugins/paypal'
 gem "haml-rails"
 

@@ -60,3 +60,7 @@ Feature: Incoming Text Messages
 
     Then an incoming text message should not exist
 
+  @current
+  Scenario: Incoming text message contains UTF-8 characters
+    When I text "Love u to sweety\xE47\xE14\xE1a" from "61234433231"
+

@@ -117,16 +117,19 @@ class Test
 
   private
     def self.find_or_create_user!(role, options = {})
-      options[:name] ||= PARAMS["#{role}_name".to_sym]
-      user = User.with_role(role).first || User.new(
-        :password => "foobar",
-        :password_confirmation => "foobar"
-      )
-      user.new_role = role
-      user.message_credits = 50
-      user.name = options[:name]
-      user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
-      user.save!
+      user = User.with_role(role).first || User.new
+      if user.new_record?
+        options[:name] ||= PARAMS["#{role}_name".to_sym]
+        user.password = "foobar"
+        user.password_confirmation = user.password
+        user.new_role = role
+        user.message_credits = 50
+        user.name = options[:name]
+        user.email = PARAMS[
+          :test_users
+        ]["paypal_sandbox_#{role.to_s}_email".to_sym]
+        user.save!
+      end
       user
     end
 

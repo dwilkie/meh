@@ -3,11 +3,9 @@ Meh::Application.routes.draw do
   resources :incoming_text_messages, :only => :create
   resources :text_message_delivery_receipts, :only => :create
 
-#  devise_for :users, :controllers => {
-#    :paypal_permissions_authable => "paypal_registrations"
-#  }
-
-  devise_for :users
+  devise_for :users, :controllers => {
+    :paypal_permissions_authable => "paypal_registrations"
+  }
 
   root :to => "welcome#index"
 

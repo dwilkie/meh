@@ -1,15 +1,10 @@
-Test against new ActionSMS and Action SMS Gateways
-Release new versions of ActionSMS and ActionSMS Gateways
-Fix live testing where custom name isn't being specified correctly
+Fix registrations controller to use payal_authable
+Fix UTF-8 incoming and outgoing messages with Tropo
+Email notifications
 Test locally with postgreSQL
 Change valid message commands to have more logic (i.e. only display command for verifying mobile number if mobile number is not verified etc)
 Change default behaviour of mn to be verify & change default action to be verify if the number is not verified
-Investigate why numbers are not being sent with the + symbol
-Design for signup (now we know its paypals permissions API)
-Make extension for devise
 Modify validation for devise (allow suppliers to be created with just a name)
-Launch staging app
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
-Launch staging app (read heroku email)
 Live testing
 
