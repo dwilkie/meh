@@ -1,5 +1,5 @@
 en:
   devise:
     paypal_registrations:
-      success: "Successfully authorized from paypal account."
+      success: "Welcome %{user_name}! You are now signed in."
 

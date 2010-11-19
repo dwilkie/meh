@@ -41,7 +41,7 @@ group :test do
   gem 'rspec-expectations'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
-  gem 'capybara'
+  gem 'capybara', "0.3.9"
   gem 'database_cleaner'
   gem 'pickle'
   gem 'cucumber-rails'

@@ -1,4 +1,4 @@
-Fix registrations controller to use payal_authable
+Do a live test to get real response when user cancells paypal_authable flow and replace code in devise_paypal
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications
 Test locally with postgreSQL

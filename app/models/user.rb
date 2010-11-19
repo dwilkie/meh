@@ -9,8 +9,8 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
-  devise :database_authenticatable, :paypal_authable, :paypal_permissions_authable,
-         :recoverable, :registerable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :paypal_authable,
+         :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
   # this is a white list of attributes that are permitted to be mass assigned

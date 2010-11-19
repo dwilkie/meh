@@ -1,43 +1,41 @@
+@devise_paypal
 Feature: Signup new user with paypal
-  In order to avoid filling out forms when signing up and to automatically configure my permissions
-  As a seller
-  I want to be able to signup using paypal
-
-  Scenario: I follow the 'sign up with paypal' link
-    Given I am on the home page
-    And I want to sign up with paypal
-
-    When I follow "Signup with paypal"
-
-    Then I should be redirected to sign in with paypal
-    And permission should be requested to grant access to the masspay api
+  In order to ensure my details match up with Paypals when I sign up
+  As a new seller
+  I want to always signup using Paypal
 
   @current
-  Scenario: I grant the required permissions
-    Given I have a paypal account with email: "mara@example.com", first_name: "mara", last_name: "Mank"
-    And I sign into paypal and grant the required permissions
+  Scenario: I click the sign up with paypal link
+    Given I am on the homepage
+    When I follow "Signup/Login with Paypal"
+    Then I should be redirected to sign in with paypal
+
+  Scenario: I successfully signed in with Paypal
+    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
+    And I successfully signed in with paypal
 
     When I am redirected back to the application from paypal
 
     Then a user should exist with email: "mara@example.com", name: "Mara"
-    And the user should have 1 roles
-    And "seller" should be one of the user's roles
-    And I should be on the home page
-    #And I should see "Hi Mara, you're now logged in"
+    And I should be on the homepage
+    And I should see "Welcome Mara! You are now signed in"
 
-  Scenario: I do not grant the required permissions
-    Given I have a paypal account with email: "mara@example.com", first_name: "mara", last_name: "Mank"
-    And I sign into paypal but do not grant the required permissions
-    When I am redirected back to the application from paypal
-
-    Then a user should not exist with email: "mara@example.com", name: "Mara"
-    And I should be on the home page
-    And I should see "Unable to"
-
-  Scenario: I do not sign into paypal
-    Given I do not sign into paypal
+  Scenario: I cancel signing in with Paypal
+    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
+    But I did not sign in with paypal
 
     When I am redirected back to the application from paypal
 
-    Then a user should not exist with email: "mara@example.com", name: "Mara"
+    Then I should be on the homepage
+    And I should see "Not signed in"
+
+  Scenario: I sign in with paypal and am returned to the application
+    Given a user exists with name: "Mara", email: "mara@example.com"
+    And I have a paypal account with name: "mara", email: "mara@example.com"
+    And I successfully sign in with paypal
+
+    When I am redirected back to the application from paypal
+
+    Then I should be on the homepage
+    And I should see "Welcome back Mara! You are now signed in"
 
