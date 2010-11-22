@@ -1,4 +1,7 @@
-Do a live test to get real response when user cancells paypal_authable flow and replace code in devise_paypal
+Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
+Fix default notifications by making more events
+Allow seller to complete their own supplier orders
+Allow user to verify number by simply texting their name
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications
 Test locally with postgreSQL
