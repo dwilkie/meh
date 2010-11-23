@@ -55,6 +55,9 @@ class Notification < ActiveRecord::Base
       },
       :product_verification_code => Proc.new { |options|
         options[:product].verification_code.to_s
+      },
+      :product_price => Proc.new { |options|
+        options[:product].price
       }
     },
     :supplier_order => {

@@ -16,11 +16,10 @@ Feature: Create supplier orders from an order notification
     """
     {
       'payment_status' => 'Processed',
-      'item_number1' => '12345790063',
-      'item_name1' => 'Model Ship - The Rubber Dingy',
+      'item_number' => '12345790063',
+      'item_name' => 'Model Ship - The Rubber Dingy',
       'receiver_email'=>'mara@example.com',
-      'quantity1' => '1',
-      'num_cart_items' => '1'
+      'quantity' => '1'
     }
     """
 
@@ -28,6 +27,7 @@ Feature: Create supplier orders from an order notification
 
     Then a supplier order should not exist
 
+  @current
   Scenario Outline: The payment status is completed
     Given the mobile number: "Mara's number" <seller_number_verified> verified
     And the mobile number: "Dave's number" <supplier_number_verified> verified
@@ -36,11 +36,12 @@ Feature: Create supplier orders from an order notification
     """
     {
       'payment_status' => 'Completed',
-      'item_number1' => '12345790063',
-      'item_name1' => 'Model Ship - The Rubber Dingy',
+      'item_number' => '12345790063',
+      'item_name' => 'Model Ship - The Rubber Dingy',
       'receiver_email'=>'mara@example.com',
-      'quantity1' => '1',
-      'num_cart_items' => '1'
+      'quantity' => '1',
+      'mc_currency' => 'AUD',
+      'mc_gross' => '100.00'
     }
     """
 
@@ -51,23 +52,27 @@ Feature: Create supplier orders from an order notification
     And the supplier order should be unconfirmed
     And the supplier order should be amongst the seller_order's supplier_orders
     And the supplier order should be amongst the supplier's supplier_orders
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" <seller_message>
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Dingy) was created <and_or_but_not_sent> to Dave (<supplier_number>). The item belongs to your customer order: #1
+    Order #1, item #1:
+    1 x 12345790063, "Model Ship - The Rubber Dingy", 100.00 AUD
+    Status: Sent to Dave (<supplier_number>)
     """
+    And the outgoing text message <send_to_seller> be queued_for_sending
     And the seller should be that outgoing text message's payer
-    And the most recent outgoing text message destined for the mobile number: "Dave's number" <supplier_message>
+    And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, you have a new product order: #1, from Mara (<seller_number>) for 1 x 12345790063 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
+    Hi Dave, u have a new order (ref: #1) from Mara (<seller_number>) for 1 item(s). Order details and shipping instructions will be sent to u shortly
     """
+    And the outgoing text message <send_to_supplier> be queued_for_sending
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | seller_number_verified | seller_number | supplier_number_verified | supplier_number | seller_message | supplier_message | and_or_but_not_sent |
-      | was already | +66354668789 | was already | +66123555331 | should be | should be | and sent |
-      | was already | +66354668789 | is not yet  | No verified number! | should be | should not be | but not sent |
-      | is not yet | No verified number! | was already  | +66123555331 | should not be | should be | and sent |
-      | is not yet | No verified number! | is not yet  | No verified number! | should not be | should not be | but not sent |
+      | seller_number_verified | seller_number | supplier_number_verified | supplier_number | send_to_seller | send_to_supplier |
+      | was already | +66354668789 | was already | +66123555331        | should | should               |
+      | was already | +66354668789 | is not yet  | No verified number! | should | should not           |
+      | is not yet | No verified number! | was already  | +66123555331 | should not | should           |
+      | is not yet | No verified number! | is not yet  | No verified number! | should not | should not |
 
   Scenario Outline: The supplier is also the seller of this product
     Given the mobile number: "Mara's number" <is_not_yet_or_was_already> verified

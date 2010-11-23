@@ -12,6 +12,7 @@ class SellerOrderObserver < ActiveRecord::Observer
         item_number = order_notification.item_number(index)
         item_name = order_notification.item_name(index)
         item_quantity = order_notification.item_quantity(index)
+        item_price = order_notification.item_amount(index)
         product = seller.selling_products.with_number_and_name(
           item_number,
           item_name
@@ -28,7 +29,10 @@ class SellerOrderObserver < ActiveRecord::Observer
           end
           product = products.first
           if product
-            product.update_attributes!(:number => item_number, :name => item_name)
+            product.update_attributes!(
+              :number => item_number,
+              :name => item_name
+            )
           else
             product = Product.create!(
               :seller => seller,
@@ -38,6 +42,9 @@ class SellerOrderObserver < ActiveRecord::Observer
             )
           end
         end
+        product.update_attributes!(
+          :price => item_price
+        ) unless product.price == item_price
         seller_order.supplier_orders.create!(
           :product => product,
           :quantity => item_quantity
@@ -47,19 +54,17 @@ class SellerOrderObserver < ActiveRecord::Observer
 
     def notify(seller_order)
       seller = seller_order.seller
-      if seller.can_text?
-        notifications = seller.notifications.for_event(
-          "customer_order_created"
+      notifications = seller.notifications.for_event(
+        "customer_order_created"
+      )
+      seller_order_notification = GeneralNotification.new(:with => seller)
+      notifications.each do |notification|
+        seller_order_notification.notify(
+          notification,
+          :seller => seller,
+          :seller_order => seller_order,
+          :order_notification => seller_order.order_notification
         )
-        seller_order_notification = GeneralNotification.new(:with => seller)
-        notifications.each do |notification|
-          seller_order_notification.notify(
-            notification,
-            :seller => seller,
-            :seller_order => seller_order,
-            :order_notification => seller_order.order_notification
-          )
-        end
       end
     end
 end

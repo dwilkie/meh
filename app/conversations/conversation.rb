@@ -15,6 +15,7 @@ class Conversation
         :payer => payer
       )
       outgoing_text_message.force_send = force_send
+      outgoing_text_message.cancel_send = user.cannot_text?
       outgoing_text_message.save!
     end
 end

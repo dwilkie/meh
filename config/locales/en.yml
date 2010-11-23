@@ -4,9 +4,11 @@ en:
       custom:
         a_customer_completed_payment_for: "Hi <seller_name>, u just sold <number_of_cart_items> item(s) totalling <customer_order_gross_payment> <customer_order_payment_currency> (order ref: #<customer_order_number>). The order details will be sent to u shortly"
         supplier_order_was_sent_to: "Order #<customer_order_number>, item #<product_order_number>:
-        <product_order_quantity> x <product_number>, \"<product_name>\", <customer_order_currency> <product_order_amount>
+
+        <product_order_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
+
         Status: Sent to <supplier_name> (<supplier_mobile_number>)"
-        new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> <(seller_mobile_number)> for <number_of_cart_items> item(s). Order details and shipping instructions will be sent to u shortly"
+        new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>) for <number_of_cart_items> item(s). Order details and shipping instructions will be sent to u shortly"
         your_customer_bought_the_following_item: "Order #<customer_order_number>, item #<product_order_number>:
         <product_order_quantity> x <product_number>, \"<product_name>\", <customer_order_currency> <product_order_amount>"
         your_supplier_processed_their_supplier_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} order #<customer_order_number>, item #<product_order_number>"

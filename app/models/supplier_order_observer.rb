@@ -63,19 +63,17 @@ class SupplierOrderObserver < ActiveRecord::Observer
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
-        if with.can_text?
-          notifier = GeneralNotification.new(:with => with)
-          notifier.payer = seller
-          notifier.notify(
-            notification,
-            :product => product,
-            :supplier_order => supplier_order,
-            :seller_order => seller_order,
-            :seller => seller,
-            :supplier => supplier,
-            :order_notification => order_notification
-          )
-        end
+        notifier = GeneralNotification.new(:with => with)
+        notifier.payer = seller
+        notifier.notify(
+          notification,
+          :product => product,
+          :supplier_order => supplier_order,
+          :seller_order => seller_order,
+          :seller => seller,
+          :supplier => supplier,
+          :order_notification => order_notification
+        )
       end
     end
 end
