@@ -3,7 +3,7 @@ class ProductOrder < ActiveRecord::Base
   belongs_to :supplier,
              :class_name => "User"
 
-  belongs_to :seller_order
+  belongs_to :supplier_order
 
   belongs_to :product
 
@@ -20,12 +20,12 @@ class ProductOrder < ActiveRecord::Base
 
   validates :supplier,
             :product,
-            :seller_order,
+            :supplier_order,
             :quantity,
             :presence => true
 
   validates :product_id,
-            :uniqueness => {:scope => :seller_order_id}
+            :uniqueness => {:scope => :supplier_order_id}
 
   validates :tracking_number,
             :uniqueness => {:scope => :supplier_id, :case_sensitive => false},

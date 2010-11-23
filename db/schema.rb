@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100902062808) do
+ActiveRecord::Schema.define(:version => 20101123150305) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -105,10 +105,10 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
 
   create_table "product_orders", :force => true do |t|
-    t.integer  "quantity",        :null => false
-    t.integer  "product_id",      :null => false
-    t.integer  "supplier_id",     :null => false
-    t.integer  "seller_order_id", :null => false
+    t.integer  "quantity",          :null => false
+    t.integer  "product_id",        :null => false
+    t.integer  "supplier_id",       :null => false
+    t.integer  "supplier_order_id", :null => false
     t.string   "tracking_number"
     t.datetime "accepted_at"
     t.datetime "completed_at"
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "updated_at"
   end
 
-  add_index "product_orders", ["product_id", "seller_order_id"], :name => "index_product_orders_on_product_id_and_seller_order_id", :unique => true
+  add_index "product_orders", ["product_id", "supplier_order_id"], :name => "index_product_orders_on_product_id_and_supplier_order_id", :unique => true
 
   create_table "products", :force => true do |t|
     t.string   "number",                           :null => false
@@ -141,6 +141,17 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "supplier_orders", :force => true do |t|
+    t.integer  "supplier_id",     :null => false
+    t.integer  "seller_order_id", :null => false
+    t.string   "tracking_number"
+    t.datetime "completed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "supplier_orders", ["supplier_id", "seller_order_id"], :name => "index_supplier_orders_on_supplier_id_and_seller_order_id", :unique => true
 
   create_table "supplier_payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false

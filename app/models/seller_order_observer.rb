@@ -9,7 +9,8 @@ class SellerOrderObserver < ActiveRecord::Observer
       order_notification = seller_order.order_notification
       seller = seller_order.seller
       order_notification.number_of_cart_items.times do |index|
-        product = find_or_create_product(seller, order_notification)
+        product = find_or_create_product(seller, order_notification, index)
+        item_quantity = order_notification.item_quantity(index)
         supplier = product.supplier
         supplier_order = seller_order.supplier_orders.find_or_create_for!(
           supplier
@@ -21,10 +22,9 @@ class SellerOrderObserver < ActiveRecord::Observer
       end
     end
 
-    def find_or_create_product(seller, order_notification)
+    def find_or_create_product(seller, order_notification, index)
       item_number = order_notification.item_number(index)
       item_name = order_notification.item_name(index)
-      item_quantity = order_notification.item_quantity(index)
       item_price = order_notification.item_amount(index)
       product = seller.selling_products.with_number_and_name(
         item_number,

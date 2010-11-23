@@ -15,8 +15,8 @@ class SupplierOrder < ActiveRecord::Base
             :uniqueness => {:scope => :seller_order_id}
 
   def self.find_or_create_for!(supplier)
-    record = where(:supplier_id => supplier_id)
-    scoped.create!(:supplier => supplier) unless record
+    record = where(:supplier_id => supplier.id).first
+    record = scoped.create!(:supplier => supplier) unless record
     record
   end
 end
