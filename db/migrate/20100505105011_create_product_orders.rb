@@ -1,6 +1,6 @@
-class CreateSupplierOrders < ActiveRecord::Migration
+class CreateProductOrders < ActiveRecord::Migration
   def self.up
-    create_table :supplier_orders do |t|
+    create_table :product_orders do |t|
       t.integer    :quantity,        :null => false
       t.references :product,         :null => false
       t.references :supplier,        :null => false
@@ -10,11 +10,11 @@ class CreateSupplierOrders < ActiveRecord::Migration
       t.datetime   :completed_at
       t.timestamps
     end
-    add_index :supplier_orders, [:product_id, :seller_order_id], :unique => true
+    add_index :product_orders, [:product_id, :seller_order_id], :unique => true
   end
 
   def self.down
-    drop_table :supplier_orders
+    drop_table :product_orders
   end
 end
 

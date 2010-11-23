@@ -1,11 +1,11 @@
 class SellerOrderObserver < ActiveRecord::Observer
   def after_create(seller_order)
     notify(seller_order)
-    create_supplier_orders(seller_order)
+    create_product_orders(seller_order)
   end
 
   private
-    def create_supplier_orders(seller_order)
+    def create_product_orders(seller_order)
       order_notification = seller_order.order_notification
       seller = seller_order.seller
       order_notification.number_of_cart_items.times do |index|
@@ -45,7 +45,7 @@ class SellerOrderObserver < ActiveRecord::Observer
         product.update_attributes!(
           :price => item_price
         ) unless product.price == item_price
-        seller_order.supplier_orders.create!(
+        seller_order.product_orders.create!(
           :product => product,
           :quantity => item_quantity
         )

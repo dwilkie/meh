@@ -17,7 +17,7 @@ class SupplierPayment < ActiveRecord::Base
   belongs_to  :seller,
               :class_name => "User"
 
-  belongs_to  :supplier_order
+  belongs_to  :product_order
 
   belongs_to  :notification, :polymorphic => true
 
@@ -25,10 +25,10 @@ class SupplierPayment < ActiveRecord::Base
             :presence => true,
             :numericality => {:greater_than => 0}
 
-  validates :supplier_order,
+  validates :product_order,
             :presence => true
 
-  validates :supplier_order_id,
+  validates :product_order_id,
             :uniqueness => true
 
   validates :seller,
@@ -78,7 +78,7 @@ class SupplierPayment < ActiveRecord::Base
         amount.currency.to_s,
         I18n.t(
           "supplier_payment_note",
-          :supplier_order_number => supplier_order.id.to_s
+          :product_order_number => product_order.id.to_s
         ),
         self.id.to_s
       )

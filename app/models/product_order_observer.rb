@@ -1,26 +1,26 @@
-class SupplierOrderObserver < ActiveRecord::Observer
-  def after_create(supplier_order)
-    notify_and_pay supplier_order, "product_order_created"
+class ProductOrderObserver < ActiveRecord::Observer
+  def after_create(product_order)
+    notify_and_pay product_order, "product_order_created"
   end
 
-  def after_update(supplier_order)
-    if supplier_order.accepted? && supplier_order.accepted_at_changed? && supplier_order.accepted_at_was.nil?
-      notify_and_pay supplier_order, "product_order_accepted"
-    elsif supplier_order.completed? && supplier_order.completed_at_changed? && supplier_order.completed_at_was.nil?
-      notify_and_pay supplier_order, "product_order_completed"
+  def after_update(product_order)
+    if product_order.accepted? && product_order.accepted_at_changed? && product_order.accepted_at_was.nil?
+      notify_and_pay product_order, "product_order_accepted"
+    elsif product_order.completed? && product_order.completed_at_changed? && product_order.completed_at_was.nil?
+      notify_and_pay product_order, "product_order_completed"
     end
   end
 
   private
-    def notify_and_pay(supplier_order, event)
-      notify supplier_order, event
-      pay_for supplier_order, event
+    def notify_and_pay(product_order, event)
+      notify product_order, event
+      pay_for product_order, event
     end
 
-    def pay_for(supplier_order, event)
-      supplier = supplier_order.supplier
-      seller = supplier_order.seller_order.seller
-      product = supplier_order.product
+    def pay_for(product_order, event)
+      supplier = product_order.supplier
+      seller = product_order.seller_order.seller
+      product = product_order.product
       payment_agreement = seller.payment_agreements_with_suppliers.for_event(
         event,
         supplier,
@@ -28,9 +28,9 @@ class SupplierOrderObserver < ActiveRecord::Observer
       ).first
       if payment_agreement && payment_agreement.enabled?
         supplier_payment = seller.outgoing_supplier_payments.build(
-          :supplier_order => supplier_order,
+          :product_order => product_order,
           :supplier => supplier,
-          :amount => supplier_order.supplier_total
+          :amount => product_order.supplier_total
         )
         supplier_payment.save
         SupplierPaymentNotification.new(:with => seller).did_not_pay(
@@ -49,11 +49,11 @@ class SupplierOrderObserver < ActiveRecord::Observer
       payment_agreement
     end
 
-    def notify(supplier_order, event)
-      product = supplier_order.product
-      seller_order = supplier_order.seller_order
+    def notify(product_order, event)
+      product = product_order.product
+      seller_order = product_order.seller_order
       seller = seller_order.seller
-      supplier = supplier_order.supplier
+      supplier = product_order.supplier
       order_notification = seller_order.order_notification
 
       notifications = seller.notifications.for_event(
@@ -68,7 +68,7 @@ class SupplierOrderObserver < ActiveRecord::Observer
         notifier.notify(
           notification,
           :product => product,
-          :supplier_order => supplier_order,
+          :product_order => product_order,
           :seller_order => seller_order,
           :seller => seller,
           :supplier => supplier,

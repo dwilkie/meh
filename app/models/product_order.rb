@@ -1,4 +1,4 @@
-class SupplierOrder < ActiveRecord::Base
+class ProductOrder < ActiveRecord::Base
 
   belongs_to :supplier,
              :class_name => "User"

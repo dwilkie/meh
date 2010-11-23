@@ -5,7 +5,7 @@ class SellerOrder < ActiveRecord::Base
 
   belongs_to :order_notification, :polymorphic => true
 
-  has_many   :supplier_orders
+  has_many   :product_orders
 
   validates :seller,
             :order_notification,

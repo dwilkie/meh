@@ -1,5 +1,5 @@
 Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
-Fix default notifications by making more events
+Rename supplier order to product order and create a new supplier order model to hold product orders in a supplier order
 Allow seller to complete their own supplier orders
 Allow user to verify number by simply texting their name
 Fix UTF-8 incoming and outgoing messages with Tropo

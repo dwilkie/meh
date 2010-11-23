@@ -13,7 +13,7 @@ class Product < ActiveRecord::Base
   belongs_to  :seller,
               :class_name => "User"
 
-  has_many    :supplier_orders,
+  has_many    :product_orders,
               :class_name => "Order"
 
   has_many    :notifications

@@ -3,15 +3,15 @@ en:
     messages:
       custom:
         a_customer_completed_payment_for: "Hi <seller_name>, u just sold <number_of_cart_items> item(s) totalling <customer_order_gross_payment> <customer_order_payment_currency> (order ref: #<customer_order_number>). The order details will be sent to u shortly"
-        supplier_order_was_sent_to: "Order #<customer_order_number>, item #<product_order_number>:
+        product_order_was_sent_to: "Order #<customer_order_number>, item #<product_order_number>:
 
         <product_order_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
 
         Status: Sent to <supplier_name> (<supplier_mobile_number>)"
-        new_supplier_order_from_seller_for_the_following_item: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>) for <number_of_cart_items> item(s). Order details and shipping instructions will be sent to u shortly"
+        new_product_order_from_seller_for_the_following_item: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>) for <number_of_cart_items> item(s). Order details and shipping instructions will be sent to u shortly"
         your_customer_bought_the_following_item: "Order #<customer_order_number>, item #<product_order_number>:
         <product_order_quantity> x <product_number>, \"<product_name>\", <customer_order_currency> <product_order_amount>"
-        your_supplier_processed_their_supplier_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} order #<customer_order_number>, item #<product_order_number>"
+        your_supplier_processed_their_product_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} order #<customer_order_number>, item #<product_order_number>"
         send_the_product_to: "<supplier_name>, pls ship order #<customer_order_number> to:
 
         <customer_address>
@@ -26,25 +26,25 @@ en:
             and_sent: "and sent"
             but_not_sent: "but not sent"
       built_in:
-        you_do_not_have_any_supplier_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
-        be_specific_about_the_supplier_order_number: "Hi %{supplier_name}, pls tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
-        supplier_order_was_already_processed: "Sorry %{supplier_name}, this product order was already %{status}"
-        invalid_action_for_supplier_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ... or %{topic} complete ..."
-        no_action_for_supplier_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
-        you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} %{quantity} <product verification code>"
-        you_successfully_processed_the_supplier_order: "Hi %{supplier_name}, you successfully %{processed} the product order: #%{supplier_order_number}"
+        you_do_not_have_any_product_orders: "Sorry %{supplier_name}, you don't have any %{status} product orders to %{human_action}"
+        be_specific_about_the_product_order_number: "Hi %{supplier_name}, pls tell us which product order you wish to %{human_action} by texting: %{topic} %{action} <product order number> ..."
+        product_order_was_already_processed: "Sorry %{supplier_name}, this product order was already %{status}"
+        invalid_action_for_product_order: "Sorry \"%{action}\" is not a valid option for a product order. Try: %{topic} accept ... or %{topic} complete ..."
+        no_action_for_product_order: "What would you like to do with the product order? Try: %{topic} accept ... or %{topic} complete ..."
+        you_supplied_incorrect_values_while_trying_to_accept_the_product_order: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{product_order_number} %{quantity} <product verification code>"
+        you_successfully_processed_the_product_order: "Hi %{supplier_name}, you successfully %{processed} the product order: #%{product_order_number}"
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
-        the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{supplier_order_number} <tracking number>"
-        you_must_accept_the_supplier_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{supplier_order_number} %{quantity} <product verification code>"
+        the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{product_order_number} <tracking number>"
+        you_must_accept_the_product_order_first: "Sorry %{supplier_name}, you must accept the product order first. Try: %{topic} a %{product_order_number} %{quantity} <product verification code>"
         you_must_verify_your_mobile_number_to_use_this_feature: "Sorry, you must verify your mobile number to use this feature. Try replying with: mn v <your name>"
         verify_your_mobile_number: "Hi, pls verify your number by replying with: mn v <your name>"
         invalid_action_for_mobile_number: "Sorry \"%{action}\" is not a valid option. To verify your mobile number number, try: %{topic} verify <your name>"
         no_action_for_mobile_number: "To verify your mobile number, try: %{topic} verify <your name>"
         you_successfully_verified_your_mobile_number: "Congratulations %{name_supplied}, you successfully verified your mobile number"
         the_name_is_missing_or_incorrect: "Sorry, your %{errors}. Try again with: %{topic} %{action} <your registered name>"
-        we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{supplier_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
-        we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) (%{supplier_email}) of %{supplier_payment_amount} %{supplier_payment_currency} for %{supplier_order_quantity} x %{product_number} (%{product_name}) was UNCLAIMED because %{supplier_name} does not yet have a paypal account with this email. The item belongs to your customer order: #%{seller_order_number}"
-        open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, you have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for your product order: #%{supplier_order_number}. To claim it, register at paypal.com"
+        we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for %{product_order_quantity} x %{product_number} (%{product_name}), because the %{errors}"
+        we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) (%{supplier_email}) of %{supplier_payment_amount} %{supplier_payment_currency} for %{product_order_quantity} x %{product_number} (%{product_name}) was UNCLAIMED because %{supplier_name} does not yet have a paypal account with this email. The item belongs to your customer order: #%{seller_order_number}"
+        open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, you have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for your product order: #%{product_order_number}. To claim it, register at paypal.com"
         valid_message_commands_are: "Hi%{user_name}, valid sms commands are:\n\n\"mn\" (Mobile Number)\n\n\"po\" (Product Order)"
         you_do_not_have_enough_message_credits_left: "Sorry%{payer_name}, the sms: \"%{truncated_message}...\" could not be sent to %{receiver_name} because you don't have enough credits. Pls top up"
         words:
@@ -56,7 +56,7 @@ en:
   activemodel:
     errors:
       models:
-        'supplier_order_conversation/accept_supplier_order_message':
+        'product_order_conversation/accept_product_order_message':
           attributes:
             quantity:
               blank: "must be confirmed"
@@ -80,7 +80,7 @@ en:
             unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
             insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
             unknown: "the paypal account returned the following unexpected error: %{error}"
-  supplier_payment_note: "Payment for product order: #%{supplier_order_number}"
+  supplier_payment_note: "Payment for product order: #%{product_order_number}"
   support:
     array:
       words_connector: ", the "

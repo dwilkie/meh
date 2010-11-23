@@ -103,14 +103,14 @@ Factory.define :supplier, :parent => :user do |f|
   f.roles ["supplier"]
 end
 
-Factory.define :supplier_order do |f|
+Factory.define :product_order do |f|
   f.association :seller_order
   f.association :product
   f.quantity 5
 end
 
 Factory.define :supplier_payment do |f|
-  f.association :supplier_order
+  f.association :product_order
   f.association :supplier
   f.association :seller
   f.cents 100000

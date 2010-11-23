@@ -1,7 +1,7 @@
-Feature: Create supplier orders from an order notification
+Feature: Create product orders from an order notification
   In order to keep track of my orders
   As a supplier
-  I want a new supplier order to be created when a paypal ipn containing a product that I am supplying is verified and the payment status is completed
+  I want a new product order to be created when a paypal ipn containing a product that I am supplying is verified and the payment status is completed
 
   Background:
     Given a seller exists with name: "Mara", email: "mara@example.com"
@@ -25,7 +25,7 @@ Feature: Create supplier orders from an order notification
 
     When the seller order paypal ipn is verified
 
-    Then a supplier order should not exist
+    Then a product order should not exist
 
   @current
   Scenario Outline: The payment status is completed
@@ -48,10 +48,10 @@ Feature: Create supplier orders from an order notification
     When the seller order paypal ipn is verified
 
     Then a seller order should exist
-    And a supplier order should exist with product_id: the product, quantity: 1, seller_order_id: the seller order
-    And the supplier order should be unconfirmed
-    And the supplier order should be amongst the seller_order's supplier_orders
-    And the supplier order should be amongst the supplier's supplier_orders
+    And a product order should exist with product_id: the product, quantity: 1, seller_order_id: the seller order
+    And the product order should be unconfirmed
+    And the product order should be amongst the seller_order's product_orders
+    And the product order should be amongst the supplier's product_orders
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
     Order #1, item #1:
@@ -93,10 +93,10 @@ Feature: Create supplier orders from an order notification
     When the seller order paypal ipn is verified
 
     Then a seller_order should exist
-    And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the supplier_order should be unconfirmed
-    And the supplier_order should be amongst the seller_order's supplier_orders
-    And the supplier_order should be amongst the seller's supplier_orders
+    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the product_order should be unconfirmed
+    And the product_order should be amongst the seller_order's product_orders
+    And the product_order should be amongst the seller's product_orders
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_or_should_not_be>
     """
     Hi Mara, the customer bought 1 x 12345790069 (Model Ship - The Titanic) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
@@ -127,10 +127,10 @@ Feature: Create supplier orders from an order notification
 
     Then a product should exist with number: "12345790062", name: "Model Ship - The Rubber Ducky", seller_id: the seller, supplier_id: the seller
     And a seller_order should exist
-    And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the supplier_order should be unconfirmed
-    And the supplier_order should be amongst the seller_order's supplier_orders
-    And the supplier_order should be amongst the seller's supplier_orders
+    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the product_order should be unconfirmed
+    And the product_order should be amongst the seller_order's product_orders
+    And the product_order should be amongst the seller's product_orders
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_or_should_not_be>
     """
     Hi Mara, the customer bought 1 x 12345790062 (Model Ship - The Rubber Ducky) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
@@ -161,10 +161,10 @@ Feature: Create supplier orders from an order notification
     Then the product's number should be "12345790062"
     And the product's name should be "Model Ship - The Rubber Dingy"
     And a seller_order should exist
-    And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the supplier_order should be unconfirmed
-    And the supplier_order should be amongst the seller_order's supplier_orders
-    And the supplier_order should be amongst the supplier's supplier_orders
+    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the product_order should be unconfirmed
+    And the product_order should be amongst the seller_order's product_orders
+    And the product_order should be amongst the supplier's product_orders
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
     Hi Mara, FYI: a new product order for 1 x 12345790062 (Model Ship - The Rubber Dingy) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
@@ -195,10 +195,10 @@ Feature: Create supplier orders from an order notification
     Then the product's number should be "12345790063"
     And the product's name should be "Model Ship - The Rubber Ducky"
     And a seller_order should exist
-    And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the supplier_order should be unconfirmed
-    And the supplier_order should be amongst the seller_order's supplier_orders
-    And the supplier_order should be amongst the supplier's supplier_orders
+    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the product_order should be unconfirmed
+    And the product_order should be amongst the seller_order's product_orders
+    And the product_order should be amongst the supplier's product_orders
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Ducky) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
@@ -230,10 +230,10 @@ Feature: Create supplier orders from an order notification
     And the product: "Rubber Dingy"'s number should be "12345790063"
     And the product: "Rubber Dingy"'s name should be "Model Ship - The Titanic"
     And a seller_order should exist
-    And a supplier_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the supplier_order should be unconfirmed
-    And the supplier_order should be amongst the seller_order's supplier_orders
-    And the supplier_order should be amongst the supplier's supplier_orders
+    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the product_order should be unconfirmed
+    And the product_order should be amongst the seller_order's product_orders
+    And the product_order should be amongst the supplier's product_orders
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Titanic) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1

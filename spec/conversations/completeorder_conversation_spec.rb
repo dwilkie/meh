@@ -35,7 +35,7 @@ describe CompleteorderConversation do
       Factory.create(:user)
 
     Factory.create(
-      :supplier_order,
+      :product_order,
       :status => options[:status].to_s,
       :supplier => supplier,
       :id => "2312"
@@ -74,7 +74,7 @@ describe CompleteorderConversation do
         context "and the user supplied the correct order details" do
           it "should mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == true
+            ProductOrder.first.completed?.should == true
           end
           it "should say successfully processed order" do
             conversation.should_receive(:successfully)
@@ -85,7 +85,7 @@ describe CompleteorderConversation do
 
             it "should mark the order as completed" do
               conversation.move_along(message_text)
-              SupplierOrder.first.completed?.should == true
+              ProductOrder.first.completed?.should == true
             end
 
             it "should say successfully processed" do
@@ -98,7 +98,7 @@ describe CompleteorderConversation do
           let!(:message_text) {"completeorder 1233 2312 cp132446543th"}
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -109,7 +109,7 @@ describe CompleteorderConversation do
           let!(:message_text) {"completeorder 2312 cp132446543th"}
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -120,7 +120,7 @@ describe CompleteorderConversation do
           let!(:message_text) {"completeorder 1234 2313 cp132446543th"}
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -131,7 +131,7 @@ describe CompleteorderConversation do
           let!(:message_text) {"completeorder 1234 cp132446543th"}
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -157,7 +157,7 @@ describe CompleteorderConversation do
         context "and the user supplied the correct order details" do
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say cannot process order" do
             conversation.should_receive(:cannot_process)
@@ -172,7 +172,7 @@ describe CompleteorderConversation do
         context "and the user supplied the correct order details" do
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say cannot process order" do
             conversation.should_receive(:cannot_process)
@@ -187,7 +187,7 @@ describe CompleteorderConversation do
         context "and the user gave the order details for someone elses order" do
           it "should not mark the order as completed" do
             conversation.move_along(message_text)
-            SupplierOrder.first.completed?.should == false
+            ProductOrder.first.completed?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)

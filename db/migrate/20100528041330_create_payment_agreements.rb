@@ -10,7 +10,8 @@ class CreatePaymentAgreements < ActiveRecord::Migration
     end
     add_index :payment_agreements,
       [:supplier_id, :seller_id, :product_id],
-      :unique => true
+      :unique => true,
+      :name => "index_payment_agreements_unique"
   end
 
   def self.down

@@ -60,12 +60,12 @@ class Notification < ActiveRecord::Base
         options[:product].price
       }
     },
-    :supplier_order => {
+    :product_order => {
       :product_order_number => Proc.new { |options|
-        options[:supplier_order].id.to_s
+        options[:product_order].id.to_s
       },
       :product_order_quantity => Proc.new { |options|
-        options[:supplier_order].quantity.to_s
+        options[:product_order].quantity.to_s
       }
     },
     :item => {
@@ -121,7 +121,7 @@ class Notification < ActiveRecord::Base
       }
     },
     :tracking_number => Proc.new { |options|
-      options[:supplier_order].tracking_number.to_s
+      options[:product_order].tracking_number.to_s
     },
     :supplier_payment => {
       :supplier_payment_amount => Proc.new { |options|
@@ -134,8 +134,8 @@ class Notification < ActiveRecord::Base
   }
 
   COMMON_EVENT_ATTRIBUTES = {
-    :supplier_order => EVENT_ATTRIBUTES[:seller_order].merge(
-      EVENT_ATTRIBUTES[:supplier_order]
+    :product_order => EVENT_ATTRIBUTES[:seller_order].merge(
+      EVENT_ATTRIBUTES[:product_order]
     ).merge(
       EVENT_ATTRIBUTES[:product]
     ).merge(
@@ -158,21 +158,21 @@ class Notification < ActiveRecord::Base
       :send_notification_to => User.roles(1)
     },
     :product_order_created => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
     },
     :product_order_accepted => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
       :send_notification_to => User.roles(3)
     },
     :product_order_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order].merge(
         :tracking_number => EVENT_ATTRIBUTES[:tracking_number]
       ),
       :send_notification_to => User.roles(3)
     },
     :supplier_payment_successfully_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order].merge(
         EVENT_ATTRIBUTES[:supplier_payment]
       ),
       :send_notification_to => User.roles(3)
@@ -297,7 +297,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me which supplier a product order was sent to",
       :message => I18n.t(
-        "notifications.messages.custom.supplier_order_was_sent_to"
+        "notifications.messages.custom.product_order_was_sent_to"
       )
     )
     notification = new(
@@ -313,7 +313,7 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the product order details",
       :message => I18n.t(
-        "notifications.messages.custom.new_supplier_order_from_seller_for_the_following_item"
+        "notifications.messages.custom.new_product_order_from_seller_for_the_following_item"
       )
     )
     notification = new(
@@ -331,7 +331,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me when a supplier accepts a product order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
+        "notifications.messages.custom.your_supplier_processed_their_product_order",
         :processed => "ACCEPTED"
       )
     )
@@ -348,7 +348,7 @@ class Notification < ActiveRecord::Base
       :for => "seller",
       :purpose => "to inform me when a supplier completes a product order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
+        "notifications.messages.custom.your_supplier_processed_their_product_order",
         :processed => "COMPLETED"
       )
     )

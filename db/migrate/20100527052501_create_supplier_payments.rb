@@ -6,11 +6,11 @@ class CreateSupplierPayments < ActiveRecord::Migration
       t.text        :payment_response
       t.references  :supplier,               :null => false
       t.references  :seller,                 :null => false
-      t.references  :supplier_order,         :null => false
+      t.references  :product_order,         :null => false
       t.references  :notification,           :polymorphic => true
       t.timestamps
     end
-    add_index :supplier_payments, :supplier_order_id, :unique => true
+    add_index :supplier_payments, :product_order_id, :unique => true
   end
 
   def self.down

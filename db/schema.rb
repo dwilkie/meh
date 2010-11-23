@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "updated_at"
   end
 
+  add_index "payment_agreements", ["supplier_id", "seller_id", "product_id"], :name => "index_payment_agreements_unique", :unique => true
+
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false
     t.string   "transaction_id", :null => false
@@ -101,6 +103,20 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   end
 
   add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
+
+  create_table "product_orders", :force => true do |t|
+    t.integer  "quantity",        :null => false
+    t.integer  "product_id",      :null => false
+    t.integer  "supplier_id",     :null => false
+    t.integer  "seller_order_id", :null => false
+    t.string   "tracking_number"
+    t.datetime "accepted_at"
+    t.datetime "completed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "product_orders", ["product_id", "seller_order_id"], :name => "index_product_orders_on_product_id_and_seller_order_id", :unique => true
 
   create_table "products", :force => true do |t|
     t.string   "number",                           :null => false
@@ -126,34 +142,20 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.datetime "updated_at"
   end
 
-  create_table "supplier_orders", :force => true do |t|
-    t.integer  "quantity",        :null => false
-    t.integer  "product_id",      :null => false
-    t.integer  "supplier_id",     :null => false
-    t.integer  "seller_order_id", :null => false
-    t.string   "tracking_number"
-    t.datetime "accepted_at"
-    t.datetime "completed_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "supplier_orders", ["product_id", "seller_order_id"], :name => "index_supplier_orders_on_product_id_and_seller_order_id", :unique => true
-
   create_table "supplier_payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency",                         :null => false
     t.text     "payment_response"
     t.integer  "supplier_id",                      :null => false
     t.integer  "seller_id",                        :null => false
-    t.integer  "supplier_order_id",                :null => false
+    t.integer  "product_order_id",                 :null => false
     t.integer  "notification_id"
     t.string   "notification_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "supplier_payments", ["supplier_order_id"], :name => "index_supplier_payments_on_supplier_order_id", :unique => true
+  add_index "supplier_payments", ["product_order_id"], :name => "index_supplier_payments_on_product_order_id", :unique => true
 
   create_table "text_message_delivery_receipts", :force => true do |t|
     t.string   "status"
