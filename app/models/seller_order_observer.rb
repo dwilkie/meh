@@ -15,7 +15,7 @@ class SellerOrderObserver < ActiveRecord::Observer
         supplier_order = seller_order.supplier_orders.find_or_create_for!(
           supplier
         )
-        supplier_order.product_orders.create!(
+        supplier_order.line_items.create!(
           :product => product,
           :quantity => item_quantity
         )

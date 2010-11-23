@@ -165,6 +165,7 @@ class Test
 
    def self.delete_old_records(options = {})
      SupplierPayment.delete_all
+     LineItem.delete_all
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all

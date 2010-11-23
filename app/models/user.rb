@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
   has_many   :supplier_orders,
              :foreign_key => "supplier_id"
 
-  has_many   :product_orders,
+  has_many   :line_items,
              :foreign_key => "supplier_id"
 
   has_many   :incoming_payments,

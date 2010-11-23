@@ -60,12 +60,12 @@ class Notification < ActiveRecord::Base
         options[:product].price
       }
     },
-    :product_order => {
-      :product_order_number => Proc.new { |options|
-        options[:product_order].id.to_s
+    :line_item => {
+      :line_item_number => Proc.new { |options|
+        options[:line_item].id.to_s
       },
-      :product_order_quantity => Proc.new { |options|
-        options[:product_order].quantity.to_s
+      :line_item_quantity => Proc.new { |options|
+        options[:line_item].quantity.to_s
       }
     },
     :item => {
@@ -121,7 +121,7 @@ class Notification < ActiveRecord::Base
       }
     },
     :tracking_number => Proc.new { |options|
-      options[:product_order].tracking_number.to_s
+      options[:line_item].tracking_number.to_s
     },
     :supplier_payment => {
       :supplier_payment_amount => Proc.new { |options|
@@ -134,8 +134,8 @@ class Notification < ActiveRecord::Base
   }
 
   COMMON_EVENT_ATTRIBUTES = {
-    :product_order => EVENT_ATTRIBUTES[:seller_order].merge(
-      EVENT_ATTRIBUTES[:product_order]
+    :line_item => EVENT_ATTRIBUTES[:seller_order].merge(
+      EVENT_ATTRIBUTES[:line_item]
     ).merge(
       EVENT_ATTRIBUTES[:product]
     ).merge(
@@ -157,22 +157,22 @@ class Notification < ActiveRecord::Base
       ),
       :send_notification_to => User.roles(1)
     },
-    :product_order_created => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
+    :line_item_created => {
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item],
       :send_notification_to => User.roles(3)
     },
-    :product_order_accepted => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order],
+    :line_item_accepted => {
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item],
       :send_notification_to => User.roles(3)
     },
-    :product_order_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order].merge(
+    :line_item_completed => {
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item].merge(
         :tracking_number => EVENT_ATTRIBUTES[:tracking_number]
       ),
       :send_notification_to => User.roles(3)
     },
     :supplier_payment_successfully_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:product_order].merge(
+      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item].merge(
         EVENT_ATTRIBUTES[:supplier_payment]
       ),
       :send_notification_to => User.roles(3)
@@ -293,33 +293,33 @@ class Notification < ActiveRecord::Base
       )
     )
     create!(
-      :event => "product_order_created",
+      :event => "line_item_created",
       :for => "seller",
-      :purpose => "to inform me which supplier a product order was sent to",
+      :purpose => "to inform me which supplier a line item was sent to",
       :message => I18n.t(
-        "notifications.messages.custom.product_order_was_sent_to"
+        "notifications.messages.custom.line_item_was_sent_to"
       )
     )
     notification = new(
-      :event => "product_order_created",
+      :event => "line_item_created",
       :for => "seller",
-      :purpose => "to inform me which supplier a product order was sent to",
+      :purpose => "to inform me which supplier a line item was sent to",
       :should_send => false
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "product_order_created",
+      :event => "line_item_created",
       :for => "supplier",
-      :purpose => "to inform the supplier about the product order details",
+      :purpose => "to inform the supplier about the line item details",
       :message => I18n.t(
-        "notifications.messages.custom.new_product_order_from_seller_for_the_following_item"
+        "notifications.messages.custom.new_line_item_from_seller_for_the_following_item"
       )
     )
     notification = new(
-      :event => "product_order_created",
+      :event => "line_item_created",
       :for => "supplier",
-      :purpose => "to inform the supplier about the product order details",
+      :purpose => "to inform the supplier about the line item details",
       :message => I18n.t(
         "notifications.messages.custom.your_customer_bought_the_following_item"
       )
@@ -327,16 +327,16 @@ class Notification < ActiveRecord::Base
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "product_order_accepted",
+      :event => "line_item_accepted",
       :for => "seller",
-      :purpose => "to inform me when a supplier accepts a product order",
+      :purpose => "to inform me when a supplier accepts a line item",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_line_item",
         :processed => "ACCEPTED"
       )
     )
     create!(
-      :event => "product_order_accepted",
+      :event => "line_item_accepted",
       :for => "supplier",
       :purpose => "to inform the supplier of the shipping instructions",
       :message => I18n.t(
@@ -344,18 +344,18 @@ class Notification < ActiveRecord::Base
       )
     )
     create!(
-      :event => "product_order_completed",
+      :event => "line_item_completed",
       :for => "seller",
-      :purpose => "to inform me when a supplier completes a product order",
+      :purpose => "to inform me when a supplier completes a line item",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_product_order",
+        "notifications.messages.custom.your_supplier_processed_their_line_item",
         :processed => "COMPLETED"
       )
     )
     notification = new(
-      :event => "product_order_completed",
+      :event => "line_item_completed",
       :for => "seller",
-      :purpose => "to inform me when a supplier completes a product order",
+      :purpose => "to inform me when a supplier completes a line item",
       :should_send => false
     )
     notification.supplier = notification.seller

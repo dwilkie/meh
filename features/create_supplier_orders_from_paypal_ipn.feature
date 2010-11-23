@@ -1,7 +1,7 @@
-Feature: Create product orders from an order notification
+Feature: Create line items from an order notification
   In order to keep track of my orders
   As a supplier
-  I want a new product order to be created when a paypal ipn containing a product that I am supplying is verified and the payment status is completed
+  I want a new line item to be created when a paypal ipn containing a product that I am supplying is verified and the payment status is completed
 
   Background:
     Given a seller exists with name: "Mara", email: "mara@example.com"
@@ -24,8 +24,8 @@ Feature: Create product orders from an order notification
     """
 
     When the seller order paypal ipn is verified
-
-    Then a product order should not exist
+    Then a supplier order should not exist
+    And a line item should not exist
 
   @current
   Scenario Outline: The payment status is completed
@@ -48,10 +48,14 @@ Feature: Create product orders from an order notification
     When the seller order paypal ipn is verified
 
     Then a seller order should exist
-    And a product order should exist with product_id: the product, quantity: 1, seller_order_id: the seller order
-    And the product order should be unconfirmed
-    And the product order should be amongst the seller_order's product_orders
-    And the product order should be amongst the supplier's product_orders
+    And a supplier order should exist with seller_order_id: the seller order
+    And a line item should exist with product_id: the product, quantity: 1, supplier_order_id: the supplier order
+    And the supplier order should be unconfirmed
+    And the supplier order should be amongst the seller_order's supplier_orders
+    And the supplier order should be amongst the supplier's supplier_orders
+    And the line item should be unconfirmed
+    And the line item should be amongst the supplier_order's line_items
+    And the line item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
     Order #1, item #1:
@@ -93,13 +97,13 @@ Feature: Create product orders from an order notification
     When the seller order paypal ipn is verified
 
     Then a seller_order should exist
-    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the product_order should be unconfirmed
-    And the product_order should be amongst the seller_order's product_orders
-    And the product_order should be amongst the seller's product_orders
+    And a line_item should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the line_item should be unconfirmed
+    And the line_item should be amongst the seller_order's line_items
+    And the line_item should be amongst the seller's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_or_should_not_be>
     """
-    Hi Mara, the customer bought 1 x 12345790069 (Model Ship - The Titanic) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
+    Hi Mara, the customer bought 1 x 12345790069 (Model Ship - The Titanic) as part of the customer order: #1. A new line item: #1, was created to help you track the progress of this item. To mark this line item as completed, reply with: "cpo"
     """
     And the seller should be that outgoing text message's payer
 
@@ -127,13 +131,13 @@ Feature: Create product orders from an order notification
 
     Then a product should exist with number: "12345790062", name: "Model Ship - The Rubber Ducky", seller_id: the seller, supplier_id: the seller
     And a seller_order should exist
-    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the product_order should be unconfirmed
-    And the product_order should be amongst the seller_order's product_orders
-    And the product_order should be amongst the seller's product_orders
+    And a line_item should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the line_item should be unconfirmed
+    And the line_item should be amongst the seller_order's line_items
+    And the line_item should be amongst the seller's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_or_should_not_be>
     """
-    Hi Mara, the customer bought 1 x 12345790062 (Model Ship - The Rubber Ducky) as part of the customer order: #1. A new product order: #1, was created to help you track the progress of this item. To mark this product order as completed, reply with: "cpo"
+    Hi Mara, the customer bought 1 x 12345790062 (Model Ship - The Rubber Ducky) as part of the customer order: #1. A new line item: #1, was created to help you track the progress of this item. To mark this line item as completed, reply with: "cpo"
     """
     And the seller should be that outgoing text message's payer
 
@@ -161,18 +165,18 @@ Feature: Create product orders from an order notification
     Then the product's number should be "12345790062"
     And the product's name should be "Model Ship - The Rubber Dingy"
     And a seller_order should exist
-    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the product_order should be unconfirmed
-    And the product_order should be amongst the seller_order's product_orders
-    And the product_order should be amongst the supplier's product_orders
+    And a line_item should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the line_item should be unconfirmed
+    And the line_item should be amongst the seller_order's line_items
+    And the line_item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, FYI: a new product order for 1 x 12345790062 (Model Ship - The Rubber Dingy) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
+    Hi Mara, FYI: a new line item for 1 x 12345790062 (Model Ship - The Rubber Dingy) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790062 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
+    Hi Dave, you have a new line item: #1, from Mara (+66354668789) for 1 x 12345790062 (Model Ship - The Rubber Dingy). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
     And the seller should be that outgoing text message's payer
 
@@ -195,18 +199,18 @@ Feature: Create product orders from an order notification
     Then the product's number should be "12345790063"
     And the product's name should be "Model Ship - The Rubber Ducky"
     And a seller_order should exist
-    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the product_order should be unconfirmed
-    And the product_order should be amongst the seller_order's product_orders
-    And the product_order should be amongst the supplier's product_orders
+    And a line_item should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the line_item should be unconfirmed
+    And the line_item should be amongst the seller_order's line_items
+    And the line_item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Rubber Ducky) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
+    Hi Mara, FYI: a new line item for 1 x 12345790063 (Model Ship - The Rubber Ducky) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Dave's number" should be
     """
-    Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Rubber Ducky). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
+    Hi Dave, you have a new line item: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Rubber Ducky). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
     And the seller should be that outgoing text message's payer
 
@@ -230,18 +234,18 @@ Feature: Create product orders from an order notification
     And the product: "Rubber Dingy"'s number should be "12345790063"
     And the product: "Rubber Dingy"'s name should be "Model Ship - The Titanic"
     And a seller_order should exist
-    And a product_order should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
-    And the product_order should be unconfirmed
-    And the product_order should be amongst the seller_order's product_orders
-    And the product_order should be amongst the supplier's product_orders
+    And a line_item should exist with product_id: the product, quantity: 1, seller_order_id: the seller_order
+    And the line_item should be unconfirmed
+    And the line_item should be amongst the seller_order's line_items
+    And the line_item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, FYI: a new product order for 1 x 12345790063 (Model Ship - The Titanic) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
+    Hi Mara, FYI: a new line item for 1 x 12345790063 (Model Ship - The Titanic) was created and sent to Dave (+66123555331). The item belongs to your customer order: #1
     """
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Dave's number" should be
     """
-    Hi Dave, you have a new product order: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Titanic). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
+    Hi Dave, you have a new line item: #1, from Mara (+66354668789) for 1 x 12345790063 (Model Ship - The Titanic). To accept the order, look up the product verification code for this item and reply with: "apo 1 <product verification code>"
     """
     And the seller should be that outgoing text message's payer
 

@@ -109,7 +109,6 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.integer  "product_id",        :null => false
     t.integer  "supplier_id",       :null => false
     t.integer  "supplier_order_id", :null => false
-    t.string   "tracking_number"
     t.datetime "accepted_at"
     t.datetime "completed_at"
     t.datetime "created_at"

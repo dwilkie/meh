@@ -49,10 +49,10 @@ class SupplierPaymentObserver < ActiveRecord::Observer
 
     def successfully_paid(supplier_payment)
       seller = supplier_payment.seller
-      product_order = supplier_payment.product_order
-      supplier = product_order.supplier
-      product = product_order.product
-      seller_order = product_order.seller_order
+      supplier_order = supplier_payment.supplier_order
+      supplier = supplier_order.supplier
+      product = supplier_order.product
+      seller_order = supplier_order.seller_order
       order_notification = seller_order.order_notification
 
       notifications = seller.notifications.for_event(
@@ -67,7 +67,7 @@ class SupplierPaymentObserver < ActiveRecord::Observer
         notifier.notify(
           notification,
           :product => product,
-          :product_order => product_order,
+          :supplier_order => supplier_order,
           :seller_order => seller_order,
           :seller => seller,
           :supplier => supplier,

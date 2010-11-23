@@ -1,4 +1,4 @@
-class SupplierOrderConversation < IncomingTextMessageConversation
+class LineItemConversation < IncomingTextMessageConversation
 
   def process
     if action == "accept" || action == "a"
@@ -16,7 +16,7 @@ class SupplierOrderConversation < IncomingTextMessageConversation
 
   private
 
-    class AcceptSupplierOrderMessage
+    class AcceptLineItemMessage
       include ActiveModel::Validations
 
       attr_reader :quantity, :product_verification_code
@@ -26,9 +26,9 @@ class SupplierOrderConversation < IncomingTextMessageConversation
 
       validate :quantity_is_correct, :product_verification_code_is_correct
 
-      def initialize(supplier_order, params)
-        @supplier_order = supplier_order
-        unless params.count == 1 && params[0].to_i == supplier_order.id
+      def initialize(line_item, params)
+        @line_item = line_item
+        unless params.count == 1 && params[0].to_i == line_item.id
           if params.count > 2
             @quantity = params[1]
             @product_verification_code = params[2]
@@ -44,7 +44,7 @@ class SupplierOrderConversation < IncomingTextMessageConversation
           errors.add(
             :quantity,
             :incorrect
-          ) unless quantity.nil? || quantity.to_i == @supplier_order.quantity
+          ) unless quantity.nil? || quantity.to_i == @line_item.quantity
         end
 
         def product_verification_code_is_correct
@@ -53,11 +53,11 @@ class SupplierOrderConversation < IncomingTextMessageConversation
             :incorrect
             ) unless product_verification_code.nil? ||
               product_verification_code.downcase ==
-                @supplier_order.product.verification_code.downcase
+                @line_item.product.verification_code.downcase
         end
     end
 
-    class CompleteSupplierOrderMessage
+    class CompleteLineItemMessage
       include ActiveModel::Validations
 
       attr_reader :tracking_number
@@ -67,10 +67,10 @@ class SupplierOrderConversation < IncomingTextMessageConversation
 
       validate :tracking_number_format
 
-      def initialize(supplier_order, tracking_number_format, params)
+      def initialize(line_item, tracking_number_format, params)
         @tracking_number_format = tracking_number_format
-        unless params[0].nil? || (params.count == 1 && params[0].to_i == supplier_order.id)
-          @tracking_number = (params[0].to_i == supplier_order.id) ?
+        unless params[0].nil? || (params.count == 1 && params[0].to_i == line_item.id)
+          @tracking_number = (params[0].to_i == line_item.id) ?
             params[1..-1] : params[0..-1]
           @tracking_number = @tracking_number.join(" ")
         end
@@ -87,51 +87,51 @@ class SupplierOrderConversation < IncomingTextMessageConversation
     end
 
     def accept
-      if supplier_order = find_supplier_order(:unconfirmed, :accept)
-        self.payer = supplier_order.seller_order.seller
+      if line_item = find_line_item(:unconfirmed, :accept)
+        self.payer = line_item.seller_order.seller
         unless user == payer
-          if supplier_order.unconfirmed?
-            message = AcceptSupplierOrderMessage.new(supplier_order, params)
+          if line_item.unconfirmed?
+            message = AcceptLineItemMessage.new(line_item, params)
             if message.valid?
-              say successfully("accepted", supplier_order)
-              supplier_order.accept!
+              say successfully("accepted", line_item)
+              line_item.accept!
             else
               say I18n.t(
-              "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_accept_the_supplier_order",
+              "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_accept_the_line_item",
                 :supplier_name => user.name,
                 :errors => message.errors.full_messages.to_sentence,
                 :topic => self.topic,
                 :action => self.action,
-                :supplier_order_number => supplier_order.id.to_s,
-                :quantity => supplier_order.quantity.to_s
+                :line_item_number => line_item.id.to_s,
+                :quantity => line_item.quantity.to_s
               )
             end
           else
-            say already_processed(supplier_order)
+            say already_processed(line_item)
           end
         end
       end
     end
 
     def complete
-      if supplier_order = find_supplier_order(:incomplete, :complete)
-        self.payer = supplier_order.seller_order.seller
-        if supplier_order.incomplete?
-          if user == payer || supplier_order.accepted?
-            product = supplier_order.product
+      if line_item = find_line_item(:incomplete, :complete)
+        self.payer = line_item.seller_order.seller
+        if line_item.incomplete?
+          if user == payer || line_item.accepted?
+            product = line_item.product
             tracking_number_format = payer.tracking_number_formats.find_for(
               :product => product,
               :supplier => user
             ).first
             if tracking_number_format && tracking_number_format.required?
-              message = CompleteSupplierOrderMessage.new(
-                supplier_order,
+              message = CompleteLineItemMessage.new(
+                line_item,
                 tracking_number_format.format,
                 params
               )
               if message.valid?
-                supplier_order.tracking_number = message.tracking_number
-                if supplier_order.save
+                line_item.tracking_number = message.tracking_number
+                if line_item.save
                   will_complete = true
                 else
                   say I18n.t(
@@ -146,27 +146,27 @@ class SupplierOrderConversation < IncomingTextMessageConversation
                   :errors => message.errors.full_messages.to_sentence,
                   :topic => self.topic,
                   :action => self.action,
-                  :supplier_order_number => supplier_order.id.to_s
+                  :line_item_number => line_item.id.to_s
                 )
               end
             else
               will_complete = true
             end
             if will_complete
-              say successfully("completed", supplier_order)
-              supplier_order.complete!
+              say successfully("completed", line_item)
+              line_item.complete!
             end
           else
             say I18n.t(
-              "notifications.messages.built_in.you_must_accept_the_supplier_order_first",
+              "notifications.messages.built_in.you_must_accept_the_line_item_first",
               :supplier_name => user.name,
               :topic => self.topic,
-              :supplier_order_number => supplier_order.id.to_s,
-              :quantity => supplier_order.quantity.to_s
+              :line_item_number => line_item.id.to_s,
+              :quantity => line_item.quantity.to_s
             )
           end
         else
-          say already_processed(supplier_order)
+          say already_processed(line_item)
         end
       end
     end
@@ -175,14 +175,14 @@ class SupplierOrderConversation < IncomingTextMessageConversation
       action ?
         say(
           I18n.t(
-            "notifications.messages.built_in.invalid_action_for_supplier_order",
+            "notifications.messages.built_in.invalid_action_for_line_item",
             :topic => topic,
             :action => action
           )
         ) :
         say(
            I18n.t(
-            "notifications.messages.built_in.no_action_for_supplier_order",
+            "notifications.messages.built_in.no_action_for_line_item",
             :topic => topic
           )
         )
@@ -194,51 +194,51 @@ class SupplierOrderConversation < IncomingTextMessageConversation
       sanitized_id
     end
 
-    def find_supplier_orders(status)
+    def find_line_items(status)
       status = status.to_s
-      supplier_order = user.supplier_orders.find_by_id(
+      line_item = user.line_items.find_by_id(
         sanitize_id(params[0])
       )
-      supplier_order ? [supplier_order] : user.supplier_orders.send(status).all
+      line_item ? [line_item] : user.line_items.send(status).all
     end
 
-    def find_supplier_order(status, human_action)
-      supplier_orders = find_supplier_orders(status)
-      if supplier_orders.empty?
+    def find_line_item(status, human_action)
+      line_items = find_line_items(status)
+      if line_items.empty?
         say I18n.t(
-          "notifications.messages.built_in.you_do_not_have_any_supplier_orders",
+          "notifications.messages.built_in.you_do_not_have_any_line_items",
           :supplier_name => user.name,
           :status => status,
           :human_action => human_action.to_s
         )
-      elsif supplier_orders.count > 1
+      elsif line_items.count > 1
         say I18n.t(
-          "notifications.messages.built_in.be_specific_about_the_supplier_order_number",
+          "notifications.messages.built_in.be_specific_about_the_line_item_number",
           :supplier_name => user.name,
           :topic => self.topic,
           :action => self.action,
           :human_action => human_action.to_s
         )
       else
-        supplier_order = supplier_orders.first
+        line_item = line_items.first
       end
-      supplier_order
+      line_item
     end
 
-    def already_processed(supplier_order)
+    def already_processed(line_item)
       I18n.t(
-        "notifications.messages.built_in.supplier_order_was_already_processed",
+        "notifications.messages.built_in.line_item_was_already_processed",
         :supplier_name => user.name,
-        :status => supplier_order.status
+        :status => line_item.status
       )
     end
 
-    def successfully(processed, supplier_order)
+    def successfully(processed, line_item)
        I18n.t(
-          "notifications.messages.built_in.you_successfully_processed_the_supplier_order",
+          "notifications.messages.built_in.you_successfully_processed_the_line_item",
           :supplier_name => user.name,
           :processed => processed,
-          :supplier_order_number => supplier_order.id.to_s
+          :line_item_number => line_item.id.to_s
         )
     end
 

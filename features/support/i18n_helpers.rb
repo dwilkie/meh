@@ -4,23 +4,23 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^you do not have any product orders$/
-      "notifications.messages.built_in.you_do_not_have_any_product_orders"
+    when /^you do not have any line items$/
+      "notifications.messages.built_in.you_do_not_have_any_line_items"
 
-    when /^product order was already processed$/
-      "notifications.messages.built_in.product_order_was_already_processed"
+    when /^line item was already processed$/
+      "notifications.messages.built_in.line_item_was_already_processed"
 
-    when /^be specific about the product order number$/
-      "notifications.messages.built_in.be_specific_about_the_product_order_number"
+    when /^be specific about the line item number$/
+      "notifications.messages.built_in.be_specific_about_the_line_item_number"
 
-    when /^invalid action given for the product order$/
-      "notifications.messages.built_in.invalid_action_for_product_order"
+    when /^invalid action given for the line item$/
+      "notifications.messages.built_in.invalid_action_for_line_item"
 
-    when /^what would you like to do with the product order\?$/
-      "notifications.messages.built_in.no_action_for_product_order"
+    when /^what would you like to do with the line item\?$/
+      "notifications.messages.built_in.no_action_for_line_item"
 
-    when /^you successfully processed the product order$/
-      "notifications.messages.built_in.you_successfully_processed_the_product_order"
+    when /^you successfully processed the line item$/
+      "notifications.messages.built_in.you_successfully_processed_the_line_item"
 
     when /^this tracking number was already used by you$/
       "notifications.messages.built_in.this_tracking_number_was_already_used_by_you"
@@ -28,8 +28,8 @@ module I18nHelpers
     when /^the tracking number is missing or invalid$/
       "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid"
 
-    when /^you must accept the product order first$/
-      "notifications.messages.built_in.you_must_accept_the_product_order_first"
+    when /^you must accept the line item first$/
+      "notifications.messages.built_in.you_must_accept_the_line_item_first"
 
     when /^verify your mobile number$/
       "notifications.messages.built_in.verify_your_mobile_number"
@@ -72,7 +72,7 @@ module I18nHelpers
       "errors.messages.incorrect"
 
     when /^order quantity must be confirmed$/
-      "activemodel.errors.models.product_order_conversation/accept_product_order_message.attributes.quantity.blank"
+      "activemodel.errors.models.line_item_conversation/accept_line_item_message.attributes.quantity.blank"
 
     when /^is required$/
       "errors.messages.blank"

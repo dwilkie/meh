@@ -9,8 +9,8 @@ Feature: Supplier Payment
     And a supplier exists with name: "Fon"
     And a mobile_number: "Fon's number" exists with user: the supplier, number: "665323568467"
     And a product exists with seller: the seller, supplier: the supplier, number: "120848121933", name: "A Rubber Dingy"
-    And a product order exists for the product with quantity: 1
-    When a supplier payment is created with cents: "50000", currency: "THB", product_order: the product order, seller: the seller, supplier: the supplier
+    And a supplier order exists for the product with quantity: 1
+    When a supplier payment is created with cents: "50000", currency: "THB", supplier_order: the supplier order, seller: the seller, supplier: the supplier
     Then the most recent job in the queue should be to send the supplier payment
 
   Scenario: The seller has sufficient funds to pay the supplier
@@ -28,7 +28,7 @@ Feature: Supplier Payment
     When the worker works off the job
 
     Then the job should be deleted from the queue
-    And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", product_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "paypal account: dave@example.com does not have sufficient funds in THB"
+    And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "paypal account: dave@example.com does not have sufficient funds in THB"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -43,7 +43,7 @@ Feature: Supplier Payment
     When the worker works off the job
 
     Then the job should be deleted from the queue
-    And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", product_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
+    And the most recent outgoing text message destined for the mobile number: "Dave's number" should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "1", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
    And the seller should be that outgoing text message's payer
 
     Examples:

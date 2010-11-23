@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe ProductOrderConversationSpec do
+describe LineItemConversationSpec do
   describe "#accept" do
-    let(:product_order) { Factory.create(:product_order) }
-    let(:product_order_conversation) {
-      ProductOrderConversation.new(
-        :user => product_order.seller_order.seller
+    let(:line_item) { Factory.create(:line_item) }
+    let(:line_item_conversation) {
+      LineItemConversation.new(
+        :user => line_item.seller_order.seller
       )
     }
     context "the user texts in a valid message" do

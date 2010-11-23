@@ -8,9 +8,9 @@ class PaymentAgreement < ActiveRecord::Base
              :class_name => "User"
 
   EVENTS = [
-      "product_order_created",
-      "product_order_accepted",
-      "product_order_completed"
+      "supplier_order_created",
+      "supplier_order_accepted",
+      "supplier_order_completed"
     ]
 
   class IsNotTheSellerValidator < ActiveModel::EachValidator

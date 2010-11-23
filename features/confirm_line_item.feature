@@ -1,7 +1,7 @@
-Feature: Accept product order
-  In order to notify my seller that I have received a product order and that I have confirmed the quantity and the item
+Feature: Accept line item
+  In order to notify my seller that I have received a line item and that I have confirmed the quantity and the item
   As a supplier
-  I want to be able to accept a product order by sending in a text message
+  I want to be able to accept a line item by sending in a text message
 
   Background:
     Given a supplier exists with name: "Nok"
@@ -9,7 +9,7 @@ Feature: Accept product order
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", verification_code: "hy456n", supplier: the supplier, seller: the seller
-    And a product order exists for the product with quantity: 3
+    And a line item exists for the product with quantity: 3
     And the seller order paypal ipn has the following params:
     """
     {
@@ -27,12 +27,12 @@ Feature: Accept product order
 
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should be accepted
-    And the 2nd most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you successfully processed the product order" in "en" (English) where supplier_name: "Nok", processed: "accepted", product_order_number: "1"
+    Then the line item should be accepted
+    And the 2nd most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you successfully processed the line item" in "en" (English) where supplier_name: "Nok", processed: "accepted", line_item_number: "1"
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
-    Hi Nok, pls send the product order: #1, to this address:
+    Hi Nok, pls send the line item: #1, to this address:
     Ho Chi Minh,
     4 Chau Minh Lane,
     Hanoi,
@@ -43,51 +43,51 @@ Feature: Accept product order
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_be>
     """
-    Hi Mara, Nok (+66354668874) has ACCEPTED their product order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
+    Hi Mara, Nok (+66354668874) has ACCEPTED their line item of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
     And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                          | is_not_yet_already | should_be     |
-    | product_order accept 154674 3 hy456n | was already        | should be     |
-    | product_order accept 154674 3 hy456n  | is not yet         | should not be |
-    | product_order a 154674 3 hy456n      | was already        | should be     |
-    | product_order a 154674 3 hy456n       | is not yet         | should not be |
-    | accept_product_order 154674 3 hy456n | was already        | should be     |
-    | accept_product_order 154674 3 hy456n  | is not yet         | should not be |
+    | line_item accept 154674 3 hy456n | was already        | should be     |
+    | line_item accept 154674 3 hy456n  | is not yet         | should not be |
+    | line_item a 154674 3 hy456n      | was already        | should be     |
+    | line_item a 154674 3 hy456n       | is not yet         | should not be |
+    | accept_line_item 154674 3 hy456n | was already        | should be     |
+    | accept_line_item 154674 3 hy456n  | is not yet         | should not be |
     | po accept 154674 3 hy456n             | was already        | should be     |
     | po a 154674 3 hy456n                  | is not yet         | should not be |
     | apo 154674 3 hy456n                   | was already        | should be     |
-    | product_order accept 3 hy456n        | is not yet         | should not be |
-    | product_order accept 3 hy456n         | was already        | should be     |
-    | product_order a 3 hy456n             | is not yet         | should not be |
-    | product_order a 3 hy456n              | was already        | should be     |
-    | accept_product_order 3 hy456n        | is not yet         | should not be |
-    | accept_product_order 3 hy456n         | was already        | should be     |
+    | line_item accept 3 hy456n        | is not yet         | should not be |
+    | line_item accept 3 hy456n         | was already        | should be     |
+    | line_item a 3 hy456n             | is not yet         | should not be |
+    | line_item a 3 hy456n              | was already        | should be     |
+    | accept_line_item 3 hy456n        | is not yet         | should not be |
+    | accept_line_item 3 hy456n         | was already        | should be     |
     | po accept 3 hy456n                    | is not yet         | should not be |
     | po a 3 hy456n                         | was already        | should be     |
     | apo 3 hy456n                          | is not yet         | should not be |
 
-  Scenario Outline: Try to accept an order implicitly with multiple unconfirmed product orders
-    Then a product order: "first order" should exist with product_id: the product
+  Scenario Outline: Try to accept an order implicitly with multiple unconfirmed line items
+    Then a line item: "first order" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller
-    And a product order exists for the product
+    And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
 
-    Then the product order: "first order" should not be accepted
-    And the product order should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the product order number" in "en" (English) where supplier_name: "Nok", human_action: "accept", topic: "<topic>", action: "<action>"
+    Then the line item: "first order" should not be accepted
+    And the line item should not be accepted
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", human_action: "accept", topic: "<topic>", action: "<action>"
     And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text                   | topic          | action |
-    | product_order accept 3 hy456n | product_order | accept |
-    | product_order accept 3 hy456n  | product_order  | accept |
-    | product_order a 3 hy456n      | product_order | a      |
-    | product_order a 3 hy456n       | product_order  | a      |
-    | accept_product_order 3 hy456n | product_order | accept |
-    | accept_product_order 3 hy456n  | product_order  | accept |
+    | line_item accept 3 hy456n | line_item | accept |
+    | line_item accept 3 hy456n  | line_item  | accept |
+    | line_item a 3 hy456n      | line_item | a      |
+    | line_item a 3 hy456n       | line_item  | a      |
+    | accept_line_item 3 hy456n | line_item | accept |
+    | accept_line_item 3 hy456n  | line_item  | accept |
     | po accept 3 hy456n             | po             | accept |
     | po a 3 hy456n                  | po             | a      |
     | apo 3 hy456n                   | po             | a      |
@@ -95,9 +95,9 @@ Feature: Accept product order
   Scenario Outline: Try to accept an order as the seller
     When I text "<message_text>" from "66354668789"
 
-    Then the product order should not be accepted
+    Then the line item should not be accepted
 
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you do not have any product orders" in "en" (English) where human_action: "accept", supplier_name: "Mara", status: "unconfirmed"
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "accept", supplier_name: "Mara", status: "unconfirmed"
     And the seller should be that outgoing text message's payer
 
   Examples:
@@ -108,12 +108,12 @@ Feature: Accept product order
 
   Scenario Outline: Try to accept an order as a seller when the seller is also the supplier for the product
     Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
-    And a product order exists for the product with quantity: 3
+    And a line item exists for the product with quantity: 3
     And no outgoing text messages exist with mobile_number_id: mobile_number: "Mara's number"
 
     When I text "<message_text>" from "66354668789"
 
-    Then the product_order should not be accepted
+    Then the line_item should not be accepted
     And 0 outgoing_text_messages should exist with mobile_number_id: mobile_number: "Mara's number"
 
   Examples:
@@ -125,7 +125,7 @@ Feature: Accept product order
   Scenario Outline: Successfully accept an order even when giving the wrong order number
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should be accepted
+    Then the line item should be accepted
 
   Examples:
     | message_text                   |
@@ -136,7 +136,7 @@ Feature: Accept product order
   Scenario Outline: Try to accept an order giving the wrong quantity
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should not be accepted
+    Then the line item should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
     And the seller should be that outgoing text message's payer
 
@@ -151,7 +151,7 @@ Feature: Accept product order
   Scenario Outline: Try to accept an order omitting the quantity
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should not be accepted
+    Then the line item should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "order quantity must be confirmed" in "en" (English)
     And the seller should be that outgoing text message's payer
 
@@ -164,7 +164,7 @@ Feature: Accept product order
   Scenario Outline: Try to accept an order giving the wrong product verification code
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should not be accepted
+    Then the line item should not be accepted
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
     And the seller should be that outgoing text message's payer
 
@@ -178,7 +178,7 @@ Feature: Accept product order
   Scenario Outline: Accept an order giving the correct product verification code but the incorrect case
     When I text "<message_text>" from "66354668874"
 
-    Then the product order should be accepted
+    Then the line item should be accepted
 
   Examples:
     | message_text            |
@@ -187,38 +187,38 @@ Feature: Accept product order
     | ProductOrder a 3 HY456N |
 
   Scenario: Try to explicity accept an order which I already completed
-    Given the product order was already completed
+    Given the line item was already completed
 
     When I text "apo 1 3 hy456n" from "66354668874"
 
-    Then the product order should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "product order was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
+    Then the line item should not be accepted
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "line item was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly accept an order which I already completed
-    Given the product order was already completed
+    Given the line item was already completed
 
     When I text "apo 3 hy456n" from "66354668874"
 
-    Then the product order should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any product orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
+    Then the line item should not be accepted
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to explicitly accept an order which I already accepted
-    Given the product order was already accepted
+    Given the line item was already accepted
 
     When I text "apo 1 3 hy456n" from "66354668874"
 
-    Then the product order should be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "product order was already processed" in "en" (English) where status: "accepted", supplier_name: "Nok"
+    Then the line item should be accepted
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "line item was already processed" in "en" (English) where status: "accepted", supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly accept an order which I already accepted
-    Given the product order was already accepted
+    Given the line item was already accepted
 
     When I text "apo 3 hy456n" from "66354668874"
 
-    Then the product order should be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any product orders" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
+    Then the line item should be accepted
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "accept", supplier_name: "Nok", status: "unconfirmed"
     And the seller should be that outgoing text message's payer
 

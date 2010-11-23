@@ -18,7 +18,7 @@ Feature: Supplier order invalid messages
     Examples:
       | message_text    |
       | po              |
-      | ProductOrder    |
+      | LineItem    |
 
   Scenario Outline: Try to process an order supplying an invalid action
     When I text "<message_text>" from "66354668874"
@@ -28,7 +28,7 @@ Feature: Supplier order invalid messages
 
     Examples:
       | message_text                    | topic         | action         |
-      | product_order z                 | product_order | z              |
+      | line_item z                 | line_item | z              |
       | po 4                            | po            | 4              |
       | po invalid_action               | po            | invalid_action |
 
