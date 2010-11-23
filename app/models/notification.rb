@@ -15,6 +15,12 @@ class Notification < ActiveRecord::Base
       },
       :number_of_cart_items => Proc.new { |options|
         options[:order_notification].number_of_cart_items.to_s
+      },
+      :customer_order_payment_currency => Proc.new { |options|
+        options[:order_notification].payment_currency
+      },
+      :customer_order_gross_payment => Proc.new { |options|
+        options[:order_notification].gross_payment_amount.to_s
       }
     },
     :customer_address => {

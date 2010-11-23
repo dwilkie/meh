@@ -20,7 +20,9 @@ Feature: Create a seller order from an order notification
       'address_city' => 'Hanoi',
       'address_state' => 'Hanoi Province',
       'address_country' => 'Viet Nam',
-      'address_zip' => '52321'
+      'address_zip' => '52321',
+      'mc_gross' => '75.00',
+      'mc_currency' => 'USD'
     }
     """
 
@@ -32,13 +34,7 @@ Feature: Create a seller order from an order notification
     And the seller order should be amongst the seller's seller_orders
     And the 2nd most recent outgoing text message destined for the mobile number <should_or_should_not_be>
     """
-    Hi Mara, a customer just completed payment for 1 of your products. The customer's shipping address is:
-    Ho Chi Minh,
-    4 Chau Minh Lane,
-    Hanoi,
-    Hanoi Province,
-    Viet Nam 52321
-    We'll send you more details about the items in this order shortly. Your customer order number is: #1
+    Hi Mara, u just sold 1 item(s) totalling 75.00 USD (order ref: #1). The order details will be sent to u shortly
     """
     And the seller should be that outgoing text message's payer
 

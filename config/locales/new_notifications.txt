@@ -1,0 +1,211 @@
+# Single product, seller/supplier dialogue
+
+Hi Dave, u just sold 1 x 19023233221, "Titanic Model Ship with Lighting" for $123.55 (order ref: #55764). The details were sent to Johnny (+85512355331)
+
+Hi Dave, Johnny (+85512355331) just confirmed order #55764
+
+Hi Dave, u just paid $100 to Johnny (+85512355331) to process order #55764
+
+Hi Dave, Johnny has completed order #55764. The tracking number is: #1243313
+
+Hi Johnny, u have a new order (ref: #55764) from Dave (+61453123221) for 1 x 19023233221, "Titanic Model Ship with Lighting". Confirm it by replying with: "apo <qty>"
+
+Thx Johnny, pls send order #55764 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After sending, reply with: "cpo <tracking number>"
+
+Hi Johnny, Dave (+61453123221) has paid u $100 to process order #55764
+
+Thx Johnny, u have completed the order #55764. U still have 2 incomplete orders. Reply with: "orders" to retrieve them
+
+# Standardized alternative
+
+Hi Dave, u just sold 1 item(s) totalling $100.00 (order ref: #2343). The order details will be sent to u shortly
+
+Order #2343, item #55786:
+1 x 19023233221, "Titanic Model Ship with Lighting", $123.55
+Status: Sent to Johnny (+85512355331)
+
+Hi Dave, Johnny (+85512355331) has confirmed order #2343, item #55786
+
+Hi Dave, u just paid $75 to Johnny (+85512355331) to process order #2343
+
+Hi Dave, Johnny has completed order #2342. The tracking number is: #1243313
+
+Hi Johnny, u have a new order (ref: #2343) from Dave (+61453123221) for 1 item(s). Order details and shipping instructions will be sent to u shortly
+
+Order #2343, item: #55786
+1 x 19023233221, "Titanic Model Ship with Lighting"
+Confirm by replying with: "apo <qty>"
+
+Johnny, pls ship order #2343 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After shipping reply with: "cpo <tracking number>"
+
+# Single product, Seller == Supplier
+
+Hi Dave, u just sold 1 x 19023233221, "Titanic Model Ship with Lighting" for $123.55 (order ref: #55764). Shipping instructions will be sent to u shortly
+
+Dave, ship order #55764 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After sending reply with: "cpo <tracking number>"
+
+Thx Dave, u have completed the order #55764. U still have 3 incomplete orders. Reply with: "orders" to retrieve them
+
+# Standardized Alternative
+
+Hi Dave, u just sold 1 item(s) totalling $100 (order ref: #2343). Order details and shipping instructions will be sent to you shortly
+
+Dave, ship order #2343 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After shipping reply with: "co <tracking number>"
+
+Order #2343, item #54322:
+1 x 19023233221, "Titanic Model Ship with Lighting", $123.55
+
+Thx Dave, u have completed the order #2345. U still have 3 incomplete orders. Reply with: "orders" for more details
+
+# Multiple products, Single Seller/Supplier
+
+Hi Dave, u just sold 3 items totalling $456.32 (order ref: #2343). Order details and shipping instructions will be sent to you shortly
+
+Dave, ship order #2343 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After shipping reply with: "cpo <tracking number>"
+
+Order #2343, item #1:
+1 x 19023233221, "Titanic Model Ship with Lighting", $123.55
+
+Order #2343, item #2:
+2 x 19023233223, "Small Fish", $123.55
+
+Order #2343, item #3:
+1 x 19023233224, "Big Fish", $123.55
+
+# Multiple products, Single Supplier
+
+Hi Dave, u just sold 3 items totalling $456.32 (order ref: #2343). The order details will be sent to u shortly
+
+Order #2343, item 1: #55786
+1 x 19023233221, "Titanic Model Ship with Lighting", $123.55
+Sent to Johnny (+85512355331)
+
+Order #2343, item 2: #55787
+2 x 19023233223, "Small Fish", $123.55
+Sent to Johnny (+85512355331)
+
+Order #2343, item 3: #55788
+1 x 19023233224, "Big Fish", $123.55
+Sent to Johnny (+85512355331)
+
+Hi Dave, Johnny (+85512355331) just confirmed order #2343, item 1: #55786
+Hi Dave, Johnny (+85512355331) just confirmed order #2343, item 1: #55787
+Hi Dave, Johnny (+85512355331) just confirmed order #2343, item 1: #55789
+
+Hi Dave, u just paid $300 to Johnny (+85512355331) to process order #2343
+
+Hi Dave, Johnny has completed order #2342. The tracking number is: #1243313
+
+Hi Johnny, u have a new order (ref: #2343) from Dave (+61453123221) for 3 items. Order details and shipping instructions will be sent to u shortly
+
+Johnny, pls ship order #2343 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After shipping reply with: "cpo <tracking number>"
+
+Order #2343, item 1: #55786
+1 x 19023233221, "Titanic Model Ship with Lighting"
+Confirm by replying with: "apo 55786 <qty>"
+
+Order #2343, item 2: #55787
+2 x 19023233223, "Small Fish"
+Confirm by replying with: "apo 55787 <qty>"
+
+Order #2343, item 3: #55788
+1 x 19023233224, "Big Fish"
+Confirm by replying with: "apo 55788 <qty>"
+
+# Multiple products, Multiple Suppliers
+
+Hi Dave, u just sold 3 items totalling $456.32 (order ref: #2343). The order details will be sent to u shortly
+
+Order #2343, item: #55786
+1 x 19023233221, "Titanic Model Ship with Lighting", $123.55
+Sent to Johnny (+85512355331)
+
+Order #2343, item: #55787
+2 x 19023233223, "Small Fish", $123.55
+Sent to Bob (+85512355223)
+
+Order #2343, item: #55788
+1 x 19023233224, "Big Fish", $123.55
+Sent to Janet (+85512355235)
+
+Hi Dave, Johnny (+85512355331) just confirmed order #2343, item: #55786
+Hi Dave, Bob (+85512355331) just confirmed order #2343, item: #55787
+Hi Dave, Janet (+85512355331) just confirmed order #2343, item: #55789
+
+Hi Dave, u just paid $100 to Johnny (+85512355331) to process order #2343, item: #55786
+
+Hi Dave, u just paid $100 to Bob (+85512355331) to process order #2343, item: #55787
+
+Hi Dave, u just paid $100 to Janet (+85512355331) to process order #2343, item: #55788
+
+Hi Dave, Johnny has completed order #2342, item #55786. The tracking number is: #1243313
+
+Hi Dave, Bob has completed order #2342, item #55787. The tracking number is: #1243313
+
+Hi Dave, Bob has completed order #2342, item #55788. The tracking number is: #1243313
+
+Hi Johnny, u have a new order (ref: #2343) from Dave (+61453123221) for 3 items. Order details and shipping instructions will be sent to u shortly
+
+Johnny, pls ship order #2343 to:
+
+Chris Smith
+124 Maggot Street
+Maggotville
+Australia 2134
+
+After shipping reply with: "cpo <tracking number>"
+
+Order #2343, item 1: #55786
+1 x 19023233221, "Titanic Model Ship with Lighting"
+Confirm by replying with: "apo 55786 <qty>"
+
+Order #2343, item 2: #55787
+2 x 19023233223, "Small Fish"
+Confirm by replying with: "apo 55787 <qty>"
+
+Order #2343, item 3: #55788
+1 x 19023233224, "Big Fish"
+Confirm by replying with: "apo 55788 <qty>"
+
