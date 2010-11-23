@@ -23,6 +23,7 @@ module Meh
     # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
     config.active_record.observers = :seller_order_observer,
+      :supplier_order_observer,
       :product_order_observer,
       :incoming_text_message_observer,
       :user_observer,

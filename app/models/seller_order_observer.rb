@@ -1,55 +1,64 @@
 class SellerOrderObserver < ActiveRecord::Observer
   def after_create(seller_order)
     notify(seller_order)
-    create_product_orders(seller_order)
+    create_supplier_orders(seller_order)
   end
 
   private
-    def create_product_orders(seller_order)
+    def create_supplier_orders(seller_order)
       order_notification = seller_order.order_notification
       seller = seller_order.seller
       order_notification.number_of_cart_items.times do |index|
-        item_number = order_notification.item_number(index)
-        item_name = order_notification.item_name(index)
-        item_quantity = order_notification.item_quantity(index)
-        item_price = order_notification.item_amount(index)
-        product = seller.selling_products.with_number_and_name(
-          item_number,
-          item_name
-        ).first
-        unless product
-          products = seller.selling_products.with_number_or_name(
-            item_number,
-            item_name
-          )
-          if products.count == 2
-            products.where(
-              "products.name = ?", item_name
-            ).first.destroy
-          end
-          product = products.first
-          if product
-            product.update_attributes!(
-              :number => item_number,
-              :name => item_name
-            )
-          else
-            product = Product.create!(
-              :seller => seller,
-              :supplier => seller,
-              :number => item_number,
-              :name => item_name
-            )
-          end
-        end
-        product.update_attributes!(
-          :price => item_price
-        ) unless product.price == item_price
-        seller_order.product_orders.create!(
+        product = find_or_create_product(seller, order_notification)
+        supplier = product.supplier
+        supplier_order = seller_order.supplier_orders.find_or_create_for!(
+          supplier
+        )
+        supplier_order.product_orders.create!(
           :product => product,
           :quantity => item_quantity
         )
       end
+    end
+
+    def find_or_create_product(seller, order_notification)
+      item_number = order_notification.item_number(index)
+      item_name = order_notification.item_name(index)
+      item_quantity = order_notification.item_quantity(index)
+      item_price = order_notification.item_amount(index)
+      product = seller.selling_products.with_number_and_name(
+        item_number,
+        item_name
+      ).first
+      unless product
+        products = seller.selling_products.with_number_or_name(
+          item_number,
+          item_name
+        )
+        if products.count == 2
+          products.where(
+            "products.name = ?", item_name
+          ).first.destroy
+        end
+        product = products.first
+        if product
+          product.update_attributes!(
+            :number => item_number,
+            :name => item_name
+          )
+        else
+          product = Product.create!(
+            :seller => seller,
+            :supplier => seller,
+            :number => item_number,
+            :name => item_name
+          )
+        end
+      end
+      product.update_attributes!(
+        :price => item_price
+      ) unless product.price == item_price
+      product
     end
 
     def notify(seller_order)

@@ -14,5 +14,10 @@ class SupplierOrder < ActiveRecord::Base
   validates :supplier_id,
             :uniqueness => {:scope => :seller_order_id}
 
+  def self.find_or_create_for!(supplier)
+    record = where(:supplier_id => supplier_id)
+    scoped.create!(:supplier => supplier) unless record
+    record
+  end
 end
 
