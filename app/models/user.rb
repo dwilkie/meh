@@ -83,6 +83,9 @@ class User < ActiveRecord::Base
              :uniq => true,
              :readonly => false
 
+  has_many   :supplier_orders,
+             :foreign_key => "supplier_id"
+
   has_many   :product_orders,
              :foreign_key => "supplier_id"
 
