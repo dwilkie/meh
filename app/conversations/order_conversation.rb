@@ -1,0 +1,3 @@
+class OrderConversation < IncomingTextMessageConversation
+end
+

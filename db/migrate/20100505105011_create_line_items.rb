@@ -5,7 +5,7 @@ class CreateLineItems < ActiveRecord::Migration
       t.references :product,         :null => false
       t.references :supplier,        :null => false
       t.references :supplier_order,  :null => false
-      t.datetime   :accepted_at
+      t.datetime   :confirmed_at
       t.timestamps
     end
     add_index :line_items, [:product_id, :supplier_order_id], :unique => true

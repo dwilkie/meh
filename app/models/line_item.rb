@@ -9,7 +9,7 @@ class LineItem < ActiveRecord::Base
 
   before_validation :link_supplier
 
-  scope :unconfirmed, where(confirmed_at => nil)
+  scope :unconfirmed, where(:confirmed_at => nil)
 
   validates :supplier,
             :product,
@@ -20,7 +20,7 @@ class LineItem < ActiveRecord::Base
   validates :product_id,
             :uniqueness => {:scope => :supplier_order_id}
 
-  def sub_total
+  def supplier_subtotal
     product.supplier_price * quantity
   end
 

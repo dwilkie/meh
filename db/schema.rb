@@ -36,6 +36,18 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
 
   add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
 
+  create_table "line_items", :force => true do |t|
+    t.integer  "quantity",          :null => false
+    t.integer  "product_id",        :null => false
+    t.integer  "supplier_id",       :null => false
+    t.integer  "supplier_order_id", :null => false
+    t.datetime "confirmed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_items", ["product_id", "supplier_order_id"], :name => "index_line_items_on_product_id_and_supplier_order_id", :unique => true
+
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",      :null => false
     t.datetime "verified_at"
@@ -104,19 +116,6 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
 
   add_index "paypal_ipns", ["transaction_id"], :name => "index_paypal_ipns_on_transaction_id", :unique => true
 
-  create_table "product_orders", :force => true do |t|
-    t.integer  "quantity",          :null => false
-    t.integer  "product_id",        :null => false
-    t.integer  "supplier_id",       :null => false
-    t.integer  "supplier_order_id", :null => false
-    t.datetime "accepted_at"
-    t.datetime "completed_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "product_orders", ["product_id", "supplier_order_id"], :name => "index_product_orders_on_product_id_and_supplier_order_id", :unique => true
-
   create_table "products", :force => true do |t|
     t.string   "number",                           :null => false
     t.string   "name",                             :null => false
@@ -145,6 +144,7 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.integer  "supplier_id",     :null => false
     t.integer  "seller_order_id", :null => false
     t.string   "tracking_number"
+    t.datetime "confirmed_at"
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -158,14 +158,14 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.text     "payment_response"
     t.integer  "supplier_id",                      :null => false
     t.integer  "seller_id",                        :null => false
-    t.integer  "product_order_id",                 :null => false
+    t.integer  "supplier_order_id",                :null => false
     t.integer  "notification_id"
     t.string   "notification_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "supplier_payments", ["product_order_id"], :name => "index_supplier_payments_on_product_order_id", :unique => true
+  add_index "supplier_payments", ["supplier_order_id"], :name => "index_supplier_payments_on_supplier_order_id", :unique => true
 
   create_table "text_message_delivery_receipts", :force => true do |t|
     t.string   "status"

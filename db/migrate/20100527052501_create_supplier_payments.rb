@@ -6,7 +6,7 @@ class CreateSupplierPayments < ActiveRecord::Migration
       t.text        :payment_response
       t.references  :supplier,               :null => false
       t.references  :seller,                 :null => false
-      t.references  :supplier_order          :null => false
+      t.references  :supplier_order,         :null => false
       t.references  :notification,           :polymorphic => true
       t.timestamps
     end

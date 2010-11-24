@@ -13,7 +13,7 @@ class Notification < ActiveRecord::Base
       :customer_order_number => Proc.new { |options|
         options[:seller_order].id.to_s
       },
-      :number_of_cart_items => Proc.new { |options|
+      :total_number_of_items => Proc.new { |options|
         options[:order_notification].number_of_cart_items.to_s
       },
       :customer_order_payment_currency => Proc.new { |options|
@@ -21,6 +21,11 @@ class Notification < ActiveRecord::Base
       },
       :customer_order_gross_payment => Proc.new { |options|
         options[:order_notification].gross_payment_amount.to_s
+      }
+    },
+    :supplier_order => {
+      :supplier_order_number => Proc.new { |options|
+        options[:supplier_order].id.to_s
       }
     },
     :customer_address => {
@@ -66,17 +71,6 @@ class Notification < ActiveRecord::Base
       },
       :line_item_quantity => Proc.new { |options|
         options[:line_item].quantity.to_s
-      }
-    },
-    :item => {
-      :item_number => Proc.new { |options|
-        options[:item_number].to_s
-      },
-      :item_name => Proc.new { |options|
-        options[:item_name].to_s
-      },
-      :item_quantity => Proc.new { |options|
-        options[:item_quantity].to_s
       }
     },
     :seller => {
@@ -133,46 +127,57 @@ class Notification < ActiveRecord::Base
     }
   }
 
-  COMMON_EVENT_ATTRIBUTES = {
-    :line_item => EVENT_ATTRIBUTES[:seller_order].merge(
-      EVENT_ATTRIBUTES[:line_item]
-    ).merge(
-      EVENT_ATTRIBUTES[:product]
-    ).merge(
-      EVENT_ATTRIBUTES[:customer_address]
-    ).merge(
-      EVENT_ATTRIBUTES[:seller]
-    ).merge(
-      EVENT_ATTRIBUTES[:supplier]
-    ),
-    :seller_order => EVENT_ATTRIBUTES[:seller_order].merge(
-      :seller_name => EVENT_ATTRIBUTES[:seller][:seller_name]
-    )
-  }
+  SELLER_ORDER_ATTRIBUTES = EVENT_ATTRIBUTES[:seller_order].merge(
+    :seller_name => EVENT_ATTRIBUTES[:seller][:seller_name]
+  )
+
+  SUPPLIER_ORDER_ATTRIBUTES = EVENT_ATTRIBUTES[:supplier_order].merge(
+    EVENT_ATTRIBUTES[:seller_order]
+  ).merge(
+    EVENT_ATTRIBUTES[:customer_address]
+  ).merge(
+    EVENT_ATTRIBUTES[:seller]
+  ).merge(
+    EVENT_ATTRIBUTES[:supplier]
+  )
+
+  LINE_ITEM_ATTRIBUTES = SUPPLIER_ORDER_ATTRIBUTES.merge(
+    EVENT_ATTRIBUTES[:line_item]
+  ).merge(
+    EVENT_ATTRIBUTES[:product]
+  )
 
   EVENTS = {
     :customer_order_created => {
       :notification_attributes => EVENT_ATTRIBUTES[:customer_address].merge(
-        COMMON_EVENT_ATTRIBUTES[:seller_order]
+        SELLER_ORDER_ATTRIBUTES
       ),
       :send_notification_to => User.roles(1)
     },
-    :line_item_created => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item],
+    :supplier_order_created => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES,
       :send_notification_to => User.roles(3)
     },
-    :line_item_accepted => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item],
+    :supplier_order_confirmed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES,
       :send_notification_to => User.roles(3)
     },
-    :line_item_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item].merge(
+    :supplier_order_completed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES.merge(
         :tracking_number => EVENT_ATTRIBUTES[:tracking_number]
       ),
       :send_notification_to => User.roles(3)
     },
-    :supplier_payment_successfully_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:line_item].merge(
+    :line_item_created => {
+      :notification_attributes => LINE_ITEM_ATTRIBUTES,
+      :send_notification_to => User.roles(3)
+    },
+    :line_item_confirmed => {
+      :notification_attributes => LINE_ITEM_ATTRIBUTES,
+      :send_notification_to => User.roles(3)
+    },
+    :supplier_payment_completed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES.merge(
         EVENT_ATTRIBUTES[:supplier_payment]
       ),
       :send_notification_to => User.roles(3)
@@ -287,11 +292,27 @@ class Notification < ActiveRecord::Base
     create!(
       :event => "customer_order_created",
       :for => "seller",
-      :purpose => "to inform me about the customer order details",
+      :purpose => "to inform me about a new customer order",
       :message => I18n.t(
-        "notifications.messages.custom.a_customer_completed_payment_for"
+        "notifications.messages.custom.customer_completed_payment"
       )
     )
+    create!(
+      :event => "supplier_order_created",
+      :for => "supplier",
+      :purpose => "to inform the supplier about a new order",
+      :message => I18n.t(
+        "notifications.messages.custom.new_order_from_seller"
+      )
+    )
+    notification = new(
+      :event => "supplier_order_created",
+      :for => "supplier",
+      :purpose => "to inform the supplier about a new order",
+      :should_send => false
+    )
+    notification.supplier = notification.seller
+    notification.save!
     create!(
       :event => "line_item_created",
       :for => "seller",
@@ -313,7 +334,7 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the line item details",
       :message => I18n.t(
-        "notifications.messages.custom.new_line_item_from_seller_for_the_following_item"
+        "notifications.messages.custom.line_item_details_for_supplier"
       )
     )
     notification = new(
@@ -321,47 +342,47 @@ class Notification < ActiveRecord::Base
       :for => "supplier",
       :purpose => "to inform the supplier about the line item details",
       :message => I18n.t(
-        "notifications.messages.custom.your_customer_bought_the_following_item"
+        "notifications.messages.custom.line_item_details_for_seller"
       )
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "line_item_accepted",
+      :event => "supplier_order_confirmed",
       :for => "seller",
-      :purpose => "to inform me when a supplier accepts a line item",
+      :purpose => "to inform me when a supplier confirms an order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_line_item",
-        :processed => "ACCEPTED"
+        "notifications.messages.custom.your_supplier_processed_an_order",
+        :processed => "confirmed"
       )
     )
     create!(
-      :event => "line_item_accepted",
+      :event => "supplier_order_confirmed",
       :for => "supplier",
       :purpose => "to inform the supplier of the shipping instructions",
       :message => I18n.t(
-        "notifications.messages.custom.send_the_product_to"
+        "notifications.messages.custom.send_the_order_to"
       )
     )
     create!(
-      :event => "line_item_completed",
+      :event => "supplier_order_completed",
       :for => "seller",
-      :purpose => "to inform me when a supplier completes a line item",
+      :purpose => "to inform me when a supplier completes an order",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_line_item",
-        :processed => "COMPLETED"
+        "notifications.messages.custom.your_supplier_processed_an_order",
+        :processed => "completed"
       )
     )
     notification = new(
-      :event => "line_item_completed",
+      :event => "supplier_order_completed",
       :for => "seller",
-      :purpose => "to inform me when a supplier completes a line item",
+      :purpose => "to inform me when a supplier completes an order",
       :should_send => false
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "supplier_payment_successfully_completed",
+      :event => "supplier_payment_completed",
       :for => "seller",
       :purpose => "to inform me that my supplier has been paid",
       :message => I18n.t(
@@ -369,7 +390,7 @@ class Notification < ActiveRecord::Base
       )
     )
     create!(
-      :event => "supplier_payment_successfully_completed",
+      :event => "supplier_payment_completed",
       :for => "supplier",
       :purpose => "to inform my supplier that they have been paid",
       :message => I18n.t(

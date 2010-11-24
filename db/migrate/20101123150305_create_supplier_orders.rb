@@ -4,6 +4,7 @@ class CreateSupplierOrders < ActiveRecord::Migration
       t.references :supplier,        :null => false
       t.references :seller_order,    :null => false
       t.string     :tracking_number
+      t.datetime   :confirmed_at
       t.datetime   :completed_at
       t.timestamps
     end

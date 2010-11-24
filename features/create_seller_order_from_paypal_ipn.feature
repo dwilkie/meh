@@ -34,7 +34,7 @@ Feature: Create a seller order from an order notification
     And the seller order should be amongst the seller's seller_orders
     And the 2nd most recent outgoing text message destined for the mobile number should be
     """
-    Hi Mara, u just sold 1 item(s) totalling 75.00 USD (order ref: #1). The order details will be sent to u shortly
+    Hi Mara, u just sold 1 item(s) totalling 75.00 USD (order ref: #1). Order details will be sent to u shortly
     """
     And the outgoing text message <should_or_should_not_be> queued_for_sending
     And the seller should be that outgoing text message's payer
