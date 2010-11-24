@@ -24,9 +24,6 @@ class Notification < ActiveRecord::Base
       }
     },
     :supplier_order => {
-      :supplier_order_number => Proc.new { |options|
-        options[:supplier_order].id.to_s
-      }
     },
     :customer_address => {
       :customer_address => Proc.new { |options|
@@ -103,15 +100,6 @@ class Notification < ActiveRecord::Base
       },
       :supplier_email => Proc.new { |options|
         options[:supplier].email
-      },
-      :and_or_but_not_sent => Proc.new { |options|
-        active_mobile_number = options[:supplier].active_mobile_number
-        active_mobile_number && active_mobile_number.verified? ?
-        I18n.t(
-          "notifications.messages.custom.attributes.and_or_but_not_sent.and_sent"
-        ) : I18n.t(
-          "notifications.messages.custom.attributes.and_or_but_not_sent.but_not_sent"
-        )
       }
     },
     :tracking_number => Proc.new { |options|

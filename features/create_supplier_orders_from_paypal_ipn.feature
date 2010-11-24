@@ -186,30 +186,18 @@ Feature: Create line items from an order notification
 
     Then the product's number should be "12345790062"
     And the product's name should be "Model Ship - The Rubber Dingy"
-    And a seller order should exist
-    And a supplier order should exist with seller_order_id: the seller order
-    And a line item should exist with product_id: the product, quantity: 1, supplier_order_id: the supplier order
-    And the supplier order should be unconfirmed
-    And the supplier order should be amongst the seller_order's supplier_orders
-    And the supplier order should be amongst the supplier's supplier_orders
-    And the line item should be unconfirmed
-    And the line item should be amongst the supplier_order's line_items
-    And the line item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
     Order #1, item #1:
     1 x 12345790062, "Model Ship - The Rubber Dingy", 100.00 AUD
     Status: Sent to Dave (+66123555331)
     """
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
     Order #1, item #1:
     1 x 12345790062, "Model Ship - The Rubber Dingy"
     Confirm by replying with: "ci <qty>"
     """
-    And the outgoing text message should be queued_for_sending
 
   Scenario: The seller has registered this product number but the product name is different
     Given a seller order paypal ipn exists
@@ -230,33 +218,19 @@ Feature: Create line items from an order notification
 
     Then the product's number should be "12345790063"
     And the product's name should be "Model Ship - The Rubber Ducky"
-    And a seller order should exist
-    And a supplier order should exist with seller_order_id: the seller order
-    And a line item should exist with product_id: the product, quantity: 1, supplier_order_id: the supplier order
-    And the supplier order should be unconfirmed
-    And the supplier order should be amongst the seller_order's supplier_orders
-    And the supplier order should be amongst the supplier's supplier_orders
-    And the line item should be unconfirmed
-    And the line item should be amongst the supplier_order's line_items
-    And the line item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Order #1, item #1:
     1 x 12345790063, "Model Ship - The Rubber Ducky", 100.00 AUD
     Status: Sent to Dave (+66123555331)
     """
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
     Order #1, item #1:
     1 x 12345790063, "Model Ship - The Rubber Ducky"
     Confirm by replying with: "ci <qty>"
     """
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
 
-  @current
   Scenario: The seller has registered this product number with a different product name and has also registered this product name with a different product number
     Given a product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
     And a seller order paypal ipn exists
@@ -277,29 +251,16 @@ Feature: Create line items from an order notification
     Then 1 products should exist
     And the product: "Rubber Dingy"'s number should be "12345790063"
     And the product: "Rubber Dingy"'s name should be "Model Ship - The Titanic"
-    And a seller order should exist
-    And a supplier order should exist with seller_order_id: the seller order
-    And a line item should exist with product_id: the product, quantity: 1, supplier_order_id: the supplier order
-    And the supplier order should be unconfirmed
-    And the supplier order should be amongst the seller_order's supplier_orders
-    And the supplier order should be amongst the supplier's supplier_orders
-    And the line item should be unconfirmed
-    And the line item should be amongst the supplier_order's line_items
-    And the line item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Order #1, item #1:
     1 x 12345790063, "Model Ship - The Titanic", 100.00 AUD
     Status: Sent to Dave (+66123555331)
     """
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
     Order #1, item #1:
     1 x 12345790063, "Model Ship - The Titanic"
     Confirm by replying with: "ci <qty>"
     """
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
 
