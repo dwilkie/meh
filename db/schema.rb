@@ -97,12 +97,11 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.string   "event"
     t.integer  "supplier_id", :null => false
     t.integer  "seller_id",   :null => false
-    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "payment_agreements", ["supplier_id", "seller_id", "product_id"], :name => "index_payment_agreements_unique", :unique => true
+  add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false

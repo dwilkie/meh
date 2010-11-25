@@ -4,8 +4,8 @@ class SupplierOrderObserver < ActiveRecord::Observer
   end
 
   def after_update(supplier_order)
-    if supplier_order.accepted? && supplier_order.accepted_at_changed? && supplier_order.accepted_at_was.nil?
-      notify_and_pay supplier_order, "supplier_order_accepted"
+    if supplier_order.confirmed? && supplier_order.confirmed_at_changed? && supplier_order.confirmed_at_was.nil?
+      notify_and_pay supplier_order, "supplier_order_confirmed"
     elsif supplier_order.completed? && supplier_order.completed_at_changed? && supplier_order.completed_at_was.nil?
       notify_and_pay supplier_order, "supplier_order_completed"
     end
@@ -20,11 +20,9 @@ class SupplierOrderObserver < ActiveRecord::Observer
     def pay_for(supplier_order, event)
       supplier = supplier_order.supplier
       seller = supplier_order.seller_order.seller
-      product = supplier_order.product
       payment_agreement = seller.payment_agreements_with_suppliers.for_event(
         event,
         supplier,
-        product
       ).first
       if payment_agreement && payment_agreement.enabled?
         supplier_payment = seller.outgoing_supplier_payments.build(
@@ -37,16 +35,9 @@ class SupplierOrderObserver < ActiveRecord::Observer
           supplier_payment,
           :supplier => supplier,
           :seller => seller,
-          :product => product,
           :errors => supplier_payment.errors
-        ) unless supplier_payment.valid? || seller.cannot_text?
+        ) unless supplier_payment.valid?
       end
-    end
-
-    def find_payment_agreement(product, seller, supplier)
-      payment_agreement = product.payment_agreement
-      payment_agreement = seller.payment_agreement_with_supplier(supplier) if payment_agreement.nil?
-      payment_agreement
     end
 
     def notify(supplier_order, event)

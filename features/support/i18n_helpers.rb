@@ -4,8 +4,8 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^you do not have any line items$/
-      "notifications.messages.built_in.you_do_not_have_any_line_items"
+    when /^you have no unconfirmed line items$/
+      "notifications.messages.built_in.you_have_no_unconfirmed_line_items"
 
     when /^line item was already processed$/
       "notifications.messages.built_in.line_item_was_already_processed"
@@ -71,8 +71,8 @@ module I18nHelpers
     when /^is incorrect$/
       "errors.messages.incorrect"
 
-    when /^order quantity must be confirmed$/
-      "activemodel.errors.models.line_item_conversation/accept_line_item_message.attributes.quantity.blank"
+    when /^line item quantity must be confirmed$/
+      "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"
 
     when /^is required$/
       "errors.messages.blank"

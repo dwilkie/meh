@@ -5,13 +5,11 @@ class CreatePaymentAgreements < ActiveRecord::Migration
       t.string     :event
       t.references :supplier,  :null => false
       t.references :seller,    :null => false
-      t.references :product
       t.timestamps
     end
     add_index :payment_agreements,
-      [:supplier_id, :seller_id, :product_id],
-      :unique => true,
-      :name => "index_payment_agreements_unique"
+      [:supplier_id, :seller_id],
+      :unique => true
   end
 
   def self.down

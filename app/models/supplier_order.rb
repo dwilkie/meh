@@ -50,7 +50,9 @@ class SupplierOrder < ActiveRecord::Base
   end
 
   def confirm!
-    self.update_attributes!(:confirmed_at => Time.now)
+    self.update_attributes!(
+      :confirmed_at => Time.now
+    ) if line_items.unconfirmed.empty?
   end
 
   def complete!

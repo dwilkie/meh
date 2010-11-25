@@ -13,7 +13,7 @@ en:
 
         <line_item_quantity> x <product_number>, \"<product_name>\"
 
-        Confirm by replying with: \"ci <qty>\""
+        Confirm by replying with: \"li <qty>\""
         line_item_details_for_seller: "Order #<customer_order_number>, item #<line_item_number>:
 
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>"
@@ -33,9 +33,9 @@ en:
             and_sent: "and sent"
             but_not_sent: "but not sent"
       built_in:
-        you_have_no_unconfirmed_line_items: "Hi %{supplier_name}, you have no unconfirmed items"
-        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you wish to confirm by replying with: %{action} %{topic} <item #> %{params}"
-        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <qty> <product verification code>"
+        you_have_no_unconfirmed_line_items: "%{supplier_name}, you have no items that require confirmation"
+        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with:%{action} %{topic} <item #>%{params}"
+        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors} for item #%{line_item_number}. Try again with:%{retry_suggestion}"
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <tracking number>"
         you_must_confirm_the_line_item_first: "Sorry %{supplier_name}, you must confirm the line item first. Try: %{topic} a %{line_item_number} %{quantity} <product verification code>"
@@ -57,17 +57,23 @@ en:
       incorrect: "isn't \"%{value}\""
       blank: "is required"
   activemodel:
+    attributes:
+      line_item_conversation:
+        confirm_line_item_message:
+          quantity: "qty"
+          product_verification_code: "pv code"
     errors:
       models:
-        'line_item_conversation/confirm_line_item_message':
-          attributes:
-            quantity:
-              blank: "must be confirmed"
-            product_verification_code:
-        'mobile_number_conversation/verify_mobile_number_message':
-          attributes:
-            name:
-              incorrect: "wasn't registered as \"%{value}\""
+        line_item_conversation:
+          confirm_line_item_message:
+            attributes:
+              quantity:
+                blank: "must be confirmed"
+              product_verification_code:
+          'mobile_number_conversation/verify_mobile_number_message':
+            attributes:
+              name:
+                incorrect: "wasn't registered as \"%{value}\""
   activerecord:
     errors:
       models:

@@ -17,8 +17,6 @@ class SupplierPaymentNotification < Conversation
       :supplier_name => options[:supplier].name,
       :supplier_mobile_number => Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier]),
       :supplier_order_quantity => options[:supplier_order].quantity,
-      :product_number => options[:product].number,
-      :product_name => options[:product].name,
       :errors => options[:errors]
     )
   end
@@ -29,7 +27,6 @@ class SupplierPaymentNotification < Conversation
     options[:supplier_mobile_number] ||= Notification::EVENT_ATTRIBUTES[:supplier][:supplier_mobile_number].call(:supplier => options[:supplier])
     options[:seller_mobile_number] ||= Notification::EVENT_ATTRIBUTES[:seller][:seller_mobile_number].call(:seller => options[:seller])
     options[:supplier_order] ||= supplier_payment.supplier_order
-    options[:product] ||= options[:supplier_order].product
     options[:seller_order] ||= options[:supplier_order].seller_order
   end
 
@@ -45,8 +42,6 @@ class SupplierPaymentNotification < Conversation
       :supplier_payment_amount => supplier_payment.amount.to_s,
       :supplier_payment_currency => supplier_payment.amount.currency.to_s,
       :supplier_order_quantity => options[:supplier_order].quantity,
-      :product_number => options[:product].number,
-      :product_name => options[:product].name,
       :seller_order_number => options[:seller_order].id.to_s
     )
   end

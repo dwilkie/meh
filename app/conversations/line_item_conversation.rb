@@ -1,8 +1,11 @@
 class LineItemConversation < IncomingTextMessageConversation
 
   def process
-    self.params.insert(0, action) if
-      action != "confirm" && action != "c" && message_words.first == topic
+
+    if action != "confirm" && action != "c" && message_words.first == topic
+      self.params.insert(0, action)
+      self.action = nil
+    end
     confirm
   end
 
@@ -14,6 +17,7 @@ class LineItemConversation < IncomingTextMessageConversation
 
     class ConfirmLineItemMessage
       include ActiveModel::Validations
+      extend ActiveModel::Translation
 
       attr_reader :quantity, :product_verification_code
 
@@ -24,6 +28,7 @@ class LineItemConversation < IncomingTextMessageConversation
 
       def initialize(line_item, params)
         @line_item = line_item
+        @params = params
         unless params.count == 1 && params[0].to_i == line_item.id
           if params.count > 2
             @quantity = params[1]
@@ -33,6 +38,15 @@ class LineItemConversation < IncomingTextMessageConversation
             @product_verification_code = params[1]
           end
         end
+      end
+
+      def retry_suggestion(topic, action)
+        sanitized_action = " #{action}" if action
+        suggestion = "#{sanitized_action} #{topic} "
+        suggestion << "#{@params[0]} " if @params[0].to_i == @line_item.id
+        suggestion << "<#{self.class.human_attribute_name(:quantity)}>"
+        suggestion << " <#{self.class.human_attribute_name(:product_verification_code)}>" if @line_item.product.verification_code
+        suggestion
       end
 
       private
@@ -65,11 +79,9 @@ class LineItemConversation < IncomingTextMessageConversation
             "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_confirm_the_line_item",
               :supplier_name => user.name,
               :errors => message.errors.full_messages.to_sentence,
-              :topic => self.topic,
-              :action => self.action,
               :line_item_number => line_item.id.to_s,
-              :quantity => line_item.quantity.to_s
-            )
+              :retry_suggestion => message.retry_suggestion(topic, action)
+           )
           end
         end
       end
@@ -84,7 +96,7 @@ class LineItemConversation < IncomingTextMessageConversation
     def find_line_items
       unconfirmed_line_items = user.line_items.unconfirmed
       line_items = unconfirmed_line_items.where(
-        :id => sanitize_id(params[0]
+        :id => sanitize_id(params[0])
       )
       line_items.empty? ? unconfirmed_line_items : line_items
     end
@@ -97,12 +109,15 @@ class LineItemConversation < IncomingTextMessageConversation
           :supplier_name => user.name,
         )
       elsif line_items.count > 1
+        sanitized_action = " #{action}" if action
+        sanitized_params = params.join(" ")
+        sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
         say I18n.t(
           "notifications.messages.built_in.be_specific_about_the_line_item_number",
           :supplier_name => user.name,
           :topic => topic,
-          :action => action,
-          :params => params.join(" ")
+          :action => sanitized_action,
+          :params => sanitized_params
         )
       else
         line_item = line_items.first

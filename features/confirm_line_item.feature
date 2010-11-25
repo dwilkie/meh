@@ -22,29 +22,25 @@ Feature: Confirm line item
     }
     """
 
-  @current
   Scenario Outline: Successfully confirm a line item
     When I text "<message_text>" from "66354668874"
 
     Then the line item should be confirmed
-    And the 2nd most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you successfully processed the line item" in "en" (English) where supplier_name: "Nok", processed: "confirmed", line_item_number: "1"
-    And the outgoing text message should be queued_for_sending
-    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
-    Hi Nok, pls send the line item: #1, to this address:
+    Nok, pls ship order #1 to:
     Ho Chi Minh,
     4 Chau Minh Lane,
     Hanoi,
     Hanoi Province,
     Viet Nam 52321
-    then reply with: "cpo"
+    then reply with: "co"
     """
     And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has confirmed their line item of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
+    Hi Mara, Nok (+66354668874) has confirmed order #1
     """
     And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
@@ -52,181 +48,152 @@ Feature: Confirm line item
   Examples:
     | message_text                      |
     | line_item confirm 154674 3 hy456n |
-#    | item confirm 154674 3 hy456n      |
-#    | li confirm 154674 3 hy456n        |
-#    | i confirm 154674 3 hy456n         |
-#    | line_item c 154674 3 hy456n       |
-#    | item c 154674 3 hy456n            |
-#    | li c 154674 3 hy456n              |
-#    | i c 154674 3 hy456n               |
-#    | confirm line_item 154674 3 hy456n |
-#    | confirm item 154674 3 hy456n      |
-#    | confirm li 154674 3 hy456n        |
-#    | confirm i 154674 3 hy456n         |
-#    | c line_item 154674 3 hy456n       |
-#    | c item 154674 3 hy456n            |
-#    | c li 154674 3 hy456n              |
-#    | c i 3 hy456n                      |
-#    | cline_item 3 hy456n               |
-#    | citem 3 hy456n                    |
-#    | cli 3 hy456n                      |
-#    | ci 3 hy456n                       |
-#    | line_item 3 hy456n                |
-#    | item 3 hy456n                     |
-#    | li a 3 hy456n                     |
-#    | i 3 hy456n                        |
+    | item confirm 154674 3 hy456n      |
+    | li confirm 154674 3 hy456n        |
+    | i confirm 154674 3 hy456n         |
+    | line_item c 154674 3 hy456n       |
+    | item c 3 hy456n                   |
+    | li c 3 hy456n                     |
+    | i c 3 hy456n                      |
+    | confirm line_item 3 hy456n        |
+    | confirm item 3 hy456n             |
+    | confirm li 3 hy456n               |
+    | confirm i 3 hy456n                |
+    | c line_item 3 hy456n              |
+    | c item 3 hy456n                   |
+    | c li 3 hy456n                     |
+    | c i 3 hy456n                      |
+    | cline_item 3 hy456n               |
+    | citem 3 hy456n                    |
+    | cli 3 hy456n                      |
+    | ci 3 hy456n                       |
+    | line_item 3 hy456n                |
+    | item 3 hy456n                     |
+    | li a 3 hy456n                     |
+    | i 3 hy456n                        |
 
-  Scenario Outline: Try to confirm an order implicitly with multiple unconfirmed line items
-    Then a line item: "first order" should exist with product_id: the product
+  Scenario Outline: Try to confirm a line item implicitly with multiple unconfirmed line items
+    Then a line item: "first item" should exist with product_id: the product
     Given a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
 
-    Then the line item: "first order" should not be accepted
-    And the line item should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", human_action: "confirm", topic: "<topic>", action: "<action>"
+    Then the line item: "first item" should not be confirmed
+    And the line item should not be confirmed
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", human_action: "confirm", topic: "<topic>", action: <action>, params: <params>
     And the seller should be that outgoing text message's payer
 
   Examples:
-    | message_text                   | topic          | action |
-    | line_item confirm 3 hy456n | line_item | confirm |
-    | line_item confirm 3 hy456n  | line_item  | confirm |
-    | line_item a 3 hy456n      | line_item | a      |
-    | line_item a 3 hy456n       | line_item  | a      |
-    | confirm_line_item 3 hy456n | line_item | confirm |
-    | confirm_line_item 3 hy456n  | line_item  | confirm |
-    | po confirm 3 hy456n             | po             | confirm |
-    | po a 3 hy456n                  | po             | a      |
-    | apo 3 hy456n                   | po             | a      |
+    | message_text | topic | action | params      |
+    | cli          | li    | " c"   | ""          |
+    | ci           | i     | " c"   | ""          |
+    | li           | li    | ""     | ""          |
+    | i            | i     | ""     | ""          |
+    | item         | item  | ""     | ""          |
+    | c i          | i     | " c"   | ""          |
+    | i c          | i     | " c"   | ""          |
+    | ci 3 hy456n  | i     | " c"   | " 3 hy456n" |
+    | i 3 hy456n   | i     | ""     | " 3 hy456n" |
 
-  Scenario Outline: Try to confirm an order as the seller
-    When I text "<message_text>" from "66354668789"
+  Scenario: Try to confirm a line item as the seller
+    When I text "ci" from "66354668789"
 
-    Then the line item should not be accepted
+    Then the line item should not be confirmed
 
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "confirm", supplier_name: "Mara", status: "unconfirmed"
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Mara"
     And the seller should be that outgoing text message's payer
 
-  Examples:
-    | message_text                   |
-    | po confirm 3 hy456n             |
-    | po a 2 hy456n                  |
-    | apo 3 hy456x                   |
-
-  Scenario Outline: Try to confirm an order as a seller when the seller is also the supplier for the product
+  Scenario: Try to confirm a line item as a seller when the seller is also the supplier for this product
     Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
     And a line item exists for the product with quantity: 3
     And no outgoing text messages exist with mobile_number_id: mobile_number: "Mara's number"
 
-    When I text "<message_text>" from "66354668789"
+    When I text "ci" from "66354668789"
 
-    Then the line_item should not be accepted
+    Then the line item should not be confirmed
     And 0 outgoing_text_messages should exist with mobile_number_id: mobile_number: "Mara's number"
 
-  Examples:
-    | message_text            |
-    | po confirm 2 3 hy456m    |
-    | po a 2 3 hy456m         |
-    | apo 2 3 hy456x          |
-
-  Scenario Outline: Successfully confirm an order even when giving the wrong order number
+  Scenario Outline: Successfully confirm a line item even when giving the wrong item number
     When I text "<message_text>" from "66354668874"
 
-    Then the line item should be accepted
+    Then the line item should be confirmed
 
   Examples:
-    | message_text                   |
-    | po confirm 9999 3 hy456n        |
-    | po a 9999 3 hy456n             |
-    | apo 4355 3 hy456n              |
+    | message_text       |
+    | ci 9999 3 hy456n   |
+    | cli 9999 3 hy456n  |
+    | li 4355 3 hy456n   |
 
-  Scenario Outline: Try to confirm an order giving the wrong quantity
+  Scenario Outline: Try to confirm a line item giving the wrong quantity
     When I text "<message_text>" from "66354668874"
 
-    Then the line item should not be accepted
+    Then the line item should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
     And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text            | value  |
-    | apo 1 1 hy456n          | 1      |
-    | apo 2 hy456n            | 2      |
-    | ProductOrder a 4 hy456n | 4      |
-    | apo maggot hy456n       | maggot |
-    | apo 1 maggot hy456n     | maggot |
+    | ci 1 1 hy456n           | 1      |
+    | i 2 hy456n              | 2      |
+    | li 4 hy456n             | 4      |
+    | item maggot hy456n      | maggot |
+    | cli 1 maggot hy456n     | maggot |
 
-  Scenario Outline: Try to confirm an order omitting the quantity
+  Scenario Outline: Try to confirm a line item omitting the quantity
     When I text "<message_text>" from "66354668874"
 
-    Then the line item should not be accepted
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "order quantity must be confirmed" in "en" (English)
+    Then the line item should not be confirmed
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
     And the seller should be that outgoing text message's payer
 
   Examples:
     | message_text   |
-    | apo 1          |
-    | apo            |
-    | ProductOrder a |
+    | ci             |
+    | i              |
+    | li             |
+    | ci 1           |
+    | i 1            |
+    | li 1           |
 
-  Scenario Outline: Try to confirm an order giving the wrong product verification code
+  Scenario Outline: Try to confirm an line item giving the wrong product verification code
     When I text "<message_text>" from "66354668874"
 
-    Then the line item should not be accepted
+    Then the line item should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
     And the seller should be that outgoing text message's payer
 
   Examples:
-    | message_text            | value  |
-    | apo 154674 3 hy456      | hy456  |
-    | apo 3 hy456m            | hy456m |
-    | ProductOrder a 3 hy456p | hy456p |
-    | apo 3 HY456Q            | HY456Q |
+    | message_text         | value  |
+    | li 154674 3 hy456    | hy456  |
+    | cli 3 hy456m         | hy456m |
+    | i 3 hy456p           | hy456p |
+    | item 3 HY456Q        | HY456Q |
 
-  Scenario Outline: confirm an order giving the correct product verification code but the incorrect case
+  Scenario Outline: confirm a line item giving the correct product verification code but the incorrect case
     When I text "<message_text>" from "66354668874"
 
-    Then the line item should be accepted
+    Then the line item should be confirmed
 
   Examples:
-    | message_text            |
-    | apo 1 3 hy456N          |
-    | apo 3 hY456n            |
-    | ProductOrder a 3 HY456N |
+    | message_text   |
+    | li 1 3 hy456N  |
+    | cli 3 hY456n   |
+    | item 3 HY456N  |
 
-  Scenario: Try to explicity confirm an order which I already completed
-    Given the line item was already completed
+  Scenario: Try to explicity confirm a line item which I already confirmed
+    Given the line item was already confirmed
 
-    When I text "apo 1 3 hy456n" from "66354668874"
+    When I text "li 1 3 hy456n" from "66354668874"
 
-    Then the line item should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "line item was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
-  Scenario: Try to implicitly confirm an order which I already completed
-    Given the line item was already completed
+  Scenario: Try to implicitly confirm a line item which I already completed
+    Given the line item was already confirmed
 
-    When I text "apo 3 hy456n" from "66354668874"
+    When I text "li 3 hy456n" from "66354668874"
 
-    Then the line item should not be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "confirm", supplier_name: "Nok", status: "unconfirmed"
-    And the seller should be that outgoing text message's payer
-
-  Scenario: Try to explicitly confirm an order which I already accepted
-    Given the line item was already accepted
-
-    When I text "apo 1 3 hy456n" from "66354668874"
-
-    Then the line item should be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "line item was already processed" in "en" (English) where status: "accepted", supplier_name: "Nok"
-    And the seller should be that outgoing text message's payer
-
-  Scenario: Try to implicitly confirm an order which I already accepted
-    Given the line item was already accepted
-
-    When I text "apo 3 hy456n" from "66354668874"
-
-    Then the line item should be accepted
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any line items" in "en" (English) where human_action: "confirm", supplier_name: "Nok", status: "unconfirmed"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 

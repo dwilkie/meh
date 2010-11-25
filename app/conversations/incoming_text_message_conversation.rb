@@ -15,7 +15,7 @@ class IncomingTextMessageConversation < Conversation
       # and the second word is the action
       resource = message_words[0]
       self.topic = resource
-      self.action = resource[1].try(:downcase)
+      self.action = message_words[1].try(:downcase)
       self.params = message_words[2..-1]
       unless topic_defined?
         # assume first character of the first word is the action
@@ -31,6 +31,7 @@ class IncomingTextMessageConversation < Conversation
           self.params = message_words[2..-1]
         end
       end
+      self.params ||= []
       self.topic = resource unless topic_defined?
       details
     end
