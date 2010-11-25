@@ -94,7 +94,9 @@ Factory.define :seller_order_paypal_ipn do |f|
       "receiver_email" => seller.email,
       "item_number" => "12345790062",
       "item_name" => "Model Ship - The Rubber Dingy",
-      "quantity" => "1"
+      "quantity" => "1",
+      "mc_currency" => "AUD",
+      "mc_gross" => "100.00"
     }
   }
 end

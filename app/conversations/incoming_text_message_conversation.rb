@@ -1,6 +1,6 @@
 class IncomingTextMessageConversation < Conversation
 
-  attr_accessor :action, :params
+  attr_accessor :action, :params, :message_words
 
   def process(incoming_text_message)
     incoming_text_message.mobile_number.activate!
@@ -10,7 +10,7 @@ class IncomingTextMessageConversation < Conversation
 
   private
     def find_conversation(message_text)
-      message_words = message_text.split
+      self.message_words = message_text.split
       # assume first word is the resource
       # and the second word is the action
       resource = message_words[0]

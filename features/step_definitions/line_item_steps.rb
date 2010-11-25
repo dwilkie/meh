@@ -1,4 +1,3 @@
-# override pickle step for this special case
 Given(/^a line item exists? for #{capture_model}(?: with #{capture_fields})?$/) do |product_name, fields|
   product = model!(product_name)
   seller = product.seller

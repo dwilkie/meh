@@ -22,13 +22,13 @@ Feature: Confirm line item
     }
     """
 
+  @current
   Scenario Outline: Successfully confirm a line item
-    Given the mobile number: "Mara's number" <is_not_yet_already> verified
-
     When I text "<message_text>" from "66354668874"
 
     Then the line item should be confirmed
     And the 2nd most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you successfully processed the line item" in "en" (English) where supplier_name: "Nok", processed: "confirmed", line_item_number: "1"
+    And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
@@ -40,77 +40,41 @@ Feature: Confirm line item
     Viet Nam 52321
     then reply with: "cpo"
     """
+    And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" <should_be>
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
     Hi Mara, Nok (+66354668874) has confirmed their line item of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
+    And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
 
   Examples:
-      # current
-      line_item confirm
-      item confirm
-      li confirm
-      i confirm
-      confirm_line_item
-      confirm_item
-      confirm_li
-      confirm_i
-      cli
-      ci
-      cline_item
-      citem
-      item
-      i
-      li
-      line_item
-
-      # wanted
-      confirm line_item
-      confirm item
-      c li
-      c i
-      confirm li
-      c item
-      line
-
-      # first check single argument commands
-      cli
-      li
-      i
-      ci
-
-      # then start with two argument commands
-      # with action then resource
-
-      e.g. c li
-      c i
-
-
-    | message_text                      | is_not_yet_already | should_be     |
-    | line_item confirm 154674 3 hy456n | was already        | should be     |
-    | item confirm 154674 3 hy456n      | is not yet         | should not be |
-    | li confirm 154674 3 hy456n        | is not yet         | should not be |
-    | i confirm 154674 3 hy456n         | is not yet         | should not be |
-    | cli 154674 3 hy456n               | is not yet         | should not be |
-    | ci 154674 3 hy456n                | is not yet         | should not be |
-    | line_item c 154674 3 hy456n       | was already        | should be     |
-    | line_item c 154674 3 hy456n       | is not yet         | should not be |
-    | confirm_line_item 154674 3 hy456n | was already        | should be     |
-    | confirm_line_item 154674 3 hy456n | is not yet         | should not be |
-    | li confirm 154674 3 hy456n        | was already        | should be     |
-    | li c 154674 3 hy456n              | is not yet         | should not be |
-    | cli 154674 3 hy456n               | was already        | should be     |
-    | line_item confirm 3 hy456n        | is not yet         | should not be |
-    | line_item confirm 3 hy456n        | was already        | should be     |
-    | line_item a 3 hy456n              | is not yet         | should not be |
-    | line_item a 3 hy456n              | was already        | should be     |
-    | confirm_line_item 3 hy456n        | is not yet         | should not be |
-    | confirm_line_item 3 hy456n        | was already        | should be     |
-    | po confirm 3 hy456n               | is not yet         | should not be |
-    | po a 3 hy456n                     | was already        | should be     |
-    | apo 3 hy456n                      | is not yet         | should not be |
+    | message_text                      |
+    | line_item confirm 154674 3 hy456n |
+#    | item confirm 154674 3 hy456n      |
+#    | li confirm 154674 3 hy456n        |
+#    | i confirm 154674 3 hy456n         |
+#    | line_item c 154674 3 hy456n       |
+#    | item c 154674 3 hy456n            |
+#    | li c 154674 3 hy456n              |
+#    | i c 154674 3 hy456n               |
+#    | confirm line_item 154674 3 hy456n |
+#    | confirm item 154674 3 hy456n      |
+#    | confirm li 154674 3 hy456n        |
+#    | confirm i 154674 3 hy456n         |
+#    | c line_item 154674 3 hy456n       |
+#    | c item 154674 3 hy456n            |
+#    | c li 154674 3 hy456n              |
+#    | c i 3 hy456n                      |
+#    | cline_item 3 hy456n               |
+#    | citem 3 hy456n                    |
+#    | cli 3 hy456n                      |
+#    | ci 3 hy456n                       |
+#    | line_item 3 hy456n                |
+#    | item 3 hy456n                     |
+#    | li a 3 hy456n                     |
+#    | i 3 hy456n                        |
 
   Scenario Outline: Try to confirm an order implicitly with multiple unconfirmed line items
     Then a line item: "first order" should exist with product_id: the product

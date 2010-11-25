@@ -4,8 +4,8 @@ class LineItemObserver < ActiveRecord::Observer
   end
 
   def after_update(line_item)
-    if line_item.accepted? && line_item.accepted_at_changed? && line_item.accepted_at_was.nil?
-      notify line_item, "line_item_accepted"
+    if line_item.confirmed? && line_item.confirmed_at_changed? && line_item.confirmed_at_was.nil?
+      notify line_item, "line_item_confirmed"
     end
   end
 

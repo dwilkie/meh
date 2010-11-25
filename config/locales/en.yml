@@ -25,6 +25,7 @@ en:
         then reply with: \"co\""
         your_supplier_payment_was_successful: "Hi Dave, u just paid <supplier_payment_amount> <supplier_payment_currency> to <supplier_name> (<supplier_mobile_number>) to process order #<customer_order_number>"
         you_have_received_a_payment: "Hi <supplier_name>, <seller_name> (<seller_mobile_number>) has paid u <supplier_payment_amount> <supplier_payment_ currency> to process order #<customer_order_number>"
+        you_successfully_confirmed_the_line_item: "Hi <supplier_name>, you successfully confirmed item #%{line_item_number}"
         attributes:
           mobile_number:
             not_verified: "No verified number!"
@@ -32,13 +33,9 @@ en:
             and_sent: "and sent"
             but_not_sent: "but not sent"
       built_in:
-        you_do_not_have_any_line_items: "Sorry %{supplier_name}, you don't have any %{status} line items to %{human_action}"
-        be_specific_about_the_line_item_number: "Hi %{supplier_name}, pls tell us which line item you wish to confirm by texting: %{topic} %{action} <line item number> ..."
-        line_item_was_already_confirmed: "Sorry %{supplier_name}, this line item was already confirmed"
-        invalid_action_for_line_item: "Sorry \"%{action}\" is not a valid option for a line item. Try: %{topic} confirm ..."
-        no_action_for_line_item: "What would you like to do with the line item? Try: %{topic} confirm ..."
-        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} %{quantity} <product verification code>"
-        you_successfully_confirmed_the_line_item: "Hi %{supplier_name}, you successfully confirmed the line item: #%{line_item_number}"
+        you_have_no_unconfirmed_line_items: "Hi %{supplier_name}, you have no unconfirmed items"
+        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you wish to confirm by replying with: %{action} %{topic} <item #> %{params}"
+        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <qty> <product verification code>"
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <tracking number>"
         you_must_confirm_the_line_item_first: "Sorry %{supplier_name}, you must confirm the line item first. Try: %{topic} a %{line_item_number} %{quantity} <product verification code>"
