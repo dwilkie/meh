@@ -27,12 +27,6 @@ class Product < ActiveRecord::Base
             :uniqueness => {:scope => :seller_id, :case_sensitive => false},
             :presence => true
 
-  validates :verification_code,
-            :presence => true,
-            :unless => Proc.new { |product|
-              product.seller == product.supplier
-            }
-
   validates :supplier_id,
             :presence => true
 

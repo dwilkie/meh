@@ -71,6 +71,10 @@ module I18nHelpers
     when /^is incorrect$/
       "errors.messages.incorrect"
 
+    when /^line item # does not exist$/
+      "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.line_item_id.does_not_exist"
+
+
     when /^line item quantity must be confirmed$/
       "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"
 
