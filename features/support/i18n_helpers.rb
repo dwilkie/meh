@@ -19,9 +19,6 @@ module I18nHelpers
     when /^what would you like to do with the line item\?$/
       "notifications.messages.built_in.no_action_for_line_item"
 
-    when /^you successfully processed the line item$/
-      "notifications.messages.built_in.you_successfully_processed_the_line_item"
-
     when /^this tracking number was already used by you$/
       "notifications.messages.built_in.this_tracking_number_was_already_used_by_you"
 

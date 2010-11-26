@@ -1,7 +1,6 @@
 class LineItemConversation < IncomingTextMessageConversation
 
   def process
-
     if action != "confirm" && action != "c" && message_words.first == topic
       self.params.insert(0, action)
       self.action = nil
@@ -149,12 +148,6 @@ class LineItemConversation < IncomingTextMessageConversation
           end
         end
       end
-    end
-
-    def sanitize_id(value = nil)
-      sanitized_id = value.try(:gsub, /\D/, "").try(:to_i)
-      sanitized_id = nil if sanitized_id == 0
-      sanitized_id
     end
 
     def find_line_items

@@ -20,6 +20,8 @@ class SupplierOrder < ActiveRecord::Base
             :uniqueness => {:scope => :supplier_id, :case_sensitive => false},
             :allow_nil => true
 
+  scope :incomplete, where(:completed_at => nil)
+
   def supplier_total
     line_items.each do |line_item|
       line_item_subtotal = line_item.supplier_subtotal

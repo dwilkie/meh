@@ -46,5 +46,10 @@ class IncomingTextMessageConversation < Conversation
       end
     end
 
+    def sanitize_id(value = nil)
+      sanitized_id = value.try(:gsub, /\D/, "").try(:to_i)
+      sanitized_id = nil if sanitized_id == 0
+      sanitized_id
+    end
 end
 

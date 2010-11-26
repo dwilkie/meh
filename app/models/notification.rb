@@ -103,7 +103,7 @@ class Notification < ActiveRecord::Base
       }
     },
     :tracking_number => Proc.new { |options|
-      options[:line_item].tracking_number.to_s
+      options[:supplier_order].tracking_number.to_s
     },
     :supplier_payment => {
       :supplier_payment_amount => Proc.new { |options|

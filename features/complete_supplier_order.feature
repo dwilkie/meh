@@ -1,5 +1,5 @@
 Feature: Complete a supplier order
-  In order to notify my seller that I have completed processing a supplier order (supplier order) and to submit the tracking number if applicable
+  In order to notify my seller that I have completed processing a supplier and to submit the tracking number if applicable
   As a supplier
   I want to be able to complete a supplier order by sending in a text message
 
@@ -9,43 +9,40 @@ Feature: Complete a supplier order
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
-    And a supplier order exists for the product with quantity: 3
-    And the supplier order was already accepted
+    And a line item exists for the product with quantity: 1
+    Then a supplier order should exist
+    Given the supplier order was already confirmed
 
-  Scenario Outline: Successfully complete an order without providing a tracking number
-    Given the mobile number: "Mara's number" <is_not_yet_already> verified
+  @current
+  Scenario Outline: Complete an order implicitly
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should be completed
-    And the supplier order's tracking_number should be nil
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "1"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
+    """
+    Nok, Order #1 has been marked as shipped
+    """
     And the seller should be that outgoing text message's payer
-    And the most recent outgoing text message destined for mobile_number: "Mara's number" <should_be>
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
     Hi Mara, Nok (+66354668874) has COMPLETED their supplier order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
     """
     And the seller should be that outgoing text message's payer
 
   Examples:
-    | message_text              | is_not_yet_already | should_be     |
-    | supplier_order complete 1 | was already        | should be     |
-    | supplier_order complete 1  | is not yet         | should not be |
-    | supplier_order c 1        | was already        | should be     |
-    | supplier_order c 1         | is not yet         | should not be |
-    | complete_supplier_order 1 | was already        | should be     |
-    | complete_supplier_order 1  | is not yet         | should not be |
-    | po complete 1             | was already        | should be     |
-    | po c 1                    | is not yet         | should not be |
-    | cpo 1                     | was already        | should be     |
-    | supplier_order complete   | is not yet         | should not be |
-    | supplier_order complete    | was already        | should be     |
-    | supplier_order c          | is not yet         | should not be |
-    | supplier_order c           | was already        | should be     |
-    | complete_supplier_order   | is not yet         | should not be |
-    | complete_supplier_order    | was already        | should be     |
-    | po complete               | is not yet         | should not be |
-    | po c                      | was already        | should be     |
-    | cpo                       | is not yet         | should not be |
+    | message_text    |
+    | order complete  |
+#    | o complete      |
+#    | order c         |
+#    | o c             |
+#    | complete order  |
+#    | complete o      |
+#    | c order         |
+#    | c o             |
+#    | corder          |
+#    | co              |
+#    | order           |
+#    | o               |
 
   Scenario Outline: Successfully complete an order providing a tracking number
     Given a notification exists with event: "supplier_order_completed", for: "seller", purpose: "to inform me when a supplier completes a supplier order", seller: the seller, supplier: the supplier

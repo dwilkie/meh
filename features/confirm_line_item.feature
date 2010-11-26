@@ -187,7 +187,7 @@ Feature: Confirm line item
 
     When I text "li 1" from "66354668874"
 
-    Then the line item should not be confirmed
+    Then the line item: "first item" should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
     And the seller should be that outgoing text message's payer
 
