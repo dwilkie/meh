@@ -43,6 +43,7 @@ class SellerOrder < ActiveRecord::Base
     tracking_numbers = nil
     supplier_orders.each do |supplier_order|
       tracking_numbers = !supplier_order.tracking_number.nil? unless include_seller || seller == supplier
+      break if tracking_numbers
     end
     tracking_numbers
   end

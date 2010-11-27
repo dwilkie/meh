@@ -21,11 +21,13 @@ Feature: Confirm line item
       'address_zip' => '52321'
     }
     """
+    Then a seller order should exist
 
   Scenario Outline: Confirm a line item implicitly
     When I text "<message_text>" from "66354668874"
 
     Then the line item should be confirmed
+    And the seller order should be confirmed
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
     Nok, pls ship order #1 to:
@@ -40,7 +42,7 @@ Feature: Confirm line item
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has confirmed order #1
+    Hi Mara, Order #1 has been confirmed by Nok (+66354668874)
     """
     And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
@@ -76,6 +78,7 @@ Feature: Confirm line item
     When I text "<message_text>" from "66354668874"
 
     Then the line item should be confirmed
+    And the seller order should be confirmed
 
     Examples:
       | message_text |
@@ -91,12 +94,14 @@ Feature: Confirm line item
 
   Scenario Outline: Confirm a line item explicity whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
+
     Given a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
 
     Then the line item: "first item" should be confirmed
+    And the seller order should be confirmed
     But the line item should not be confirmed
 
     Examples:
@@ -113,6 +118,7 @@ Feature: Confirm line item
 
   Scenario Outline: Try to confirm a line item implicitly whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
+
     Given a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product
 
@@ -132,6 +138,28 @@ Feature: Confirm line item
       | item         | item  | ""     | ""          |
       | c i          | i     | " c"   | ""          |
       | i c          | i     | " c"   | ""          |
+
+  Scenario: Be the last to confirm an order belonging to multiple suppliers
+    Then a line item: "first item" should exist with product_id: the product
+
+    Given a supplier exists with name: "Andy"
+    And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
+    And a supplier order exists with seller_order: the seller order, supplier: the supplier
+    And a product exists with seller: the seller, supplier: the supplier
+    And a line item exists for the product, the supplier order with quantity: 3
+
+    When I text "cli 3" from "61444431123"
+    Then the line item should be confirmed
+    But the seller order should not be confirmed
+
+    When I text "cli 1" from "66354668874"
+    Then the line item: "first item" should be confirmed
+    And the seller order should be confirmed
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Order #1 has been confirmed by Nok (+66354668874) and Andy (+61444431123)
+    """
+    And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item explicitly giving the wrong item number
     When I text "li 234 1" from "66354668874"
@@ -197,6 +225,7 @@ Feature: Confirm line item
     When I text "<message_text>" from "66354668874"
 
     Then the line item should be confirmed
+    And the seller order should be confirmed
 
     Examples:
       | message_text         |
@@ -211,6 +240,7 @@ Feature: Confirm line item
     When I text "li 1 ABC123" from "66354668874"
 
     Then the line item should be confirmed
+    And the seller order should be confirmed
 
   Scenario Outline: Try to confirm an line item with a product verification code giving the wrong code
     Given I update the product with verification_code: "abc123"

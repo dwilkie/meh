@@ -27,7 +27,7 @@ class TrackingNumberFormat < ActiveRecord::Base
     scope = where(
       :supplier_id => options[:supplier].id
     ) if options[:supplier]
-    (scope && scope.count > 0) ? scope : scoped
+    (scope && scope.count > 0) ? scope : scoped.where(:supplier_id => nil)
   end
 end
 

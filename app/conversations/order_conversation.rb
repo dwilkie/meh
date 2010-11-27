@@ -80,7 +80,7 @@ class OrderConversation < IncomingTextMessageConversation
         seller = seller_order.seller
         self.payer = seller
         if user == seller || supplier_order.confirmed?
-          tracking_number_format = payer.tracking_number_formats.find_for(
+          tracking_number_format = seller.tracking_number_formats.find_for(
             :supplier => user
           ).first
           if tracking_number_format && tracking_number_format.required?

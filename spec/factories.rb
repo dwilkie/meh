@@ -105,7 +105,7 @@ Factory.define :supplier, :parent => :user do |f|
 end
 
 Factory.define :line_item do |f|
-  f.association :seller_order
+  f.association :supplier_order
   f.association :product
   f.quantity 5
 end

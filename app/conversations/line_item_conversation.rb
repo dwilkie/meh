@@ -132,8 +132,9 @@ class LineItemConversation < IncomingTextMessageConversation
     def confirm
       line_item, filtered = find_line_item
       if line_item
-        self.payer = line_item.supplier_order.seller_order.seller
-        unless user == payer
+        seller = line_item.supplier_order.seller_order.seller
+        self.payer = seller
+        unless user == seller
           message = ConfirmLineItemMessage.new(line_item, params, filtered)
           if message.valid?
             line_item.confirm!

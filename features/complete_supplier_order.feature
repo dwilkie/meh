@@ -11,13 +11,13 @@ Feature: Complete a supplier order
     And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
     And a line item exists for the product with quantity: 1
     Then a supplier order should exist
+    And a seller order should exist
     Given the supplier order was already confirmed
 
-  @current
   Scenario Outline: Complete an order implicitly
     When I text "<message_text>" from "66354668874"
 
-    Then the supplier order should be completed
+    Then the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
     """
     Thanks Nok, Order #1 has been marked as shipped
@@ -32,27 +32,105 @@ Feature: Complete a supplier order
     Examples:
       | message_text    |
       | order complete  |
-#      | o complete      |
-#      | order c         |
-#      | o c             |
-#      | complete order  |
-#      | complete o      |
-#      | c order         |
-#      | c o             |
-#      | corder          |
-#      | co              |
-#      | order           |
-#      | o               |
+      | o complete      |
+      | order c         |
+      | o c             |
+      | complete order  |
+      | complete o      |
+      | c order         |
+      | c o             |
+      | corder          |
+      | co              |
+      | order           |
+      | o               |
+
+  Scenario Outline: Complete an order explicitly
+    When I text "<message_text>" from "66354668874"
+
+    Then the seller order should be completed
+
+    Examples:
+      | message_text     |
+      | order complete 1 |
+      | o complete 1     |
+      | order c 1        |
+      | o c 1            |
+      | complete order 1 |
+      | complete o 1     |
+      | c order 1        |
+      | c o 1            |
+      | corder 1         |
+      | co 1             |
+      | order 1          |
+      | o 1              |
+
+  Scenario Outline: Complete an order explicity whilst having multiple incomplete orders
+    Given a product exists with supplier: the supplier, seller: the seller
+    And a line item exists for the product
+
+    When I text "<message_text>" from "66354668874"
+
+    Then the seller order should be completed
+
+    Examples:
+      | message_text     |
+      | order complete 1 |
+      | o complete 1     |
+      | order c 1        |
+      | o c 1            |
+      | complete order 1 |
+      | complete o 1     |
+      | c order 1        |
+      | c o 1            |
+      | corder 1         |
+      | co 1             |
+      | order 1          |
+      | o 1              |
+
+  Scenario Outline: Try to complete an order implicitly whilst having multiple incomplete orders
+    Given a product exists with supplier: the supplier, seller: the seller
+    And a line item exists for the product with quantity: 1
+
+    When I text "<message_text>" from "66354668874"
+
+    Then the seller order should not be completed
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
+    And the seller should be that outgoing text message's payer
+
+    Examples:
+      | message_text | topic | action | params     |
+      | co           | o     | " c"   | ""         |
+      | co RE23123   | o     | " c"   | " RE23123" |
+
+  Scenario: Be the last to complete an order belonging to multiple suppliers
+    Given a supplier exists with name: "Andy"
+    And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
+    And a supplier order exists with seller_order: the seller order, supplier: the supplier
+    And a product exists with seller: the seller, supplier: the supplier
+    And the supplier order was already confirmed
+
+    When I text "co" from "61444431123"
+
+    Then the seller order should not be completed
+
+    When I text "co" from "66354668874"
+
+    Then the seller order should be completed
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123).
+    """
+    And the seller should be that outgoing text message's payer
 
   Scenario Outline: Complete an order providing a tracking number
     Given a tracking number format exists with seller: the seller, format: "^(re|cp)\\d{9}th$"
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order's tracking_number should be "<tracking_number>"
-    And the supplier order should be completed
+    And the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has shipped order #1. Tracking # <tracking_number>
+    Hi Mara, Order #1 has been shipped by Nok (+66354668874). Tracking # <tracking_number>
     """
     And the seller should be that outgoing text message's payer
 
@@ -61,24 +139,28 @@ Feature: Complete a supplier order
       | co 1 re123456789th    | re123456789th   |
       | c order RE123456789TH | RE123456789TH   |
 
-  Scenario Outline: Try to complete an order implicitly with multiple incomplete orders
-    Then a supplier order: "first order" should exist
-    Given a product exists with supplier: the supplier, seller: the seller
-    And a line item exists for the product with quantity: 1
-    Then a supplier order should exist
+  Scenario: Be the last to complete an order with a tracking number belonging to multiple suppliers
+    Given a tracking number format exists with seller: the seller, supplier: the supplier, format: "^(re|cp)\\d{9}th$"
+    And a supplier exists with name: "Andy"
+    And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
+    And a supplier order exists with seller_order: the seller order, supplier: the supplier
+    And a product exists with seller: the seller, supplier: the supplier
+    And the supplier order was already confirmed
 
-    When I text "<message_text>" from "66354668874"
+    When I text "co" from "61444431123"
 
-    Then the supplier order: "first order" should not be completed
-    And the supplier order should not be completed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
+    Then the seller order should not be completed
+
+    When I text "co re123456789th" from "66354668874"
+
+    Then the seller order should be completed
+    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
+    """
+    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123). Tracking # re123456789th and N/A
+    """
     And the seller should be that outgoing text message's payer
 
-    Examples:
-      | message_text | topic | action | params     |
-      | co           | o     | " c"   | ""         |
-#      | co RE23123   | o     | " c"   | " RE23123" |
-
+  @current
   Scenario Outline: Try to complete an order with a tracking number that I already used before
     Then a supplier order: "first order" should exist with product_id: the product
     Given a tracking number format exists with seller: the seller

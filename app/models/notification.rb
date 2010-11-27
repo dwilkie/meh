@@ -137,8 +137,8 @@ class Notification < ActiveRecord::Base
     EVENT_ATTRIBUTES[:customer_address]
   )
 
-  SUPPLIER_ORDER_ATTRIBUTES = EVENT_ATTRIBUTES[:supplier_order].merge(
-    EVENT_ATTRIBUTES[:seller_order]
+  SUPPLIER_ORDER_ATTRIBUTES = SELLER_ORDER_ATTRIBUTES.merge(
+    EVENT_ATTRIBUTES[:supplier_order]
   ).merge(
     EVENT_ATTRIBUTES[:supplier]
   )

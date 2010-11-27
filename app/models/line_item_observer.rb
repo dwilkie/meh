@@ -30,8 +30,8 @@ class LineItemObserver < ActiveRecord::Observer
         notifier.payer = seller
         notifier.notify(
           notification,
-          :product => product,
           :line_item => line_item,
+          :product => product,
           :supplier_order => supplier_order,
           :seller_order => seller_order,
           :seller => seller,
