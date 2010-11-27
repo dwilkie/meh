@@ -21,6 +21,7 @@ class SupplierOrder < ActiveRecord::Base
             :allow_nil => true
 
   scope :incomplete, where(:completed_at => nil)
+  scope :unconfirmed, where(:confirmed_at => nil)
 
   def supplier_total
     line_items.each do |line_item|
@@ -29,6 +30,13 @@ class SupplierOrder < ActiveRecord::Base
       total ? total += line_item_subtotal : line_item_subtotal
     end
     total if total
+  end
+
+  def human_tracking_number
+    tracking_number ? tracking_number :
+    I18n.t(
+      "activerecord.default_attribute_values.supplier_order.tracking_number"
+    )
   end
 
   def number_of_line_items
@@ -51,14 +59,14 @@ class SupplierOrder < ActiveRecord::Base
     self.completed_at.nil?
   end
 
+  def complete!
+    self.update_attributes!(:completed_at => Time.now)
+  end
+
   def confirm!
     self.update_attributes!(
       :confirmed_at => Time.now
     ) if line_items.unconfirmed.empty?
-  end
-
-  def complete!
-    self.update_attributes!(:completed_at => Time.now)
   end
 
   def self.find_or_create_for!(supplier)

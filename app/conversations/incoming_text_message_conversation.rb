@@ -51,5 +51,10 @@ class IncomingTextMessageConversation < Conversation
       sanitized_id = nil if sanitized_id == 0
       sanitized_id
     end
+
+    def say(message)
+      self.payer = user.sellers.first if payer.nil? && user.sellers.count == 1
+      super(message)
+    end
 end
 

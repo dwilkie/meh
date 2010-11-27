@@ -1,7 +1,15 @@
 class SellerOrderObserver < ActiveRecord::Observer
   def after_create(seller_order)
-    notify(seller_order)
+    notify(seller_order, "customer_order_created")
     create_supplier_orders(seller_order)
+  end
+
+  def after_update(seller_order)
+    if seller_order.confirmed? && seller_order.confirmed_at_changed? && seller_order.confirmed_at_was.nil?
+      notify seller_order, "customer_order_confirmed"
+    elsif seller_order.completed? && seller_order.completed_at_changed? && seller_order.completed_at_was.nil?
+      notify seller_order, "customer_order_completed"
+    end
   end
 
   private
@@ -61,10 +69,12 @@ class SellerOrderObserver < ActiveRecord::Observer
       product
     end
 
-    def notify(seller_order)
+    def notify(seller_order, event)
       seller = seller_order.seller
+      supplier = seller_order.supplier
       notifications = seller.notifications.for_event(
-        "customer_order_created"
+        event,
+        :supplier => supplier
       )
       seller_order_notification = GeneralNotification.new(:with => seller)
       notifications.each do |notification|

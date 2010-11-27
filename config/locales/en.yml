@@ -17,23 +17,23 @@ en:
         line_item_details_for_seller: "Order #<customer_order_number>, item #<line_item_number>:
 
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>"
-        your_supplier_processed_an_order: "Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has %{processed} order #<customer_order_number>"
+        order_has_been_confirmed: "Hi <seller_name>, Order #<customer_order_number> has been confirmed by <supplier_names_and_mobile_numbers>"
+        order_has_been_completed: "Hi <seller_name>, Order #<customer_order_number> has been shipped by <supplier_names_and_mobile_numbers>. <smart_tracking_number_label> <tracking_numbers>"
         send_the_order_to: "<supplier_name>, pls ship order #<customer_order_number> to:
 
         <customer_address>
 
         then reply with: \"co\""
+        you_successfully_completed_the_order: "Thanks <supplier_name>, Order #<customer_order_number> has been marked as shipped"
         your_supplier_payment_was_successful: "Hi Dave, u just paid <supplier_payment_amount> <supplier_payment_currency> to <supplier_name> (<supplier_mobile_number>) to process order #<customer_order_number>"
         you_have_received_a_payment: "Hi <supplier_name>, <seller_name> (<seller_mobile_number>) has paid u <supplier_payment_amount> <supplier_payment_ currency> to process order #<customer_order_number>"
         you_successfully_confirmed_the_line_item: "Hi <supplier_name>, you successfully confirmed item #%{line_item_number}"
-        attributes:
-          mobile_number:
-            not_verified: "No verified number!"
       built_in:
         you_have_no_unconfirmed_line_items: "%{supplier_name}, you have no items requiring confirmation"
         be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with:%{action} %{topic} <item #>%{params}"
         you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with:%{retry_suggestion}"
         you_have_no_incomplete_orders: "%{supplier_name}, you have no orders awaiting shipping"
+        be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with:%{action} %{topic} <item #>%{params}"
         this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <tracking number>"
         you_must_confirm_the_line_item_first: "Sorry %{supplier_name}, you must confirm the line item first. Try: %{topic} a %{line_item_number} %{quantity} <product verification code>"
@@ -75,6 +75,17 @@ en:
               name:
                 incorrect: "wasn't registered as \"%{value}\""
   activerecord:
+    attributes:
+      supplier_order:
+        tracking_number: "Tracking #"
+      seller_order:
+        tracking_numbers: "Tracking #"
+    default_attribute_values:
+      supplier_order:
+        tracking_number: "N/A"
+    states:
+      mobile_number:
+        unverified: "Unverified"
     errors:
       models:
         outgoing_text_message:
@@ -90,9 +101,9 @@ en:
             insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
             unknown: "the paypal account returned the following unexpected error: %{error}"
   supplier_payment_note: "Payment for line item: #%{line_item_number}"
-  support:
-    array:
-      words_connector: ", the "
-      two_words_connector: " and the "
-      last_word_connector: " and the "
+#  support:
+#    array:
+#      words_connector: ", the "
+#      two_words_connector: " and the "
+#      last_word_connector: " and the "
 

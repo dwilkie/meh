@@ -13,6 +13,9 @@ module I18nHelpers
     when /^be specific about the line item number$/
       "notifications.messages.built_in.be_specific_about_the_line_item_number"
 
+    when /^be specific about the order number$/
+      "notifications.messages.built_in.be_specific_about_the_order_number"
+
     when /^invalid action given for the line item$/
       "notifications.messages.built_in.invalid_action_for_line_item"
 

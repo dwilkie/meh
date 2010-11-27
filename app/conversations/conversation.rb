@@ -12,7 +12,7 @@ class Conversation
       if active_mobile_number = user.active_mobile_number
         outgoing_text_message = OutgoingTextMessage.new(
           :mobile_number => active_mobile_number,
-          :body => something,
+          :body => something.strip,
           :payer => payer
         )
         outgoing_text_message.force_send = force_send

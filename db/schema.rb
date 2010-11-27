@@ -135,6 +135,8 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.integer  "order_notification_id",   :null => false
     t.string   "order_notification_type", :null => false
     t.integer  "seller_id",               :null => false
+    t.datetime "confirmed_at"
+    t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

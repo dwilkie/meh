@@ -20,95 +20,64 @@ Feature: Complete a supplier order
     Then the supplier order should be completed
     And the most recent outgoing text message destined for mobile_number: "Nok's number" should be
     """
-    Nok, Order #1 has been marked as shipped
+    Thanks Nok, Order #1 has been marked as shipped
     """
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has COMPLETED their supplier order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1
+    Hi Mara, Order #1 has been shipped by Nok (+66354668874).
     """
     And the seller should be that outgoing text message's payer
 
-  Examples:
-    | message_text    |
-    | order complete  |
-#    | o complete      |
-#    | order c         |
-#    | o c             |
-#    | complete order  |
-#    | complete o      |
-#    | c order         |
-#    | c o             |
-#    | corder          |
-#    | co              |
-#    | order           |
-#    | o               |
+    Examples:
+      | message_text    |
+      | order complete  |
+#      | o complete      |
+#      | order c         |
+#      | o c             |
+#      | complete order  |
+#      | complete o      |
+#      | c order         |
+#      | c o             |
+#      | corder          |
+#      | co              |
+#      | order           |
+#      | o               |
 
-  Scenario Outline: Successfully complete an order providing a tracking number
-    Given a notification exists with event: "supplier_order_completed", for: "seller", purpose: "to inform me when a supplier completes a supplier order", seller: the seller, supplier: the supplier
-
-    And the notification has the following message:
-    """
-    Hi <seller_name>, <supplier_name> (<supplier_mobile_number>) has COMPLETED their supplier order of <supplier_order_quantity> x <product_number> (<product_name>) which belongs to your customer order: #<customer_order_number>. The tracking number is: "<tracking_number>"
-    """
-
-    And a tracking number format exists with seller: the seller, format: "^(re|cp)\\d{9}th$"
+  Scenario Outline: Complete an order providing a tracking number
+    Given a tracking number format exists with seller: the seller, format: "^(re|cp)\\d{9}th$"
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order's tracking_number should be "<tracking_number>"
     And the supplier order should be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Nok", processed: "completed", supplier_order_number: "1"
-    And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Nok (+66354668874) has COMPLETED their supplier order of 3 x 190287626891 (Vietnamese Chicken) which belongs to your customer order: #1. The tracking number is: "<tracking_number>"
+    Hi Mara, Nok (+66354668874) has shipped order #1. Tracking # <tracking_number>
     """
     And the seller should be that outgoing text message's payer
 
-  Examples:
-    | message_text                            | tracking_number |
-    | supplier_order complete 1 re123456789th | re123456789th   |
-    | supplier_order complete 1 RE123456789TH  | RE123456789TH   |
-    | supplier_order c 1 cp123456789th        | cp123456789th   |
-    | supplier_order c 1 CP123456789TH         | CP123456789TH   |
-    | complete_supplier_order 1 re221341212th | re221341212th   |
-    | complete_supplier_order 1 re554621233th  | re554621233th   |
-    | po complete 1 re000000000th             | re000000000th   |
-    | po c 1 re999999999th                    | re999999999th   |
-    | cpo 1 cp987654321th                     | cp987654321th   |
-    | supplier_order complete CP987654321TH   | CP987654321TH   |
-    | supplier_order complete Re123456789th    | Re123456789th   |
-    | supplier_order c rE123456789th          | rE123456789th   |
-    | supplier_order c re123456789Th           | re123456789Th   |
-    | complete_supplier_order re123456789tH   | re123456789tH   |
-    | complete_supplier_order RE123456789th    | RE123456789th   |
-    | po complete Re123456789Th               | Re123456789Th   |
-    | po c Re123456789tH                      | Re123456789tH   |
-    | cpo RE123456789Th                       | RE123456789Th   |
+    Examples:
+      | message_text          | tracking_number |
+      | co 1 re123456789th    | re123456789th   |
+      | c order RE123456789TH | RE123456789TH   |
 
-  Scenario Outline: Try to complete an order implicitly with multiple incomplete supplier orders
-    Then a supplier order: "first order" should exist with product_id: the product
+  Scenario Outline: Try to complete an order implicitly with multiple incomplete orders
+    Then a supplier order: "first order" should exist
     Given a product exists with supplier: the supplier, seller: the seller
-    And a supplier order exists for the product
+    And a line item exists for the product with quantity: 1
+    Then a supplier order should exist
 
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order: "first order" should not be completed
     And the supplier order should not be completed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the supplier order number" in "en" (English) where supplier_name: "Nok", human_action: "complete", topic: "<topic>", action: "<action>"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
     And the seller should be that outgoing text message's payer
 
-  Examples:
-    | message_text            | topic          | action   |
-    | supplier_order complete | supplier_order | complete |
-    | supplier_order complete  | supplier_order  | complete |
-    | supplier_order c        | supplier_order | c        |
-    | supplier_order c         | supplier_order  | c        |
-    | complete_supplier_order | supplier_order | complete |
-    | complete_supplier_order  | supplier_order  | complete |
-    | po complete             | po             | complete |
-    | po c                    | po             | c        |
-    | cpo                     | po             | c        |
+    Examples:
+      | message_text | topic | action | params     |
+      | co           | o     | " c"   | ""         |
+#      | co RE23123   | o     | " c"   | " RE23123" |
 
   Scenario Outline: Try to complete an order with a tracking number that I already used before
     Then a supplier order: "first order" should exist with product_id: the product

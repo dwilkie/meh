@@ -6,8 +6,10 @@ class SupplierOrderObserver < ActiveRecord::Observer
   def after_update(supplier_order)
     if supplier_order.confirmed? && supplier_order.confirmed_at_changed? && supplier_order.confirmed_at_was.nil?
       notify_and_pay supplier_order, "supplier_order_confirmed"
+      supplier_order.seller_order.confirm!
     elsif supplier_order.completed? && supplier_order.completed_at_changed? && supplier_order.completed_at_was.nil?
       notify_and_pay supplier_order, "supplier_order_completed"
+      supplier_order.seller_order.complete!
     end
   end
 

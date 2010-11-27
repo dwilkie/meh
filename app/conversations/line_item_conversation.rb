@@ -185,10 +185,5 @@ class LineItemConversation < IncomingTextMessageConversation
       end
       return line_item, filtered
     end
-
-    def say(message)
-      self.payer = user.sellers.first if payer.nil? && user.sellers.count == 1
-      super(message)
-    end
 end
 

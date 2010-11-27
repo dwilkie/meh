@@ -122,6 +122,10 @@ class User < ActiveRecord::Base
     active_mobile_number && active_mobile_number.verified?
   end
 
+  def human_active_mobile_number
+    active_mobile_number ? active_mobile_number.humanize : ""
+  end
+
   def cannot_text?
     !can_text?
   end

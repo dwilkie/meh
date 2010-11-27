@@ -84,7 +84,7 @@ class OrderConversation < IncomingTextMessageConversation
             :supplier => user
           ).first
           if tracking_number_format && tracking_number_format.required?
-            message = CompleteLineItemMessage.new(
+            message = CompleteOrderMessage.new(
               supplier_order,
               tracking_number_format.format,
               params
