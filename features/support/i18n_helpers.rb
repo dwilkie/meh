@@ -22,9 +22,6 @@ module I18nHelpers
     when /^what would you like to do with the line item\?$/
       "notifications.messages.built_in.no_action_for_line_item"
 
-    when /^this tracking number was already used by you$/
-      "notifications.messages.built_in.this_tracking_number_was_already_used_by_you"
-
     when /^the tracking number is missing or invalid$/
       "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid"
 
@@ -68,9 +65,6 @@ module I18nHelpers
     when /^name is incorrect$/
       "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
 
-    when /^is incorrect$/
-      "errors.messages.incorrect"
-
     when /^line item # does not exist$/
       "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.line_item_id.does_not_exist"
 
@@ -78,8 +72,14 @@ module I18nHelpers
     when /^line item quantity must be confirmed$/
       "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"
 
+    when /^tracking number already used by you$/
+      "activerecord.errors.models.supplier_order.attributes.tracking_number.taken"
+
     when /^is required$/
       "errors.messages.blank"
+
+    when /^is incorrect$/
+      "errors.messages.incorrect"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

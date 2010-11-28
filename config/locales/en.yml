@@ -34,7 +34,7 @@ en:
         you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with:%{retry_suggestion}"
         you_have_no_incomplete_orders: "%{supplier_name}, you have no orders awaiting shipping"
         be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with:%{action} %{topic} <item #>%{params}"
-        this_tracking_number_was_already_used_by_you: "Sorry %{supplier_name}, you have already used this Tracking number before"
+        this_tracking_number_was_already_used_by_you: "%{supplier_name}, the %{errors}"
         the_tracking_number_is_missing_or_invalid: "Sorry %{supplier_name}, the %{errors}. Try again with: %{topic} %{action} %{line_item_number} <tracking number>"
         you_must_confirm_the_line_item_first: "Sorry %{supplier_name}, you must confirm the line item first. Try: %{topic} a %{line_item_number} %{quantity} <product verification code>"
         you_must_verify_your_mobile_number_to_use_this_feature: "Sorry, you must verify your mobile number to use this feature. Try replying with: mn v <your name>"
@@ -88,6 +88,10 @@ en:
         unverified: "Unverified"
     errors:
       models:
+        supplier_order:
+          attributes:
+            tracking_number:
+              taken: "\"%{value}\" was already used by you"
         outgoing_text_message:
           attributes:
             credits:

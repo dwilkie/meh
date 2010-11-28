@@ -162,24 +162,26 @@ Feature: Complete a supplier order
 
   @current
   Scenario Outline: Try to complete an order with a tracking number that I already used before
-    Then a supplier order: "first order" should exist with product_id: the product
-    Given a tracking number format exists with seller: the seller
-    Given a product exists with supplier: the supplier, seller: the seller
-    And a supplier order exists for the product with tracking_number: "re123456789th"
+    Given the line item was already confirmed
+    And the supplier order was already completed
+    And I update the supplier order with tracking_number: "re123456789th"
+    And a seller exists
+    And a product exists with seller: the seller, supplier: the supplier
+    And a line item exists for that product
+    And that line item was already confirmed
+    And a tracking number format exists with seller: the seller
+    Then a seller order should exist with seller: the seller
 
     When I text "<message_text>" from "66354668874"
 
-    Then the supplier order: "first order" should not be completed
-    And the supplier_order: "first order"s tracking_number should be nil
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "this tracking number was already used by you" in "en" (English) where supplier_name: "Nok"
+    Then the seller order should not be completed
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number already used by you" in "en" (English) where value: "<tracking_number>"
     And the seller should be that outgoing text message's payer
 
   Examples:
-    | message_text                |
-    | po complete 1 re123456789th |
-    | po c 1 Re123456789Th        |
-    | cpo 1 RE123456789TH         |
-    | cpo 1 rE123456789tH         |
+    | message_text       | tracking_number |
+    | co re123456789th   | re123456789th   |
+    | co 2 RE123456789TH | RE123456789TH   |
 
   Scenario Outline: Try to complete an order with a tracking number that is invalid
     Given a tracking number format exists with seller: the seller, format: "^(re|cp)\\d{9}th$"

@@ -91,9 +91,9 @@ class OrderConversation < IncomingTextMessageConversation
             )
             if message.valid?
               supplier_order.tracking_number = message.tracking_number
-              supplier_order.save ?
+              supplier_order.valid? ?
               will_complete = true :
-              say(tracking_number_already_used)
+              say(tracking_number_already_used(supplier_order))
             else
               say I18n.t(
                 "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
@@ -109,15 +109,16 @@ class OrderConversation < IncomingTextMessageConversation
           end
           supplier_order.complete! if will_complete
         else
-          say no_incomplete_orders
+          say you_must_confirm_the_line_items_first
         end
       end
     end
 
-    def tracking_number_already_used
+    def tracking_number_already_used(supplier_order)
       I18n.t(
         "notifications.messages.built_in.this_tracking_number_was_already_used_by_you",
-        :supplier_name => user.name
+        :supplier_name => user.name,
+        :errors => supplier_order.errors.full_messages.to_sentence
       )
     end
 
@@ -127,5 +128,13 @@ class OrderConversation < IncomingTextMessageConversation
         :supplier_name => user.name
       )
     end
+
+    def you_must_confirm_the_line_items_first
+      I18n.t(
+        "notifications.messages.built_in.you_must_confirm_the_line_items_first",
+        :supplier_name => user.name
+      )
+    end
+
 end
 
