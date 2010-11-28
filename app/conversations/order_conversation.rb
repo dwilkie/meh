@@ -8,8 +8,10 @@ class OrderConversation < IncomingTextMessageConversation
     if action != "complete" && action != "c" && message_words.first == topic
       self.params.insert(0, action)
       self.action = nil
+      # list the orders
+    else
+      complete
     end
-    complete
   end
 
   private
@@ -17,29 +19,63 @@ class OrderConversation < IncomingTextMessageConversation
       include ActiveModel::Validations
       extend ActiveModel::Translation
 
-      attr_reader :tracking_number
+      attr_reader :tracking_number, :order_id
 
       validates :tracking_number,
                 :presence => true
 
-      validate :tracking_number_format
+      validate :order_id_exists,
+               :tracking_number_format_correct
 
-      def initialize(supplier_order, tracking_number_format, params)
+      def initialize(order, tracking_number_format, params)
+        @order = order
         @tracking_number_format = tracking_number_format
-        unless params[0].nil? || (params.count == 1 && params[0].to_i == supplier_order.id)
-          @tracking_number = (params[0].to_i == supplier_order.id) ?
-            params[1..-1] : params[0..-1]
-          @tracking_number = @tracking_number.join(" ")
+        @params = params
+        @order_id = params[0]
+        unless params[0].nil? || (params.count == 1 && order_id_correct?)
+          tracking_number = order_explicit? ? params[1..-1] : params[0..-1]
+          @tracking_number = tracking_number.join(" ")
         end
       end
 
+      def retry_suggestion(topic, action)
+        suggestion = "#{action} #{topic} "
+        order_id_suggestion = order_id_correct? ?
+          "#{order_id} " :
+          "<#{self.class.human_attribute_name(:order_id)}> " if
+          order_explicit?
+        suggestion << order_id_suggestion if order_id_suggestion
+        suggestion << self.class.human_attribute_name(:tracking_number)
+        suggestion
+      end
+
       private
-        def tracking_number_format
+        def order_id_exists
+          errors.add(
+            :order_id,
+            :does_not_exist
+          ) if order_id_does_not_exist?
+        end
+
+        def tracking_number_format_correct
           errors.add(
             :tracking_number,
             :invalid
           ) unless tracking_number.nil? ||
+            order_id_does_not_exist? ||
             tracking_number =~ Regexp.new(@tracking_number_format, true)
+        end
+
+        def order_id_correct?
+          @params[0].to_i == @order.id
+        end
+
+        def order_id_does_not_exist?
+          order_explicit? && !order_id_correct?
+        end
+
+        def order_explicit?
+          order_id_correct? || @params.count > 1
         end
     end
 
@@ -58,14 +94,13 @@ class OrderConversation < IncomingTextMessageConversation
       if supplier_orders.empty?
         say no_incomplete_orders
       elsif supplier_orders.count > 1
-        sanitized_action = " #{action}" if action
         sanitized_params = params.join(" ")
         sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
         say I18n.t(
           "notifications.messages.built_in.be_specific_about_the_order_number",
           :supplier_name => user.name,
           :topic => topic,
-          :action => sanitized_action,
+          :action => action,
           :params => sanitized_params
         )
       else
@@ -99,9 +134,7 @@ class OrderConversation < IncomingTextMessageConversation
                 "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
                 :supplier_name => user.name,
                 :errors => message.errors.full_messages.to_sentence,
-                :topic => self.topic,
-                :action => self.action,
-                :order_number => supplier_order.id.to_s
+                :retry_suggestion => message.retry_suggestion(topic, action)
               )
             end
           else

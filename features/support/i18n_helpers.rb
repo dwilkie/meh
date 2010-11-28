@@ -81,6 +81,9 @@ module I18nHelpers
     when /^is incorrect$/
       "errors.messages.incorrect"
 
+    when /^tracking number is invalid$/
+      "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
+
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +
         "Now, go and add a mapping in #{__FILE__}"

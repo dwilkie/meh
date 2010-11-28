@@ -160,7 +160,6 @@ Feature: Complete a supplier order
     """
     And the seller should be that outgoing text message's payer
 
-  @current
   Scenario Outline: Try to complete an order with a tracking number that I already used before
     Given the line item was already confirmed
     And the supplier order was already completed
@@ -183,24 +182,21 @@ Feature: Complete a supplier order
     | co re123456789th   | re123456789th   |
     | co 2 RE123456789TH | RE123456789TH   |
 
+  @current
   Scenario Outline: Try to complete an order with a tracking number that is invalid
     Given a tracking number format exists with seller: the seller, format: "^(re|cp)\\d{9}th$"
 
     When I text "<message_text>" from "66354668874"
 
-    Then the supplier order should not be completed
-    And the supplier order's tracking_number should be nil
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "the tracking number is missing or invalid" in "en" (English) where supplier_name: "Nok", errors: "Tracking number is invalid", topic: "<topic>", action: "<action>", supplier_order_number: "1"
+    Then the seller order should not be completed
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number is invalid" in "en" (English) where value: "<tracking_number>"
     And the seller should be that outgoing text message's payer
 
   Examples:
-    | message_text                          | topic          | action   |
-    | supplier_order complete rd123456789th | supplier_order | complete |
-    | supplier_order complete rd123456789th  | supplier_order  | complete |
-    | po complete rd123456789th             | po             | complete |
-    | po c re12345678th                     | po             | c        |
-    | cpo re123456789ti                     | po             | c        |
-    | cpo 1 cn123456789th                   | po             | c        |
+    | message_text              | tracking_number |
+    | o complete rd123456789th  | rd123456789th   |
+    | complete o 1 re12345678th | re12345678th    |
+    | co re123456789ti          | re123456789ti   |
 
   Scenario Outline: Try and complete an order without providing a tracking number for my seller who requires that one is given
     Given a tracking number format exists with seller: the seller
