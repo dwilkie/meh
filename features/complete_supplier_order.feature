@@ -81,6 +81,7 @@ Feature: Complete a supplier order
       | corder 1         |
       | co 1             |
 
+  @current
   Scenario Outline: Try to complete an order implicitly whilst having multiple incomplete orders
     Given a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product with quantity: 1
@@ -92,9 +93,9 @@ Feature: Complete a supplier order
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | message_text | topic | action | params     |
-      | co           | o     | " c"   | ""         |
-      | co RE23123   | o     | " c"   | " RE23123" |
+      | message_text   | topic | action | params     |
+      | co             | o     | "c"    | ""         |
+      | corder RE23123 | order | "c"    | " RE23123" |
 
   Scenario: Be the last to complete an order belonging to multiple suppliers
     Given a supplier exists with name: "Andy"
