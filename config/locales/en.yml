@@ -36,7 +36,7 @@ en:
         be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with:%{action} %{topic} <item #>%{params}"
         this_tracking_number_was_already_used_by_you: "%{supplier_name}, the %{errors}"
         the_tracking_number_is_missing_or_invalid: "%{supplier_name}, the %{errors}. Try again with: %{retry_suggestion}"
-        you_must_confirm_the_line_item_first: "Sorry %{supplier_name}, you must confirm the line item first. Try: %{topic} a %{line_item_number} %{quantity} <product verification code>"
+        you_must_confirm_the_line_items_first: "%{supplier_name}, you must confirm line item(s): %{line_item_numbers} first. Try: ci <qty>"
         you_must_verify_your_mobile_number_to_use_this_feature: "Sorry, you must verify your mobile number to use this feature. Try replying with: mn v <your name>"
         verify_your_mobile_number: "Hi, pls verify your number by replying with: mn v <your name>"
         invalid_action_for_mobile_number: "Sorry \"%{action}\" is not a valid option. To verify your mobile number number, try: %{topic} verify <your name>"

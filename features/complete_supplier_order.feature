@@ -41,8 +41,6 @@ Feature: Complete a supplier order
       | c o             |
       | corder          |
       | co              |
-      | order           |
-      | o               |
 
   Scenario Outline: Complete an order explicitly
     When I text "<message_text>" from "66354668874"
@@ -61,8 +59,6 @@ Feature: Complete a supplier order
       | c o 1            |
       | corder 1         |
       | co 1             |
-      | order 1          |
-      | o 1              |
 
   Scenario Outline: Complete an order explicity whilst having multiple incomplete orders
     Given a product exists with supplier: the supplier, seller: the seller
@@ -84,8 +80,6 @@ Feature: Complete a supplier order
       | c o 1            |
       | corder 1         |
       | co 1             |
-      | order 1          |
-      | o 1              |
 
   Scenario Outline: Try to complete an order implicitly whilst having multiple incomplete orders
     Given a product exists with supplier: the supplier, seller: the seller
@@ -164,7 +158,7 @@ Feature: Complete a supplier order
     Given the line item was already confirmed
     And the supplier order was already completed
     And I update the supplier order with tracking_number: "re123456789th"
-    And a seller exists
+    And another seller exists
     And a product exists with seller: the seller, supplier: the supplier
     And a line item exists for that product
     And that line item was already confirmed
@@ -222,7 +216,6 @@ Feature: Complete a supplier order
 
     Then the seller order should be completed
 
-  @current
   Scenario: Try to complete an order as the seller
     When I text "co" from "66354668789"
 
@@ -231,63 +224,54 @@ Feature: Complete a supplier order
     And the most recent outgoing text message destined for the mobile_number: "Mara's number" should be a translation of "you have no orders to complete" in "en" (English) where supplier_name: "Mara"
     And the seller should be that outgoing text message's payer
 
-  Scenario: Complete an order as the seller
-    Given a product exists with supplier: the seller, seller: the seller
-    And a line item exists for the product
+  Scenario: Complete an order as the seller/supplier
+    Given another seller exists with name: "Andy"
+    And another verified mobile number: "Andy's number" exists with number: "61444144443", user: the seller
+    And another product exists with supplier: the seller, seller: the seller
+    And a line item exists for that product
+    Then another seller order should exist with seller: the seller
 
-    When I text "co" from "66354668789"
+    When I text "co" from "61444144443"
 
     Then the seller order should be completed
-    And the most recent outgoing text message destined for mobile_number: "Mara's number" should be a translation of "you successfully processed the supplier order" in "en" (English) where supplier_name: "Mara", processed: "completed", supplier_order_number: "2"
+    And the most recent outgoing text message destined for mobile_number: "Andy's number" should be
+    """
+    Thanks Andy, Order #2 has been marked as shipped
+    """
     And the seller should be that outgoing text message's payer
 
-  Scenario Outline: Try to complete an order which I have not yet accepted
-    Given the supplier order is not yet accepted
+  Scenario: Try to complete an order which I have not yet confirmed
+    Given the supplier order is not yet confirmed
 
+    When I text "co" from "66354668874"
+
+    Then the seller order should not be completed
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you must confirm the line items first" in "en" (English) where supplier_name: "Nok", line_item_numbers: "#1"
+    And the seller should be that outgoing text message's payer
+
+  Scenario Outline: Try to complete an order which I already completed
+    Given the supplier order was already completed
+
+    When I text "co 1" from "66354668874"
+
+    Then the supplier order should be completed
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no orders to complete" in "en" (English) where supplier_name: "Nok"
+    And the seller should be that outgoing text message's payer
+
+    Examples:
+      | message_text |
+      | co           |
+      | co 1         |
+
+  Scenario Outline: Try to complete an order giving the wrong order number
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should not be completed
-
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you must accept the supplier order first" in "en" (English) where supplier_name: "Nok", topic: "<topic>", supplier_order_number: "1", quantity: "3"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "# does not exist" in "en" (English) where value: "<order_id>"
     And the seller should be that outgoing text message's payer
 
-  Examples:
-    | message_text              | topic          |
-    | supplier_order complete   | supplier_order |
-    | supplier_order complete 1  | supplier_order  |
-    | po complete               | po             |
-    | po c 1                    | po             |
-    | cpo                       | po             |
-    | cpo 1                     | po             |
-
- Scenario: Try to explicitly complete an order which I already completed
-    Given the supplier order was already completed
-
-    When I text "cpo 1" from "66354668874"
-
-    Then the supplier order should be completed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "supplier order was already processed" in "en" (English) where status: "completed", supplier_name: "Nok"
-    And the seller should be that outgoing text message's payer
-
- Scenario: Try to implicitly complete an order which I already completed
-    Given the supplier order was already completed
-
-    When I text "cpo" from "66354668874"
-
-    Then the supplier order should be completed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you do not have any supplier orders" in "en" (English) where human_action: "complete", supplier_name: "Nok", status: "incomplete"
-    And the seller should be that outgoing text message's payer
-
-  Scenario Outline: Successfully complete an order even when giving the wrong order number
-    Given the supplier order was already accepted
-
-    When I text "<message_text>" from "66354668874"
-
-    Then the supplier order should be completed
-
-  Examples:
-    | message_text                   |
-    | po complete 9999               |
-    | po c 9999                      |
-    | cpo 4355                       |
+    Examples:
+      | message_text | order_id |
+      | co 2123443   | 2123443  |
+      | co 2 1231    | 2        |
 

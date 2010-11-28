@@ -39,6 +39,14 @@ class SupplierOrder < ActiveRecord::Base
     )
   end
 
+  def line_item_numbers
+    line_item_numbers = []
+    line_items.each do |line_item|
+      line_item_numbers << "##{line_item.id}"
+    end
+    line_item_numbers.to_sentence
+  end
+
   def number_of_line_items
     line_items.count
   end

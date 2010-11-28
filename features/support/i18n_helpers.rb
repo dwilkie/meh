@@ -16,17 +16,8 @@ module I18nHelpers
     when /^be specific about the order number$/
       "notifications.messages.built_in.be_specific_about_the_order_number"
 
-    when /^invalid action given for the line item$/
-      "notifications.messages.built_in.invalid_action_for_line_item"
-
-    when /^what would you like to do with the line item\?$/
-      "notifications.messages.built_in.no_action_for_line_item"
-
-    when /^the tracking number is missing or invalid$/
-      "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid"
-
-    when /^you must accept the line item first$/
-      "notifications.messages.built_in.you_must_accept_the_line_item_first"
+    when /^you must confirm the line items first$/
+      "notifications.messages.built_in.you_must_confirm_the_line_items_first"
 
     when /^verify your mobile number$/
       "notifications.messages.built_in.verify_your_mobile_number"
@@ -65,24 +56,23 @@ module I18nHelpers
     when /^name is incorrect$/
       "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
 
-    when /^line item # does not exist$/
-      "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.line_item_id.does_not_exist"
-
-
     when /^line item quantity must be confirmed$/
       "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"
 
     when /^tracking number already used by you$/
       "activerecord.errors.models.supplier_order.attributes.tracking_number.taken"
 
+    when /^tracking number is invalid$/
+      "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
+
+    when /^# does not exist$/
+      "errors.messages.does_not_exist"
+
     when /^is required$/
       "errors.messages.blank"
 
     when /^is incorrect$/
       "errors.messages.incorrect"
-
-    when /^tracking number is invalid$/
-      "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

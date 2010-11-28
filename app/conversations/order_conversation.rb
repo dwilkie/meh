@@ -22,10 +22,14 @@ class OrderConversation < IncomingTextMessageConversation
       attr_reader :tracking_number, :order_id
 
       validates :tracking_number,
-                :presence => true
+                :presence => true,
+                :if => Proc.new {
+                  @tracking_number_format &&
+                  @tracking_number_format.required?
+                }
 
       validate :order_id_exists,
-               :tracking_number_format_correct
+               :tracking_number_format_valid
 
       def initialize(order, tracking_number_format, params)
         @order = order
@@ -57,13 +61,17 @@ class OrderConversation < IncomingTextMessageConversation
           ) if order_id_does_not_exist?
         end
 
-        def tracking_number_format_correct
+        def tracking_number_format_valid
           errors.add(
             :tracking_number,
             :invalid
           ) unless tracking_number.nil? ||
             order_id_does_not_exist? ||
-            tracking_number =~ Regexp.new(@tracking_number_format, true)
+            @tracking_number_format.nil? ||
+            !@tracking_number_format.required? ||
+            tracking_number =~ Regexp.new(
+              @tracking_number_format.format, true
+            )
         end
 
         def order_id_correct?
@@ -75,7 +83,15 @@ class OrderConversation < IncomingTextMessageConversation
         end
 
         def order_explicit?
-          order_id_correct? || (@order_id =~ /^\d+$/ && @params.count > 1)
+          order_id_correct? ||
+          (@order_id =~ /^\d+$/ && @params.count > 1) || (
+            @order_id &&
+            @tracking_number_format &&
+            !@tracking_number_format.required?
+          ) || (
+            @order_id &&
+            @tracking_number_format.nil?
+          )
         end
     end
 
@@ -110,26 +126,21 @@ class OrderConversation < IncomingTextMessageConversation
           tracking_number_format = seller.tracking_number_formats.find_for(
             :supplier => user
           ).first
-          if tracking_number_format && tracking_number_format.required?
-            message = CompleteOrderMessage.new(
-              supplier_order,
-              tracking_number_format.format,
-              params
-            )
-            if message.valid?
-              supplier_order.tracking_number = message.tracking_number
-              supplier_order.valid? ?
-              will_complete = true :
-              say(tracking_number_already_used(supplier_order))
-            else
-              say invalid_tracking_number(message)
-            end
+          message = CompleteOrderMessage.new(
+            supplier_order,
+            tracking_number_format,
+            params
+          )
+          if message.valid?
+            supplier_order.tracking_number = message.tracking_number
+            supplier_order.valid? ?
+            supplier_order.complete! :
+            say(tracking_number_already_used(supplier_order))
           else
-            will_complete = true
+            say invalid_tracking_number(message)
           end
-          supplier_order.complete! if will_complete
         else
-          say you_must_confirm_the_line_items_first
+          say you_must_confirm_the_line_items_for(supplier_order)
         end
       end
     end
@@ -149,10 +160,11 @@ class OrderConversation < IncomingTextMessageConversation
       )
     end
 
-    def you_must_confirm_the_line_items_first
+    def you_must_confirm_the_line_items_for(supplier_order)
       I18n.t(
         "notifications.messages.built_in.you_must_confirm_the_line_items_first",
-        :supplier_name => user.name
+        :supplier_name => user.name,
+        :line_item_numbers => supplier_order.line_item_numbers
       )
     end
 

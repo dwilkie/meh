@@ -402,7 +402,7 @@ class Notification < ActiveRecord::Base
       )
     )
     notification = new(
-      :event => "customer_order_confirmed",
+      :event => "customer_order_completed",
       :for => "seller",
       :purpose => "to inform me that the customer order has been completed",
       :should_send => false
