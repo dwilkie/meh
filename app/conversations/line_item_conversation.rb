@@ -136,17 +136,7 @@ class LineItemConversation < IncomingTextMessageConversation
         self.payer = seller
         unless user == seller
           message = ConfirmLineItemMessage.new(line_item, params, filtered)
-          if message.valid?
-            line_item.confirm!
-          else
-            say I18n.t(
-            "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_confirm_the_line_item",
-              :supplier_name => user.name,
-              :errors => message.errors.full_messages.to_sentence,
-              :implicit_line_item_id => message.implicit_line_item_id_text,
-              :retry_suggestion => message.retry_suggestion(topic, action)
-           )
-          end
+          message.valid? ? line_item.confirm! : say(invalid_confirmation(message))
         end
       end
     end
@@ -166,25 +156,42 @@ class LineItemConversation < IncomingTextMessageConversation
     def find_line_item
       line_items, filtered = find_line_items
       if line_items.empty?
-        say I18n.t(
-          "notifications.messages.built_in.you_have_no_unconfirmed_line_items",
-          :supplier_name => user.name,
-        )
+        say no_line_items_to_confirm
       elsif line_items.count > 1
-        sanitized_action = " #{action}" if action
-        sanitized_params = params.join(" ")
-        sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
-        say I18n.t(
-          "notifications.messages.built_in.be_specific_about_the_line_item_number",
-          :supplier_name => user.name,
-          :topic => topic,
-          :action => sanitized_action,
-          :params => sanitized_params
-        )
+        say be_specific_about_the_line_item
       else
         line_item = line_items.first
       end
       return line_item, filtered
+    end
+
+    def invalid_confirmation(message)
+      I18n.t(
+      "notifications.messages.built_in.you_supplied_incorrect_values_while_trying_to_confirm_the_line_item",
+        :supplier_name => user.name,
+        :errors => message.errors.full_messages.to_sentence,
+        :implicit_line_item_id => message.implicit_line_item_id_text,
+        :retry_suggestion => message.retry_suggestion(topic, action)
+      )
+    end
+
+    def no_line_items_to_confirm
+      I18n.t(
+        "notifications.messages.built_in.you_have_no_line_items_to_confirm",
+        :supplier_name => user.name
+      )
+    end
+
+    def be_specific_about_the_line_item
+      sanitized_params = params.join(" ")
+      sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
+      I18n.t(
+        "notifications.messages.built_in.be_specific_about_the_line_item_number",
+        :supplier_name => user.name,
+        :topic => topic,
+        :action => action,
+        :params => sanitized_params
+      )
     end
 end
 

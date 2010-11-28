@@ -29,10 +29,10 @@ en:
         you_have_received_a_payment: "Hi <supplier_name>, <seller_name> (<seller_mobile_number>) has paid u <supplier_payment_amount> <supplier_payment_ currency> to process order #<customer_order_number>"
         you_successfully_confirmed_the_line_item: "Hi <supplier_name>, you successfully confirmed item #%{line_item_number}"
       built_in:
-        you_have_no_unconfirmed_line_items: "%{supplier_name}, you have no items requiring confirmation"
+        you_have_no_line_items_to_confirm: "%{supplier_name}, you have no items to confirm"
         be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with:%{action} %{topic} <item #>%{params}"
         you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with:%{retry_suggestion}"
-        you_have_no_incomplete_orders: "%{supplier_name}, you have no orders awaiting shipping"
+        you_have_no_orders_to_complete: "%{supplier_name}, you have no orders to ship"
         be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with:%{action} %{topic} <item #>%{params}"
         this_tracking_number_was_already_used_by_you: "%{supplier_name}, the %{errors}"
         the_tracking_number_is_missing_or_invalid: "%{supplier_name}, the %{errors}. Try again with: %{retry_suggestion}"
@@ -54,6 +54,7 @@ en:
     messages:
       incorrect: "isn't \"%{value}\""
       blank: "is required"
+      does_not_exist: "%{value} doesn't exist"
   activemodel:
     attributes:
       line_item_conversation:
@@ -64,6 +65,7 @@ en:
       order_conversation:
         complete_order_message:
           tracking_number: "tracking #"
+          order_id: "order #"
     errors:
       models:
         line_item_conversation:
@@ -71,12 +73,11 @@ en:
             attributes:
               quantity:
                 blank: "must be confirmed"
-              line_item_id:
-                does_not_exist: "%{value} doesn't exist"
-          'mobile_number_conversation/verify_mobile_number_message':
-            attributes:
-              name:
-                incorrect: "wasn't registered as \"%{value}\""
+          mobile_number_conversation:
+            verify_mobile_number_message:
+              attributes:
+                name:
+                  incorrect: "wasn't registered as \"%{value}\""
         order_conversation:
           complete_order_message:
             attributes:
@@ -113,9 +114,4 @@ en:
             insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
             unknown: "the paypal account returned the following unexpected error: %{error}"
   supplier_payment_note: "Payment for line item: #%{line_item_number}"
-#  support:
-#    array:
-#      words_connector: ", the "
-#      two_words_connector: " and the "
-#      last_word_connector: " and the "
 

@@ -4,11 +4,11 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^you have no unconfirmed line items$/
-      "notifications.messages.built_in.you_have_no_unconfirmed_line_items"
+    when /^you have no line items to confirm$/
+      "notifications.messages.built_in.you_have_no_line_items_to_confirm"
 
-    when /^line item was already processed$/
-      "notifications.messages.built_in.line_item_was_already_processed"
+    when /^you have no orders to complete$/
+      "notifications.messages.built_in.you_have_no_orders_to_complete"
 
     when /^be specific about the line item number$/
       "notifications.messages.built_in.be_specific_about_the_line_item_number"

@@ -45,7 +45,7 @@ class OrderConversation < IncomingTextMessageConversation
           "<#{self.class.human_attribute_name(:order_id)}> " if
           order_explicit?
         suggestion << order_id_suggestion if order_id_suggestion
-        suggestion << self.class.human_attribute_name(:tracking_number)
+        suggestion << "<#{self.class.human_attribute_name(:tracking_number)}>"
         suggestion
       end
 
@@ -67,7 +67,7 @@ class OrderConversation < IncomingTextMessageConversation
         end
 
         def order_id_correct?
-          @params[0].to_i == @order.id
+          @order_id.to_i == @order.id
         end
 
         def order_id_does_not_exist?
@@ -75,7 +75,7 @@ class OrderConversation < IncomingTextMessageConversation
         end
 
         def order_explicit?
-          order_id_correct? || @params.count > 1
+          order_id_correct? || (@order_id =~ /^\d+$/ && @params.count > 1)
         end
     end
 
@@ -92,17 +92,9 @@ class OrderConversation < IncomingTextMessageConversation
     def find_supplier_order
       supplier_orders = find_supplier_orders
       if supplier_orders.empty?
-        say no_incomplete_orders
+        say no_orders_to_complete
       elsif supplier_orders.count > 1
-        sanitized_params = params.join(" ")
-        sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
-        say I18n.t(
-          "notifications.messages.built_in.be_specific_about_the_order_number",
-          :supplier_name => user.name,
-          :topic => topic,
-          :action => action,
-          :params => sanitized_params
-        )
+        say be_specific_about_the_order
       else
         supplier_order = supplier_orders.first
       end
@@ -130,12 +122,7 @@ class OrderConversation < IncomingTextMessageConversation
               will_complete = true :
               say(tracking_number_already_used(supplier_order))
             else
-              say I18n.t(
-                "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
-                :supplier_name => user.name,
-                :errors => message.errors.full_messages.to_sentence,
-                :retry_suggestion => message.retry_suggestion(topic, action)
-              )
+              say invalid_tracking_number(message)
             end
           else
             will_complete = true
@@ -155,9 +142,9 @@ class OrderConversation < IncomingTextMessageConversation
       )
     end
 
-    def no_incomplete_orders
+    def no_orders_to_complete
       I18n.t(
-        "notifications.messages.built_in.you_have_no_incomplete_orders",
+        "notifications.messages.built_in.you_have_no_orders_to_complete",
         :supplier_name => user.name
       )
     end
@@ -166,6 +153,27 @@ class OrderConversation < IncomingTextMessageConversation
       I18n.t(
         "notifications.messages.built_in.you_must_confirm_the_line_items_first",
         :supplier_name => user.name
+      )
+    end
+
+    def be_specific_about_the_order
+      sanitized_params = params.join(" ")
+      sanitized_params = " #{sanitized_params}" unless sanitized_params.blank?
+      I18n.t(
+        "notifications.messages.built_in.be_specific_about_the_order_number",
+        :supplier_name => user.name,
+        :topic => topic,
+        :action => action,
+        :params => sanitized_params
+      )
+    end
+
+    def invalid_tracking_number(message)
+      I18n.t(
+        "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
+        :supplier_name => user.name,
+        :errors => message.errors.full_messages.to_sentence,
+        :retry_suggestion => message.retry_suggestion(topic, action)
       )
     end
 
