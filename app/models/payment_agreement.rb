@@ -38,8 +38,6 @@ class PaymentAgreement < ActiveRecord::Base
     self.enabled = true if self.enabled.nil?
   end
 
-  before_validation :link_seller_and_supplier
-
   def self.for_event(event, supplier)
     where(:event => event, :supplier_id => supplier.id)
   end
