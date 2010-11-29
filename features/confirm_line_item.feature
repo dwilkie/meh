@@ -31,10 +31,10 @@ Feature: Confirm line item
     And the most recent outgoing text message destined for the mobile number: "Nok's number" should be
     """
     Nok, pls ship order #1 to:
-    Ho Chi Minh,
-    4 Chau Minh Lane,
-    Hanoi,
-    Hanoi Province,
+    Ho Chi Minh
+    4 Chau Minh Lane
+    Hanoi
+    Hanoi Province
     Viet Nam 52321
     then reply with: "co"
     """
@@ -69,10 +69,6 @@ Feature: Confirm line item
       | citem 1             |
       | cli 1               |
       | ci 1                |
-      | line_item 1         |
-      | item 1              |
-      | li 1                |
-      | i 1                 |
 
   Scenario Outline: Confirm an order explicitly
     When I text "<message_text>" from "66354668874"
@@ -84,13 +80,9 @@ Feature: Confirm line item
       | message_text |
       | cli 1 1      |
       | ci 1 1       |
-      | li 1 1       |
-      | i 1 1        |
-      | item 1 1     |
       | c i 1 1      |
       | i c 1 1      |
       | ci 1 1       |
-      | li 1 1       |
 
   Scenario Outline: Confirm a line item explicity whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
@@ -108,13 +100,9 @@ Feature: Confirm line item
       | message_text |
       | cli 1 1      |
       | ci 1 1       |
-      | li 1 1       |
-      | i 1 1        |
-      | item 1 1     |
       | c i 1 1      |
       | i c 1 1      |
       | ci 1 1       |
-      | li 1 1       |
 
   Scenario Outline: Try to confirm a line item implicitly whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
@@ -126,18 +114,14 @@ Feature: Confirm line item
 
     Then the line item: "first item" should not be confirmed
     And the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: "<action>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
       | message_text | topic | action | params      |
-      | cli          | li    | " c"   | ""          |
-      | ci           | i     | " c"   | ""          |
-      | li           | li    | ""     | ""          |
-      | i            | i     | ""     | ""          |
-      | item         | item  | ""     | ""          |
-      | c i          | i     | " c"   | ""          |
-      | i c          | i     | " c"   | ""          |
+      | cli          | li    | c      | ""          |
+      | ci 4         | i     | c      | " 4"        |
+      | c i 4 xyz123 | i     | c      | " 4 xyz123" |
 
   Scenario: Be the last to confirm an order belonging to multiple suppliers
     Then a line item: "first item" should exist with product_id: the product
@@ -162,10 +146,10 @@ Feature: Confirm line item
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item explicitly giving the wrong item number
-    When I text "li 234 1" from "66354668874"
+    When I text "ci 234 1" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should include a translation of "line item # does not exist" in "en" (English) where value: "234"
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should include a translation of "# does not exist" in "en" (English) where value: "234"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item as the seller
@@ -173,7 +157,7 @@ Feature: Confirm line item
 
     Then the line item should not be confirmed
 
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Mara"
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Mara"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item as a seller when the seller is also the supplier for this product
@@ -196,13 +180,12 @@ Feature: Confirm line item
     Examples:
       | message_text  | value  |
       | ci 1 2        | 2      |
-      | i 2           | 2      |
-      | li 4          | 4      |
-      | item maggot   | maggot |
+      | ci 2          | 2      |
+      | citem maggot  | maggot |
       | cli 1 maggot  | maggot |
 
   Scenario: Try to implicitly confirm a line item omitting the quantity
-    When I text "li" from "66354668874"
+    When I text "ci" from "66354668874"
 
     Then the line item should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
@@ -213,7 +196,7 @@ Feature: Confirm line item
     Given a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product
 
-    When I text "li 1" from "66354668874"
+    When I text "ci 1" from "66354668874"
 
     Then the line item: "first item" should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
@@ -228,16 +211,15 @@ Feature: Confirm line item
     And the seller order should be confirmed
 
     Examples:
-      | message_text         |
-      | li 1 abc123          |
-      | cli 1 abC123         |
-      | i 1 1 ABC123         |
-      | item 1 1 aBc123      |
+      | message_text     |
+      | cli 1 abC123     |
+      | ci 1 1 ABC123    |
+      | citem 1 1 aBc123 |
 
   Scenario: Confirm a line item with a product verification code giving the incorrect case
     Given I update the product with verification_code: "abc123"
 
-    When I text "li 1 ABC123" from "66354668874"
+    When I text "ci 1 ABC123" from "66354668874"
 
     Then the line item should be confirmed
     And the seller order should be confirmed
@@ -253,45 +235,45 @@ Feature: Confirm line item
 
     Examples:
       | message_text         | value  |
-      | li 1 1 abc12         | abc12  |
+      | ci 1 1 abc12         | abc12  |
       | cli 1 ab123          | ab123  |
-      | i 1 cba123           | cba123 |
-      | item 1 1 1           | 1      |
+      | ci 1 cba123          | cba123 |
+      | citem 1 1 1          | 1      |
 
   Scenario: Try to confirm a line item with a product verification code omitting the code
     Given I update the product with verification_code: "1"
 
-    When I text "li 1" from "66354668874"
+    When I text "ci 1" from "66354668874"
 
     Then the line item should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is required" in "en" (English) where value: "<value>"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly confirm a line item without a product verification code giving a code
-    When I text "li 1 xyz123" from "66354668874"
+    When I text "ci 1 xyz123" from "66354668874"
 
     Then the line item should not be confirmed
     And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "xyz123"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to explicitly confirm a line item without a product verification code giving a code
-    When I text "li 1 1 xyz123" from "66354668874"
+    When I text "ci 1 1 xyz123" from "66354668874"
 
     Then the line item should be confirmed
 
   Scenario: Try to explicity confirm a line item which I already confirmed
     Given the line item was already confirmed
 
-    When I text "li 1 1" from "66354668874"
+    When I text "ci 1 1" from "66354668874"
 
-    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Nok"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly confirm a line item which I already completed
     Given the line item was already confirmed
 
-    When I text "li 1" from "66354668874"
+    When I text "ci 1" from "66354668874"
 
-    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no unconfirmed line items" in "en" (English) where supplier_name: "Nok"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
