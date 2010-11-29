@@ -1,7 +1,9 @@
 Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
-Rename ProductOrder to LineItem to reflect the logic that it is simply a line item in a SupplierOrder
-Allow seller to complete their own supplier orders
 Allow user to verify number by simply texting their name
+Fix notifications for payment
+Modify behaviour so supplier order introduction message contains the # of items
+Add notification so that seller sees the address
+Add message commands "orders" (o) and "items" (i) to list orders and items (see new notifications.txt)
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications
 Test locally with postgreSQL

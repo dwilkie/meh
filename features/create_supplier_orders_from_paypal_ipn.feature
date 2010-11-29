@@ -27,10 +27,9 @@ Feature: Create line items from an order notification
     Then a supplier order should not exist
     And a line item should not exist
 
-  Scenario Outline: The payment status is completed
-    Given the mobile number: "Mara's number" <seller_number_verified> verified
-    And the mobile number: "Dave's number" <supplier_number_verified> verified
-    And a seller order paypal ipn exists
+  @current
+  Scenario: The payment status is completed
+    Given a seller order paypal ipn exists
     And the seller order paypal ipn has the following params:
     """
     {
@@ -57,33 +56,23 @@ Feature: Create line items from an order notification
     And the line item should be amongst the supplier's line_items
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Order #1, item #1:
+    Order #1, item #1, 1/1:
     1 x 12345790063, "Model Ship - The Rubber Dingy", 100.00 AUD
-    Status: Sent to Dave (<supplier_number>)
+    Status: Sent to Dave (+66123555331)
     """
-    And the outgoing text message <send_to_seller> be queued_for_sending
     And the seller should be that outgoing text message's payer
     And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, u have a new order (ref: #1) from Mara (<seller_number>). Order details will be sent to u shortly
+    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item(s). Order details will be sent to u shortly
     """
-    And the outgoing text message <send_to_supplier> be queued_for_sending
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Order #1, item #1:
+    Order #1, item #1, 1/1:
     1 x 12345790063, "Model Ship - The Rubber Dingy"
     Confirm by replying with: "ci <qty>"
     """
-    And the outgoing text message <send_to_supplier> be queued_for_sending
     And the seller should be that outgoing text message's payer
-
-    Examples:
-      | seller_number_verified | seller_number | supplier_number_verified | supplier_number | send_to_seller | send_to_supplier |
-      | was already | +66354668789 | was already | +66123555331        | should | should               |
-      | was already | +66354668789 | is not yet  | No verified number! | should | should not           |
-      | is not yet | No verified number! | was already  | +66123555331 | should not | should           |
-      | is not yet | No verified number! | is not yet  | No verified number! | should not | should not |
 
   Scenario Outline: The supplier is also the seller of this product
     Given the mobile number: "Mara's number" <is_not_yet_or_was_already> verified

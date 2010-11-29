@@ -13,7 +13,7 @@ en:
 
         <line_item_quantity> x <product_number>, \"<product_name>\"
 
-        Confirm by replying with: \"li <qty>\""
+        Confirm by replying with: \"ci <qty>\""
         line_item_details_for_seller: "Order #<customer_order_number>, item #<line_item_number>:
 
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>"
