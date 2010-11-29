@@ -1,10 +1,11 @@
 class CreatePaymentAgreements < ActiveRecord::Migration
   def self.up
     create_table :payment_agreements do |t|
-      t.boolean    :enabled,   :null => false
+      t.boolean    :enabled,        :null => false
       t.string     :event
-      t.references :supplier,  :null => false
-      t.references :seller,    :null => false
+      t.references :supplier,       :null => false
+      t.references :seller,         :null => false
+      t.references :supplier_order, :null => false
       t.timestamps
     end
     add_index :payment_agreements,

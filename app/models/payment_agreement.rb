@@ -1,5 +1,5 @@
 class PaymentAgreement < ActiveRecord::Base
-  belongs_to :product
+  belongs_to :supplier_order
 
   belongs_to :supplier,
              :class_name => "User"
@@ -21,17 +21,8 @@ class PaymentAgreement < ActiveRecord::Base
   end
 
   validates  :supplier_id,
-             :uniqueness => {
-               :scope => [
-                 :product_id,
-                 :seller_id
-               ]
-             },
+             :uniqueness => { :scope => :seller_id },
              :presence => true
-
-  validates :product_id,
-            :uniqueness => true,
-            :allow_nil => true
 
   validates :supplier,
             :is_not_the_seller => true,
@@ -56,9 +47,9 @@ class PaymentAgreement < ActiveRecord::Base
 
   private
     def link_seller_and_supplier
-      if product
-        self.seller = product.seller
-        self.supplier = product.supplier
+      if supplier_order
+        self.seller = supplier_order.seller_order.seller
+        self.supplier = supplier_order.supplier
       end
     end
 end
