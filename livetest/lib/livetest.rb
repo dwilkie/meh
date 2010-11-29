@@ -18,7 +18,7 @@ class Test
     clear_jobs
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
-    find_or_create_payment_agreement!(seller, supplier)
+    #find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
   end
 
