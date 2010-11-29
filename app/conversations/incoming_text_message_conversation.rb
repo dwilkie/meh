@@ -1,6 +1,6 @@
 class IncomingTextMessageConversation < Conversation
 
-  attr_accessor :action, :params
+  attr_accessor :action, :params, :message_words
 
   def process(incoming_text_message)
     incoming_text_message.mobile_number.activate!
@@ -10,21 +10,28 @@ class IncomingTextMessageConversation < Conversation
 
   private
     def find_conversation(message_text)
-      message_words = message_text.split
+      self.message_words = message_text.split
+      # assume first word is the resource
+      # and the second word is the action
       resource = message_words[0]
       self.topic = resource
       self.action = message_words[1].try(:downcase)
       self.params = message_words[2..-1]
       unless topic_defined?
-        topic_words = topic.underscore.split("_")
-        self.topic = topic_words[1..-1].join("_")
-        self.action = topic_words[0]
-        unless topic_defined?
-          self.topic = resource[1..-1]
-          self.action = resource[0].try(:downcase)
-        end
+        # assume first character of the first word is the action
+        # and the remaining characters are the resource
+        self.topic = resource[1..-1]
+        self.action = resource[0].try(:downcase)
         self.params = message_words[1..-1]
+        unless topic_defined?
+          # assume the first word is the action
+          # and the second word is the resource
+          self.topic = message_words[1]
+          self.action = message_words[0]
+          self.params = message_words[2..-1]
+        end
       end
+      self.params ||= []
       self.topic = resource unless topic_defined?
       details
     end
@@ -39,5 +46,15 @@ class IncomingTextMessageConversation < Conversation
       end
     end
 
+    def sanitize_id(value = nil)
+      sanitized_id = value.try(:gsub, /\D/, "").try(:to_i)
+      sanitized_id = nil if sanitized_id == 0
+      sanitized_id
+    end
+
+    def say(message)
+      self.payer = user.sellers.first if payer.nil? && user.sellers.count == 1
+      super(message)
+    end
 end
 

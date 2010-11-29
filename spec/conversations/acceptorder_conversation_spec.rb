@@ -33,7 +33,7 @@ describe AcceptorderConversation do
       Factory.create(:user)
 
     Factory.create(
-      :supplier_order,
+      :line_item,
       :status => options[:status].to_s,
       :supplier => supplier,
       :id => "2312",
@@ -78,18 +78,18 @@ describe AcceptorderConversation do
         context "and the user supplied the correct order details" do
           it "should mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == true
+            LineItem.first.accepted?.should == true
           end
           context "omitting the 'x' symbol after the quantity" do
             it "should mark the order as accepted" do
               conversation.move_along("acceptorder 1234 2312 5 suo1243")
-              SupplierOrder.first.accepted?.should == true
+              LineItem.first.accepted?.should == true
             end
           end
           context "supplying a # in front of the order number" do
             it "should mark the order as accepted" do
               conversation.move_along("acceptorder 1234 #2312 5 suo1243")
-              SupplierOrder.first.accepted?.should == true
+              LineItem.first.accepted?.should == true
             end
           end
         end
@@ -97,7 +97,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1233 2312 5 x suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -108,7 +108,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 2312 5 x suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -119,7 +119,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 2313 5 x suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -130,7 +130,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 5 x suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -141,7 +141,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 2312 4 x suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -152,7 +152,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 2312 suo1243"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -163,7 +163,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 2312 4 x suo1242"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -174,7 +174,7 @@ describe AcceptorderConversation do
           let!(:message_text) {"acceptorder 1234 2312 4 x suo1242"}
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)
@@ -200,7 +200,7 @@ describe AcceptorderConversation do
         context "and the user supplied the correct order details" do
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say cannot process order" do
             conversation.should_receive(:cannot_process)
@@ -215,7 +215,7 @@ describe AcceptorderConversation do
         context "and the user supplied the correct order details" do
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say cannot process order" do
             conversation.should_receive(:cannot_process)
@@ -230,7 +230,7 @@ describe AcceptorderConversation do
         context "and the user gave the order details for someone elses order" do
           it "should not mark the order as accepted" do
             conversation.move_along(message_text)
-            SupplierOrder.first.accepted?.should == false
+            LineItem.first.accepted?.should == false
           end
           it "should say invalid" do
             conversation.should_receive(:invalid)

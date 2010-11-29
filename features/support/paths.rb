@@ -20,8 +20,10 @@ module NavigationHelpers
     when /create incoming text message/
       incoming_text_messages_path
 
-    when /^the paypal permissions callback page$/
-      user_paypal_permissions_authable_callback_path(:token => @token)
+    when /^the paypal authable callback page$/
+      user_paypal_authable_callback_path(
+        :token => @token || "token"
+      )
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

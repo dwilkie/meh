@@ -13,8 +13,7 @@ class Product < ActiveRecord::Base
   belongs_to  :seller,
               :class_name => "User"
 
-  has_many    :supplier_orders,
-              :class_name => "Order"
+  has_many    :line_items
 
   has_many    :notifications
 
@@ -27,12 +26,6 @@ class Product < ActiveRecord::Base
   validates :number, :name,
             :uniqueness => {:scope => :seller_id, :case_sensitive => false},
             :presence => true
-
-  validates :verification_code,
-            :presence => true,
-            :unless => Proc.new { |product|
-              product.seller == product.supplier
-            }
 
   validates :supplier_id,
             :presence => true

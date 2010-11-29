@@ -4,32 +4,20 @@ module I18nHelpers
   def translation_key(translation_name, options = {})
     case translation_name
 
-    when /^you do not have any supplier orders$/
-      "notifications.messages.built_in.you_do_not_have_any_supplier_orders"
+    when /^you have no line items to confirm$/
+      "notifications.messages.built_in.you_have_no_line_items_to_confirm"
 
-    when /^supplier order was already processed$/
-      "notifications.messages.built_in.supplier_order_was_already_processed"
+    when /^you have no orders to complete$/
+      "notifications.messages.built_in.you_have_no_orders_to_complete"
 
-    when /^be specific about the supplier order number$/
-      "notifications.messages.built_in.be_specific_about_the_supplier_order_number"
+    when /^be specific about the line item number$/
+      "notifications.messages.built_in.be_specific_about_the_line_item_number"
 
-    when /^invalid action given for the supplier order$/
-      "notifications.messages.built_in.invalid_action_for_supplier_order"
+    when /^be specific about the order number$/
+      "notifications.messages.built_in.be_specific_about_the_order_number"
 
-    when /^what would you like to do with the supplier order\?$/
-      "notifications.messages.built_in.no_action_for_supplier_order"
-
-    when /^you successfully processed the supplier order$/
-      "notifications.messages.built_in.you_successfully_processed_the_supplier_order"
-
-    when /^this tracking number was already used by you$/
-      "notifications.messages.built_in.this_tracking_number_was_already_used_by_you"
-
-    when /^the tracking number is missing or invalid$/
-      "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid"
-
-    when /^you must accept the supplier order first$/
-      "notifications.messages.built_in.you_must_accept_the_supplier_order_first"
+    when /^you must confirm the line items first$/
+      "notifications.messages.built_in.you_must_confirm_the_line_items_first"
 
     when /^verify your mobile number$/
       "notifications.messages.built_in.verify_your_mobile_number"
@@ -68,14 +56,23 @@ module I18nHelpers
     when /^name is incorrect$/
       "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
 
-    when /^is incorrect$/
-      "errors.messages.incorrect"
+    when /^line item quantity must be confirmed$/
+      "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"
 
-    when /^order quantity must be confirmed$/
-      "activemodel.errors.models.supplier_order_conversation/accept_supplier_order_message.attributes.quantity.blank"
+    when /^tracking number already used by you$/
+      "activerecord.errors.models.supplier_order.attributes.tracking_number.taken"
+
+    when /^tracking number is invalid$/
+      "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
+
+    when /^# does not exist$/
+      "errors.messages.does_not_exist"
 
     when /^is required$/
       "errors.messages.blank"
+
+    when /^is incorrect$/
+      "errors.messages.incorrect"
 
     else
       raise "Can't find mapping from \"#{translation_name}\" to a translation.\n" +

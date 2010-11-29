@@ -14,12 +14,12 @@ class Test
   }
 
   def self.setup(options = {})
+    delete_old_records(:clear_all => options[:clear_all])
+    clear_jobs
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
     find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
-    delete_old_records(:clear_mobile_numbers => options[:clear_mobile_numbers])
-    clear_jobs
   end
 
   def self.incoming_text_message_query_string(options = {})
@@ -117,16 +117,19 @@ class Test
 
   private
     def self.find_or_create_user!(role, options = {})
-      options[:name] ||= PARAMS["#{role}_name".to_sym]
-      user = User.with_role(role).first || User.new(
-        :password => "foobar",
-        :password_confirmation => "foobar"
-      )
-      user.new_role = role
-      user.message_credits = 50
-      user.name = options[:name]
-      user.email = PARAMS[:test_users]["paypal_sandbox_#{role.to_s}_email".to_sym]
-      user.save!
+      user = User.with_role(role).first || User.new
+      if user.new_record?
+        options[:name] ||= PARAMS["#{role}_name".to_sym]
+        user.password = "foobar"
+        user.password_confirmation = user.password
+        user.new_role = role
+        user.message_credits = 50
+        user.name = options[:name]
+        user.email = PARAMS[
+          :test_users
+        ]["paypal_sandbox_#{role.to_s}_email".to_sym]
+        user.save!
+      end
       user
     end
 
@@ -162,12 +165,19 @@ class Test
 
    def self.delete_old_records(options = {})
      SupplierPayment.delete_all
+     LineItem.delete_all
      SupplierOrder.delete_all
      SellerOrder.delete_all
      PaypalIpn.delete_all
      IncomingTextMessage.delete_all
      OutgoingTextMessage.delete_all
-     MobileNumber.delete_all if options[:clear_mobile_numbers]
+     if options[:clear_all]
+       MobileNumber.delete_all
+       Notification.delete_all
+       PaymentAgreement.delete_all
+       Product.delete_all
+       User.delete_all
+     end
    end
 
    def self.clear_jobs

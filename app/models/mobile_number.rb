@@ -19,8 +19,11 @@ class MobileNumber < ActiveRecord::Base
 
   before_save :activate
 
-  def humanize
-    '+' + self.to_s
+  def humanize(show_unverified = true)
+    (verified? || show_unverified) ? '+' + self.to_s :
+    I18n.t(
+      "activerecord.states.mobile_number.unverified"
+    ) + " #{self.class.model_name.human}"
   end
 
   def to_s

@@ -1,7 +1,6 @@
 # Usage
 # rails runner setup_environment.rb
 require File.expand_path(File.dirname(__FILE__) + '/lib/livetest')
-
 def get_name(role)
   default_name = Test::PARAMS["#{role.to_s}_name".to_sym]
   puts "Enter the #{role.to_s.upcase}'S name. Type: 'd' for default: '#{default_name}'"
@@ -9,8 +8,8 @@ def get_name(role)
   response == "d" ? default_name : response
 end
 
-def clear_mobile_numbers?
-  puts "Do you want to clear out existing mobile numbers from the db? y/n"
+def clear_all?
+  puts "Do you want to clear out all existing records from the db? y/n"
   response = gets.chomp
   response == "y"
 end
@@ -22,17 +21,17 @@ def test_locally?
 end
 
 test_locally = test_locally?
-clear_mobile_numbers = clear_mobile_numbers?
+clear_all = clear_all?
 seller_name = get_name(:seller)
 supplier_name = get_name(:supplier)
 
 Test.setup(
   :seller_name => seller_name,
   :supplier_name => supplier_name,
-  :clear_mobile_numbers => clear_mobile_numbers
+  :clear_all => clear_all
 )
 
-if clear_mobile_numbers
+if clear_all
   require File.expand_path(File.dirname(__FILE__) + '/create_mobile_numbers')
 end
 

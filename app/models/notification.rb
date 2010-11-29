@@ -13,9 +13,17 @@ class Notification < ActiveRecord::Base
       :customer_order_number => Proc.new { |options|
         options[:seller_order].id.to_s
       },
-      :number_of_cart_items => Proc.new { |options|
+      :total_number_of_items => Proc.new { |options|
         options[:order_notification].number_of_cart_items.to_s
+      },
+      :customer_order_payment_currency => Proc.new { |options|
+        options[:order_notification].payment_currency
+      },
+      :customer_order_gross_payment => Proc.new { |options|
+        options[:order_notification].gross_payment_amount.to_s
       }
+    },
+    :supplier_order => {
     },
     :customer_address => {
       :customer_address => Proc.new { |options|
@@ -49,25 +57,17 @@ class Notification < ActiveRecord::Base
       },
       :product_verification_code => Proc.new { |options|
         options[:product].verification_code.to_s
+      },
+      :product_price => Proc.new { |options|
+        options[:product].price
       }
     },
-    :supplier_order => {
-      :product_order_number => Proc.new { |options|
-        options[:supplier_order].id.to_s
+    :line_item => {
+      :line_item_number => Proc.new { |options|
+        options[:line_item].id.to_s
       },
-      :product_order_quantity => Proc.new { |options|
-        options[:supplier_order].quantity.to_s
-      }
-    },
-    :item => {
-      :item_number => Proc.new { |options|
-        options[:item_number].to_s
-      },
-      :item_name => Proc.new { |options|
-        options[:item_name].to_s
-      },
-      :item_quantity => Proc.new { |options|
-        options[:item_quantity].to_s
+      :line_item_quantity => Proc.new { |options|
+        options[:line_item].quantity.to_s
       }
     },
     :seller => {
@@ -75,12 +75,7 @@ class Notification < ActiveRecord::Base
         options[:seller].name
       },
       :seller_mobile_number => Proc.new { |options|
-        active_mobile_number = options[:seller].active_mobile_number
-        active_mobile_number && active_mobile_number.verified? ?
-        active_mobile_number.humanize :
-        I18n.t(
-          "notifications.messages.custom.attributes.mobile_number.not_verified"
-        )
+        options[:seller].human_active_mobile_number
       },
       :seller_email => Proc.new { |options|
         options[:seller].email
@@ -91,28 +86,40 @@ class Notification < ActiveRecord::Base
         options[:supplier].name
       },
       :supplier_mobile_number => Proc.new { |options|
-        active_mobile_number = options[:supplier].active_mobile_number
-        active_mobile_number && active_mobile_number.verified? ?
-        active_mobile_number.humanize :
-        I18n.t(
-          "notifications.messages.custom.attributes.mobile_number.not_verified"
-        )
+        options[:supplier].human_active_mobile_number
       },
       :supplier_email => Proc.new { |options|
         options[:supplier].email
-      },
-      :and_or_but_not_sent => Proc.new { |options|
-        active_mobile_number = options[:supplier].active_mobile_number
-        active_mobile_number && active_mobile_number.verified? ?
-        I18n.t(
-          "notifications.messages.custom.attributes.and_or_but_not_sent.and_sent"
-        ) : I18n.t(
-          "notifications.messages.custom.attributes.and_or_but_not_sent.but_not_sent"
-        )
       }
     },
-    :tracking_number => Proc.new { |options|
-      options[:supplier_order].tracking_number.to_s
+    :suppliers => {
+      :supplier_names_and_mobile_numbers => Proc.new { |options|
+        options[:seller_order].supplier_names_and_mobile_numbers
+      }
+     },
+    :tracking_number => {
+      :smart_tracking_number_label => Proc.new { |options|
+        options[:supplier_order].tracking_number ?
+        options[:supplier_order].class.human_attribute_name(
+          :tracking_number
+        ) : ""
+      },
+      :tracking_number => Proc.new { |options|
+        options[:supplier_order].tracking_number.to_s
+      }
+    },
+    :tracking_numbers => {
+      :smart_tracking_number_label => Proc.new { |options|
+        options[:seller_order].tracking_numbers? ?
+        options[:seller_order].class.human_attribute_name(
+          :tracking_numbers
+        ) : ""
+      },
+      :tracking_numbers => Proc.new { |options|
+        options[:seller_order].tracking_numbers? ?
+        options[:seller_order].tracking_numbers :
+        ""
+      }
     },
     :supplier_payment => {
       :supplier_payment_amount => Proc.new { |options|
@@ -124,46 +131,67 @@ class Notification < ActiveRecord::Base
     }
   }
 
-  COMMON_EVENT_ATTRIBUTES = {
-    :supplier_order => EVENT_ATTRIBUTES[:seller_order].merge(
-      EVENT_ATTRIBUTES[:supplier_order]
-    ).merge(
-      EVENT_ATTRIBUTES[:product]
-    ).merge(
-      EVENT_ATTRIBUTES[:customer_address]
-    ).merge(
-      EVENT_ATTRIBUTES[:seller]
-    ).merge(
-      EVENT_ATTRIBUTES[:supplier]
-    ),
-    :seller_order => EVENT_ATTRIBUTES[:seller_order].merge(
-      :seller_name => EVENT_ATTRIBUTES[:seller][:seller_name]
-    )
-  }
+  SELLER_ORDER_ATTRIBUTES = EVENT_ATTRIBUTES[:seller_order].merge(
+    EVENT_ATTRIBUTES[:seller]
+  ).merge(
+    EVENT_ATTRIBUTES[:customer_address]
+  )
+
+  SUPPLIER_ORDER_ATTRIBUTES = SELLER_ORDER_ATTRIBUTES.merge(
+    EVENT_ATTRIBUTES[:supplier_order]
+  ).merge(
+    EVENT_ATTRIBUTES[:supplier]
+  )
+
+  LINE_ITEM_ATTRIBUTES = SUPPLIER_ORDER_ATTRIBUTES.merge(
+    EVENT_ATTRIBUTES[:line_item]
+  ).merge(
+    EVENT_ATTRIBUTES[:product]
+  )
 
   EVENTS = {
     :customer_order_created => {
-      :notification_attributes => EVENT_ATTRIBUTES[:customer_address].merge(
-        COMMON_EVENT_ATTRIBUTES[:seller_order]
+      :notification_attributes => SELLER_ORDER_ATTRIBUTES,
+      :send_notification_to => User.roles(1)
+    },
+    :customer_order_confirmed => {
+      :notification_attributes => SELLER_ORDER_ATTRIBUTES.merge(
+        EVENT_ATTRIBUTES[:suppliers]
       ),
       :send_notification_to => User.roles(1)
     },
-    :product_order_created => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
+    :customer_order_completed => {
+      :notification_attributes => SELLER_ORDER_ATTRIBUTES.merge(
+        EVENT_ATTRIBUTES[:suppliers]
+      ).merge(
+        EVENT_ATTRIBUTES[:tracking_numbers]
+      ),
+      :send_notification_to => User.roles(1)
+    },
+    :supplier_order_created => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES,
       :send_notification_to => User.roles(3)
     },
-    :product_order_accepted => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order],
+    :supplier_order_confirmed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES,
       :send_notification_to => User.roles(3)
     },
-    :product_order_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
-        :tracking_number => EVENT_ATTRIBUTES[:tracking_number]
+    :supplier_order_completed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES.merge(
+        EVENT_ATTRIBUTES[:tracking_number]
       ),
       :send_notification_to => User.roles(3)
     },
-    :supplier_payment_successfully_completed => {
-      :notification_attributes => COMMON_EVENT_ATTRIBUTES[:supplier_order].merge(
+    :line_item_created => {
+      :notification_attributes => LINE_ITEM_ATTRIBUTES,
+      :send_notification_to => User.roles(3)
+    },
+    :line_item_confirmed => {
+      :notification_attributes => LINE_ITEM_ATTRIBUTES,
+      :send_notification_to => User.roles(3)
+    },
+    :supplier_payment_completed => {
+      :notification_attributes => SUPPLIER_ORDER_ATTRIBUTES.merge(
         EVENT_ATTRIBUTES[:supplier_payment]
       ),
       :send_notification_to => User.roles(3)
@@ -278,81 +306,111 @@ class Notification < ActiveRecord::Base
     create!(
       :event => "customer_order_created",
       :for => "seller",
-      :purpose => "to inform me about the customer order details",
+      :purpose => "to inform me about a new customer order",
       :message => I18n.t(
-        "notifications.messages.custom.a_customer_completed_payment_for"
+        "notifications.messages.custom.customer_completed_payment"
       )
     )
     create!(
-      :event => "product_order_created",
-      :for => "seller",
-      :purpose => "to inform me which supplier a product order was sent to",
+      :event => "supplier_order_created",
+      :for => "supplier",
+      :purpose => "to inform the supplier about a new order",
       :message => I18n.t(
-        "notifications.messages.custom.supplier_order_was_sent_to"
+        "notifications.messages.custom.new_order_from_seller"
       )
     )
     notification = new(
-      :event => "product_order_created",
-      :for => "seller",
-      :purpose => "to inform me which supplier a product order was sent to",
+      :event => "supplier_order_created",
+      :for => "supplier",
+      :purpose => "to inform the supplier about a new order",
       :should_send => false
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "product_order_created",
-      :for => "supplier",
-      :purpose => "to inform the supplier about the product order details",
+      :event => "line_item_created",
+      :for => "seller",
+      :purpose => "to inform me which supplier a line item was sent to",
       :message => I18n.t(
-        "notifications.messages.custom.new_supplier_order_from_seller_for_the_following_item"
+        "notifications.messages.custom.line_item_was_sent_to"
       )
     )
     notification = new(
-      :event => "product_order_created",
+      :event => "line_item_created",
+      :for => "seller",
+      :purpose => "to inform me which supplier a line item was sent to",
+      :should_send => false
+    )
+    notification.supplier = notification.seller
+    notification.save!
+    create!(
+      :event => "line_item_created",
       :for => "supplier",
-      :purpose => "to inform the supplier about the product order details",
+      :purpose => "to inform the supplier about the line item details",
       :message => I18n.t(
-        "notifications.messages.custom.your_customer_bought_the_following_item"
+        "notifications.messages.custom.line_item_details_for_supplier"
+      )
+    )
+    notification = new(
+      :event => "line_item_created",
+      :for => "supplier",
+      :purpose => "to inform the supplier about the line item details",
+      :message => I18n.t(
+        "notifications.messages.custom.line_item_details_for_seller"
       )
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "product_order_accepted",
-      :for => "seller",
-      :purpose => "to inform me when a supplier accepts a product order",
-      :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
-        :processed => "ACCEPTED"
-      )
-    )
-    create!(
-      :event => "product_order_accepted",
+      :event => "supplier_order_confirmed",
       :for => "supplier",
       :purpose => "to inform the supplier of the shipping instructions",
       :message => I18n.t(
-        "notifications.messages.custom.send_the_product_to"
+        "notifications.messages.custom.send_the_order_to"
       )
     )
     create!(
-      :event => "product_order_completed",
-      :for => "seller",
-      :purpose => "to inform me when a supplier completes a product order",
+      :event => "supplier_order_completed",
+      :for => "supplier",
+      :purpose => "to confirm that the order was successfully completed",
       :message => I18n.t(
-        "notifications.messages.custom.your_supplier_processed_their_supplier_order",
-        :processed => "COMPLETED"
+        "notifications.messages.custom.you_successfully_completed_the_order"
+      )
+    )
+    create!(
+      :event => "customer_order_confirmed",
+      :for => "seller",
+      :purpose => "to inform me that the seller order has been confirmed",
+      :message => I18n.t(
+        "notifications.messages.custom.order_has_been_confirmed"
       )
     )
     notification = new(
-      :event => "product_order_completed",
+      :event => "customer_order_confirmed",
       :for => "seller",
-      :purpose => "to inform me when a supplier completes a product order",
+      :purpose => "to inform me that the customer order has been confirmed",
       :should_send => false
     )
     notification.supplier = notification.seller
     notification.save!
     create!(
-      :event => "supplier_payment_successfully_completed",
+      :event => "customer_order_completed",
+      :for => "seller",
+      :purpose => "to inform me that the customer order has been completed",
+      :message => I18n.t(
+        "notifications.messages.custom.order_has_been_completed"
+      )
+    )
+    notification = new(
+      :event => "customer_order_completed",
+      :for => "seller",
+      :purpose => "to inform me that the customer order has been completed",
+      :should_send => false
+    )
+    notification.supplier = notification.seller
+    notification.save!
+    create!(
+      :event => "supplier_payment_completed",
       :for => "seller",
       :purpose => "to inform me that my supplier has been paid",
       :message => I18n.t(
@@ -360,7 +418,7 @@ class Notification < ActiveRecord::Base
       )
     )
     create!(
-      :event => "supplier_payment_successfully_completed",
+      :event => "supplier_payment_completed",
       :for => "supplier",
       :purpose => "to inform my supplier that they have been paid",
       :message => I18n.t(

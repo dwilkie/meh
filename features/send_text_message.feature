@@ -1,3 +1,4 @@
+@action_sms
 Feature: Send text message
   In order to make money
   I want to be able to communicate with users over sms and charge for the service

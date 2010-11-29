@@ -1,127 +1,125 @@
 GIT
-  remote: git://github.com/dwilkie/action_sms.git
-  revision: 58700d73af731f4ebb31eea2071c70cc215f256c
+  remote: git://github.com/dwilkie/devise_paypal.git
+  revision: 27162f8d5d5820e7718fc5b33f39f03daafda424
   specs:
-    action_sms (0.0.3)
+    devise_paypal (0.0.1)
+      paypal-ipn (> 0.0.1)
 
 GIT
-  remote: git://github.com/dwilkie/action_sms_gateways.git
-  revision: 58109ca3b343acb1f66dc58f24fae842c087db82
+  remote: git://github.com/dwilkie/paypal
+  revision: ca5699eb7a6e78d0b265624ff3c9152a1c07bb45
   specs:
-    action_sms_gateways (0.0.7)
-      tropo_message
-
-GIT
-  remote: git://github.com/dwilkie/paypal.git
-  revision: 050981a8618d090d4bcb0dfe9210da00e87e7331
-  specs:
-    paypal-ipn (0.0.1)
-      httparty (>= 0.6.1)
+    paypal-ipn (0.0.2)
+      httparty
 
 GIT
   remote: git://github.com/plataformatec/devise.git
-  revision: 69ecbd1fa30e390ea18e76f16cc33e86b643bd7e
+  revision: 089c316f37a059532b9d5d9cdc50aaaa13a1d557
   specs:
     devise (1.2.rc)
       bcrypt-ruby (~> 2.1.2)
-      warden (~> 1.0.0)
+      orm_adapter (~> 0.0.2)
+      warden (~> 1.0.2)
 
 GEM
   remote: http://rubygems.org/
   specs:
     abstract (1.0.0)
-    actionmailer (3.0.0)
-      actionpack (= 3.0.0)
-      mail (~> 2.2.5)
-    actionpack (3.0.0)
-      activemodel (= 3.0.0)
-      activesupport (= 3.0.0)
+    action_sms (0.1.1)
+      tropo_message (>= 0.1.0)
+    actionmailer (3.0.3)
+      actionpack (= 3.0.3)
+      mail (~> 2.2.9)
+    actionpack (3.0.3)
+      activemodel (= 3.0.3)
+      activesupport (= 3.0.3)
       builder (~> 2.1.2)
       erubis (~> 2.6.6)
-      i18n (~> 0.4.1)
+      i18n (~> 0.4)
       rack (~> 1.2.1)
-      rack-mount (~> 0.6.12)
-      rack-test (~> 0.5.4)
+      rack-mount (~> 0.6.13)
+      rack-test (~> 0.5.6)
       tzinfo (~> 0.3.23)
-    activemodel (3.0.0)
-      activesupport (= 3.0.0)
+    activemodel (3.0.3)
+      activesupport (= 3.0.3)
       builder (~> 2.1.2)
-      i18n (~> 0.4.1)
-    activerecord (3.0.0)
-      activemodel (= 3.0.0)
-      activesupport (= 3.0.0)
-      arel (~> 1.0.0)
+      i18n (~> 0.4)
+    activerecord (3.0.3)
+      activemodel (= 3.0.3)
+      activesupport (= 3.0.3)
+      arel (~> 2.0.2)
       tzinfo (~> 0.3.23)
-    activeresource (3.0.0)
-      activemodel (= 3.0.0)
-      activesupport (= 3.0.0)
-    activesupport (3.0.0)
-    arel (1.0.1)
-      activesupport (~> 3.0.0)
+    activeresource (3.0.3)
+      activemodel (= 3.0.3)
+      activesupport (= 3.0.3)
+    activesupport (3.0.3)
+    arel (2.0.4)
     bcrypt-ruby (2.1.2)
     builder (2.1.2)
     conversational (0.3.2)
     crack (0.1.8)
     daemons (1.1.0)
-    delayed_job (2.1.0.pre2)
+    delayed_job (2.1.1)
       activesupport (~> 3.0)
       daemons
     erubis (2.6.6)
       abstract (>= 1.0.0)
-    haml (3.0.21)
-    haml-rails (0.3.1)
-      actionpack (~> 3.0.0)
-      activesupport (~> 3.0.0)
-      haml (~> 3.0.18)
-      railties (~> 3.0.0)
+    haml (3.0.24)
+    haml-rails (0.3.4)
+      actionpack (~> 3.0)
+      activesupport (~> 3.0)
+      haml (~> 3.0)
+      railties (~> 3.0)
     httparty (0.6.1)
       crack (= 0.1.8)
-    i18n (0.4.1)
-    mail (2.2.6.1)
+    i18n (0.4.2)
+    mail (2.2.10)
       activesupport (>= 2.3.6)
-      mime-types
-      treetop (>= 1.4.5)
+      i18n (~> 0.4.1)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
     mime-types (1.16)
-    money (3.1.0)
+    money (3.1.5)
+    orm_adapter (0.0.3)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
-    rack-test (0.5.4)
+    rack-test (0.5.6)
       rack (>= 1.0)
-    rails (3.0.0)
-      actionmailer (= 3.0.0)
-      actionpack (= 3.0.0)
-      activerecord (= 3.0.0)
-      activeresource (= 3.0.0)
-      activesupport (= 3.0.0)
-      bundler (~> 1.0.0)
-      railties (= 3.0.0)
-    railties (3.0.0)
-      actionpack (= 3.0.0)
-      activesupport (= 3.0.0)
-      rake (>= 0.8.4)
-      thor (~> 0.14.0)
+    rails (3.0.3)
+      actionmailer (= 3.0.3)
+      actionpack (= 3.0.3)
+      activerecord (= 3.0.3)
+      activeresource (= 3.0.3)
+      activesupport (= 3.0.3)
+      bundler (~> 1.0)
+      railties (= 3.0.3)
+    railties (3.0.3)
+      actionpack (= 3.0.3)
+      activesupport (= 3.0.3)
+      rake (>= 0.8.7)
+      thor (~> 0.14.4)
     rake (0.8.7)
-    thor (0.14.0)
-    treetop (1.4.8)
+    thor (0.14.6)
+    treetop (1.4.9)
       polyglot (>= 0.3.1)
-    tropo_message (0.0.5)
+    tropo_message (0.1.0)
     tzinfo (0.3.23)
-    warden (1.0.0)
+    warden (1.0.2)
       rack (>= 1.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_sms!
-  action_sms_gateways!
+  action_sms
   conversational
   delayed_job (>= 2.1.0.pre2)
   devise!
+  devise_paypal!
   haml-rails
   httparty
   money
   paypal-ipn!
-  rails (= 3.0.0)
+  rails (= 3.0.3)

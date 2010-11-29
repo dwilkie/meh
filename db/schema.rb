@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100902062808) do
+ActiveRecord::Schema.define(:version => 20101123150305) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -35,6 +35,18 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   end
 
   add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
+
+  create_table "line_items", :force => true do |t|
+    t.integer  "quantity",          :null => false
+    t.integer  "product_id",        :null => false
+    t.integer  "supplier_id",       :null => false
+    t.integer  "supplier_order_id", :null => false
+    t.datetime "confirmed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_items", ["product_id", "supplier_order_id"], :name => "index_line_items_on_product_id_and_supplier_order_id", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",      :null => false
@@ -85,10 +97,11 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.string   "event"
     t.integer  "supplier_id", :null => false
     t.integer  "seller_id",   :null => false
-    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false
@@ -105,6 +118,7 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
   create_table "products", :force => true do |t|
     t.string   "number",                           :null => false
     t.string   "name",                             :null => false
+    t.string   "price"
     t.string   "verification_code"
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency"
@@ -121,23 +135,23 @@ ActiveRecord::Schema.define(:version => 20100902062808) do
     t.integer  "order_notification_id",   :null => false
     t.string   "order_notification_type", :null => false
     t.integer  "seller_id",               :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "supplier_orders", :force => true do |t|
-    t.integer  "quantity",        :null => false
-    t.integer  "product_id",      :null => false
-    t.integer  "supplier_id",     :null => false
-    t.integer  "seller_order_id", :null => false
-    t.string   "tracking_number"
-    t.datetime "accepted_at"
+    t.datetime "confirmed_at"
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "supplier_orders", ["product_id", "seller_order_id"], :name => "index_supplier_orders_on_product_id_and_seller_order_id", :unique => true
+  create_table "supplier_orders", :force => true do |t|
+    t.integer  "supplier_id",     :null => false
+    t.integer  "seller_order_id", :null => false
+    t.string   "tracking_number"
+    t.datetime "confirmed_at"
+    t.datetime "completed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "supplier_orders", ["supplier_id", "seller_order_id"], :name => "index_supplier_orders_on_supplier_id_and_seller_order_id", :unique => true
 
   create_table "supplier_payments", :force => true do |t|
     t.integer  "cents",             :default => 0, :null => false

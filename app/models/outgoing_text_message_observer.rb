@@ -2,12 +2,12 @@ class OutgoingTextMessageObserver < ActiveRecord::Observer
   def after_create(outgoing_text_message)
     payer = outgoing_text_message.payer
     not_enough_credits(payer, outgoing_text_message) unless
-      outgoing_text_message.should_send?
+      outgoing_text_message.enough_credits?
   end
 
   private
     def not_enough_credits(payer, outgoing_text_message)
-      if payer.message_credits > -1 && payer.active_mobile_number
+      if payer.message_credits > -1
         notification = GeneralNotification.new(:with => payer)
         notification.force_send = true
         payer_name = payer.can_text? ? " #{payer.name}" : ""

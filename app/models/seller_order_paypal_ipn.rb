@@ -1,6 +1,7 @@
 class SellerOrderPaypalIpn < PaypalIpn
   include Paypal::Ipn::Item
   include Paypal::Ipn::Buyer
+  include Paypal::Ipn::Payment
 
   has_one :seller_order, :as => :order_notification
   has_one :seller,

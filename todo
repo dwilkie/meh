@@ -1,17 +1,15 @@
-Test locally with POSTRSQL
+Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
+Allow user to verify number by simply texting their name
+Fix notifications for payment
+Modify behaviour so supplier order introduction message contains the # of items
+Add notification so that seller sees the address
+Add message commands "orders" (o) and "items" (i) to list orders and items (see new notifications.txt)
+Fix UTF-8 incoming and outgoing messages with Tropo
+Email notifications
+Test locally with postgreSQL
 Change valid message commands to have more logic (i.e. only display command for verifying mobile number if mobile number is not verified etc)
-Change default behaviour of mn to be verify
-Investigate why numbers are not being sent with the + symbol
-Design for signup (now we know its paypals permissions API)
-Make extension for devise
-Store token in the session (retieve it asynchronously delayed job)
-Checkout devise token authenticatable for signing in users from paypal
-Build a paypal extension for devise instead of storing the code in your app
-Add logic to paypal gem to get token
-Modify validation and devise mailout for users (allow suppliers to be created with just a name) read the devise readme in detail!
-Launch staging app
+Change default behaviour of mn to be verify & change default action to be verify if the number is not verified
+Modify validation for devise (allow suppliers to be created with just a name)
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
-Launch staging app (read heroku email)
 Live testing
-Launch Beta
 

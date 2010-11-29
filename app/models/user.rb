@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
-  devise :database_authenticatable, #:paypal_authable, :paypal_permissions_authable,
+  devise :database_authenticatable, :paypal_authable,
          :recoverable, :rememberable, :trackable, :validatable
 
   # Setup accessible (or protected) attributes for your model
@@ -86,6 +86,9 @@ class User < ActiveRecord::Base
   has_many   :supplier_orders,
              :foreign_key => "supplier_id"
 
+  has_many   :line_items,
+             :foreign_key => "supplier_id"
+
   has_many   :incoming_payments,
              :foreign_key => "supplier_id",
              :class_name => "SupplierPayment"
@@ -117,6 +120,10 @@ class User < ActiveRecord::Base
   def can_text?
     active_mobile_number = self.active_mobile_number
     active_mobile_number && active_mobile_number.verified?
+  end
+
+  def human_active_mobile_number
+    active_mobile_number ? active_mobile_number.humanize : ""
   end
 
   def cannot_text?

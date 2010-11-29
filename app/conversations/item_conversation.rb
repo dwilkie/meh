@@ -1,0 +1,3 @@
+class ItemConversation < LineItemConversation
+end
+

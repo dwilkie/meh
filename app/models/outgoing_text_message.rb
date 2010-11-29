@@ -6,14 +6,13 @@ class OutgoingTextMessage < ActiveRecord::Base
     end
 
     def perform
-      gateway_adapter = SMSNotifier.connection
-      gateway_response = gateway_adapter.deliver(
+      gateway_response = ActionSms::Base.deliver(
         outgoing_text_message,
         :filter_response => true
       )
-      gateway_message_id = gateway_adapter.message_id(gateway_response)
+      gateway_message_id = ActionSms::Base.message_id(gateway_response)
       raise(Exception, gateway_response) unless
-        gateway_adapter.delivery_request_successful?(gateway_response)
+        ActionSms::Base.delivery_request_successful?(gateway_response)
       outgoing_text_message.update_attributes(
         :gateway_response => gateway_response,
         :gateway_message_id => gateway_message_id,
@@ -37,7 +36,7 @@ class OutgoingTextMessage < ActiveRecord::Base
     end
   end
 
-  attr_accessor :force_send
+  attr_accessor :force_send, :cancel_send
 
   belongs_to :mobile_number
   belongs_to :payer, :class_name => "User"
@@ -57,7 +56,7 @@ class OutgoingTextMessage < ActiveRecord::Base
             :presence => true
 
   def self.find_by_delivery_receipt(delivery_receipt)
-    gateway_message_id = SMSNotifier.connection.message_id(delivery_receipt)
+    gateway_message_id = ActionSms::Base.message_id(delivery_receipt)
     OutgoingTextMessage.where(
       ["gateway_message_id = ?", gateway_message_id]
     ).first
@@ -69,8 +68,16 @@ class OutgoingTextMessage < ActiveRecord::Base
 
   def should_send?
     @should_send || @should_send = (
-      force_send || payer.message_credits - credits >= 0
+      force_send || (enough_credits? && !cancel_send)
     )
+  end
+
+  def enough_credits?
+    payer.message_credits - credits >= 0
+  end
+
+  def queued_for_sending?
+    !queued_for_sending_at.nil?
   end
 
   private

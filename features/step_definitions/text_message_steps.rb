@@ -7,14 +7,15 @@ Given /^there are (not )?enough credits available in the sms gateway$/ do |expec
 end
 
 Given /^a sent outgoing text message for message id: "([^"]*)" exists$/ do |msg_id|
-  sms_gateway = ActionSms::Base.connection
-  message_id = sms_gateway.sample_message_id(:message_id => msg_id)
-  delivery_response = sms_gateway.sample_delivery_response(:message_id => msg_id)
+  message_id = ActionSms::Base.sample_message_id(:message_id => msg_id)
+  delivery_response = ActionSms::Base.sample_delivery_response_with_message_id(
+    msg_id
+  )
   Given %{a sent outgoing text message exists with gateway_message_id: "#{message_id}", gateway_response: "#{delivery_response}"}
 end
 
 When /^(?:|I )text "([^\"]*)" from "([^\"]*)"$/ do |message, sender|
-  params = ActionSms::Base.connection.sample_incoming_sms(
+  params = ActionSms::Base.sample_incoming_sms(
     :message => message,
     :from => sender
   )
@@ -30,7 +31,7 @@ When /^a text message delivery receipt is received$/ do
 end
 
 When /^a (duplicate )?text message delivery receipt is received for message id: "([^\"]*)"(?: with the following params: "([^\"]*)")?$/ do |duplicate, msg_id, receipt_params|
-  params = ActionSms::Base.connection.sample_delivery_receipt(
+  params = ActionSms::Base.sample_delivery_receipt(
     :message_id => msg_id
   )
   params.merge!(instance_eval(receipt_params)) if receipt_params
@@ -54,7 +55,7 @@ When /^an incoming text message is received$/ do
 end
 
 When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received(?: with the following params: "([^\"]*)")?$/ do |duplicate, authentic, from, message_params|
-  params = ActionSms::Base.connection.sample_incoming_sms(
+  params = ActionSms::Base.sample_incoming_sms(
     :from => from,
     :authentic => !authentic.nil?
   )

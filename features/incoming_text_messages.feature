@@ -1,3 +1,4 @@
+@action_sms
 Feature: Incoming Text Messages
   In order to be sure that an incoming text message came from SMSGlobal
   I want to check that the incoming text message is in reply to a message sent from this application
@@ -58,4 +59,8 @@ Feature: Incoming Text Messages
     When an incoming text message is received
 
     Then an incoming text message should not exist
+
+  @current
+  Scenario: Incoming text message contains UTF-8 characters
+    When I text "Love u to sweety\xE47\xE14\xE1a" from "61234433231"
 

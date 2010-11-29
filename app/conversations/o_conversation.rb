@@ -1,0 +1,4 @@
+class OConversation < OrderConversation
+
+end
+
