@@ -5,13 +5,11 @@ class CreateTrackingNumberFormats < ActiveRecord::Migration
       t.boolean    :required,     :null => false
       t.references :seller,       :null => false
       t.references :supplier
-      t.references :product
       t.timestamps
     end
     # name => max length is 64 chars
     add_index(:tracking_number_formats,
-      [:seller_id, :supplier_id, :product_id], :unique => true,
-      :name => "index_tracking_number_formats_unique"
+      [:seller_id, :supplier_id], :unique => true
     )
   end
 

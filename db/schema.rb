@@ -93,10 +93,11 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
   add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id", :unique => true
 
   create_table "payment_agreements", :force => true do |t|
-    t.boolean  "enabled",     :null => false
+    t.boolean  "enabled",           :null => false
     t.string   "event"
-    t.integer  "supplier_id", :null => false
-    t.integer  "seller_id",   :null => false
+    t.integer  "supplier_id",       :null => false
+    t.integer  "seller_id",         :null => false
+    t.integer  "supplier_order_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -183,12 +184,11 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
     t.boolean  "required",    :null => false
     t.integer  "seller_id",   :null => false
     t.integer  "supplier_id"
-    t.integer  "product_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "tracking_number_formats", ["seller_id", "supplier_id", "product_id"], :name => "index_tracking_number_formats_unique", :unique => true
+  add_index "tracking_number_formats", ["seller_id", "supplier_id"], :name => "index_tracking_number_formats_on_seller_id_and_supplier_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
