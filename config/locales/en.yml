@@ -2,13 +2,13 @@ en:
   notifications:
     messages:
       custom:
-        customer_completed_payment: "Hi <seller_name>, u just sold <total_number_of_items> item(s) totalling <customer_order_gross_payment> <customer_order_payment_currency> (order ref: #<customer_order_number>). Order details will be sent to u shortly"
+        customer_completed_payment: "Hi <seller_name>, u just sold <total_number_of_items> item(s) totalling <customer_order_gross_payment> <customer_order_payment_currency> (order ref: #<customer_order_number>). Order details will follow shortly"
         line_item_was_sent_to: "Order #<customer_order_number>, item #<line_item_number>:
 
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
 
         Status: Sent to <supplier_name> (<supplier_mobile_number>)"
-        new_order_from_seller: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>). Order details will be sent to u shortly"
+        new_order_from_seller: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>). Order details will follow shortly"
         line_item_details_for_supplier: "Order #<customer_order_number>, item #<line_item_number>:
 
         <line_item_quantity> x <product_number>, \"<product_name>\"
