@@ -1,5 +1,4 @@
 class PaymentAgreement < ActiveRecord::Base
-  belongs_to :product
 
   belongs_to :supplier,
              :class_name => "User"
@@ -9,7 +8,7 @@ class PaymentAgreement < ActiveRecord::Base
 
   EVENTS = [
       "supplier_order_created",
-      "supplier_order_accepted",
+      "supplier_order_confirmed",
       "supplier_order_completed"
     ]
 
@@ -21,17 +20,8 @@ class PaymentAgreement < ActiveRecord::Base
   end
 
   validates  :supplier_id,
-             :uniqueness => {
-               :scope => [
-                 :product_id,
-                 :seller_id
-               ]
-             },
+             :uniqueness => { :scope => :seller_id },
              :presence => true
-
-  validates :product_id,
-            :uniqueness => true,
-            :allow_nil => true
 
   validates :supplier,
             :is_not_the_seller => true,
@@ -48,18 +38,8 @@ class PaymentAgreement < ActiveRecord::Base
     self.enabled = true if self.enabled.nil?
   end
 
-  before_validation :link_seller_and_supplier
-
   def self.for_event(event, supplier)
     where(:event => event, :supplier_id => supplier.id)
   end
-
-  private
-    def link_seller_and_supplier
-      if product
-        self.seller = product.seller
-        self.supplier = product.supplier
-      end
-    end
 end
 
