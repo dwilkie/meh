@@ -1,5 +1,4 @@
 class PaymentAgreement < ActiveRecord::Base
-  belongs_to :supplier_order
 
   belongs_to :supplier,
              :class_name => "User"
@@ -44,13 +43,5 @@ class PaymentAgreement < ActiveRecord::Base
   def self.for_event(event, supplier)
     where(:event => event, :supplier_id => supplier.id)
   end
-
-  private
-    def link_seller_and_supplier
-      if supplier_order
-        self.seller = supplier_order.seller_order.seller
-        self.supplier = supplier_order.supplier
-      end
-    end
 end
 

@@ -5,7 +5,6 @@ class CreatePaymentAgreements < ActiveRecord::Migration
       t.string     :event
       t.references :supplier,       :null => false
       t.references :seller,         :null => false
-      t.references :supplier_order, :null => false
       t.timestamps
     end
     add_index :payment_agreements,
