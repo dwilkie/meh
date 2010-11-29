@@ -141,7 +141,7 @@ class Test
        :seller => seller,
        :supplier => supplier
      )
-     payment_agreement.event = "product_order_accepted"
+     payment_agreement.event = "product_order_confirmed"
      payment_agreement.save!
      payment_agreement
    end

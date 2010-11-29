@@ -9,7 +9,7 @@ class PaymentAgreement < ActiveRecord::Base
 
   EVENTS = [
       "supplier_order_created",
-      "supplier_order_accepted",
+      "supplier_order_confirmed",
       "supplier_order_completed"
     ]
 
