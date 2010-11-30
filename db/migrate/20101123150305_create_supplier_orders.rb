@@ -1,8 +1,9 @@
 class CreateSupplierOrders < ActiveRecord::Migration
   def self.up
     create_table :supplier_orders do |t|
-      t.references :supplier,        :null => false
-      t.references :seller_order,    :null => false
+      t.references :supplier,             :null => false
+      t.references :seller_order,         :null => false
+      t.integer    :number_of_line_items, :null => false
       t.string     :tracking_number
       t.datetime   :confirmed_at
       t.datetime   :completed_at

@@ -18,11 +18,10 @@ class SellerOrderObserver < ActiveRecord::Observer
       supplier_orders = build_supplier_orders(seller_order)
       supplier_orders.each do |supplier_id, line_items|
         build_line_item_indexes(line_items)
-        supplier_order = seller_order.supplier_orders.build(
-          :supplier_id => supplier_id
+        supplier_order = seller_order.supplier_orders.create!(
+          :supplier_id => supplier_id,
+          :number_of_line_items => line_items.length
         )
-        supplier_order.line_item_count = line_items.length
-        supplier_order.save!
         supplier_order.line_items = line_items
         supplier_order.save!
       end

@@ -11,6 +11,7 @@ class SupplierOrder < ActiveRecord::Base
 
   validates :seller_order,
             :supplier,
+            :number_of_line_items,
             :presence => true
 
   validates :supplier_id,
@@ -23,8 +24,6 @@ class SupplierOrder < ActiveRecord::Base
   scope :incomplete, where(:completed_at => nil)
   scope :unconfirmed, where(:confirmed_at => nil)
 
-  attr_accessor :line_item_count
-
   def supplier_total
     line_items.each do |line_item|
       line_item_subtotal = line_item.supplier_subtotal
@@ -32,10 +31,6 @@ class SupplierOrder < ActiveRecord::Base
       total ? total += line_item_subtotal : line_item_subtotal
     end
     total if total
-  end
-
-  def line_item_count
-    @line_item_count || line_items.count
   end
 
   def human_tracking_number
@@ -51,10 +46,6 @@ class SupplierOrder < ActiveRecord::Base
       line_item_numbers << "##{line_item.id}"
     end
     line_item_numbers.to_sentence
-  end
-
-  def number_of_line_items
-    line_items.count
   end
 
   def confirmed?
@@ -81,12 +72,6 @@ class SupplierOrder < ActiveRecord::Base
     self.update_attributes!(
       :confirmed_at => Time.now
     ) if line_items.unconfirmed.empty?
-  end
-
-  def self.find_or_create_for!(supplier)
-    record = where(:supplier_id => supplier.id).first
-    record = scoped.create!(:supplier => supplier) unless record
-    record
   end
 end
 

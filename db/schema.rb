@@ -148,8 +148,9 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
   end
 
   create_table "supplier_orders", :force => true do |t|
-    t.integer  "supplier_id",     :null => false
-    t.integer  "seller_order_id", :null => false
+    t.integer  "supplier_id",          :null => false
+    t.integer  "seller_order_id",      :null => false
+    t.integer  "number_of_line_items", :null => false
     t.string   "tracking_number"
     t.datetime "confirmed_at"
     t.datetime "completed_at"

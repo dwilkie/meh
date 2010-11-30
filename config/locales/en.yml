@@ -7,7 +7,7 @@ en:
 
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
 
-        Status: Sent to <supplier_name> (<supplier_mobile_number>)"
+        Delegated to <supplier_name> (<supplier_mobile_number>)"
         new_order_from_seller: "Hi <supplier_name>, u have a new order (ref: #<customer_order_number>) from <seller_name> (<seller_mobile_number>) for <number_of_items_in_supplier_order> item(s). Order details will follow shortly"
         line_item_details_for_supplier: "Order #<customer_order_number>, item #<line_item_number>, <line_item_supplier_order_index>/<number_of_items_in_supplier_order>:
 
@@ -16,7 +16,9 @@ en:
         Confirm by replying with: \"ci <qty>\""
         line_item_details_for_seller: "Order #<customer_order_number>, item #<line_item_number>, <line_item_customer_order_index>/<total_number_of_items>:
 
-        <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>"
+        <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
+
+        Pls ship to customer"
         order_has_been_confirmed: "Hi <seller_name>, Order #<customer_order_number> has been confirmed by <supplier_names_and_mobile_numbers>"
         order_has_been_completed: "Hi <seller_name>, Order #<customer_order_number> has been shipped by <supplier_names_and_mobile_numbers>. <smart_tracking_number_label> <tracking_numbers>"
         send_the_order_to: "<supplier_name>, pls ship order #<customer_order_number> to:

@@ -25,7 +25,7 @@ class Notification < ActiveRecord::Base
     },
     :supplier_order => {
       :number_of_items_in_supplier_order => Proc.new { |options|
-        options[:supplier_order].line_item_count.to_s
+        options[:supplier_order].number_of_line_items.to_s
       }
     },
     :customer_address => {
