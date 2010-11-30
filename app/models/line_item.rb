@@ -5,6 +5,8 @@ class LineItem < ActiveRecord::Base
 
   belongs_to :supplier_order
 
+  belongs_to :seller_order
+
   belongs_to :product
 
   before_validation :link_supplier
@@ -13,11 +15,23 @@ class LineItem < ActiveRecord::Base
 
   validates :supplier,
             :product,
+            :seller_order,
             :supplier_order,
             :quantity,
+            :seller_order_index,
+            :supplier_order_index,
             :presence => true
 
   validates :product_id,
+            :uniqueness => {:scope => :seller_order_id}
+
+  validates :product_id,
+            :uniqueness => {:scope => :supplier_order_id}
+
+  validates :seller_order_index,
+            :uniqueness => {:scope => :seller_order_id}
+
+  validates :supplier_order_index,
             :uniqueness => {:scope => :supplier_order_id}
 
   def supplier_subtotal

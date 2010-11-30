@@ -24,6 +24,9 @@ class Notification < ActiveRecord::Base
       }
     },
     :supplier_order => {
+      :number_of_items_in_supplier_order => Proc.new { |options|
+        options[:supplier_order].line_item_count.to_s
+      }
     },
     :customer_address => {
       :customer_address => Proc.new { |options|
@@ -68,6 +71,12 @@ class Notification < ActiveRecord::Base
       },
       :line_item_quantity => Proc.new { |options|
         options[:line_item].quantity.to_s
+      },
+      :line_item_customer_order_index => Proc.new { |options|
+        options[:line_item].seller_order_index.to_s
+      },
+      :line_item_supplier_order_index => Proc.new { |options|
+        options[:line_item].supplier_order_index.to_s
       }
     },
     :seller => {
@@ -319,6 +328,16 @@ class Notification < ActiveRecord::Base
         "notifications.messages.custom.new_order_from_seller"
       )
     )
+    notification = new(
+      :event => "supplier_order_created",
+      :for => "seller",
+      :purpose => "to inform me about the shipping instructions",
+      :message => I18n.t(
+        "notifications.messages.custom.send_the_order_to"
+      )
+    )
+    notification.supplier = notification.seller
+    notification.save!
     notification = new(
       :event => "supplier_order_created",
       :for => "supplier",

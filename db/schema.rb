@@ -37,16 +37,22 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
   add_index "incoming_text_messages", ["params"], :name => "index_incoming_text_messages_on_params", :unique => true
 
   create_table "line_items", :force => true do |t|
-    t.integer  "quantity",          :null => false
-    t.integer  "product_id",        :null => false
-    t.integer  "supplier_id",       :null => false
-    t.integer  "supplier_order_id", :null => false
+    t.integer  "quantity",             :null => false
+    t.integer  "product_id",           :null => false
+    t.integer  "supplier_id",          :null => false
+    t.integer  "seller_order_id",      :null => false
+    t.integer  "supplier_order_id",    :null => false
+    t.integer  "seller_order_index",   :null => false
+    t.integer  "supplier_order_index", :null => false
     t.datetime "confirmed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "line_items", ["product_id", "seller_order_id"], :name => "index_line_items_on_product_id_and_seller_order_id", :unique => true
   add_index "line_items", ["product_id", "supplier_order_id"], :name => "index_line_items_on_product_id_and_supplier_order_id", :unique => true
+  add_index "line_items", ["seller_order_index", "seller_order_id"], :name => "index_line_items_on_seller_order_index_and_seller_order_id", :unique => true
+  add_index "line_items", ["supplier_order_index", "supplier_order_id"], :name => "index_line_items_on_supplier_order_index_and_supplier_order_id", :unique => true
 
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",      :null => false

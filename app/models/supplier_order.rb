@@ -23,6 +23,8 @@ class SupplierOrder < ActiveRecord::Base
   scope :incomplete, where(:completed_at => nil)
   scope :unconfirmed, where(:confirmed_at => nil)
 
+  attr_accessor :line_item_count
+
   def supplier_total
     line_items.each do |line_item|
       line_item_subtotal = line_item.supplier_subtotal
@@ -30,6 +32,10 @@ class SupplierOrder < ActiveRecord::Base
       total ? total += line_item_subtotal : line_item_subtotal
     end
     total if total
+  end
+
+  def line_item_count
+    @line_item_count || line_items.count
   end
 
   def human_tracking_number

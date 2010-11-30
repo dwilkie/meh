@@ -63,7 +63,7 @@ Feature: Create line items from an order notification
     And the seller should be that outgoing text message's payer
     And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item(s). Order details will be sent to u shortly
+    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item(s). Order details will follow shortly
     """
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be

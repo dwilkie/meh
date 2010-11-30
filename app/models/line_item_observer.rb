@@ -14,7 +14,7 @@ class LineItemObserver < ActiveRecord::Observer
     def notify(line_item, event)
       product = line_item.product
       supplier_order = line_item.supplier_order
-      seller_order = supplier_order.seller_order
+      seller_order = line_item.seller_order
       seller = seller_order.seller
       supplier = line_item.supplier
       order_notification = seller_order.order_notification
