@@ -1,9 +1,4 @@
 class OrderConversation < IncomingTextMessageConversation
-
-  def require_verified_mobile_number?
-    true
-  end
-
   def process
     if action != "complete" && action != "c" && message_words.first == topic
       self.params.insert(0, action)

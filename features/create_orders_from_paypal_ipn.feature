@@ -193,7 +193,6 @@ Feature: Create orders from a Paypal IPN
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should include "12345790063"
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should include "Model Ship - The Titanic"
 
-  @current
   Scenario: A Paypal IPN for 3 known items and 2 unknown item is received
     Given another supplier: "Andy" exists with name: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "614121223322", user: supplier: "Andy"

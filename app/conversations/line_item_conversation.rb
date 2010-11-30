@@ -1,5 +1,4 @@
 class LineItemConversation < IncomingTextMessageConversation
-
   def process
     if action != "confirm" && action != "c" && message_words.first == topic
       self.params.insert(0, action)
@@ -8,10 +7,6 @@ class LineItemConversation < IncomingTextMessageConversation
     else
       confirm
     end
-  end
-
-  def require_verified_mobile_number?
-    true
   end
 
   private

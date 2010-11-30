@@ -9,7 +9,6 @@ class MobileNumberObserver < ActiveRecord::Observer
     def request_verification(mobile_number)
       if user = mobile_number.user
         notifier = GeneralNotification.new(:with => user)
-        notifier.payer = user.outgoing_text_messages_payer
         notifier.force_send = true
         notifier.notify(
           I18n.t(
