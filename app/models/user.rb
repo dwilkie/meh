@@ -110,13 +110,6 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :password_required?
 
-  # returns the payer for text messages sent to this user
-  def outgoing_text_messages_payer
-    roles.count == 1 &&
-      is?(:supplier) &&
-      sellers.count == 1 ? sellers.first : self
-  end
-
   def can_text?
     active_mobile_number = self.active_mobile_number
     active_mobile_number && active_mobile_number.verified?

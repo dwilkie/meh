@@ -153,8 +153,7 @@ class Test
      ).first || Product.new(
        :seller => seller,
        :supplier => supplier,
-       :name => "Some product",
-       :verification_code => "XYZ123"
+       :name => "Some product"
      )
      product.cents = 2000
      product.currency = "AUD"

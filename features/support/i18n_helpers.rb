@@ -22,14 +22,8 @@ module I18nHelpers
     when /^verify your mobile number$/
       "notifications.messages.built_in.verify_your_mobile_number"
 
-    when /^invalid action for mobile number$/
-      "notifications.messages.built_in.invalid_action_for_mobile_number"
-
-    when /^no action for mobile number$/
-      "notifications.messages.built_in.no_action_for_mobile_number"
-
-    when /^you successfully verified your mobile number$/
-      "notifications.messages.built_in.you_successfully_verified_your_mobile_number"
+    when /^your mobile number is verified$/
+      "notifications.messages.built_in.your_mobile_number_is_verified"
 
     when /^we did not pay your supplier$/
       "notifications.messages.built_in.we_did_not_pay_your_supplier"
@@ -40,21 +34,14 @@ module I18nHelpers
     when /^open a paypal account to claim your payment$/
       "notifications.messages.built_in.open_a_paypal_account_to_claim_your_payment"
 
-    when /^the name is missing or incorrect$/
-      "notifications.messages.built_in.the_name_is_missing_or_incorrect"
-
-    when /^you must verify your mobile number to use this feature$/
-      "notifications.messages.built_in.you_must_verify_your_mobile_number_to_use_this_feature"
-
     when /^valid message commands are$/
       "notifications.messages.built_in.valid_message_commands_are"
 
     when /^you do not have enough message credits left$/
       "notifications.messages.built_in.you_do_not_have_enough_message_credits_left"
 
-
     when /^name is incorrect$/
-      "activemodel.errors.models.mobile_number_conversation/verify_mobile_number_message.attributes.name.incorrect"
+      "activemodel.errors.models.unknown_topic_conversation.verify_mobile_number_message.attributes.name.incorrect"
 
     when /^line item quantity must be confirmed$/
       "activemodel.errors.models.line_item_conversation.confirm_line_item_message.attributes.quantity.blank"

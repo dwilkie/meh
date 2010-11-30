@@ -5,14 +5,16 @@ Feature: Payment Agreement
 
   Background:
     Given a seller exists with name: "Dave"
+    And a verified mobile number exists with user: the seller, number: ""
     And a supplier: "Fon" exists with name: "Fon"
-    And a mobile number exists with user: the seller
+    And a verified mobile number exists with user: the supplier
     And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB", number: "19022331123", name: "Model Ship - The Titanic"
-    And a supplier order exists for the product with quantity: 4
+    And a line item exists for the product with quantity: 4
+    Then a supplier order should exist
 
   Scenario Outline: I have set up a payment agreement with my supplier
     Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "<event>"
-    And the supplier order <is_not_yet_or_was_already> accepted
+    And the supplier order <is_not_yet_or_was_already> confirmed
 
     When the supplier <processes> the supplier order
 
@@ -20,36 +22,28 @@ Feature: Payment Agreement
     And the most recent job in the queue should be to send the supplier payment
 
     Examples:
-     | event                   | is_not_yet_or_was_already | processes |
-     | supplier_order_accepted  | is not yet                | accepts   |
+     | event                    | is_not_yet_or_was_already | processes |
+     | supplier_order_confirmed | is not yet                | confirms  |
      | supplier_order_completed | was already               | completes |
 
-  Scenario: I have set up a payment agreement for when a supplier order is created
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_created"
-    And a product exists with supplier: the supplier, seller: the seller, cents: "1200", currency: "THB"
-
-    When a supplier order is created for the product with quantity: 1
-
-    Then a supplier payment should exist with supplier_order_id: the supplier order, cents: "1200", currency: "THB", seller_id: the seller, supplier_id: the supplier
-    And the most recent job in the queue should be to send the supplier payment
-
-  Scenario Outline: I have set up a payment agreement with my supplier but the product's supplier price is zero
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"
+  @current
+  Scenario Outline: I have set up a payment agreement with my supplier but payment amount for this product would be 0
+    Given I update the product with cents: "0"
+    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed"
     And the mobile number <is_not_yet_or_was_already> verified
-    And a product exists with supplier: the supplier, seller: the seller, cents: "0", number: "120848121933", name: "A Rubber Dingy"
-    And a supplier order exists for the product with quantity: 4
-    And the supplier order is not yet accepted
 
-    When the supplier accepts the supplier order
+    When the supplier confirms the supplier order
 
     Then a supplier payment should not exist
-    And the most recent outgoing text message destined for the mobile number should <be_or_not_be> a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "No verified number!", supplier_order_quantity: "4", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "amount would have been 0"
+    And the most recent outgoing text message destined for the mobile number should be a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "", supplier_order_quantity: "4", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "amount would have been 0"
     And the seller should be that outgoing text message's payer
 
     Examples:
      | is_not_yet_or_was_already | be_or_not_be |
      | is not yet                | not be       |
      | was already               | be           |
+
+  Scenario: The products have different currencies
 
   Scenario Outline: I have set up a payment agreement with my supplier and I also set up another payment agreement for the product in this order
     Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"

@@ -1,4 +1,4 @@
-Feature: Complete a supplier order
+Feature: Complete an Order
   In order to notify my seller that I have completed processing a supplier and to submit the tracking number if applicable
   As a supplier
   I want to be able to complete a supplier order by sending in a text message

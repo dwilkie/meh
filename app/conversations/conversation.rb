@@ -8,8 +8,10 @@ class Conversation
   self.blank_topic_subclass = UnknownTopicConversation
 
   protected
+
     def say(something)
       if active_mobile_number = user.active_mobile_number
+        self.payer = user.sellers.first if payer.nil? && user.sellers.count == 1
         outgoing_text_message = OutgoingTextMessage.new(
           :mobile_number => active_mobile_number,
           :body => something.strip,

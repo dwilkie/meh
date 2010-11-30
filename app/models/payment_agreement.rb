@@ -7,7 +7,6 @@ class PaymentAgreement < ActiveRecord::Base
              :class_name => "User"
 
   EVENTS = [
-      "supplier_order_created",
       "supplier_order_confirmed",
       "supplier_order_completed"
     ]

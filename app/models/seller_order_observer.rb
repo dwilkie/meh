@@ -13,20 +13,44 @@ class SellerOrderObserver < ActiveRecord::Observer
   end
 
   private
+
     def create_supplier_orders(seller_order)
+      supplier_orders = build_supplier_orders(seller_order)
+      supplier_orders.each do |supplier_id, line_items|
+        build_line_item_indexes(line_items)
+        supplier_order = seller_order.supplier_orders.create!(
+          :supplier_id => supplier_id,
+          :number_of_line_items => line_items.length
+        )
+        supplier_order.line_items = line_items
+        supplier_order.save!
+      end
+    end
+
+    def build_supplier_orders(seller_order)
       order_notification = seller_order.order_notification
       seller = seller_order.seller
+      supplier_orders = {}
       order_notification.number_of_cart_items.times do |index|
         product = find_or_create_product(seller, order_notification, index)
         item_quantity = order_notification.item_quantity(index)
         supplier = product.supplier
-        supplier_order = seller_order.supplier_orders.find_or_create_for!(
-          supplier
-        )
-        supplier_order.line_items.create!(
+        line_item = supplier.line_items.build(
+          :seller_order => seller_order,
           :product => product,
           :quantity => item_quantity
         )
+        line_item.seller_order_index = index + 1
+        supplier_key = supplier.id
+        supplier_orders[supplier_key] ||= []
+        supplier_orders[supplier_key] << line_item
+      end
+      supplier_orders
+    end
+
+    def build_line_item_indexes(line_items)
+      line_items.each_with_index do |line_item, index|
+        line_item.supplier_order_index = index + 1
       end
     end
 
