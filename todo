@@ -1,5 +1,4 @@
 Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
-Allow user to verify number by simply texting their name
 Fix notifications for payment
 Add message commands "orders" (o) and "items" (i) to list orders and items (see new notifications.txt)
 Fix UTF-8 incoming and outgoing messages with Tropo

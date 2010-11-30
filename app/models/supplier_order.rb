@@ -25,12 +25,13 @@ class SupplierOrder < ActiveRecord::Base
   scope :unconfirmed, where(:confirmed_at => nil)
 
   def supplier_total
+    total = nil
     line_items.each do |line_item|
       line_item_subtotal = line_item.supplier_subtotal
       break if total && total.currency != line_item_subtotal.currency
-      total ? total += line_item_subtotal : line_item_subtotal
+      total ? total += line_item_subtotal : total = line_item_subtotal
     end
-    total if total
+    total
   end
 
   def human_tracking_number
