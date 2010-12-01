@@ -15,13 +15,14 @@ Given /^paypal will not accept the payment request$/ do
   FakeWeb.register_uri(:post, Paypal.nvp_uri, :body => body)
 end
 
-Then /^the most recent job in the queue should (not )?be to send the supplier payment$/ do |expectation|
-  last_job = Delayed::Job.last
+Then /^a job should (not )?exist to send the supplier payment$/ do |expectation|
   expectation = expectation ? "_not" : ""
   job_name = /^SupplierPayment#pay/
-  if last_job
-    last_job.name.send("should#{expectation}", match(job_name))
-    Then "a job should exist with id: #{last_job.id}"
+  if found_job = find_job(job_name)
+    found_job.name.send("should#{expectation}", match(job_name))
+    Then "a job should exist with id: #{found_job.id}"
+  else
+    Then "a job should exist with handler: \"#{job_name.to_s}\""
   end
 end
 

@@ -8,7 +8,7 @@ Feature: Payment Agreement
     And a verified mobile number: "Dave's number" exists with user: the seller, number: "66876423223"
     And a supplier: "Fon" exists with name: "Fon"
     And a verified mobile number: "Fon's number" exists with user: the supplier, number: "66813456743"
-    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed", currency: "THB"
+    And a payment agreement exists with seller: the seller, supplier: the supplier, currency: "THB"
     And a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product with quantity: 4
     Then a supplier order should exist
@@ -73,10 +73,18 @@ Feature: Payment Agreement
   Scenario: I have a payment agreement with another supplier who is not the supplier of this order
     Given no payment agreements exist
     And another supplier exists
-    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed", fixed_amount: "500", currency: "USD"
+    And a payment agreement exists with seller: the seller, supplier: the supplier, fixed_amount: "500"
 
     When the supplier: "Fon" confirms the line item
     And the supplier: "Fon" completes the supplier order
+
+    Then a supplier payment should not exist
+
+  Scenario: I disable my payment agreement
+    Given I update the payment agreement with enabled: false, fixed_amount: "500"
+
+    When the supplier confirms the line item
+    And the supplier completes the supplier order
 
     Then a supplier payment should not exist
 

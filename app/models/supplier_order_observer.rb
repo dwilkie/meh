@@ -39,7 +39,7 @@ class SupplierOrderObserver < ActiveRecord::Observer
           supplier_payment,
           :supplier => supplier,
           :seller => seller,
-          :errors => supplier_payment.errors
+          :errors => supplier_payment.errors.full_messages.to_sentence
         ) unless supplier_payment.save
       end
     end

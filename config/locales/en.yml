@@ -114,8 +114,8 @@ en:
             amount:
               greater_than: "would have been %{count}"
           payment:
-            unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
-            insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
-            unknown: "the paypal account returned the following unexpected error: %{error}"
-  supplier_payment_note: "Payment for line item: #%{line_item_number}"
+            unauthorized: "payment was unauthorized. We don't have your permission to make payments on your behalf"
+            insufficient_funds: "paypal account: %{seller_email} doesn't have enough funds in %{currency}"
+            unknown: "paypal account returned the following unexpected error: %{error}"
+  supplier_payment_note: "Payment for order #%{seller_order_number}"
 

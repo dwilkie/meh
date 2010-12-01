@@ -8,7 +8,7 @@ class SupplierPaymentNotification < Conversation
       :supplier_name => options[:supplier].name,
       :supplier_mobile_number => options[:supplier].active_mobile_number.humanize,
       :seller_order_number => options[:seller_order].id.to_s,
-      :errors => options[:errors].full_messages.to_sentence
+      :errors => options[:errors]
     )
   end
 
