@@ -130,7 +130,7 @@ Feature: Confirm line item
     And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
     And a supplier order exists with seller_order: the seller order, supplier: the supplier
     And a product exists with seller: the seller, supplier: the supplier
-    And a line item exists for the product, the supplier order with quantity: 3
+    And a line item exists for the product and the supplier order with quantity: 3
 
     When I text "cli 3" from "61444431123"
     Then the line item should be confirmed

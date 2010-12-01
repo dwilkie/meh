@@ -85,6 +85,12 @@ Factory.define :seller_order do |f|
   }
 end
 
+Factory.define :supplier_order do |f|
+  f.association :supplier
+  f.association :seller_order
+  f.number_of_line_items 1
+end
+
 Factory.define :seller_order_paypal_ipn do |f|
   f.params { |paypal_ipn|
     seller = paypal_ipn.seller || Factory.create(:seller)
