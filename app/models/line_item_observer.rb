@@ -20,9 +20,7 @@ class LineItemObserver < ActiveRecord::Observer
       order_notification = seller_order.order_notification
 
       notifications = seller.notifications.for_event(
-        event,
-        :supplier => supplier,
-        :product => product
+        event, :supplier => supplier
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)

@@ -43,7 +43,6 @@ class SupplierPaymentObserver < ActiveRecord::Observer
       role = role.to_s
       actor = supplier_payment.send(role)
       notifier = SupplierPaymentNotification.new(:with => actor)
-      notifier.payer = supplier_payment.seller
       notifier.send("unclaimed_for_#{role}", supplier_payment)
     end
 
@@ -51,14 +50,12 @@ class SupplierPaymentObserver < ActiveRecord::Observer
       seller = supplier_payment.seller
       supplier_order = supplier_payment.supplier_order
       supplier = supplier_order.supplier
-      product = supplier_order.product
       seller_order = supplier_order.seller_order
       order_notification = seller_order.order_notification
 
       notifications = seller.notifications.for_event(
-        "supplier_payment_successfully_completed",
-        :supplier => supplier,
-        :product => product
+        "supplier_payment_completed",
+        :supplier => supplier
       )
       notifications.each do |notification|
         with = notification.send_to(seller, supplier)
@@ -66,7 +63,6 @@ class SupplierPaymentObserver < ActiveRecord::Observer
         notifier.payer = seller
         notifier.notify(
           notification,
-          :product => product,
           :supplier_order => supplier_order,
           :seller_order => seller_order,
           :seller => seller,

@@ -123,13 +123,11 @@ end
 
 Factory.define :supplier_payment_paypal_ipn do |f|
   f.params { |paypal_ipn|
-    supplier_payment = paypal_ipn.supplier_payment ||
-      Factory.create(:supplier_payment)
-      {
-        "txn_type" => "masspay",
-        "masspay_txn_id_1" => Factory.next(:transaction_id),
-        "unique_id_1" => supplier_payment.id.to_s
-      }
+    {
+      "txn_type" => "masspay",
+      "masspay_txn_id_1" => Factory.next(:transaction_id),
+      "unique_id_1" => "1"
+    }
   }
 end
 
