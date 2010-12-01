@@ -99,10 +99,12 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
   add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id", :unique => true
 
   create_table "payment_agreements", :force => true do |t|
-    t.boolean  "enabled",     :null => false
+    t.boolean  "enabled",                    :null => false
     t.string   "event"
-    t.integer  "supplier_id", :null => false
-    t.integer  "seller_id",   :null => false
+    t.integer  "cents",       :default => 0, :null => false
+    t.string   "currency"
+    t.integer  "supplier_id",                :null => false
+    t.integer  "seller_id",                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

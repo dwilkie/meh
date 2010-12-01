@@ -6,7 +6,7 @@ class LineItemObserver < ActiveRecord::Observer
   def after_update(line_item)
     if line_item.confirmed? && line_item.confirmed_at_changed? && line_item.confirmed_at_was.nil?
       notify line_item, "line_item_confirmed"
-      line_item.supplier_order.confirm!
+      line_item.supplier_order.confirm
     end
   end
 

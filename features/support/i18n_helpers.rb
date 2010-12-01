@@ -52,6 +52,9 @@ module I18nHelpers
     when /^tracking number is invalid$/
       "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
 
+    when /^supplier payment amount invalid$/
+      "activerecord.errors.models.supplier_payment.attributes.amount.greater_than"
+
     when /^# does not exist$/
       "errors.messages.does_not_exist"
 

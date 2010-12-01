@@ -1,25 +1,25 @@
 class Product < ActiveRecord::Base
 
-  composed_of :supplier_price,
+  composed_of :supplier_payment_amount,
               :class_name => "Money",
               :mapping => [%w(cents cents), %w(currency currency_as_string)],
               :constructor => Proc.new { |cents, currency|
                 Money.new(cents || 0, currency || Money.default_currency)
               }
 
-  belongs_to  :supplier,
-              :class_name => "User"
+  belongs_to :supplier,
+             :class_name => "User"
 
-  belongs_to  :seller,
-              :class_name => "User"
+  belongs_to :seller,
+             :class_name => "User"
 
-  has_many    :line_items
+  has_many   :line_items
 
-  has_many    :notifications
+  has_many   :notifications
 
-  has_one     :payment_agreement
+  has_one    :payment_agreement
 
-  validates :supplier_price,
+  validates :supplier_payment_amount,
             :presence => true,
             :numericality => {:greater_than_or_equal_to => 0}
 
@@ -32,6 +32,8 @@ class Product < ActiveRecord::Base
 
   validates :seller_id,
             :presence => true
+
+  attr_accessible :supplier_payment_amount
 
   def self.with_number_and_name(number, name)
     where(
@@ -48,6 +50,10 @@ class Product < ActiveRecord::Base
       "products.number = ? OR products.name = ?",
       number, name
     )
+  end
+
+  def supplier_payment_amount=(value)
+    self.cents = Money.parse(value).cents
   end
 end
 

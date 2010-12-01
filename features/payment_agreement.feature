@@ -1,107 +1,90 @@
 Feature: Payment Agreement
   In order to pay my suppliers automatically for orders they receive or process
   As a seller
-  I want to be able set up payment agreements to pay suppliers when a supplier order is created or after the supplier accepts or completes a supplier order
+  I want to be able set up payment agreements to pay suppliers when they confirm or complete an order
 
   Background:
     Given a seller exists with name: "Dave"
-    And a verified mobile number exists with user: the seller, number: ""
+    And a verified mobile number: "Dave's number" exists with user: the seller, number: "66876423223"
     And a supplier: "Fon" exists with name: "Fon"
-    And a verified mobile number exists with user: the supplier
-    And a product exists with supplier: the supplier, seller: the seller, cents: "230000", currency: "THB", number: "19022331123", name: "Model Ship - The Titanic"
+    And a verified mobile number: "Fon's number" exists with user: the supplier, number: "66813456743"
+    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed", currency: "THB"
+    And a product exists with supplier: the supplier, seller: the seller
     And a line item exists for the product with quantity: 4
     Then a supplier order should exist
 
-  Scenario Outline: I have set up a payment agreement with my supplier
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "<event>"
-    And the supplier order <is_not_yet_or_was_already> confirmed
+  Scenario: I have a payment agreement with my supplier to pay them a fixed amount when they confirm an order
+    Given I update the payment agreement with fixed_amount: "500"
 
-    When the supplier <processes> the supplier order
+    When the supplier confirms the line item
 
-    Then a supplier payment should exist with supplier_order_id: the supplier order, cents: "920000", currency: "THB", seller_id: the seller, supplier_id: the supplier
-    And the most recent job in the queue should be to send the supplier payment
+    Then a supplier payment should exist with supplier_order_id: the supplier order, seller_id: the seller, supplier_id: the supplier
+    And the supplier payment's amount should be "500.00"
+    And the supplier payment's currency should be "THB"
 
-    Examples:
-     | event                    | is_not_yet_or_was_already | processes |
-     | supplier_order_confirmed | is not yet                | confirms  |
-     | supplier_order_completed | was already               | completes |
-
-  @current
-  Scenario Outline: I have set up a payment agreement with my supplier but payment amount for this product would be 0
-    Given I update the product with cents: "0"
-    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed"
-    And the mobile number <is_not_yet_or_was_already> verified
-
-    When the supplier confirms the supplier order
-
+  Scenario: I have a payment agreement with my supplier to pay them a fixed amount when they complete an order
+    Given I update the payment agreement with event: "supplier_order_completed", fixed_amount: "500"
+    And the line item was already confirmed
     Then a supplier payment should not exist
-    And the most recent outgoing text message destined for the mobile number should be a translation of "we did not pay your supplier" in "en" (English) where seller_name: "Dave", supplier_name: "Fon", supplier_mobile_number: "", supplier_order_quantity: "4", product_number: "120848121933", product_name: "A Rubber Dingy", errors: "amount would have been 0"
-    And the seller should be that outgoing text message's payer
-
-    Examples:
-     | is_not_yet_or_was_already | be_or_not_be |
-     | is not yet                | not be       |
-     | was already               | be           |
-
-  Scenario: The products have different currencies
-
-  Scenario Outline: I have set up a payment agreement with my supplier and I also set up another payment agreement for the product in this order
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"
-    And a product exists with supplier: the supplier, seller: the seller, cents: "1200", currency: "THB"
-    And a supplier order exists for the product with quantity: 4
-    And a payment agreement exists with product: the product, enabled: <enabled>, event: "supplier_order_completed"
-    And the supplier order <is_not_yet_or_was_already> accepted
-
-    When the supplier <processes> the supplier order
-
-    Then a supplier payment <should_should_not> exist
-    And the most recent job in the queue <should_should_not> be to send the supplier payment
-
-    Examples:
-     | enabled | is_not_yet_or_was_already | processes | should_should_not |
-     | false   | is not yet                | accepts   | should not        |
-     | true    | was already               | completes | should            |
-     | false   | was already               | completes | should not        |
-
-  Scenario: I have set up a payment agreement with my supplier and I also set up another payment agreement for a product which is not in this order
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"
-    And the mobile number was already verified
-    And a product exists with supplier: the supplier, seller: the seller, cents: "1200", currency: "THB"
-    And a payment agreement exists with product: the product, enabled: true, event: "supplier_order_completed"
-    And the supplier order was already accepted
 
     When the supplier completes the supplier order
 
-    Then 1 supplier payments should exist
-    And the most recent outgoing text message destined for the mobile number should not include "we didn't pay"
+    Then a supplier payment should exist with supplier_order_id: the supplier order, seller_id: the seller, supplier_id: the supplier
+    And the supplier payment's amount should be "500.00"
+    And the supplier payment's currency should be "THB"
+
+  Scenario: I have a payment agreement with my supplier for no fixed amount indicating that the amount depends on the products in the order
+    Given I update the product with supplier_payment_amount: "750"
+
+    When the supplier confirms the line item
+
+    Then a supplier payment should exist with supplier_order_id: the supplier order, seller_id: the seller, supplier_id: the supplier
+    And the supplier payment's amount should be "3000.00"
+    And the supplier payment's currency should be "THB"
+
+  Scenario Outline: I have a payment agreement with my supplier for no fixed amount and the product in the order does not have a supplier payment amount
+    Given the mobile number: "Dave's number" <is_not_yet_or_was_already> verified
+
+    When the supplier confirms the line item
+
+    Then a supplier payment should not exist
+    And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should include a translation of "supplier payment amount invalid" in "en" (English) where count: "0"
     And the seller should be that outgoing text message's payer
+    And the outgoing text message should <be_or_not_be> queued_for_sending
 
-  Scenario: I have set up a payment agreement with another supplier who is not the supplier for this order
-    Given a supplier exists
-    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"
-    And the supplier order is not yet accepted
+    Examples:
+      | is_not_yet_or_was_already | be_or_not_be |
+      | is not yet                | not be       |
+      | was already               | be           |
 
-    When the supplier: "Fon" accepts the supplier order
+  Scenario: I have a payment agreement with my supplier for no fixed amount and 2 line items for products with supplier payment amounts exist in the order
+    Then a line item: "first item" should exist
+    Given I update the product with supplier_payment_amount: "539.24"
+    And another product exists with seller: the seller, supplier: the supplier, supplier_payment_amount: "1000"
+    And a line item exists for that product and the supplier order with quantity: 3
+
+    When the supplier confirms the line item
+    And the supplier confirms line item: "first item"
+
+    Then a supplier payment should exist with supplier_order_id: the supplier order, seller_id: the seller, supplier_id: the supplier
+    And the supplier payment's amount should be "5156.96"
+    And the supplier payment's currency should be "THB"
+
+  Scenario: I have a payment agreement with another supplier who is not the supplier of this order
+    Given no payment agreements exist
+    And another supplier exists
+    And a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_confirmed", fixed_amount: "500", currency: "USD"
+
+    When the supplier: "Fon" confirms the line item
+    And the supplier: "Fon" completes the supplier order
 
     Then a supplier payment should not exist
-    And the most recent job in the queue should not be to send the supplier payment
 
-  Scenario: I am also the supplier for this order
-    Given a payment agreement exists with seller: the seller, supplier: the supplier, enabled: true, event: "supplier_order_accepted"
-    And a product exists with supplier: the seller, seller: the seller, cents: "1200", currency: "THB"
-    And a supplier order exists for the product with quantity: 4
-    And the supplier order is not yet accepted
+  Scenario: I don't have any payment agreements
+    Given no payment agreements exist
 
-    When I accept the supplier order
+    When the supplier confirms the line item
+    And the supplier completes the supplier order
 
     Then a supplier payment should not exist
-    And the most recent job in the queue should not be to send the supplier payment
-
-  Scenario: I have not yet set up any payment agreements
-    Given the supplier order is not yet accepted
-
-    When the supplier accepts the supplier order
-
-    Then a supplier payment should not exist
-    And the most recent job in the queue should not be to send the supplier payment
 

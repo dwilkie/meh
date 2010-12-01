@@ -87,9 +87,10 @@ class SellerOrderObserver < ActiveRecord::Observer
           )
         end
       end
-      product.update_attributes!(
-        :price => item_price
-      ) unless product.price == item_price
+      unless product.price == item_price
+        product.price = item_price
+        product.save!
+      end
       product
     end
 

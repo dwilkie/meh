@@ -106,6 +106,9 @@ end
 
 Factory.define :line_item do |f|
   f.association :supplier_order
+  f.association :seller_order
+  f.sequence(:seller_order_index) {|n| n}
+  f.sequence(:supplier_order_index) {|n| n}
   f.association :product
   f.quantity 5
 end

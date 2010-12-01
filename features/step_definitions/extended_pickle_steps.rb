@@ -35,7 +35,12 @@ When /^(?:I|#{capture_model}) (?!create)(\w+) #{capture_model}$/ do |actor, acti
 end
 
 When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|
-  model!(name).update_attributes!(parse_fields(fields))
+  resource = model!(name)
+  fields = parse_fields(fields)
+  fields.each do |method, value|
+    resource.send("#{method}=", value)
+  end
+  resource.save!
 end
 
 Then(/^#{capture_model}s (\w+) (should(?: not)?) be #{capture_value}$/) do |name, attribute, expectation, expected|

@@ -24,14 +24,15 @@ class SupplierOrder < ActiveRecord::Base
   scope :incomplete, where(:completed_at => nil)
   scope :unconfirmed, where(:confirmed_at => nil)
 
-  def supplier_total
-    total = nil
+  def supplier_payment_amount
+    payment_amount = nil
     line_items.each do |line_item|
-      line_item_subtotal = line_item.supplier_subtotal
-      break if total && total.currency != line_item_subtotal.currency
-      total ? total += line_item_subtotal : total = line_item_subtotal
+      line_item_supplier_payment_amount = line_item.supplier_payment_amount
+      payment_amount ?
+      payment_amount += line_item_supplier_payment_amount :
+      payment_amount = line_item_supplier_payment_amount
     end
-    total
+    payment_amount
   end
 
   def human_tracking_number
@@ -65,14 +66,15 @@ class SupplierOrder < ActiveRecord::Base
     self.completed_at.nil?
   end
 
+  def confirm
+    self.update_attributes(
+      :confirmed_at => Time.now
+    ) if line_items.unconfirmed.empty?
+  end
+
   def complete!
     self.update_attributes!(:completed_at => Time.now)
   end
 
-  def confirm!
-    self.update_attributes!(
-      :confirmed_at => Time.now
-    ) if line_items.unconfirmed.empty?
-  end
 end
 
