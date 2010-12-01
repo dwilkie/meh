@@ -12,6 +12,7 @@ Feature: Complete an Order
     And a line item exists for the product with quantity: 1
     Then a supplier order should exist
     And a seller order should exist
+
     Given the supplier order was already confirmed
 
   Scenario Outline: Complete an order implicitly

@@ -33,7 +33,7 @@ class Product < ActiveRecord::Base
   validates :seller_id,
             :presence => true
 
-  attr_accessible :supplier_payment_amount
+  attr_accessible :supplier_payment_amount, :number, :name
 
   def self.with_number_and_name(number, name)
     where(
