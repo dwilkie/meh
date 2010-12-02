@@ -7,7 +7,7 @@ class Conversation
   self.unknown_topic_subclass = UnknownTopicConversation
   self.blank_topic_subclass = UnknownTopicConversation
 
-  def initialize(options)
+  def initialize(options = {})
     self.with = options.delete(:with)
     self.send_unverified = options.delete(:send_unverified)
     self.no_credit_warning = options.delete(:no_credit_warning)
