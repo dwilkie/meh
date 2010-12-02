@@ -18,7 +18,7 @@ class Test
     clear_jobs
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
-    #find_or_create_payment_agreement!(seller, supplier)
+    find_or_create_payment_agreement!(seller, supplier)
     find_or_create_product!(seller, supplier)
   end
 
@@ -135,12 +135,13 @@ class Test
 
     def self.find_or_create_payment_agreement!(seller, supplier)
       payment_agreement = PaymentAgreement.where(
-       :seller_id => seller.id,
-       :supplier_id => supplier.id
-     ).first || PaymentAgreement.new(
-       :seller => seller,
-       :supplier => supplier
-     )
+       :seller_id => seller.id, :supplier_id => supplier.id
+     ).first
+     unless payment_agreement
+       payment_agreement = PaymentAgreement.new
+       payment_agreement.seller = seller
+       payment_agreement.supplier = supplier
+     end
      payment_agreement.event = "supplier_order_confirmed"
      payment_agreement.save!
      payment_agreement
@@ -148,15 +149,15 @@ class Test
 
    def self.find_or_create_product!(seller, supplier)
      product = Product.where(
-       :seller_id => seller.id,
-       :supplier_id => supplier.id
-     ).first || Product.new(
-       :seller => seller,
-       :supplier => supplier,
-       :name => "Some product"
-     )
-     product.cents = 2000
-     product.currency = "AUD"
+       :seller_id => seller.id, :supplier_id => supplier.id
+     ).first
+     unless product
+       product = Product.new
+       product.seller = seller
+       product.supplier = supplier
+       product.name = "Some product"
+     end
+     product.supplier_payment_amount = "20"
      product.number = PARAMS[:paypal_item_number]
      product.save!
      product
