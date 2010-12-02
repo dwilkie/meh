@@ -13,7 +13,6 @@ class LineItemConversation < IncomingTextMessageConversation
 
     class ConfirmLineItemMessage
       include ActiveModel::Validations
-      extend ActiveModel::Translation
 
       attr_reader :quantity, :product_verification_code, :line_item_id
 
@@ -47,8 +46,7 @@ class LineItemConversation < IncomingTextMessageConversation
       end
 
       def retry_suggestion(topic, action)
-        sanitized_action = " #{action}" if action
-        suggestion = "#{sanitized_action} #{topic} "
+        suggestion = "#{action}#{topic} "
         line_item_id_suggestion = line_item_id_correct? ?
           "#{line_item_id} " :
           "<#{self.class.human_attribute_name(:line_item_id)}> " if

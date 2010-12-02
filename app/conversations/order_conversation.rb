@@ -12,7 +12,6 @@ class OrderConversation < IncomingTextMessageConversation
   private
     class CompleteOrderMessage
       include ActiveModel::Validations
-      extend ActiveModel::Translation
 
       attr_reader :tracking_number, :order_id
 
@@ -38,7 +37,7 @@ class OrderConversation < IncomingTextMessageConversation
       end
 
       def retry_suggestion(topic, action)
-        suggestion = "#{action} #{topic} "
+        suggestion = "#{action}#{topic} "
         order_id_suggestion = order_id_correct? ?
           "#{order_id} " :
           "<#{self.class.human_attribute_name(:order_id)}> " if
