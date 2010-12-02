@@ -90,13 +90,13 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | message_text   | topic | action | params     |
-      | co             | o     | "c"    | ""         |
-      | corder RE23123 | order | "c"    | " RE23123" |
+      | message_text   | command | params     |
+      | co             | co      | ""         |
+      | corder RE23123 | c order | " RE23123" |
 
   Scenario: Be the last to complete an order belonging to multiple suppliers
     Given a supplier exists with name: "Andy"

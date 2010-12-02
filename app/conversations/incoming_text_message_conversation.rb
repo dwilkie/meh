@@ -47,5 +47,10 @@ class IncomingTextMessageConversation < Conversation
       sanitized_id = nil if sanitized_id == 0
       sanitized_id
     end
+
+    def command
+      action.length > 1 || topic.length > 2 ?
+      "#{action} #{topic}" : action + topic
+    end
 end
 

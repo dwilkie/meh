@@ -114,14 +114,15 @@ Feature: Confirm line item
 
     Then the line item: "first item" should not be confirmed
     And the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: "<action>", params: <params>
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | message_text | topic | action | params      |
-      | cli          | li    | c      | ""          |
-      | ci 4         | i     | c      | " 4"        |
-      | c i 4 xyz123 | i     | c      | " 4 xyz123" |
+      | message_text | command      |  params     |
+      | cli          | cli          | ""          |
+      | ci 4         | ci           | " 4"        |
+      | c i 4 xyz123 | ci           | " 4 xyz123" |
+      | confirm item | confirm item | ""          |
 
   Scenario: Be the last to confirm an order belonging to multiple suppliers
     Then a line item: "first item" should exist with product_id: the product

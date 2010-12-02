@@ -31,10 +31,10 @@ en:
         you_have_received_a_payment: "<supplier_name>, you have received a payment of <supplier_payment_amount> <supplier_payment_currency> from <seller_name> (<seller_mobile_number>) for Order #<customer_order_number>"
       built_in:
         you_have_no_line_items_to_confirm: "%{supplier_name}, you have no items to confirm"
-        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with: %{action}%{topic} <item #>%{params}"
+        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with: %{command} <item #>%{params}"
         you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with: %{retry_suggestion}"
         you_have_no_orders_to_complete: "%{supplier_name}, you have no orders to ship"
-        be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with: %{action}%{topic} <item #>%{params}"
+        be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with: %{command} <item #>%{params}"
         this_tracking_number_was_already_used_by_you: "%{supplier_name}, the %{errors}"
         the_tracking_number_is_missing_or_invalid: "%{supplier_name}, the %{errors}. Try again with: %{retry_suggestion}"
         you_must_confirm_the_line_items_first: "%{supplier_name}, you must confirm line item(s): %{line_item_numbers} first. Try: ci <qty>"

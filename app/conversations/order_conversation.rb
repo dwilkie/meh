@@ -36,8 +36,8 @@ class OrderConversation < IncomingTextMessageConversation
         end
       end
 
-      def retry_suggestion(topic, action)
-        suggestion = "#{action}#{topic} "
+      def retry_suggestion(command)
+        suggestion = "#{command} "
         order_id_suggestion = order_id_correct? ?
           "#{order_id} " :
           "<#{self.class.human_attribute_name(:order_id)}> " if
@@ -168,8 +168,7 @@ class OrderConversation < IncomingTextMessageConversation
       I18n.t(
         "notifications.messages.built_in.be_specific_about_the_order_number",
         :supplier_name => user.name,
-        :topic => topic,
-        :action => action,
+        :command => command,
         :params => sanitized_params
       )
     end
@@ -179,7 +178,7 @@ class OrderConversation < IncomingTextMessageConversation
         "notifications.messages.built_in.the_tracking_number_is_missing_or_invalid",
         :supplier_name => user.name,
         :errors => message.errors.full_messages.to_sentence,
-        :retry_suggestion => message.retry_suggestion(topic, action)
+        :retry_suggestion => message.retry_suggestion(command)
       )
     end
 
