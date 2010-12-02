@@ -30,13 +30,10 @@ class OutgoingTextMessage < ActiveRecord::Base
       outgoing_text_message.update_attributes(
         :permanently_failed_to_send_at => Time.now
       )
-      outgoing_text_message.payer.add_message_credits(
-        outgoing_text_message.credits
-      )
     end
   end
 
-  attr_accessor :force_send, :cancel_send
+  attr_accessor :force_send, :cancel_send, :no_credit_warning
 
   belongs_to :mobile_number
   belongs_to :payer, :class_name => "User"
@@ -82,6 +79,15 @@ class OutgoingTextMessage < ActiveRecord::Base
 
   def resend
     send_message unless queued_for_sending?
+  end
+
+  def no_credit_warning?
+    no_credit_warning
+  end
+
+  def no_credit_warning=(value)
+    self.force_send = value if value
+    @no_credit_warning = value
   end
 
   private

@@ -31,8 +31,8 @@ module I18nHelpers
     when /^open a paypal account to claim your payment$/
       "notifications.messages.built_in.open_a_paypal_account_to_claim_your_payment"
 
-    when /^you do not have enough message credits left$/
-      "notifications.messages.built_in.you_do_not_have_enough_message_credits_left"
+    when /^no credits remaining$/
+      "notifications.messages.built_in.no_credits_remaining"
 
     when /^name is incorrect$/
       "activemodel.errors.models.unknown_topic_conversation.verify_mobile_number_message.attributes.name.incorrect"
