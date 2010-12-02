@@ -34,8 +34,8 @@ class LineItem < ActiveRecord::Base
   validates :supplier_order_index,
             :uniqueness => {:scope => :supplier_order_id}
 
-  def supplier_subtotal
-    product.supplier_price * quantity
+  def supplier_payment_amount
+    product.supplier_payment_amount * quantity
   end
 
   def confirmed?

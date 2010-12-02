@@ -1,11 +1,18 @@
 class Conversation
   include Conversational::Conversation
 
-  attr_accessor :user, :force_send, :payer
+  attr_accessor :user, :payer, :send_unverified, :no_credit_warning, :force_send
   alias :user :with
 
   self.unknown_topic_subclass = UnknownTopicConversation
   self.blank_topic_subclass = UnknownTopicConversation
+
+  def initialize(options = {})
+    self.with = options.delete(:with)
+    self.send_unverified = options.delete(:send_unverified)
+    self.no_credit_warning = options.delete(:no_credit_warning)
+    self.force_send = options.delete(:force_send)
+  end
 
   protected
 
@@ -18,7 +25,8 @@ class Conversation
           :payer => payer
         )
         outgoing_text_message.force_send = force_send
-        outgoing_text_message.cancel_send = user.cannot_text?
+        outgoing_text_message.cancel_send = !send_unverified && user.cannot_text?
+        outgoing_text_message.no_credit_warning = no_credit_warning
         outgoing_text_message.save!
       end
     end

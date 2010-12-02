@@ -66,18 +66,14 @@ class SellerOrder < ActiveRecord::Base
     self.completed_at.nil?
   end
 
-  def complete!
-    self.update_attributes!(:completed_at => Time.now)
-  end
-
-  def confirm!
-    self.update_attributes!(
+  def confirm
+    self.update_attributes(
       :confirmed_at => Time.now
     ) if supplier_orders.unconfirmed.empty?
   end
 
-  def complete!
-    self.update_attributes!(
+  def complete
+    self.update_attributes(
       :completed_at => Time.now
     ) if supplier_orders.incomplete.empty?
   end

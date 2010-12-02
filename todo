@@ -1,5 +1,6 @@
+Move Paypal IPN and Paypal related test code into paypal gem
+Add code to send recent unsent text messages when message credit is added or a mobile number is verified
 Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
-Fix notifications for payment
 Add message commands "orders" (o) and "items" (i) to list orders and items (see new notifications.txt)
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications

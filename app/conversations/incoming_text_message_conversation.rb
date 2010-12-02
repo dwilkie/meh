@@ -11,14 +11,14 @@ class IncomingTextMessageConversation < Conversation
   private
     def find_conversation(message_text)
       self.message_words = message_text.split
-      if user.active_mobile_number.unverified?
+      resource = message_words[0]
+      if user.active_mobile_number.unverified? || resource.nil?
         self.topic = nil
         self.params = message_words
         details
       else
         # assume first word is the resource
         # and the second word is the action
-        resource = message_words[0]
         self.topic = resource
         self.action = message_words[1].try(:downcase)
         self.params = message_words[2..-1]
@@ -46,6 +46,11 @@ class IncomingTextMessageConversation < Conversation
       sanitized_id = value.try(:gsub, /\D/, "").try(:to_i)
       sanitized_id = nil if sanitized_id == 0
       sanitized_id
+    end
+
+    def command
+      action.length > 1 || topic.length > 2 ?
+      "#{action} #{topic}" : action + topic
     end
 end
 

@@ -12,6 +12,7 @@ Feature: Complete an Order
     And a line item exists for the product with quantity: 1
     Then a supplier order should exist
     And a seller order should exist
+
     Given the supplier order was already confirmed
 
   Scenario Outline: Complete an order implicitly
@@ -25,7 +26,7 @@ Feature: Complete an Order
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874).
+    Mara, Order #1 has been shipped by Nok (+66354668874).
     """
     And the seller should be that outgoing text message's payer
 
@@ -89,13 +90,13 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: <action>, params: <params>
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | message_text   | topic | action | params     |
-      | co             | o     | "c"    | ""         |
-      | corder RE23123 | order | "c"    | " RE23123" |
+      | message_text   | command | params     |
+      | co             | co      | ""         |
+      | corder RE23123 | c order | " RE23123" |
 
   Scenario: Be the last to complete an order belonging to multiple suppliers
     Given a supplier exists with name: "Andy"
@@ -113,7 +114,7 @@ Feature: Complete an Order
     Then the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123).
+    Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123).
     """
     And the seller should be that outgoing text message's payer
 
@@ -125,7 +126,7 @@ Feature: Complete an Order
     And the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874). Tracking # <tracking_number>
+    Mara, Order #1 has been shipped by Nok (+66354668874). Tracking # <tracking_number>
     """
     And the seller should be that outgoing text message's payer
 
@@ -151,7 +152,7 @@ Feature: Complete an Order
     Then the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123). Tracking # re123456789th and N/A
+    Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123). Tracking # re123456789th and N/A
     """
     And the seller should be that outgoing text message's payer
 

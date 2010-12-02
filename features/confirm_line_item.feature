@@ -42,7 +42,7 @@ Feature: Confirm line item
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been confirmed by Nok (+66354668874)
+    Mara, Order #1 has been confirmed by Nok (+66354668874)
     """
     And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
@@ -114,14 +114,15 @@ Feature: Confirm line item
 
     Then the line item: "first item" should not be confirmed
     And the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", topic: "<topic>", action: "<action>", params: <params>
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
-      | message_text | topic | action | params      |
-      | cli          | li    | c      | ""          |
-      | ci 4         | i     | c      | " 4"        |
-      | c i 4 xyz123 | i     | c      | " 4 xyz123" |
+      | message_text | command      |  params     |
+      | cli          | cli          | ""          |
+      | ci 4         | ci           | " 4"        |
+      | c i 4 xyz123 | ci           | " 4 xyz123" |
+      | confirm item | confirm item | ""          |
 
   Scenario: Be the last to confirm an order belonging to multiple suppliers
     Then a line item: "first item" should exist with product_id: the product
@@ -130,7 +131,7 @@ Feature: Confirm line item
     And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
     And a supplier order exists with seller_order: the seller order, supplier: the supplier
     And a product exists with seller: the seller, supplier: the supplier
-    And a line item exists for the product, the supplier order with quantity: 3
+    And a line item exists for the product and the supplier order with quantity: 3
 
     When I text "cli 3" from "61444431123"
     Then the line item should be confirmed
@@ -141,7 +142,7 @@ Feature: Confirm line item
     And the seller order should be confirmed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been confirmed by Nok (+66354668874) and Andy (+61444431123)
+    Mara, Order #1 has been confirmed by Nok (+66354668874) and Andy (+61444431123)
     """
     And the seller should be that outgoing text message's payer
 

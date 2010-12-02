@@ -5,29 +5,26 @@ Feature: Invalid or blank incoming text messages
 
   Background:
     Given a supplier exists with name: "Dave"
-    And a mobile number exists with user: the user, number: "66322345211"
+    And a verified mobile number exists with user: the user, number: "66322345211"
 
-  Scenario Outline: An incoming text message is received with invalid or blank text
-    Given the mobile number <is_not_yet_or_was_already> verified
-    When I text "<text_message>" from "66322345211"
+  Scenario: An incoming text message is received with blank text
+    When I text "" from "66322345211"
 
-    Then the most recent outgoing text message destined for the mobile number should be a translation of "valid message commands are" in "en" (English) where user_name: <user_name>
+    Then the most recent outgoing text message destined for the mobile number should include a translation of "is required" in "en" (English)
     And the supplier should be that outgoing text message's payer
 
-    Examples:
-      | is_not_yet_or_was_already | message_text | user_name |
-      | is not yet                | blah         |  ""       |
-      | was already               | help         | " Dave"   |
-      | is not yet                |              |   ""      |
-      | was already               |              | " Dave"   |
+  Scenario: An incoming text message is received with unknown text
+    When I text "blah" from "66322345211"
 
-  Scenario: An incoming message is received by a supplier with a single seller with invalid text
+    Then the most recent outgoing text message destined for the mobile number should include a translation of "message text is invalid" in "en" (English) where value: "blah"
+    And the supplier should be that outgoing text message's payer
+
+  Scenario: An incoming message is received from a supplier with a single seller with unknown text
     Given a seller exists
     And a product exists with seller: the seller, supplier: the supplier
-    And the mobile number was already verified
 
     When I text "blah" from "66322345211"
 
-    Then the most recent outgoing text message destined for the mobile number should be a translation of "valid message commands are" in "en" (English) where user_name: " Dave"
+    Then the most recent outgoing text message destined for the mobile number should include a translation of "message text is invalid" in "en" (English) where value: "blah"
     And the seller should be that outgoing text message's payer
 

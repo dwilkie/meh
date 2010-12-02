@@ -78,7 +78,7 @@ class SupplierPayment < ActiveRecord::Base
         amount.currency.to_s,
         I18n.t(
           "supplier_payment_note",
-          :supplier_order_number => supplier_order.id.to_s
+          :seller_order_number => supplier_order.seller_order.id.to_s
         ),
         self.id.to_s
       )

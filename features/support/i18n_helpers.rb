@@ -25,20 +25,14 @@ module I18nHelpers
     when /^your mobile number is verified$/
       "notifications.messages.built_in.your_mobile_number_is_verified"
 
-    when /^we did not pay your supplier$/
-      "notifications.messages.built_in.we_did_not_pay_your_supplier"
-
     when /^we paid your supplier but the payment was unclaimed$/
       "notifications.messages.built_in.we_paid_your_supplier_but_the_payment_was_unclaimed"
 
     when /^open a paypal account to claim your payment$/
       "notifications.messages.built_in.open_a_paypal_account_to_claim_your_payment"
 
-    when /^valid message commands are$/
-      "notifications.messages.built_in.valid_message_commands_are"
-
-    when /^you do not have enough message credits left$/
-      "notifications.messages.built_in.you_do_not_have_enough_message_credits_left"
+    when /^no credits remaining$/
+      "notifications.messages.built_in.no_credits_remaining"
 
     when /^name is incorrect$/
       "activemodel.errors.models.unknown_topic_conversation.verify_mobile_number_message.attributes.name.incorrect"
@@ -51,6 +45,22 @@ module I18nHelpers
 
     when /^tracking number is invalid$/
       "activemodel.errors.models.order_conversation.complete_order_message.attributes.tracking_number.invalid"
+
+    when /^supplier payment amount invalid$/
+      "activerecord.errors.models.supplier_payment.attributes.amount.greater_than"
+
+    when /^insufficient funds for supplier payment$/
+      "activerecord.errors.models.supplier_payment.payment.insufficient_funds"
+
+    when /^unauthorized supplier payment$/
+      "activerecord.errors.models.supplier_payment.payment.unauthorized"
+
+    when /^unknown error for supplier payment$/
+      "activerecord.errors.models.supplier_payment.payment.unknown"
+
+    when /^message text is invalid$/
+      "activemodel.errors.models.unknown_topic_conversation.invalid_message.attributes.message_text.invalid"
+
 
     when /^# does not exist$/
       "errors.messages.does_not_exist"

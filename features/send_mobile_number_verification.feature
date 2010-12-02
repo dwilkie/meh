@@ -4,7 +4,7 @@ Feature: Send mobile number verification
   I want to receive a verification message when I add a new mobile number or update an existing one
 
   Scenario: A mobile number is created
-    Given a user exists with message_credits: 1
+    Given a user exists
 
     When a mobile number is created with user: the user
 
@@ -23,7 +23,7 @@ Feature: Send mobile number verification
     And the seller should be that outgoing text message's payer
 
   Scenario: A mobile number is updated
-    Given a user exists with message_credits: 2
+    Given a user exists
     And a mobile number exists with number: "66122453311", user: the user
 
     When I update the mobile number with number: "66122453312"

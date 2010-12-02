@@ -288,27 +288,17 @@ class Notification < ActiveRecord::Base
   end
 
   def self.for_event(event, options = {})
-    scope = where(:event => event, :enabled => true)
-    notifications = scope.where(:supplier_id => nil, :product_id => nil).all
+    initial_scope = where(
+      :event => event,
+      :enabled => true
+    )
     if options[:supplier]
-      notifications << scope.where(:supplier_id => options[:supplier].id).all
+      scope = initial_scope.where(:supplier_id => options[:supplier].id)
+      scope = scope.count > 0 ? scope : initial_scope.where(:supplier_id => nil)
+    else
+      scope = initial_scope.where(:supplier_id => nil)
     end
-    if options[:product]
-      notifications << scope.where(:product_id => options[:product].id).all
-    end
-    if options[:product] || options[:supplier]
-      notifications.flatten!
-      final_notifications = {}
-      notifications.each do |notification|
-        notification_key = notification.purpose + " " + notification.for
-        final_notifications[notification_key] = notification
-      end
-      notifications = final_notifications.values
-    end
-    notifications.each do |notification|
-      notifications.delete(notification) unless notification.should_send?
-    end
-    notifications
+    scope.where(:should_send => true)
   end
 
   def self.create_defaults!

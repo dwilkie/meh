@@ -85,6 +85,12 @@ Factory.define :seller_order do |f|
   }
 end
 
+Factory.define :supplier_order do |f|
+  f.association :supplier
+  f.association :seller_order
+  f.number_of_line_items 1
+end
+
 Factory.define :seller_order_paypal_ipn do |f|
   f.params { |paypal_ipn|
     seller = paypal_ipn.seller || Factory.create(:seller)
@@ -106,6 +112,9 @@ end
 
 Factory.define :line_item do |f|
   f.association :supplier_order
+  f.association :seller_order
+  f.sequence(:seller_order_index) {|n| n}
+  f.sequence(:supplier_order_index) {|n| n}
   f.association :product
   f.quantity 5
 end
@@ -120,13 +129,11 @@ end
 
 Factory.define :supplier_payment_paypal_ipn do |f|
   f.params { |paypal_ipn|
-    supplier_payment = paypal_ipn.supplier_payment ||
-      Factory.create(:supplier_payment)
-      {
-        "txn_type" => "masspay",
-        "masspay_txn_id_1" => Factory.next(:transaction_id),
-        "unique_id_1" => supplier_payment.id.to_s
-      }
+    {
+      "txn_type" => "masspay",
+      "masspay_txn_id_1" => Factory.next(:transaction_id),
+      "unique_id_1" => "1"
+    }
   }
 end
 

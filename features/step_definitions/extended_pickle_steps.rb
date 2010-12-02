@@ -7,10 +7,8 @@ end
 Given /^#{capture_model} (is not yet|was already) (\w+)$/ do |name, status, attribute|
   model_instance = model!(name)
   timestamp = "#{attribute}_at"
-  attribute = timestamp if model_instance.respond_to?(timestamp)
-  value = (status == "was already")
-  value = attribute == timestamp ? Time.now : nil if value
-  model_instance.update_attribute(attribute, value)
+  value = (status == "was already") ? Time.now : nil
+  model_instance.update_attribute(timestamp, value)
 end
 
 Given /^#{capture_model} (?:also )?has the following params:$/ do |name, params|
@@ -35,7 +33,12 @@ When /^(?:I|#{capture_model}) (?!create)(\w+) #{capture_model}$/ do |actor, acti
 end
 
 When /^I update #{capture_model} with #{capture_fields}$/ do |name, fields|
-  model!(name).update_attributes!(parse_fields(fields))
+  resource = model!(name)
+  fields = parse_fields(fields)
+  fields.each do |method, value|
+    resource.send("#{method}=", value)
+  end
+  resource.save!
 end
 
 Then(/^#{capture_model}s (\w+) (should(?: not)?) be #{capture_value}$/) do |name, attribute, expectation, expected|

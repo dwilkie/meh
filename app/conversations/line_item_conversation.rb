@@ -13,7 +13,6 @@ class LineItemConversation < IncomingTextMessageConversation
 
     class ConfirmLineItemMessage
       include ActiveModel::Validations
-      extend ActiveModel::Translation
 
       attr_reader :quantity, :product_verification_code, :line_item_id
 
@@ -46,9 +45,8 @@ class LineItemConversation < IncomingTextMessageConversation
         " for #{self.class.human_attribute_name(:line_item_id)} #{@line_item.id}" if errors[:line_item_id].empty?
       end
 
-      def retry_suggestion(topic, action)
-        sanitized_action = " #{action}" if action
-        suggestion = "#{sanitized_action} #{topic} "
+      def retry_suggestion(command)
+        suggestion = "#{command} "
         line_item_id_suggestion = line_item_id_correct? ?
           "#{line_item_id} " :
           "<#{self.class.human_attribute_name(:line_item_id)}> " if
@@ -168,7 +166,7 @@ class LineItemConversation < IncomingTextMessageConversation
         :supplier_name => user.name,
         :errors => message.errors.full_messages.to_sentence,
         :implicit_line_item_id => message.implicit_line_item_id_text,
-        :retry_suggestion => message.retry_suggestion(topic, action)
+        :retry_suggestion => message.retry_suggestion(command)
       )
     end
 
@@ -185,8 +183,7 @@ class LineItemConversation < IncomingTextMessageConversation
       I18n.t(
         "notifications.messages.built_in.be_specific_about_the_line_item_number",
         :supplier_name => user.name,
-        :topic => topic,
-        :action => action,
+        :command => command,
         :params => sanitized_params
       )
     end

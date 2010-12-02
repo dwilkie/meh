@@ -30,13 +30,10 @@ class OutgoingTextMessage < ActiveRecord::Base
       outgoing_text_message.update_attributes(
         :permanently_failed_to_send_at => Time.now
       )
-      outgoing_text_message.payer.add_message_credits(
-        outgoing_text_message.credits
-      )
     end
   end
 
-  attr_accessor :force_send, :cancel_send
+  attr_accessor :force_send, :cancel_send, :no_credit_warning
 
   belongs_to :mobile_number
   belongs_to :payer, :class_name => "User"
@@ -55,6 +52,8 @@ class OutgoingTextMessage < ActiveRecord::Base
   validates :payer,
             :presence => true
 
+  scope :not_queued_for_sending, where(:queued_for_sending_at => nil)
+
   def self.find_by_delivery_receipt(delivery_receipt)
     gateway_message_id = ActionSms::Base.message_id(delivery_receipt)
     OutgoingTextMessage.where(
@@ -66,12 +65,6 @@ class OutgoingTextMessage < ActiveRecord::Base
     mobile_number.to_s
   end
 
-  def should_send?
-    @should_send || @should_send = (
-      force_send || (enough_credits? && !cancel_send)
-    )
-  end
-
   def enough_credits?
     payer.message_credits - credits >= 0
   end
@@ -80,7 +73,34 @@ class OutgoingTextMessage < ActiveRecord::Base
     !queued_for_sending_at.nil?
   end
 
+  def will_send?
+    force_send || (enough_credits? && !cancel_send)
+  end
+
+  def resend
+    send_message unless queued_for_sending?
+  end
+
+  def no_credit_warning?
+    no_credit_warning
+  end
+
+  def no_credit_warning=(value)
+    self.force_send = value if value
+    @no_credit_warning = value
+  end
+
   private
+    def send_message
+      if will_send?
+        Delayed::Job.enqueue(
+          SendOutgoingTextMessageJob.new(self.id), 1
+        )
+        self.update_attributes!(:queued_for_sending_at => Time.now)
+        payer.deduct_message_credits(credits)
+      end
+    end
+
     def calculate_credits
       message_length = body.to_s.length
       self.credits = message_length <= 160 ? 1 : 1 + (message_length - 1) / 153
@@ -88,16 +108,6 @@ class OutgoingTextMessage < ActiveRecord::Base
 
     def link_payer
       self.payer = mobile_number.try(:user) unless payer
-    end
-
-    def send_message
-      if should_send?
-        Delayed::Job.enqueue(
-          SendOutgoingTextMessageJob.new(self.id), 1
-        )
-        self.update_attributes!(:queued_for_sending_at => Time.now)
-        payer.deduct_message_credits(credits)
-      end
     end
 end
 

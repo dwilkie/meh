@@ -19,36 +19,33 @@ en:
         <line_item_quantity> x <product_number>, \"<product_name>\", <product_price> <customer_order_payment_currency>
 
         Pls ship to customer"
-        order_has_been_confirmed: "Hi <seller_name>, Order #<customer_order_number> has been confirmed by <supplier_names_and_mobile_numbers>"
-        order_has_been_completed: "Hi <seller_name>, Order #<customer_order_number> has been shipped by <supplier_names_and_mobile_numbers>. <smart_tracking_number_label> <tracking_numbers>"
+        order_has_been_confirmed: "<seller_name>, Order #<customer_order_number> has been confirmed by <supplier_names_and_mobile_numbers>"
+        order_has_been_completed: "<seller_name>, Order #<customer_order_number> has been shipped by <supplier_names_and_mobile_numbers>. <smart_tracking_number_label> <tracking_numbers>"
         send_the_order_to: "<supplier_name>, pls ship order #<customer_order_number> to:
 
         <customer_address>
 
         then reply with: \"co\""
         you_successfully_completed_the_order: "Thanks <supplier_name>, Order #<customer_order_number> has been marked as shipped"
-        your_supplier_payment_was_successful: "Hi Dave, u just paid <supplier_payment_amount> <supplier_payment_currency> to <supplier_name> (<supplier_mobile_number>) to process order #<customer_order_number>"
-        you_have_received_a_payment: "Hi <supplier_name>, <seller_name> (<seller_mobile_number>) has paid u <supplier_payment_amount> <supplier_payment_ currency> to process order #<customer_order_number>"
-        you_successfully_confirmed_the_line_item: "Hi <supplier_name>, you successfully confirmed item #%{line_item_number}"
+        your_supplier_payment_was_successful: "<seller_name>, a payment of <supplier_payment_amount> <supplier_payment_currency> was received by <supplier_name> (<supplier_mobile_number>) for Order #<customer_order_number>"
+        you_have_received_a_payment: "<supplier_name>, you have received a payment of <supplier_payment_amount> <supplier_payment_currency> from <seller_name> (<seller_mobile_number>) for Order #<customer_order_number>"
       built_in:
         you_have_no_line_items_to_confirm: "%{supplier_name}, you have no items to confirm"
-        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with: %{action} %{topic} <item #>%{params}"
-        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with:%{retry_suggestion}"
+        be_specific_about_the_line_item_number: "%{supplier_name}, pls tell us which item you want to confirm by replying with: %{command} <item #>%{params}"
+        you_supplied_incorrect_values_while_trying_to_confirm_the_line_item: "%{supplier_name}, the %{errors}%{implicit_line_item_id}. Try again with: %{retry_suggestion}"
         you_have_no_orders_to_complete: "%{supplier_name}, you have no orders to ship"
-        be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with: %{action} %{topic} <item #>%{params}"
+        be_specific_about_the_order_number: "%{supplier_name}, pls tell us which order you want to complete by replying with: %{command} <item #>%{params}"
         this_tracking_number_was_already_used_by_you: "%{supplier_name}, the %{errors}"
         the_tracking_number_is_missing_or_invalid: "%{supplier_name}, the %{errors}. Try again with: %{retry_suggestion}"
         you_must_confirm_the_line_items_first: "%{supplier_name}, you must confirm line item(s): %{line_item_numbers} first. Try: ci <qty>"
         verify_your_mobile_number: "Hi, pls verify your number by replying with your name"
         your_mobile_number_is_verified: "Thanks %{user_name}, your mobile number is now verified"
         your_name_is_incorrect_or_missing: "Sorry, your %{errors}. Try again by replying with your registered name"
-        we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for Order: #%{customer_order_number}, because the %{errors}"
-        we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) (%{supplier_email}) of %{supplier_payment_amount} %{supplier_payment_currency} for %{line_item_quantity} x %{product_number} (%{product_name}) was UNCLAIMED because %{supplier_name} does not yet have a paypal account with this email. The item belongs to your customer order: #%{seller_order_number}"
-        open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, you have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for your line item: #%{line_item_number}. To claim it, register at paypal.com"
-        valid_message_commands_are: "Hi%{user_name}, valid sms commands are:\n\n\"mn\" (Mobile Number)\n\n\"po\" (line item)"
-        you_do_not_have_enough_message_credits_left: "Sorry%{payer_name}, the sms: \"%{truncated_message}...\" could not be sent to %{receiver_name} because you don't have enough credits. Pls top up"
-        words:
-          you: "you"
+        we_did_not_pay_your_supplier: "%{seller_name}, we didn't pay %{supplier_name} (%{supplier_mobile_number}) for Order #%{seller_order_number} because the %{errors}"
+        we_paid_your_supplier_but_the_payment_was_unclaimed: "%{seller_name}, a payment to %{supplier_name} (%{supplier_mobile_number}) of %{supplier_payment_amount} %{supplier_payment_currency} for Order #%{seller_order_number} was unclaimed because %{supplier_name} doesn't have a Paypal account with email: %{supplier_email}"
+        open_a_paypal_account_to_claim_your_payment: "%{supplier_name}, u have an unclaimed payment of %{supplier_payment_amount} %{supplier_payment_currency} from %{seller_name} (%{seller_mobile_number}) for Order #%{seller_order_number}. To claim it, register at paypal.com"
+        invalid_message_command: "%{user_name}, %{errors}. Try \"ci\" or \"co\""
+        no_credits_remaining: "%{payer_name}no more messages can be sent because you have run out of credits. Pls top up"
   errors:
     messages:
       incorrect: "isn't \"%{value}\""
@@ -68,6 +65,8 @@ en:
       unknown_topic_conversation:
         verify_mobile_number_message:
           name: "name"
+        invalid_message:
+          message_text: "message text"
     errors:
       models:
         line_item_conversation:
@@ -80,6 +79,10 @@ en:
             attributes:
               name:
                 incorrect: "wasn't registered as \"%{value}\""
+          invalid_message:
+            attributes:
+              message_text:
+                invalid: "\"%{value}\" is not a valid command"
         order_conversation:
           complete_order_message:
             attributes:
@@ -91,6 +94,8 @@ en:
         tracking_number: "Tracking #"
       seller_order:
         tracking_numbers: "Tracking #"
+      supplier_payment:
+        amount: "amount"
     default_attribute_values:
       supplier_order:
         tracking_number: "N/A"
@@ -112,8 +117,8 @@ en:
             amount:
               greater_than: "would have been %{count}"
           payment:
-            unauthorized: "payment was unauthorized. We don't yet have your permission to make payments on your behalf"
-            insufficient_funds: "paypal account: %{seller_email} does not have sufficient funds in %{currency}"
-            unknown: "the paypal account returned the following unexpected error: %{error}"
-  supplier_payment_note: "Payment for line item: #%{line_item_number}"
+            unauthorized: "payment was unauthorized. We don't have your permission to make payments on your behalf"
+            insufficient_funds: "paypal account: %{seller_email} doesn't have enough funds in %{currency}"
+            unknown: "paypal account returned the following unexpected error: %{error}"
+  supplier_payment_note: "Payment for order #%{seller_order_number}"
 
