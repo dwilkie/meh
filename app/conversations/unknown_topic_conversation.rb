@@ -54,6 +54,7 @@ class UnknownTopicConversation < IncomingTextMessageConversation
     end
 
     def verify
+      self.send_unverified = true
       message = VerifyMobileNumberMessage.new(user.name, params.join(" "))
       if message.valid?
         say your_mobile_number_is_verified

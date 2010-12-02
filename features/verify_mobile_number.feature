@@ -30,6 +30,15 @@ Feature: Send mobile number verification
     Then the most recent outgoing text message destined for the mobile number should be a translation of "your mobile number is verified" in "en" (English) where user_name: "Dave"
     And the seller should be the outgoing text message's payer
 
+  Scenario: Verify my number having unsent outgoing text messages
+    Given an outgoing text message exists with mobile_number: the mobile number
+    And the outgoing text message is not yet queued_for_sending
+
+    When I text "Dave" from "66354668874"
+
+    Then the mobile number should be verified
+    And the outgoing text message should be queued_for_sending
+
   Scenario Outline: Try to verify my number texting the wrong name
     When I text "<message_text>" from "66354668874"
 

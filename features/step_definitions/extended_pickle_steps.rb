@@ -7,10 +7,8 @@ end
 Given /^#{capture_model} (is not yet|was already) (\w+)$/ do |name, status, attribute|
   model_instance = model!(name)
   timestamp = "#{attribute}_at"
-  attribute = timestamp if model_instance.respond_to?(timestamp)
-  value = (status == "was already")
-  value = attribute == timestamp ? Time.now : nil if value
-  model_instance.update_attribute(attribute, value)
+  value = (status == "was already") ? Time.now : nil
+  model_instance.update_attribute(timestamp, value)
 end
 
 Given /^#{capture_model} (?:also )?has the following params:$/ do |name, params|

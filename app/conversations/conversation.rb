@@ -1,7 +1,7 @@
 class Conversation
   include Conversational::Conversation
 
-  attr_accessor :user, :force_send, :payer
+  attr_accessor :user, :force_send, :payer, :send_unverified
   alias :user :with
 
   self.unknown_topic_subclass = UnknownTopicConversation
@@ -18,7 +18,7 @@ class Conversation
           :payer => payer
         )
         outgoing_text_message.force_send = force_send
-        outgoing_text_message.cancel_send = user.cannot_text?
+        outgoing_text_message.cancel_send = !send_unverified && user.cannot_text?
         outgoing_text_message.save!
       end
     end
