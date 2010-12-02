@@ -42,7 +42,7 @@ Feature: Confirm line item
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been confirmed by Nok (+66354668874)
+    Mara, Order #1 has been confirmed by Nok (+66354668874)
     """
     And the outgoing text message should be queued_for_sending
     And the seller should be that outgoing text message's payer
@@ -141,7 +141,7 @@ Feature: Confirm line item
     And the seller order should be confirmed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been confirmed by Nok (+66354668874) and Andy (+61444431123)
+    Mara, Order #1 has been confirmed by Nok (+66354668874) and Andy (+61444431123)
     """
     And the seller should be that outgoing text message's payer
 

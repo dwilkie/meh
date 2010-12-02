@@ -30,6 +30,29 @@ class UnknownTopicConversation < IncomingTextMessageConversation
         end
     end
 
+    class InvalidMessage
+      include ActiveModel::Validations
+
+      attr_reader :message_text
+
+      validates :message_text,
+                :presence => true
+
+      validate :command_is_valid
+
+      def initialize(message_text)
+        @message_text = message_text
+      end
+
+      private
+        def command_is_valid
+          errors.add(
+            :message_text,
+            :invalid
+          ) unless message_text.blank?
+        end
+    end
+
     def verify
       message = VerifyMobileNumberMessage.new(user.name, params.join(" "))
       if message.valid?
@@ -55,9 +78,12 @@ class UnknownTopicConversation < IncomingTextMessageConversation
     end
 
     def invalid_command
+      message = InvalidMessage.new(message_words.join(" "))
+      message.valid?
       I18n.t(
-        "notifications.messages.built_in.valid_message_commands_are",
-        :user_name => user.name
+        "notifications.messages.built_in.invalid_message_command",
+        :user_name => user.name,
+        :errors => message.errors.full_messages.to_sentence
       )
     end
 end

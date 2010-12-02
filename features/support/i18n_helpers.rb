@@ -31,9 +31,6 @@ module I18nHelpers
     when /^open a paypal account to claim your payment$/
       "notifications.messages.built_in.open_a_paypal_account_to_claim_your_payment"
 
-    when /^valid message commands are$/
-      "notifications.messages.built_in.valid_message_commands_are"
-
     when /^you do not have enough message credits left$/
       "notifications.messages.built_in.you_do_not_have_enough_message_credits_left"
 
@@ -60,6 +57,10 @@ module I18nHelpers
 
     when /^unknown error for supplier payment$/
       "activerecord.errors.models.supplier_payment.payment.unknown"
+
+    when /^message text is invalid$/
+      "activemodel.errors.models.unknown_topic_conversation.invalid_message.attributes.message_text.invalid"
+
 
     when /^# does not exist$/
       "errors.messages.does_not_exist"

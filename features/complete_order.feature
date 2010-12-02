@@ -26,7 +26,7 @@ Feature: Complete an Order
     And the seller should be that outgoing text message's payer
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874).
+    Mara, Order #1 has been shipped by Nok (+66354668874).
     """
     And the seller should be that outgoing text message's payer
 
@@ -114,7 +114,7 @@ Feature: Complete an Order
     Then the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123).
+    Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123).
     """
     And the seller should be that outgoing text message's payer
 
@@ -126,7 +126,7 @@ Feature: Complete an Order
     And the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874). Tracking # <tracking_number>
+    Mara, Order #1 has been shipped by Nok (+66354668874). Tracking # <tracking_number>
     """
     And the seller should be that outgoing text message's payer
 
@@ -152,7 +152,7 @@ Feature: Complete an Order
     Then the seller order should be completed
     And the most recent outgoing text message destined for mobile_number: "Mara's number" should be
     """
-    Hi Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123). Tracking # re123456789th and N/A
+    Mara, Order #1 has been shipped by Nok (+66354668874) and Andy (+61444431123). Tracking # re123456789th and N/A
     """
     And the seller should be that outgoing text message's payer
 
