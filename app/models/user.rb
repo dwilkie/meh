@@ -24,6 +24,7 @@ class User < ActiveRecord::Base
              :class_name => "MobileNumber"
 
   has_many   :mobile_numbers
+  accepts_nested_attributes_for :mobile_numbers
 
   # Seller Associations
 
@@ -32,6 +33,8 @@ class User < ActiveRecord::Base
   has_many   :selling_products,
              :foreign_key => "seller_id",
              :class_name => "Product"
+
+  has_many   :order_simulations
 
   # a seller is supplied by many suppliers
   # this adds user.suppliers

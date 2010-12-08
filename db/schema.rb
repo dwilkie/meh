@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101123150305) do
+ActiveRecord::Schema.define(:version => 20101208103837) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -80,6 +80,13 @@ ActiveRecord::Schema.define(:version => 20101123150305) do
   end
 
   add_index "notifications", ["seller_id", "supplier_id", "product_id", "purpose", "event", "for"], :name => "index_notifications_unique", :unique => true
+
+  create_table "order_simulations", :force => true do |t|
+    t.text     "params",     :null => false
+    t.integer  "seller_id",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "outgoing_text_messages", :force => true do |t|
     t.text     "body"

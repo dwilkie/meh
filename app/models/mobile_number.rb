@@ -50,7 +50,7 @@ class MobileNumber < ActiveRecord::Base
   private
     def activate
       user = self.user
-      if user && self.active != user.id
+      if user && active != user.id
         user.active_mobile_number = self
       end
     end

@@ -17,10 +17,11 @@ gem 'devise_paypal', :path => '/home/dave/work/plugins/devise_paypal'
 gem 'conversational'
 gem 'money'
 gem 'httparty'
-gem 'delayed_job', ' >=2.1.0.pre2'
+gem 'delayed_job', ">=2.1.2"
 gem 'action_sms'
 gem 'paypal-ipn', :require => 'paypal', :path => '/home/dave/work/plugins/paypal'
 gem "haml-rails"
+gem "simple_form"
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'
@@ -35,17 +36,13 @@ end
 ## Bundle gems for certain environments:
 group :test do
   gem 'test-unit'
-  gem 'rspec'
-  gem 'rspec-core'
-  gem 'rspec-mocks'
-  gem 'rspec-expectations'
-  gem 'rspec-rails'
+  gem 'rspec-rails', ">=2.2.1"
   gem 'factory_girl_rails'
-  gem 'capybara', "0.3.9"
+  gem 'capybara', "=0.3.9"
   gem 'database_cleaner'
   gem 'pickle'
   gem 'cucumber-rails'
-  gem 'spork'
+  gem 'spork', ">=0.9.0.rc2"
   gem 'fakeweb'
   gem 'ruby-debug19'
   gem 'launchy'

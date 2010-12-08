@@ -1,13 +1,17 @@
 Meh::Application.routes.draw do
+
   resources :paypal_ipns, :only => :create
   resources :incoming_text_messages, :only => :create
   resources :text_message_delivery_receipts, :only => :create
 
+  resources :order_simulations, :only => [:new, :create]
+
   devise_for :users, :controllers => {
-    :paypal_authable => "paypal_registrations"
+    :paypal_authable => "paypal_authentications"
   }
 
   root :to => "welcome#index"
+  get "overview/index", :as => "user_root"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

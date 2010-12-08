@@ -6,3 +6,4 @@ config/database.yml
 *~
 rerun.txt
 .rspec
+config/locales/new_notifications.txt

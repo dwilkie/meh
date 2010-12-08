@@ -25,6 +25,15 @@ module NavigationHelpers
         :token => @token || "token"
       )
 
+    when /^the login page$/
+      new_user_session_path
+
+    when /^the overview page$/
+      user_root_path
+
+    when /^the order simulation page$/
+      new_order_simulation_path
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #
