@@ -8,7 +8,7 @@ Feature: Create orders from a Paypal IPN
     And a verified mobile number: "Mara's number" exists with user: the seller, number: "66354668789"
     And a supplier exists with name: "Dave"
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
-    And a partnership exists with seller: the seller, supplier: the supplier
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
     And a product: "Rubber Dingy" exists with seller: the seller, partnership: the partnership, number: "12345790063", name: "Model Ship - The Rubber Dingy"
     And a seller order paypal ipn exists
     And the seller order paypal ipn has the following params:
@@ -77,7 +77,7 @@ Feature: Create orders from a Paypal IPN
 
     And the 3rd most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, u just sold 1 item(s) totalling 75.00 USD (order ref: #1). Order details will follow shortly
+    Hi Mara, u just sold 1 item totalling 75.00 USD (order ref: #1). Order details will follow shortly
     """
     And the outgoing text message should <be_or_not_be> queued_for_sending
     And the seller should be that outgoing text message's payer
@@ -128,7 +128,7 @@ Feature: Create orders from a Paypal IPN
 
     And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item(s). Order details will follow shortly
+    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item. Order details will follow shortly
     """
     And the seller should be that outgoing text message's payer
     And the outgoing text message should <be_or_not_be> queued_for_sending
@@ -195,7 +195,7 @@ Feature: Create orders from a Paypal IPN
 
   Scenario: A Paypal IPN for 3 known items and 2 unknown item is received
     Given another supplier: "Andy" exists with name: "Andy"
-    And a partnership: "with Andy" exists with seller: the seller, supplier: supplier: "Andy"
+    And a confirmed partnership: "with Andy" exists with seller: the seller, supplier: supplier: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "614121223322", user: supplier: "Andy"
     And another product exists with seller: the seller, partnership: partnership: "with Andy", number: "1902838475476", name: "Model Ship - The Titanic"
     And another product exists with seller: the seller, partnership: partnership: "with Andy", number: "1902838475479", name: "Model Ship - The Endevour"
@@ -237,7 +237,7 @@ Feature: Create orders from a Paypal IPN
     And 5 line items should exist
     And the 7th most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
-    Hi Mara, u just sold 5 item(s) totalling 664.60 USD (order ref: #1). Order details will follow shortly
+    Hi Mara, u just sold 5 items totalling 664.60 USD (order ref: #1). Order details will follow shortly
     """
     And the 6th most recent outgoing text message destined for the mobile number: "Mara's number" should be
     """
@@ -282,7 +282,7 @@ Feature: Create orders from a Paypal IPN
 
     And the 2nd most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
-    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item(s). Order details will follow shortly
+    Hi Dave, u have a new order (ref: #1) from Mara (+66354668789) for 1 item. Order details will follow shortly
     """
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should be
     """
@@ -293,7 +293,7 @@ Feature: Create orders from a Paypal IPN
 
     And the 3rd most recent outgoing text message destined for the mobile number: "Andy's number" should be
     """
-    Hi Andy, u have a new order (ref: #1) from Mara (+66354668789) for 2 item(s). Order details will follow shortly
+    Hi Andy, u have a new order (ref: #1) from Mara (+66354668789) for 2 items. Order details will follow shortly
     """
     And the 2nd most recent outgoing text message destined for the mobile number: "Andy's number" should be
     """

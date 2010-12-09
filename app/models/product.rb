@@ -49,7 +49,7 @@ class Product < ActiveRecord::Base
   end
 
   def supplier
-    partnership.try(:supplier) || seller
+    partnership && partnership.confirmed? ? partnership.supplier : seller
   end
 
   def supplier_payment_amount=(value)

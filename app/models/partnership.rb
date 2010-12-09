@@ -17,5 +17,13 @@ class Partnership < ActiveRecord::Base
             :uniqueness => { :scope => :seller_id },
             :presence => true
 
+  def unconfirmed?
+    self.confirmed_at.nil?
+  end
+
+  def confirmed?
+    !unconfirmed?
+  end
+
 end
 

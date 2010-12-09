@@ -8,7 +8,8 @@ Feature: Confirm line item
     And a verified mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with number: "190287626891", name: "Vietnamese Chicken", partnership: the partnership, seller: the seller
     And a line item exists for the product with quantity: 1
     And the seller order paypal ipn has the following params:
     """

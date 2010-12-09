@@ -16,6 +16,13 @@ class Notification < ActiveRecord::Base
       :total_number_of_items => Proc.new { |options|
         options[:order_notification].number_of_cart_items.to_s
       },
+      :smart_total_number_of_items_label => Proc.new { |options|
+        label = options[:order_notification].class.human_attribute_name(
+          :number_of_cart_items
+        )
+        options[:order_notification].number_of_cart_items > 1 ?
+        label.pluralize : label
+      },
       :customer_order_payment_currency => Proc.new { |options|
         options[:order_notification].payment_currency
       },
@@ -26,6 +33,13 @@ class Notification < ActiveRecord::Base
     :supplier_order => {
       :number_of_items_in_supplier_order => Proc.new { |options|
         options[:supplier_order].number_of_line_items.to_s
+      },
+      :smart_number_of_items_in_supplier_order_label => Proc.new { |options|
+        label = options[:supplier_order].class.human_attribute_name(
+          :number_of_line_items
+        )
+        options[:supplier_order].number_of_line_items > 1 ?
+        label.pluralize : label
       }
     },
     :customer_address => {

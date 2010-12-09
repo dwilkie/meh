@@ -33,6 +33,10 @@ Factory.define :partnership do |f|
   f.association :supplier
 end
 
+Factory.define :confirmed_partnership, :parent => :partnership do |f|
+  f.confirmed_at Time.now
+end
+
 Factory.define :product do |f|
   f.association :seller
   f.association :partnership
