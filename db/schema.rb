@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101208103837) do
+ActiveRecord::Schema.define(:version => 20101209050556) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -105,6 +105,17 @@ ActiveRecord::Schema.define(:version => 20101208103837) do
 
   add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id", :unique => true
 
+  create_table "partnerships", :force => true do |t|
+    t.integer  "seller_id",           :null => false
+    t.integer  "supplier_id",         :null => false
+    t.integer  "order_simulation_id"
+    t.datetime "confirmed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "partnerships", ["seller_id", "supplier_id"], :name => "index_partnerships_on_seller_id_and_supplier_id", :unique => true
+
   create_table "payment_agreements", :force => true do |t|
     t.boolean  "enabled",                    :null => false
     t.string   "event"
@@ -137,7 +148,7 @@ ActiveRecord::Schema.define(:version => 20101208103837) do
     t.string   "verification_code"
     t.integer  "cents",             :default => 0, :null => false
     t.string   "currency"
-    t.integer  "supplier_id",                      :null => false
+    t.integer  "partnership_id"
     t.integer  "seller_id",                        :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -24,24 +24,27 @@ class User < ActiveRecord::Base
              :class_name => "MobileNumber"
 
   has_many   :mobile_numbers
-  accepts_nested_attributes_for :mobile_numbers
 
   # Seller Associations
 
   # seller has many products for sale
   # this adds user.selling_products
+
+  has_many   :order_simulations,
+             :foreign_key => "seller_id"
+
+  has_many   :supplier_partnerships,
+             :foreign_key => "seller_id",
+             :class_name => "Partnership"
+
+  has_many   :suppliers,
+             :through => :supplier_partnerships,
+             :uniq => true,
+             :readonly => false
+
   has_many   :selling_products,
              :foreign_key => "seller_id",
              :class_name => "Product"
-
-  has_many   :order_simulations
-
-  # a seller is supplied by many suppliers
-  # this adds user.suppliers
-  has_many   :suppliers,
-             :through => :selling_products,
-             :uniq => true,
-             :readonly => false
 
   has_many   :seller_orders,
              :foreign_key => "seller_id"
@@ -73,16 +76,12 @@ class User < ActiveRecord::Base
 
   # Supplier Associations
 
-  # a supplier has many products to supply
-  # this adds user.supplying_products
-  has_many   :supplying_products,
+  has_many   :seller_partnerships,
              :foreign_key => "supplier_id",
-             :class_name => "Product"
+             :class_name => "Partnership"
 
-  # a supplier supplies many sellers
-  # this adds user.sellers
   has_many   :sellers,
-             :through => :supplying_products,
+             :through => :seller_partnerships,
              :uniq => true,
              :readonly => false
 

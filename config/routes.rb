@@ -4,14 +4,18 @@ Meh::Application.routes.draw do
   resources :incoming_text_messages, :only => :create
   resources :text_message_delivery_receipts, :only => :create
 
+  resource  :overview, :only => :index
+  get "overview/index", :as => "user_root"
+
+  resources :partnerships, :except => [:edit, :update]
   resources :order_simulations, :only => [:new, :create]
+  resources :mobile_numbers
 
   devise_for :users, :controllers => {
     :paypal_authable => "paypal_authentications"
   }
 
   root :to => "welcome#index"
-  get "overview/index", :as => "user_root"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,5 +1,3 @@
 = simple_form_for @order_simulation do |order_simulation_form|
-  = order_simulation_form.simple_fields_for @user do |user_form|
-    = user_form.simple_fields_for @mobile_number do |mobile_number_form|
-      = mobile_number_form.input :number
+  = order_simulation_form.button :submit
 

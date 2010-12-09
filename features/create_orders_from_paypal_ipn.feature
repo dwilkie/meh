@@ -8,7 +8,8 @@ Feature: Create orders from a Paypal IPN
     And a verified mobile number: "Mara's number" exists with user: the seller, number: "66354668789"
     And a supplier exists with name: "Dave"
     And a verified mobile number: "Dave's number" exists with number: "66123555331", user: the supplier
-    And a product: "Rubber Dingy" exists with seller: the seller, supplier: the supplier, number: "12345790063", name: "Model Ship - The Rubber Dingy"
+    And a partnership exists with seller: the seller, supplier: the supplier
+    And a product: "Rubber Dingy" exists with seller: the seller, partnership: the partnership, number: "12345790063", name: "Model Ship - The Rubber Dingy"
     And a seller order paypal ipn exists
     And the seller order paypal ipn has the following params:
     """
@@ -65,7 +66,6 @@ Feature: Create orders from a Paypal IPN
 
     And a product should exist with number: "12345790063", name: "Model Ship - The Rubber Dingy", price: "75.00"
     And the product should be amongst the seller's selling_products
-    And the product should be amongst the seller's supplying_products
 
     And a line item should exist
     And the line item should be unconfirmed
@@ -175,7 +175,7 @@ Feature: Create orders from a Paypal IPN
     And the most recent outgoing text message destined for the mobile number: "Dave's number" should include "Model Ship - The Rubber Ducky"
 
   Scenario: The seller has registered the product number with a different product name and has also registered the product name with a different product number
-    Given another product: "Titanic" exists with seller: the seller, supplier: the supplier, number: "12345790062", name: "Model Ship - The Titanic"
+    Given another product: "Titanic" exists with seller: the seller, partnership: the partnership, number: "12345790062", name: "Model Ship - The Titanic"
     And the seller order paypal ipn has the following params:
     """
     {
@@ -195,9 +195,10 @@ Feature: Create orders from a Paypal IPN
 
   Scenario: A Paypal IPN for 3 known items and 2 unknown item is received
     Given another supplier: "Andy" exists with name: "Andy"
+    And a partnership: "with Andy" exists with seller: the seller, supplier: supplier: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "614121223322", user: supplier: "Andy"
-    And another product exists with seller: the seller, supplier: supplier: "Andy", number: "1902838475476", name: "Model Ship - The Titanic"
-    And another product exists with seller: the seller, supplier: supplier: "Andy", number: "1902838475479", name: "Model Ship - The Endevour"
+    And another product exists with seller: the seller, partnership: partnership: "with Andy", number: "1902838475476", name: "Model Ship - The Titanic"
+    And another product exists with seller: the seller, partnership: partnership: "with Andy", number: "1902838475479", name: "Model Ship - The Endevour"
     And the seller order paypal ipn has the following params:
     """
     {

@@ -1,20 +1,28 @@
 class OrderSimulationsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :activate_mobile_number
   # GET /order_simulations/new
   def new
-    @user = current_user
-    @order_simulation = @user.order_simulations.build
-    @mobile_number = @user.mobile_numbers.build
+    @order_simulation = current_user.order_simulations.build
   end
 
   # POST /order_simulations
   def create
-    @order_simulation = OrderSimulation.new(params[:order_simulation])
+    @order_simulation = current_user.order_simulations.build(
+      :params => params[:order_simulation]
+    )
     if @order_simulation.save
       redirect_to overview_path
     else
       render :action => :new
     end
   end
+
+  private
+    def activate_mobile_number
+      current_user.mobile_numbers.empty? ?
+      redirect_to(new_mobile_number_path) :
+      redirect_to(mobile_numbers_path) unless
+      current_user.active_mobile_number
+    end
 end
 

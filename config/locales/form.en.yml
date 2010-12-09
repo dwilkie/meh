@@ -1,0 +1,7 @@
+en:
+  # button text
+  helpers:
+    submit:
+      order_simulation:
+        create: "Start"
+
