@@ -147,6 +147,14 @@ Feature: Create orders from a Paypal IPN
       | is not yet                | not be       |
       | was already               | be           |
 
+  Scenario: A Paypal IPN is received for a single known item with a supplier but the supplier has not yet confirmed their partnership with the seller
+    Given the partnership is not yet confirmed
+
+    When the seller order paypal ipn is verified
+
+    Then a supplier order should exist
+    And the supplier order should be amongst the seller's supplier_orders
+
   Scenario: The seller has registered the product name but the product number is different
     Given the seller order paypal ipn has the following params:
     """
