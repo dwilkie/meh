@@ -9,7 +9,8 @@ Feature: Payment Agreement
     And a supplier: "Fon" exists with name: "Fon"
     And a verified mobile number: "Fon's number" exists with user: the supplier, number: "66813456743"
     And a payment agreement exists with seller: the seller, supplier: the supplier, currency: "THB"
-    And a product exists with supplier: the supplier, seller: the seller
+    And a confirmed partnership exists with supplier: the supplier, seller: the seller
+    And a product exists with seller: the seller, partnership: the partnership
     And a line item exists for the product with quantity: 4
     Then a supplier order should exist
 
@@ -60,7 +61,7 @@ Feature: Payment Agreement
   Scenario: I have a payment agreement with my supplier for no fixed amount and 2 line items for products with supplier payment amounts exist in the order
     Then a line item: "first item" should exist
     Given I update the product with supplier_payment_amount: "539.24"
-    And another product exists with seller: the seller, supplier: the supplier, supplier_payment_amount: "1000"
+    And another product exists with seller: the seller, partnership: the partnership, supplier_payment_amount: "1000"
     And a line item exists for that product and the supplier order with quantity: 3
 
     When the supplier confirms the line item

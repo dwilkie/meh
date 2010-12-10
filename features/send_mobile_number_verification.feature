@@ -15,7 +15,7 @@ Feature: Send mobile number verification
   Scenario: A mobile number is created for a supplier
     Given a seller exists
     And a supplier exists
-    And a product exists with seller: the seller, supplier: the supplier
+    And a partnership exists with seller: the seller, supplier: the supplier
 
     When a mobile number is created with user: the supplier
 

@@ -19,7 +19,8 @@ class Test
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
     find_or_create_payment_agreement!(seller, supplier)
-    find_or_create_product!(seller, supplier)
+    partnership = find_or_create_partnership!(seller, supplier)
+    find_or_create_product!(seller, partnership)
   end
 
   def self.incoming_text_message_query_string(options = {})
@@ -147,14 +148,28 @@ class Test
      payment_agreement
    end
 
-   def self.find_or_create_product!(seller, supplier)
+   def self.find_or_create_partnership!(seller, supplier)
+     partnership = Partnership.where(
+       :seller_id => seller.id,
+       :supplier_id => supplier.id
+     ).first
+     unless partnership
+       partnership = Partnership.new
+       partnership.seller = seller
+       partnership.supplier = supplier
+       partnership.save!
+     end
+     partnership
+   end
+
+   def self.find_or_create_product!(seller, partnership)
      product = Product.where(
-       :seller_id => seller.id, :supplier_id => supplier.id
+       :seller_id => seller.id, :partnership_id => partnership.id
      ).first
      unless product
        product = Product.new
        product.seller = seller
-       product.supplier = supplier
+       product.partnership = partnership
        product.name = "Some product"
      end
      product.supplier_payment_amount = "20"

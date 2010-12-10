@@ -35,6 +35,7 @@ end
 
 ## Bundle gems for certain environments:
 group :test do
+  gem "test-unit"
   gem 'rspec-rails', ">=2.2.1"
   gem 'factory_girl_rails'
   gem 'capybara', "=0.3.9"

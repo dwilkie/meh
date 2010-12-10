@@ -30,7 +30,7 @@ class IncomingTextMessage < ActiveRecord::Base
 
   def self.create_later(params)
     Delayed::Job.enqueue(
-      CreateIncomingTextMessageJob.new(params), 2
+      CreateIncomingTextMessageJob.new(params), :priority => 2
     )
   end
 

@@ -8,7 +8,8 @@ Feature: Update supplier payment from paypal ipn
     And a verified mobile number: "Dave's number" exists with number: "66354668789", user: the seller
     And a supplier exists with name: "Fon", email: "fon@example.com"
     And a verified mobile number: "Fon's number" exists with number: "66123555331", user: the supplier
-    And a product exists with seller: the seller, supplier: the supplier
+    And a partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with seller: the seller, partnership: the partnership
     And a line item exists for that product
     Then a supplier order should exist
 
