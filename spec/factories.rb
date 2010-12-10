@@ -28,9 +28,18 @@ Factory.define :payment_agreement do |f|
   f.association :supplier
 end
 
-Factory.define :product do |f|
-  f.association :supplier
+Factory.define :partnership do |f|
   f.association :seller
+  f.association :supplier
+end
+
+Factory.define :confirmed_partnership, :parent => :partnership do |f|
+  f.confirmed_at Time.now
+end
+
+Factory.define :product do |f|
+  f.association :seller
+  f.association :partnership
   f.sequence(:number) {|n| "1234#{n}"}
   f.sequence(:name) {|n| "Some Manky Product #{n}"}
 end

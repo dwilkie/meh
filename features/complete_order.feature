@@ -8,7 +8,8 @@ Feature: Complete an Order
     And a verified mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with number: "190287626891", name: "Vietnamese Chicken", partnership: the partnership, seller: the seller
     And a line item exists for the product with quantity: 1
     Then a supplier order should exist
     And a seller order should exist
@@ -62,7 +63,7 @@ Feature: Complete an Order
       | co 1             |
 
   Scenario Outline: Complete an order explicity whilst having multiple incomplete orders
-    Given a product exists with supplier: the supplier, seller: the seller
+    Given a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
@@ -82,9 +83,8 @@ Feature: Complete an Order
       | corder 1         |
       | co 1             |
 
-  @current
   Scenario Outline: Try to complete an order implicitly whilst having multiple incomplete orders
-    Given a product exists with supplier: the supplier, seller: the seller
+    Given a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product with quantity: 1
 
     When I text "<message_text>" from "66354668874"
@@ -102,7 +102,6 @@ Feature: Complete an Order
     Given a supplier exists with name: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
     And a supplier order exists with seller_order: the seller order, supplier: the supplier
-    And a product exists with seller: the seller, supplier: the supplier
     And the supplier order was already confirmed
 
     When I text "co" from "61444431123"
@@ -140,7 +139,6 @@ Feature: Complete an Order
     And a supplier exists with name: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
     And a supplier order exists with seller_order: the seller order, supplier: the supplier
-    And a product exists with seller: the seller, supplier: the supplier
     And the supplier order was already confirmed
 
     When I text "co" from "61444431123"
@@ -161,7 +159,7 @@ Feature: Complete an Order
     And the supplier order was already completed
     And I update the supplier order with tracking_number: "re123456789th"
     And another seller exists
-    And a product exists with seller: the seller, supplier: the supplier
+    And a product exists with partnership: the partnership, seller: the seller
     And a line item exists for that product
     And that line item was already confirmed
     And a tracking number format exists with seller: the seller
@@ -229,7 +227,7 @@ Feature: Complete an Order
   Scenario: Complete an order as the seller/supplier
     Given another seller exists with name: "Andy"
     And another verified mobile number: "Andy's number" exists with number: "61444144443", user: the seller
-    And another product exists with supplier: the seller, seller: the seller
+    And another product exists with seller: the seller
     And a line item exists for that product
     Then another seller order should exist with seller: the seller
 

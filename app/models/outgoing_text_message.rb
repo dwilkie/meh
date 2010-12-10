@@ -94,7 +94,7 @@ class OutgoingTextMessage < ActiveRecord::Base
     def send_message
       if will_send?
         Delayed::Job.enqueue(
-          SendOutgoingTextMessageJob.new(self.id), 1
+          SendOutgoingTextMessageJob.new(self.id), :priority => 1
         )
         self.update_attributes!(:queued_for_sending_at => Time.now)
         payer.deduct_message_credits(credits)

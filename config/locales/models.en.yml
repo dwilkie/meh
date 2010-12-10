@@ -1,0 +1,84 @@
+en:
+  errors:
+    messages:
+      incorrect: "isn't \"%{value}\""
+      blank: "is required"
+      does_not_exist: "%{value} doesn't exist"
+  activemodel:
+    attributes:
+      line_item_conversation:
+        confirm_line_item_message:
+          quantity: "qty"
+          product_verification_code: "pv code"
+          line_item_id: "item #"
+      order_conversation:
+        complete_order_message:
+          tracking_number: "tracking #"
+          order_id: "order #"
+      unknown_topic_conversation:
+        verify_mobile_number_message:
+          name: "name"
+        invalid_message:
+          message_text: "message text"
+    errors:
+      models:
+        line_item_conversation:
+          confirm_line_item_message:
+            attributes:
+              quantity:
+                blank: "must be confirmed"
+        unknown_topic_conversation:
+          verify_mobile_number_message:
+            attributes:
+              name:
+                incorrect: "wasn't registered as \"%{value}\""
+          invalid_message:
+            attributes:
+              message_text:
+                invalid: "\"%{value}\" is not a valid command"
+        order_conversation:
+          complete_order_message:
+            attributes:
+              tracking_number:
+                invalid: "\"%{value}\" is invalid"
+  activerecord:
+    attributes:
+      supplier_order:
+        tracking_number: "Tracking #"
+        number_of_line_items: "item"
+      seller_order:
+        tracking_numbers: "Tracking #"
+      supplier_payment:
+        amount: "amount"
+      seller_order_paypal_ipn:
+        number_of_cart_items: "item"
+    default_attribute_values:
+      supplier_order:
+        tracking_number: "N/A"
+    states:
+      mobile_number:
+        unverified: "Unverified"
+      partnership:
+        unconfirmed: "Awaiting Confirmation"
+    actions:
+      partnership:
+        create: "Invite"
+    errors:
+      models:
+        supplier_order:
+          attributes:
+            tracking_number:
+              taken: "\"%{value}\" was already used by you"
+        outgoing_text_message:
+          attributes:
+            credits:
+              not_enough: "is not enough"
+        supplier_payment:
+          attributes:
+            amount:
+              greater_than: "would have been %{count}"
+          payment:
+            unauthorized: "payment was unauthorized. We don't have your permission to make payments on your behalf"
+            insufficient_funds: "paypal account: %{seller_email} doesn't have enough funds in %{currency}"
+            unknown: "paypal account returned the following unexpected error: %{error}"
+

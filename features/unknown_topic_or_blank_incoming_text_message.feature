@@ -21,7 +21,7 @@ Feature: Invalid or blank incoming text messages
 
   Scenario: An incoming message is received from a supplier with a single seller with unknown text
     Given a seller exists
-    And a product exists with seller: the seller, supplier: the supplier
+    And a partnership exists with seller: the seller, supplier: the supplier
 
     When I text "blah" from "66322345211"
 

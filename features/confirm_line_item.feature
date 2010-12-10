@@ -8,7 +8,8 @@ Feature: Confirm line item
     And a verified mobile number: "Nok's number" exists with number: "66354668874", user: the supplier
     And a seller exists with name: "Mara"
     And a verified mobile number: "Mara's number" exists with number: "66354668789", user: the seller
-    And a product exists with number: "190287626891", name: "Vietnamese Chicken", supplier: the supplier, seller: the seller
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with number: "190287626891", name: "Vietnamese Chicken", partnership: the partnership, seller: the seller
     And a line item exists for the product with quantity: 1
     And the seller order paypal ipn has the following params:
     """
@@ -87,7 +88,7 @@ Feature: Confirm line item
   Scenario Outline: Confirm a line item explicity whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
 
-    Given a product exists with supplier: the supplier, seller: the seller
+    Given a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
@@ -107,7 +108,7 @@ Feature: Confirm line item
   Scenario Outline: Try to confirm a line item implicitly whilst having multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
 
-    Given a product exists with supplier: the supplier, seller: the seller
+    Given a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product
 
     When I text "<message_text>" from "66354668874"
@@ -130,7 +131,8 @@ Feature: Confirm line item
     Given a supplier exists with name: "Andy"
     And a verified mobile number: "Andy's number" exists with number: "61444431123", user: the supplier
     And a supplier order exists with seller_order: the seller order, supplier: the supplier
-    And a product exists with seller: the seller, supplier: the supplier
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product and the supplier order with quantity: 3
 
     When I text "cli 3" from "61444431123"
@@ -162,7 +164,8 @@ Feature: Confirm line item
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item as a seller when the seller is also the supplier for this product
-    Given a product exists with verification_code: "hy456m", supplier: the seller, seller: the seller
+    Given a confirmed partnership exists with supplier: the seller, seller: the seller
+    And a product exists with verification_code: "hy456m", partnership: the partnership, seller: the seller
     And a line item exists for the product with quantity: 3
     And no outgoing text messages exist with mobile_number_id: mobile_number: "Mara's number"
 
@@ -194,7 +197,8 @@ Feature: Confirm line item
 
   Scenario: Try to explicitly confirm a line item omitting the quantity with multiple unconfirmed line items
     Then a line item: "first item" should exist with product_id: the product
-    Given a product exists with supplier: the supplier, seller: the seller
+
+    Given a product exists with partnership: the partnership, seller: the seller
     And a line item exists for the product
 
     When I text "ci 1" from "66354668874"

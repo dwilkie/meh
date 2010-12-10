@@ -79,12 +79,10 @@ class SellerOrderObserver < ActiveRecord::Observer
             :name => item_name
           )
         else
-          product = seller.selling_products.new(
+          product = seller.selling_products.create!(
             :number => item_number,
             :name => item_name
           )
-          product.supplier = seller
-          product.save!
         end
       end
       unless product.price == item_price

@@ -57,7 +57,7 @@ else
   puts "Turn off workers: heroku workers 0 --remote staging"
 end
 puts "\n"
-puts "Simulate a supplier order paypal ipn: curl -d \"#{Test.paypal_ipn_query_string(:normalized => test_locally)}\" #{host}/paypal_ipns"
+puts "Simulate a seller order paypal ipn: curl -d \"#{Test.paypal_ipn_query_string(:normalized => test_locally)}\" #{host}/paypal_ipns"
 puts "\n"
 puts "*****************************************************************"
 

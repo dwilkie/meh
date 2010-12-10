@@ -8,7 +8,8 @@ Feature: Supplier Payment
     And a verified mobile_number: "Dave's number" exists with user: the seller, number: "66823344533"
     And a supplier exists with name: "Fon"
     And a verified mobile_number: "Fon's number" exists with user: the supplier, number: "66823568467"
-    And a product exists with seller: the seller, supplier: the supplier
+    And a confirmed partnership exists with seller: the seller, supplier: the supplier
+    And a product exists with seller: the seller, partnership: the partnership
     And a line item exists for that product
     Then a supplier order should exist
 

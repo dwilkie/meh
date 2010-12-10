@@ -18,8 +18,9 @@ class Test
     clear_jobs
     seller = find_or_create_user!(:seller, :name => options[:seller_name])
     supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
-    #find_or_create_payment_agreement!(seller, supplier)
-    find_or_create_product!(seller, supplier)
+    find_or_create_payment_agreement!(seller, supplier)
+    partnership = find_or_create_partnership!(seller, supplier)
+    find_or_create_product!(seller, partnership)
   end
 
   def self.incoming_text_message_query_string(options = {})
@@ -135,28 +136,43 @@ class Test
 
     def self.find_or_create_payment_agreement!(seller, supplier)
       payment_agreement = PaymentAgreement.where(
-       :seller_id => seller.id,
-       :supplier_id => supplier.id
-     ).first || PaymentAgreement.new(
-       :seller => seller,
-       :supplier => supplier
-     )
+       :seller_id => seller.id, :supplier_id => supplier.id
+     ).first
+     unless payment_agreement
+       payment_agreement = PaymentAgreement.new
+       payment_agreement.seller = seller
+       payment_agreement.supplier = supplier
+     end
      payment_agreement.event = "supplier_order_confirmed"
      payment_agreement.save!
      payment_agreement
    end
 
-   def self.find_or_create_product!(seller, supplier)
-     product = Product.where(
+   def self.find_or_create_partnership!(seller, supplier)
+     partnership = Partnership.where(
        :seller_id => seller.id,
        :supplier_id => supplier.id
-     ).first || Product.new(
-       :seller => seller,
-       :supplier => supplier,
-       :name => "Some product"
-     )
-     product.cents = 2000
-     product.currency = "AUD"
+     ).first
+     unless partnership
+       partnership = Partnership.new
+       partnership.seller = seller
+       partnership.supplier = supplier
+       partnership.save!
+     end
+     partnership
+   end
+
+   def self.find_or_create_product!(seller, partnership)
+     product = Product.where(
+       :seller_id => seller.id, :partnership_id => partnership.id
+     ).first
+     unless product
+       product = Product.new
+       product.seller = seller
+       product.partnership = partnership
+       product.name = "Some product"
+     end
+     product.supplier_payment_amount = "20"
      product.number = PARAMS[:paypal_item_number]
      product.save!
      product

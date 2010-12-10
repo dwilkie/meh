@@ -2,20 +2,11 @@ class User < ActiveRecord::Base
 
   ROLES = %w[seller supplier]
 
-  scope :with_role, lambda { |role|
-    where("roles_mask & #{2**ROLES.index(role.to_s)} > 0 ")
-  }
-
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
   devise :database_authenticatable, :paypal_authable,
          :recoverable, :rememberable, :trackable, :validatable
-
-  # Setup accessible (or protected) attributes for your model
-  # this is a white list of attributes that are permitted to be mass assigned
-  # all others have to be assigned using writer methods
-  attr_accessible :email, :password, :password_confirmation
 
   # General Associations
 
@@ -25,20 +16,28 @@ class User < ActiveRecord::Base
 
   has_many   :mobile_numbers
 
+  accepts_nested_attributes_for :mobile_numbers
+
   # Seller Associations
 
   # seller has many products for sale
   # this adds user.selling_products
+
+  has_many   :order_simulations,
+             :foreign_key => "seller_id"
+
+  has_many   :supplier_partnerships,
+             :foreign_key => "seller_id",
+             :class_name => "Partnership"
+
+  has_many   :suppliers,
+             :through => :supplier_partnerships,
+             :uniq => true,
+             :readonly => false
+
   has_many   :selling_products,
              :foreign_key => "seller_id",
              :class_name => "Product"
-
-  # a seller is supplied by many suppliers
-  # this adds user.suppliers
-  has_many   :suppliers,
-             :through => :selling_products,
-             :uniq => true,
-             :readonly => false
 
   has_many   :seller_orders,
              :foreign_key => "seller_id"
@@ -70,16 +69,12 @@ class User < ActiveRecord::Base
 
   # Supplier Associations
 
-  # a supplier has many products to supply
-  # this adds user.supplying_products
-  has_many   :supplying_products,
+  has_many   :seller_partnerships,
              :foreign_key => "supplier_id",
-             :class_name => "Product"
+             :class_name => "Partnership"
 
-  # a supplier supplies many sellers
-  # this adds user.sellers
   has_many   :sellers,
-             :through => :supplying_products,
+             :through => :seller_partnerships,
              :uniq => true,
              :readonly => false
 
@@ -109,6 +104,48 @@ class User < ActiveRecord::Base
   validates :password_confirmation,
             :presence => true,
             :if => :password_required?
+
+  validates :email,
+            :presence => true,
+            :if => :email_required?
+
+  attr_accessible :email, :name, :mobile_numbers_attributes
+
+  def self.with_mobile(number)
+    joins(:mobile_numbers) & MobileNumber.with_number(number)
+  end
+
+  def self.with_role(role)
+    where("roles_mask & #{2**ROLES.index(role.to_s)} > 0 ")
+  end
+
+  def self.roles(roles_mask)
+    ROLES.reject do |r|
+      ((roles_mask || 0) & 2**ROLES.index(r)).zero?
+    end
+  end
+
+  def self.find_for_paypal_auth(params)
+    if params
+      user = self.find_or_initialize_by_email(params[:email])
+      if user.new_record?
+        user.name = params[:first_name].capitalize
+        user.new_role = :seller
+        stub_password(user)
+        user.save
+      end
+    else
+      user = self.new
+    end
+    user
+  end
+
+  def self.stub_password(user)
+    stubbed_password = Devise.friendly_token[0..password_length.max-1]
+    user.password = stubbed_password
+    user.password_confirmation = stubbed_password
+  end
+
 
   def can_text?
     active_mobile_number = self.active_mobile_number
@@ -149,27 +186,19 @@ class User < ActiveRecord::Base
     roles.include?(role.to_s)
   end
 
-  def self.roles(roles_mask)
-    ROLES.reject do |r|
-      ((roles_mask || 0) & 2**ROLES.index(r)).zero?
-    end
+  def supplier_partnership_with(supplier)
+    supplier_partnerships.where(:supplier_id => supplier).first
   end
 
-  def self.find_for_paypal_auth(params)
-    if params
-      user = self.find_or_initialize_by_email(params[:email])
-      if user.new_record?
-        user.name = params[:first_name].capitalize
-        user.new_role = :seller
-        stubbed_password = Devise.friendly_token[0..password_length.max-1]
-        user.password = stubbed_password
-        user.password_confirmation = stubbed_password
-        user.save
-      end
-    else
-      user = self.new
-    end
-    user
+  def stub_password
+    self.class.stub_password(self)
   end
+
+  private
+
+  def email_required?
+    self.is?(:seller)
+  end
+
 end
 

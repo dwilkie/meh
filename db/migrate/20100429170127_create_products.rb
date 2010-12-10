@@ -7,7 +7,7 @@ class CreateProducts < ActiveRecord::Migration
       t.string      :verification_code
       t.integer     :cents,   :default => 0,    :null => false
       t.string      :currency
-      t.references  :supplier,                  :null => false
+      t.references  :partnership
       t.references  :seller,                    :null => false
       t.timestamps
     end

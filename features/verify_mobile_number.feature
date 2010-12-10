@@ -23,7 +23,7 @@ Feature: Send mobile number verification
   Scenario: Verify my number as a supplier
     Given the user is also a supplier
     And a seller exists
-    And a product exists with seller: the seller, supplier: user: "Dave"
+    And a partnership exist with seller: the seller, supplier: user: "Dave"
 
     When I text "Dave" from "66354668874"
 
@@ -55,7 +55,7 @@ Feature: Send mobile number verification
   Scenario: Try to verify my number texting the wrong name as a supplier
     Given the user is also a supplier
     And a seller exists
-    And a product exists with seller: the seller, supplier: user: "Dave"
+    And a partnership exists with seller: the seller, supplier: user: "Dave"
 
     When I text "David" from "66354668874"
 

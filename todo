@@ -1,12 +1,12 @@
 Move Paypal IPN and Paypal related test code into paypal gem
-Add code to send recent unsent text messages when message credit is added or a mobile number is verified
+Add feature to pay for credits via credit card and via MassPay
+Make views for demo and launch demo
+Add code to send recent unsent text messages when message credit is added
 Do a live test to get real response when user cancels paypal_authable flow and replace code in devise_paypal
 Add message commands "orders" (o) and "items" (i) to list orders and items (see new notifications.txt)
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications
 Test locally with postgreSQL
-Change valid message commands to have more logic (i.e. only display command for verifying mobile number if mobile number is not verified etc)
-Change default behaviour of mn to be verify & change default action to be verify if the number is not verified
 Modify validation for devise (allow suppliers to be created with just a name)
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
 Live testing

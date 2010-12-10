@@ -1,0 +1,7 @@
+%h1 New Supplier
+= simple_form_for @supplier, :url => suppliers_path do |supplier_form|
+  = supplier_form.input :name
+  = supplier_form.simple_fields_for :mobile_numbers do |mobile_number_form|
+    = mobile_number_form.input :number
+  = supplier_form.button :submit
+

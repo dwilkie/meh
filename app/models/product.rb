@@ -7,8 +7,7 @@ class Product < ActiveRecord::Base
                 Money.new(cents || 0, currency || Money.default_currency)
               }
 
-  belongs_to :supplier,
-             :class_name => "User"
+  belongs_to :partnership
 
   belongs_to :seller,
              :class_name => "User"
@@ -27,10 +26,7 @@ class Product < ActiveRecord::Base
             :uniqueness => {:scope => :seller_id, :case_sensitive => false},
             :presence => true
 
-  validates :supplier_id,
-            :presence => true
-
-  validates :seller_id,
+  validates :seller,
             :presence => true
 
   attr_accessible :supplier_payment_amount, :number, :name
@@ -50,6 +46,10 @@ class Product < ActiveRecord::Base
       "products.number = ? OR products.name = ?",
       number, name
     )
+  end
+
+  def supplier
+    partnership && partnership.confirmed? ? partnership.supplier : seller
   end
 
   def supplier_payment_amount=(value)
