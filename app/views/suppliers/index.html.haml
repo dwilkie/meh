@@ -1,0 +1,29 @@
+= form_tag :suppliers, :method => "get" do
+  %p
+    = text_field_tag :search, params[:search]
+    = submit_tag t("button_text.search")
+
+%h1 Suppliers
+- if @suppliers.empty?
+  = link_to "New Supplier",
+    new_supplier_path(:mobile_number => @search_params) if @search_params
+- else
+  %table
+    %tr
+      %th
+      %th
+
+    - @suppliers.each do |supplier|
+      %tr
+        %td
+          = supplier.name
+        %td
+          = supplier.active_mobile_number.humanize
+        %td
+          - if partnership = current_user.supplier_partnership_with(supplier)
+            - if partnership.unconfirmed?
+              = t("activerecord.states.partnership.unconfirmed")
+          - else
+            = link_to t("activerecord.actions.partnership.create"),
+              partnerships_path(:supplier_id => supplier), :method => :post
+

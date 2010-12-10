@@ -14,10 +14,11 @@ class MobileNumber < ActiveRecord::Base
             :allow_nil => true,
             :allow_blank => true
 
-  validates :user,
-            :presence => true
-
   before_save :activate
+
+  def self.with_number(number)
+    where(:number => normalize(number))
+  end
 
   def humanize(show_unverified = true)
     (verified? || show_unverified) ? '+' + self.to_s :
@@ -48,6 +49,14 @@ class MobileNumber < ActiveRecord::Base
   end
 
   private
+    def self.normalize(number)
+      if number
+        normalized_number = number.gsub(/\D/, "")
+        normalized_number.slice!(/^0+/)
+      end
+      normalized_number
+    end
+
     def activate
       user = self.user
       if user && active != user.id
@@ -56,10 +65,7 @@ class MobileNumber < ActiveRecord::Base
     end
 
     def normalize_number
-      if number
-        number.gsub!(/\D/, "")
-        number.slice!(/^0+/)
-      end
+      self.number = self.class.normalize(number)
     end
 end
 

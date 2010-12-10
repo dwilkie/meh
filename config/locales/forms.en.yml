@@ -1,4 +1,6 @@
 en:
+  button_text:
+    search: "Search"
   # button text
   helpers:
     submit:

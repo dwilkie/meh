@@ -58,6 +58,11 @@ en:
     states:
       mobile_number:
         unverified: "Unverified"
+      partnership:
+        unconfirmed: "Awaiting Confirmation"
+    actions:
+      partnership:
+        create: "Invite"
     errors:
       models:
         supplier_order:

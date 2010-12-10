@@ -106,9 +106,8 @@ ActiveRecord::Schema.define(:version => 20101209050556) do
   add_index "outgoing_text_messages", ["gateway_message_id"], :name => "index_outgoing_text_messages_on_gateway_message_id", :unique => true
 
   create_table "partnerships", :force => true do |t|
-    t.integer  "seller_id",           :null => false
-    t.integer  "supplier_id",         :null => false
-    t.integer  "order_simulation_id"
+    t.integer  "seller_id",    :null => false
+    t.integer  "supplier_id",  :null => false
     t.datetime "confirmed_at"
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -7,9 +7,10 @@ Meh::Application.routes.draw do
   resource  :overview, :only => :index
   get "overview/index", :as => "user_root"
 
-  resources :partnerships, :except => [:edit, :update]
   resources :order_simulations, :only => [:new, :create]
+  resources :suppliers
   resources :mobile_numbers
+  resources :partnerships, :only => [:create, :destroy]
 
   devise_for :users, :controllers => {
     :paypal_authable => "paypal_authentications"

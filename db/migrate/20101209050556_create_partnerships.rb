@@ -3,7 +3,6 @@ class CreatePartnerships < ActiveRecord::Migration
     create_table :partnerships do |t|
       t.references :seller,           :null => false
       t.references :supplier,         :null => false
-      t.references :order_simulation
       t.datetime   :confirmed_at
       t.timestamps
     end

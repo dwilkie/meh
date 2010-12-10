@@ -3,15 +3,20 @@ class OrderSimulationsController < ApplicationController
   # GET /order_simulations/new
   def new
     @order_simulation = current_user.order_simulations.build
+    3.times do
+      supplier = @order_simulation.suppliers.build
+      supplier.mobile_numbers.build
+    end
   end
 
   # POST /order_simulations
   def create
     @order_simulation = current_user.order_simulations.build(
-      :params => params[:order_simulation]
+      params[:order_simulation]
     )
+    debugger
     if @order_simulation.save
-      redirect_to overview_path
+      redirect_to user_root_path
     else
       render :action => :new
     end

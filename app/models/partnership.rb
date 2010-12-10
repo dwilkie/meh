@@ -6,8 +6,6 @@ class Partnership < ActiveRecord::Base
   belongs_to  :supplier,
               :class_name => "User"
 
-  belongs_to  :order_simulation
-
   has_many    :products
 
   validates :seller, :supplier,
