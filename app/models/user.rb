@@ -146,7 +146,6 @@ class User < ActiveRecord::Base
     user.password_confirmation = stubbed_password
   end
 
-
   def can_text?
     active_mobile_number = self.active_mobile_number
     active_mobile_number && active_mobile_number.verified?

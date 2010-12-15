@@ -157,6 +157,7 @@ class Test
        partnership = Partnership.new
        partnership.seller = seller
        partnership.supplier = supplier
+       partnership.confirmed_at = Time.now
        partnership.save!
      end
      partnership
@@ -191,6 +192,7 @@ class Test
        Notification.delete_all
        PaymentAgreement.delete_all
        Product.delete_all
+       Partnership.delete_all
        User.delete_all
      end
    end

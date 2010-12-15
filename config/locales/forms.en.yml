@@ -1,9 +1,8 @@
 en:
-  button_text:
-    search: "Search"
-  # button text
   helpers:
     submit:
       order_simulation:
         create: "Start"
+      user:
+        create: "Create Supplier"
 
