@@ -38,7 +38,7 @@ group :test do
   gem "test-unit"
   gem 'rspec-rails', ">=2.2.1"
   gem 'factory_girl_rails'
-  gem 'capybara', "=0.3.9"
+  gem 'capybara', ">=0.4.0"
   gem 'database_cleaner'
   gem 'pickle'
   gem 'cucumber-rails'

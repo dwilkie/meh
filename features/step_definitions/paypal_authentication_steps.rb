@@ -1,3 +1,15 @@
+Given /^I signed up with mobile number: "([^"]*)"$/ do |number|
+  @user_params = {
+    :user => {
+      "mobile_numbers_attributes"=>{
+        "0"=>{
+          "number"=>"#{number}"
+        }
+      }
+    }
+  }
+end
+
 Given /^I have a paypal account(?: with #{capture_fields})?$/ do |fields|
   @paypal_user_details = parse_fields(fields)
 end

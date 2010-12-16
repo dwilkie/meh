@@ -52,6 +52,8 @@ en:
         amount: "amount"
       seller_order_paypal_ipn:
         number_of_cart_items: "item"
+      mobile_number:
+        number: "Mobile Number"
     default_attribute_values:
       supplier_order:
         tracking_number: "N/A"

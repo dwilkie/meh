@@ -1,6 +1,6 @@
 @devise_paypal
 Feature: Login with Paypal
-  In order to make simpler to login
+  In order to make it simpler to login
   As a seller
   I want to be able to login using Paypal
 

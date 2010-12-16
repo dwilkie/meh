@@ -1,0 +1,6 @@
+%h1 Signup
+= simple_form_for @seller, :url => sellers_path do |seller_form|
+  = seller_form.simple_fields_for :mobile_numbers do |mobile_number_form|
+    = mobile_number_form.input :number
+  = seller_form.button :submit, "Signup through Paypal"
+

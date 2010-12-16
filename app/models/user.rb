@@ -125,18 +125,19 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.find_for_paypal_auth(params)
-    if params
-      user = self.find_or_initialize_by_email(params[:email])
+  def self.find_for_paypal_auth(paypal_user_params, request_params)
+    if paypal_user_params
+      user = self.find_or_initialize_by_email(paypal_user_params[:email])
       if user.new_record?
-        user.name = params[:first_name].capitalize
-        user.new_role = :seller
+        user.attributes = request_params[:user]
+        user.name = paypal_user_params[:first_name].capitalize
         stub_password(user)
-        user.save
       end
     else
       user = self.new
     end
+    user.new_role = :seller
+    user.save
     user
   end
 
