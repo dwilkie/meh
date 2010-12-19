@@ -16,8 +16,15 @@ class Test
   def self.setup(options = {})
     delete_old_records(:clear_all => options[:clear_all])
     clear_jobs
-    seller = find_or_create_user!(:seller, :name => options[:seller_name])
-    supplier = find_or_create_user!(:supplier, :name => options[:supplier_name])
+    seller = find_or_create_user!(
+      :seller,
+      :name => options[:seller_name],
+      :mobile_number => options[:seller_mobile_number]
+    )
+    supplier = find_or_create_user!(:supplier,
+      :name => options[:supplier_name],
+      :mobile_number => options[:supplier_mobile_number]
+      )
     find_or_create_payment_agreement!(seller, supplier)
     partnership = find_or_create_partnership!(seller, supplier)
     find_or_create_product!(seller, partnership)
@@ -108,14 +115,6 @@ class Test
     params.to_query
   end
 
-  def self.create_mobile_number(role, number)
-    user = find_or_create_user!(role)
-    mobile_number = user.mobile_numbers.find_by_number(number)
-    MobileNumber.create(
-      :number => number, :user => user
-    ) unless mobile_number
-  end
-
   private
     def self.find_or_create_user!(role, options = {})
       user = User.with_role(role).first || User.new
@@ -129,8 +128,12 @@ class Test
         user.email = PARAMS[
           :test_users
         ]["paypal_sandbox_#{role.to_s}_email".to_sym]
-        user.save!
       end
+      mobile_number = user.active_mobile_number || user.mobile_numbers.build
+      if mobile_number.new_record?
+        mobile_number.number = options[:mobile_number]
+      end
+      user.save!
       user
     end
 

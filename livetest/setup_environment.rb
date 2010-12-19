@@ -8,6 +8,13 @@ def get_name(role)
   response == "d" ? default_name : response
 end
 
+def get_mobile_number(role)
+  default_number = Test::PARAMS["#{role.to_s}_mobile_number".to_sym]
+  puts "Enter the #{role.to_s.upcase}'S number or press 'ENTER'. Type: 'd' for default: '#{default_number}'"
+  response = gets.chomp
+  response == "d" ? default_number : response
+end
+
 def clear_all?
   puts "Do you want to clear out all existing records from the db? y/n"
   response = gets.chomp
@@ -24,16 +31,16 @@ test_locally = test_locally?
 clear_all = clear_all?
 seller_name = get_name(:seller)
 supplier_name = get_name(:supplier)
+seller_mobile_number = get_mobile_number(:seller)
+supplier_mobile_number = get_mobile_number(:supplier)
 
 Test.setup(
   :seller_name => seller_name,
   :supplier_name => supplier_name,
+  :seller_mobile_number => seller_mobile_number,
+  :supplier_mobile_number => supplier_mobile_number,
   :clear_all => clear_all
 )
-
-if clear_all
-  require File.expand_path(File.dirname(__FILE__) + '/create_mobile_numbers')
-end
 
 puts "*****************************************************************"
 puts "\n"
