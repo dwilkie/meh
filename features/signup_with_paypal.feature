@@ -28,7 +28,6 @@ Feature: Signup with Paypal
 
     Then I should see "is required"
 
-  @current
   Scenario: I try to signup with a mobile number that already exists
     Given a mobile number exists with number: "331234456653"
     And I am on the signup page
@@ -48,7 +47,8 @@ Feature: Signup with Paypal
     Then a user should exist with email: "mara@example.com", name: "Mara"
     And a mobile number should exist with user: the user, number: "33122133332"
     And I should be on the overview page
-    And I should see "Welcome Mara! You are now signed in"
+    And I should see "Welcome Mara! You're now signed in"
+    And "seller" should be one of the user's roles
 
   Scenario: I try to sign up with a mobile number that already exists
     Given a user exists
@@ -62,6 +62,18 @@ Feature: Signup with Paypal
     Then a user should not exist with email: "mara@example.com"
     And I should be on the homepage
 
+  Scenario: I already signed up and I try to sign up again
+    Given a user exists with email: "mara@example.com"
+    And I have a paypal account with first_name: "mara", email: "mara@example.com"
+    And I signed up with mobile number: "+33-122133332"
+    And I successfully signed in with paypal
+
+    When I am redirected back to the application from paypal
+
+    Then I should be on the overview page
+    And I should see "Welcome Mara! You're now signed in"
+    But a mobile number should not exist with number: "33122133332"
+
   Scenario: I cancel signing in with Paypal
     Given I have a paypal account with first_name: "mara", email: "mara@example.com"
     But I did not sign in with paypal
@@ -70,5 +82,5 @@ Feature: Signup with Paypal
 
     Then a user should not exist
     And I should be on the homepage
-    And I should see "Sorry, could not authorize you from Paypal"
+    And I should see "Sorry, could not authorize you from Paypal."
 

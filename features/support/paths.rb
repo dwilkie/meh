@@ -22,7 +22,7 @@ module NavigationHelpers
 
     when /^the paypal authable callback page$/
       user_paypal_authable_callback_path(
-        {:token => @token || "token"}.merge(@user_params)
+        {:token => @token || "token"}.merge(@user_params || {})
       )
 
     when /^the login page$/

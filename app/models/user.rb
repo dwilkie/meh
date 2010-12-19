@@ -109,6 +109,8 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :email_required?
 
+  validate  :has_at_least_one_mobile_number
+
   attr_accessible :email, :name, :mobile_numbers_attributes
 
   def self.with_mobile(number)
@@ -198,6 +200,13 @@ class User < ActiveRecord::Base
 
   def email_required?
     self.is?(:seller)
+  end
+
+  def has_at_least_one_mobile_number
+    errors.add(
+      :mobile_numbers,
+      :blank
+    ) if mobile_numbers.empty?
   end
 
 end

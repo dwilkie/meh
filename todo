@@ -1,3 +1,4 @@
+Move paypal authentication code into delayed job worker
 Move Paypal IPN and Paypal related test code into paypal gem
 Add feature to pay for credits via credit card and via MassPay
 Make views for demo and launch demo
@@ -7,7 +8,6 @@ Add message commands "orders" (o) and "items" (i) to list orders and items (see 
 Fix UTF-8 incoming and outgoing messages with Tropo
 Email notifications
 Test locally with postgreSQL
-Modify validation for devise (allow suppliers to be created with just a name)
 Make some rudamentary view files for adding products and suppliers (DO ONLY WHAT WE NEED)
 Live testing
 

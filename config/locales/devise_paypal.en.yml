@@ -3,5 +3,5 @@ en:
     returning: "back "
     paypal_authentications:
       success: "Welcome %{returning}%{user_name}! You're now signed in."
-      failure: "Sorry, could not authorize you from Paypal because %{errors}."
+      failure: "Sorry, could not authorize you from Paypal."
 

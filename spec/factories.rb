@@ -80,6 +80,12 @@ Factory.define :user do |f|
   f.name "Mara"
   f.password "foobar"
   f.password_confirmation { |u| u.password }
+  f.after_build { |user|
+    user.mobile_numbers << Factory.build(
+      :mobile_number,
+      :user => user
+    )
+  }
 end
 
 Factory.define :seller, :parent => :user do |f|
