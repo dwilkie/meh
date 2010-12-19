@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(:version => 20101209050556) do
   add_index "tracking_number_formats", ["seller_id", "supplier_id"], :name => "index_tracking_number_formats_on_seller_id_and_supplier_id", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
+    t.string   "email"
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "remember_created_at"
