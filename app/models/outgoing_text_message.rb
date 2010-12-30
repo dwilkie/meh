@@ -20,13 +20,13 @@ class OutgoingTextMessage < ActiveRecord::Base
       )
     end
 
-    def failure(job, exception)
+    def error(job, exception)
       outgoing_text_message.update_attributes(
         :last_failed_to_send_at => Time.now
       )
     end
 
-    def on_permanent_failure
+    def failure
       outgoing_text_message.update_attributes(
         :permanently_failed_to_send_at => Time.now
       )
