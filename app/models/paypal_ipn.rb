@@ -2,8 +2,6 @@ class PaypalIpn < ActiveRecord::Base
   include Paypal::Ipn
 
   class CreatePaypalIpnJob < Struct.new(:params)
-    attr_reader :attempt_job
-
     def max_attempts
       1
     end

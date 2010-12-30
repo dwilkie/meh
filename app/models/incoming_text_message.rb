@@ -1,8 +1,6 @@
 class IncomingTextMessage < ActiveRecord::Base
 
   class CreateIncomingTextMessageJob < Struct.new(:params)
-    attr_reader :attempt_job
-
     def max_attempts
       1
     end

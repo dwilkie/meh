@@ -1,4 +1,4 @@
-Move paypal authentication code into delayed job worker
+Redo DevisePaypal gem with delayed job (see readme in devise paypal gem)
 Move Paypal IPN and Paypal related test code into paypal gem
 Add feature to pay for credits via credit card and via MassPay
 Make views for demo and launch demo
