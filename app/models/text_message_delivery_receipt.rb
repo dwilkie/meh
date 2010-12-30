@@ -2,14 +2,12 @@ class TextMessageDeliveryReceipt < ActiveRecord::Base
   class CreateTextMessageDeliveryReceiptJob < Struct.new(:params)
     attr_reader :attempt_job
 
-    MAX_ATTEMPTS = 1
-
-    def before(job)
-      @attempt_job = job.attempts < MAX_ATTEMPTS
+    def max_attempts
+      1
     end
 
     def perform
-      TextMessageDeliveryReceipt.create(params) if attempt_job
+      TextMessageDeliveryReceipt.create(params)
     end
   end
 
