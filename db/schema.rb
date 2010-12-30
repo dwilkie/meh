@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(:version => 20101209050556) do
     t.text     "params",         :null => false
     t.string   "transaction_id", :null => false
     t.string   "payment_status"
-    t.boolean  "fraudulent"
+    t.datetime "fraudulent_at"
     t.datetime "verified_at"
     t.datetime "created_at"
     t.datetime "updated_at"

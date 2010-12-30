@@ -4,28 +4,24 @@ class PaypalIpn < ActiveRecord::Base
   class CreatePaypalIpnJob < Struct.new(:params)
     attr_reader :attempt_job
 
-    MAX_ATTEMPTS = 1
-
-    def before(job)
-      @attempt_job = job.attempts < MAX_ATTEMPTS
+    def max_attempts
+      1
     end
 
     def perform
-      if attempt_job
-        paypal_ipn_class = PaypalIpn.type(params)
-        new_paypal_ipn = paypal_ipn_class.new(:params => params)
-        paypal_ipn = paypal_ipn_class.find_or_initialize_by_transaction_id(
-          new_paypal_ipn.transaction_id
+      paypal_ipn_class = PaypalIpn.type(params)
+      new_paypal_ipn = paypal_ipn_class.new(:params => params)
+      paypal_ipn = paypal_ipn_class.find_or_initialize_by_transaction_id(
+        new_paypal_ipn.transaction_id
+      )
+      unless (paypal_ipn.payment_completed? ||
+      new_paypal_ipn.payment_status == paypal_ipn.payment_status) &&
+      paypal_ipn.verified?
+        paypal_ipn.update_attributes(
+          :params => params,
+          :verified_at => nil,
+          :fraudulent_at => nil
         )
-        unless (paypal_ipn.payment_completed? ||
-        new_paypal_ipn.payment_status == paypal_ipn.payment_status) &&
-        paypal_ipn.verified?
-          paypal_ipn.update_attributes(
-            :params => params,
-            :verified_at => nil,
-            :fraudulent => nil
-          )
-        end
       end
     end
   end
@@ -63,6 +59,10 @@ class PaypalIpn < ActiveRecord::Base
     verified_at
   end
 
+  def fraudulent?
+    fraudulent_at
+  end
+
   def verify_ipn_later
     verify_ipn if !verified? && !fraudulent?
   end
@@ -70,7 +70,7 @@ class PaypalIpn < ActiveRecord::Base
   def verify_ipn
     verify ?
       self.update_attributes!(:verified_at => Time.now) :
-      self.update_attributes!(:fraudulent => true)
+      self.update_attributes!(:fraudulent_at => Time.now)
   end
   handle_asynchronously :verify_ipn
 
