@@ -30,7 +30,7 @@ When /^a text message delivery receipt is received$/ do
   post path_to("create text message delivery receipt")
 end
 
-When /^a (duplicate )?text message delivery receipt is received for message id: "([^\"]*)"(?: with the following params: "([^\"]*)")?$/ do |duplicate, msg_id, receipt_params|
+When /^a text message delivery receipt is received for message id: "([^\"]*)"(?: with the following params: "([^\"]*)")?$/ do |msg_id, receipt_params|
   params = ActionSms::Base.sample_delivery_receipt(
     :message_id => msg_id
   )
@@ -40,21 +40,20 @@ When /^a (duplicate )?text message delivery receipt is received for message id: 
     path_to("create text message delivery receipt"),
     params
   )
-  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the text message delivery receipt"
   When "the worker works off the job"
-  Then "the job should#{expectation} be deleted from the queue"
+  Then "the job should be deleted from the queue"
 end
 
-When /^a? (duplicate )?text message delivery receipt is received for message id: "([^\"]*)" with the following params:$/ do |duplicate, msg_id, message_params|
-  When %{a #{duplicate.to_s}text message delivery receipt is received for message id: "#{msg_id}" with the following params: "#{message_params}"}
+When /^a? text message delivery receipt is received for message id: "([^\"]*)" with the following params:$/ do |msg_id, message_params|
+  When %{a text message delivery receipt is received for message id: "#{msg_id}" with the following params: "#{message_params}"}
 end
 
 When /^an incoming text message is received$/ do
   post path_to("create incoming text message")
 end
 
-When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received(?: with the following params: "([^\"]*)")?$/ do |duplicate, authentic, from, message_params|
+When /^an? (authentic )?text message from "([^\"]*)" is received(?: with the following params: "([^\"]*)")?$/ do |authentic, from, message_params|
   params = ActionSms::Base.sample_incoming_sms(
     :from => from,
     :authentic => !authentic.nil?
@@ -62,14 +61,13 @@ When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received(?:
   params.merge!(instance_eval(message_params)) if message_params
   params = { "incoming_text_message" => params }
   post(path_to("create incoming text message"), params)
-  expectation = duplicate ? " not" : ""
   Then "the most recent job in the queue should be to create the incoming text message"
   When "the worker works off the job"
-  Then "the job should#{expectation} be deleted from the queue"
+  Then "the job should be deleted from the queue"
 end
 
-When /^an? (duplicate )?(authentic )?text message from "([^\"]*)" is received with the following params:$/ do |duplicate, authentic, from, message_params|
-  When %{a #{duplicate.to_s}#{authentic.to_s}text message from "#{from}" is received with the following params: "#{message_params}"}
+When /^an? (authentic )?text message from "([^\"]*)" is received with the following params:$/ do |authentic, from, message_params|
+  When %{a #{authentic.to_s}text message from "#{from}" is received with the following params: "#{message_params}"}
 end
 
 When /^#{capture_model} (\d+) characters long is created(?: with #{capture_fields})?$/ do |name, num_chars, fields|

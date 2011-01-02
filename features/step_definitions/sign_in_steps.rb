@@ -9,3 +9,7 @@ Given /^I am logged in with #{capture_fields}$/ do |fields|
   Then %{I should be on the overview page}
 end
 
+Given /^I am not logged in$/ do
+  # intentionally blank
+end
+

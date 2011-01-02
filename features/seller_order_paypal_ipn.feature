@@ -168,7 +168,7 @@ Feature: Seller Order Paypal IPN
     }
     """
     Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
-    And the seller order paypal ipn should have the following params:
+    And the seller order paypal ipn should include the following params:
     """
     {
       'receiver_email'=>'mara@example.com',
@@ -216,7 +216,7 @@ Feature: Seller Order Paypal IPN
     }
     """
     Then 1 paypal ipns should exist with transaction_id: "35D21472YD1820048"
-    And the seller order paypal ipn should have the following params:
+    And the seller order paypal ipn should include the following params:
     """
     {
       'payment_status' => '<updated_payment_status>',

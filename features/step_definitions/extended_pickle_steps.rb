@@ -45,8 +45,13 @@ Then(/^#{capture_model}s (\w+) (should(?: not)?) be #{capture_value}$/) do |name
   Then "#{name}'s #{attribute} #{expectation} be #{expected}"
 end
 
-Then /^#{capture_model} should have the following params:$/ do |name, params|
-  model!(name).params.should == instance_eval(params)
+Then /^#{capture_model} should (have|include) the following params:$/ do |name, exact, params|
+  exact = exact == "have"
+  resource_params = model!(name).params
+  expected_params = instance_eval(params)
+  exact ?
+    resource_params.should == expected_params :
+    resource_params.should(include(expected_params))
 end
 
 Then /^#{capture_model} should (not )?be marked as (\w+)$/ do |name, expectation, predicate|

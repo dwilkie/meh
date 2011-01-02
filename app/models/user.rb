@@ -109,6 +109,8 @@ class User < ActiveRecord::Base
             :presence => true,
             :if => :email_required?
 
+  validate  :has_at_least_one_mobile_number
+
   attr_accessible :email, :name, :mobile_numbers_attributes
 
   def self.with_mobile(number)
@@ -125,18 +127,19 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.find_for_paypal_auth(params)
-    if params
-      user = self.find_or_initialize_by_email(params[:email])
+  def self.find_for_paypal_auth(paypal_user_params, request_params)
+    if paypal_user_params
+      user = self.find_or_initialize_by_email(paypal_user_params[:email])
       if user.new_record?
-        user.name = params[:first_name].capitalize
-        user.new_role = :seller
+        user.attributes = request_params[:user]
+        user.name = paypal_user_params[:first_name].capitalize
         stub_password(user)
-        user.save
       end
     else
       user = self.new
     end
+    user.new_role = :seller
+    user.save
     user
   end
 
@@ -145,7 +148,6 @@ class User < ActiveRecord::Base
     user.password = stubbed_password
     user.password_confirmation = stubbed_password
   end
-
 
   def can_text?
     active_mobile_number = self.active_mobile_number
@@ -198,6 +200,13 @@ class User < ActiveRecord::Base
 
   def email_required?
     self.is?(:seller)
+  end
+
+  def has_at_least_one_mobile_number
+    errors.add(
+      :mobile_numbers,
+      :blank
+    ) if mobile_numbers.empty?
   end
 
 end

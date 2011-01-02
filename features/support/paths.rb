@@ -22,7 +22,7 @@ module NavigationHelpers
 
     when /^the paypal authable callback page$/
       user_paypal_authable_callback_path(
-        :token => @token || "token"
+        {:token => @token || "token"}.merge(@user_params || {})
       )
 
     when /^the login page$/
@@ -30,6 +30,9 @@ module NavigationHelpers
 
     when /^the overview page$/
       user_root_path
+
+    when /^the signup page$/
+      new_seller_path
 
     when /^the order simulation page$/
       new_order_simulation_path

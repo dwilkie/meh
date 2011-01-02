@@ -29,7 +29,7 @@ Feature: Text message delivery receipts
     }
     """
 
-    When a duplicate text message delivery receipt is received for message id: "12345" with the following params:
+    When a text message delivery receipt is received for message id: "12345" with the following params:
     """
     {
       'date'=>'1005132312',

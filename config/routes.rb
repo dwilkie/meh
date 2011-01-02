@@ -8,7 +8,8 @@ Meh::Application.routes.draw do
   get "overview/index", :as => "user_root"
 
   resources :order_simulations, :only => [:new, :create]
-  resources :suppliers
+  resources :sellers, :only => [:new, :create]
+  resources :suppliers, :only => [:index, :new, :create]
   resources :mobile_numbers
   resources :partnerships, :only => [:create, :destroy]
 

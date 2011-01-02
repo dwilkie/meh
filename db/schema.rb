@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101209050556) do
+ActiveRecord::Schema.define(:version => 20101230095841) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -128,11 +128,18 @@ ActiveRecord::Schema.define(:version => 20101209050556) do
 
   add_index "payment_agreements", ["supplier_id", "seller_id"], :name => "index_payment_agreements_on_supplier_id_and_seller_id", :unique => true
 
+  create_table "paypal_authentications", :force => true do |t|
+    t.text     "params"
+    t.string   "token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false
     t.string   "transaction_id", :null => false
     t.string   "payment_status"
-    t.boolean  "fraudulent"
+    t.datetime "fraudulent_at"
     t.datetime "verified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -216,7 +223,7 @@ ActiveRecord::Schema.define(:version => 20101209050556) do
   add_index "tracking_number_formats", ["seller_id", "supplier_id"], :name => "index_tracking_number_formats_on_seller_id_and_supplier_id", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
+    t.string   "email"
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "remember_created_at"

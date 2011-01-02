@@ -2,6 +2,6 @@ en:
   devise:
     returning: "back "
     paypal_authentications:
-      success: "Welcome %{returning}%{user_name}! You are now signed in."
+      success: "Welcome %{returning}%{user_name}! You're now signed in."
       failure: "Sorry, could not authorize you from Paypal."
 

@@ -77,13 +77,19 @@ Factory.define :sent_outgoing_text_message, :parent => :outgoing_text_message do
 end
 
 Factory.define :user do |f|
-  f.sequence(:email) {|n| "user#{n}@example.com" }
+  f.name "Mara"
   f.password "foobar"
   f.password_confirmation { |u| u.password }
-  f.name "Mara"
+  f.after_build { |user|
+    user.mobile_numbers << Factory.build(
+      :mobile_number,
+      :user => user
+    )
+  }
 end
 
 Factory.define :seller, :parent => :user do |f|
+  f.sequence(:email) {|n| "user#{n}@example.com" }
   f.roles ["seller"]
 end
 
