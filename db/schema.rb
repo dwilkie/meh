@@ -135,6 +135,8 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
     t.datetime "updated_at"
   end
 
+  add_index "paypal_authentications", ["token"], :name => "index_paypal_authentications_on_token", :unique => true
+
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false
     t.string   "transaction_id", :null => false

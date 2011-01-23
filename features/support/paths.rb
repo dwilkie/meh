@@ -11,31 +11,25 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
-    when /create paypal ipn/
-      paypal_ipns_path
-
-    when /create text message delivery receipt/
-      text_message_delivery_receipts_path
-
-    when /create incoming text message/
-      incoming_text_messages_path
-
-    when /^the paypal authable callback page$/
-      user_paypal_authable_callback_path(
-        {:token => @token || "token"}.merge(@user_params || {})
-      )
-
-    when /^the login page$/
-      new_user_session_path
-
-    when /^the overview page$/
-      user_root_path
-
     when /^the signup page$/
-      new_seller_path
+      new_user_paypal_authentication_path
 
-    when /^the order simulation page$/
-      new_order_simulation_path
+    when /^the paypal authentication(?:'s)? show page$/
+      user_paypal_authentication_path(model!("the paypal_authentication"))
+
+    # the following are examples using path_to_pickle
+
+    when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page
+      path_to_pickle $1
+
+    when /^#{capture_model}(?:'s)? #{capture_model}(?:'s)? page$/   # eg. the forum's post's page
+      path_to_pickle $1, $2
+
+    when /^#{capture_model}(?:'s)? #{capture_model}'s (.+?) page$/  # eg. the forum's post's comments page
+      path_to_pickle $1, $2, :extra => $3                           #  or the forum's post's edit page
+
+    when /^#{capture_model}(?:'s)? (.+?) page$/                     # eg. the forum's posts page
+      path_to_pickle $1, :extra => $2                               #  or the forum's edit page
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

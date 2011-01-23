@@ -2,6 +2,7 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+features/mockups/*.png
 config/database.yml
 *~
 rerun.txt

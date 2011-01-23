@@ -5,6 +5,7 @@ class CreatePaypalAuthentications < ActiveRecord::Migration
       t.string     :token
       t.timestamps
     end
+    add_index :paypal_authentications, :token, :unique => true
   end
 
   def self.down

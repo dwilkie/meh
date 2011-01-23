@@ -17,6 +17,9 @@ Factory.define :incoming_text_message do |f|
   }
 end
 
+Factory.define :paypal_authentication, :class => Devise::PaypalAuthentication do |f|
+end
+
 Factory.define :job, :class => Delayed::Job do |f|
 end
 

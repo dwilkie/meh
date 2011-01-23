@@ -7,7 +7,7 @@ Feature: Sign up through Paypal
   Scenario: I navigate to the sign up page
     Given I am on the homepage
 
-    When I follow "Signup for free"
+    When I follow "Sign up for free"
 
     Then I should be on the signup page
     And I should see "Sign up for free through Paypal"
@@ -46,8 +46,8 @@ Feature: Sign up through Paypal
     When I press "Sign Up"
 
     Then a paypal authentication should exist
-    But the paypal authentication's token should not be present
-    And I should be on the paypal authentication's page
+    But the paypal authentication's token should be nil
+    And I should be on the paypal authentication's show page
     And I should see "Please wait while we redirect you to Paypal..."
 
   Scenario: Follow "redirect you to Paypal..." after a token has been created
