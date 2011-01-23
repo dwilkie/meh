@@ -5,8 +5,13 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
-  devise :database_authenticatable, :paypal_authable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable,
+         :paypal_authable,
+         :paypal_authentication_class => "PaypalAuthentication"
 
   # General Associations
 

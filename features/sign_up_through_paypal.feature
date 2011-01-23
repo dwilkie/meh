@@ -51,13 +51,13 @@ Feature: Sign up through Paypal
     And I should see "Please wait while we redirect you to Paypal..."
 
   Scenario: Follow "redirect you to Paypal..." after a token has been created
-    Given a paypal authorization exists
-    And I am on the paypal authorization's page
-    And the paypal authorization has a token
+    Given a paypal authentication exists
+    And I am on the paypal authentication's show page
+    And the paypal authentication has a token
 
     When I follow "redirect you to Paypal..."
 
-    Then I should be redirected to Paypal
+    Then I should be redirected to sign in with Paypal
 
   Scenario: Follow "redirect you to Paypal" before a token has been created
     Given a paypal authorization exists
