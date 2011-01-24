@@ -23,3 +23,12 @@ Then /^#{capture_model} should not be deleted from the queue$/ do |job|
   model!(job)
 end
 
+Then /^(?:the (\d+)?(?:|st |th |nd |rd ))?most recent job in the queue should (not )?have a name like \/([^\/]*)\/$/ do |job_number, expectation, job_name|
+  job = Delayed::Job.all[-1-job_number.to_i]
+  expectation = expectation ? "_not" : ""
+  if job
+    job.name.send("should#{expectation}", match(job_name))
+    Then "a job should exist with id: #{job.id}"
+  end
+end
+

@@ -1,4 +1,3 @@
-@devise_paypal
 Feature: Sign up through Paypal
   In order sign up quickly and easily
   As a new seller
@@ -50,9 +49,23 @@ Feature: Sign up through Paypal
     And I should be on the paypal authentication's show page
     And I should see "Please wait while we redirect you to Paypal..."
 
+  Scenario: Paypal returns a token
+    Given I signed up with mobile_number: "121234442221"
+    Then the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/
+    Given paypal will return an authentication token
+    When the worker works off the job
+    Then the job should be deleted from the queue
+    And the paypal authentication's token should be the authentication token
+
+  Scenario: Paypal does not return a token
+    Given I signed up with mobile_number: "121234442221"
+    Then the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/
+    Given paypal will not return an authentication token
+    When the worker works off the job
+    Then the job should not be deleted from the queue
+
   Scenario: Follow "redirect you to Paypal..." after a token has been created
-    Given a paypal authentication exists
-    And I am on the paypal authentication's show page
+    Given I signed up with mobile_number: "121234443332"
     And the paypal authentication has a token
 
     When I follow "redirect you to Paypal..."
@@ -60,64 +73,63 @@ Feature: Sign up through Paypal
     Then I should be redirected to sign in with Paypal
 
   Scenario: Follow "redirect you to Paypal" before a token has been created
-    Given a paypal authorization exists
-    And I am on the paypal authorization's page
-    And the paypal authorization's token is not present
+    Given I signed up with mobile_number: "121234443332"
+    And the paypal authentication does not have a token
 
     When I follow "redirect you to Paypal..."
-    Then I should be on the paypal authorization's page
+    Then I should be on the paypal authentication's show page
 
-  Scenario: I redirect back to the app from Paypal
-    Given a paypal authentication exists with token: "HA-13443434343"
+#  Scenario: I redirect back to the app from Paypal
+#    Given a paypal authentication exists with token: "HA-13443434343"
 
-    When I go to that paypal authentication's page with query string: "token=HA-13443434343"
+#    When I go to that paypal authentication's page with query string: "token=HA-13443434343"
 
-    Then I should see "Please wait while we check your details..."
+#    Then I should see "Please wait while we check your details..."
 
-  Scenario: I successfully sign up through Paypal
-    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
-    And I signed up with mobile number: "+33-122133332"
-    And I successfully signed in with paypal
+#  Scenario: I successfully sign up through Paypal
+#    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
+#    And I signed up with mobile number: "+33-122133332"
+#    And I successfully signed in with paypal
 
-    When I am redirected back to the application from paypal
+#    When I am redirected back to the application from paypal
 
-    Then a user should exist with email: "mara@example.com", name: "Mara"
-    And a mobile number should exist with user: the user, number: "33122133332"
-    And I should be on the overview page
-    And I should see "Welcome Mara! You're now signed in"
-    And "seller" should be one of the user's roles
+#    Then a user should exist with email: "mara@example.com", name: "Mara"
+#    And a mobile number should exist with user: the user, number: "33122133332"
+#    And I should be on the overview page
+#    And I should see "Welcome Mara! You're now signed in"
+#    And "seller" should be one of the user's roles
 
-  Scenario: I try to sign up with a mobile number that already exists
-    Given a user exists
-    And a mobile number exists with number: "+33-122133332"
-    And I have a paypal account with first_name: "mara", email: "mara@example.com"
-    And I signed up with mobile number: "+33-122133332"
-    And I successfully signed in with paypal
+#  Scenario: I try to sign up with a mobile number that already exists
+#    Given a user exists
+#    And a mobile number exists with number: "+33-122133332"
+#    And I have a paypal account with first_name: "mara", email: "mara@example.com"
+#    And I signed up with mobile number: "+33-122133332"
+#    And I successfully signed in with paypal
 
-    When I am redirected back to the application from paypal
+#    When I am redirected back to the application from paypal
 
-    Then a user should not exist with email: "mara@example.com"
-    And I should be on the homepage
+#    Then a user should not exist with email: "mara@example.com"
+#    And I should be on the homepage
 
-  Scenario: I already signed up and I try to sign up again
-    Given a user exists with email: "mara@example.com"
-    And I have a paypal account with first_name: "mara", email: "mara@example.com"
-    And I signed up with mobile number: "+33-122133332"
-    And I successfully signed in with paypal
+#  Scenario: I already signed up and I try to sign up again
+#    Given a user exists with email: "mara@example.com"
+#    And I have a paypal account with first_name: "mara", email: "mara@example.com"
+#    And I signed up with mobile number: "+33-122133332"
+#    And I successfully signed in with paypal
 
-    When I am redirected back to the application from paypal
+#    When I am redirected back to the application from paypal
 
-    Then I should be on the overview page
-    And I should see "Welcome Mara! You're now signed in"
-    But a mobile number should not exist with number: "33122133332"
+#    Then I should be on the overview page
+#    And I should see "Welcome Mara! You're now signed in"
+#    But a mobile number should not exist with number: "33122133332"
 
-  Scenario: I cancel signing in with Paypal
-    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
-    But I did not sign in with paypal
+#  Scenario: I cancel signing in with Paypal
+#    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
+#    But I did not sign in with paypal
 
-    When I am redirected back to the application from paypal
+#    When I am redirected back to the application from paypal
 
-    Then a user should not exist
-    And I should be on the homepage
-    And I should see "Sorry, could not authorize you from Paypal."
+#    Then a user should not exist
+#    And I should be on the homepage
+#    And I should see "Sorry, could not authorize you from Paypal."
 
