@@ -50,6 +50,10 @@ Then /^I should be redirected to sign in with Paypal$/ do
   assert_equal_to_paypal_url(current_url, Paypal.uri)
 end
 
+Then /^the most recent job in the queue should be to get an authentication token$/ do
+  Then %{the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/}
+end
+
 Then(/^#{capture_model}'s (\w+) (should(?: not)?) be the authentication token$/) do |name, attribute, expectation|
   actual_value  = model(name).send(attribute)
   expectation   = expectation.gsub(' ', '_')

@@ -1,7 +1,7 @@
 Feature: Sign up through Paypal
   In order sign up quickly and easily
   As a new seller
-  I want to be able to signup through my Paypal Account
+  I want to be able to signup through my Paypal account
 
   Scenario: I navigate to the sign up page
     Given I am on the homepage
@@ -37,7 +37,7 @@ Feature: Sign up through Paypal
 
     Then I should see "already been taken" within "#new_user span.error"
 
-  Scenario: Sign up with a valid mobile number
+  Scenario: I sign up with a valid mobile number
     Given no paypal authentications exist
     And I am on the signup page
     And I fill in "Mobile Number" with "+122544331"
@@ -46,12 +46,13 @@ Feature: Sign up through Paypal
 
     Then a paypal authentication should exist
     But the paypal authentication's token should be nil
+    And the most recent job in the queue should be to get an authentication token
     And I should be on the paypal authentication's show page
     And I should see "Please wait while we redirect you to Paypal..."
 
   Scenario: Paypal returns a token
     Given I signed up with mobile_number: "121234442221"
-    Then the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/
+    Then the most recent job in the queue should be to get an authentication token
     Given paypal will return an authentication token
     When the worker works off the job
     Then the job should be deleted from the queue
@@ -59,7 +60,7 @@ Feature: Sign up through Paypal
 
   Scenario: Paypal does not return a token
     Given I signed up with mobile_number: "121234442221"
-    Then the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/
+    Then the most recent job in the queue should be to get an authentication token
     Given paypal will not return an authentication token
     When the worker works off the job
     Then the job should not be deleted from the queue
