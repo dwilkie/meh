@@ -11,7 +11,7 @@ Given /^I signed up with mobile number: "([^"]*)"$/ do |number|
 end
 
 Given /^#{capture_model} (has|does not have) a token$/ do |name, has_token|
-  token = sample_paypal_authentication_token << Factory.next(:basic) if has_token == "has"
+  token = sample_paypal_authentication_token << Factory.next(:basic).to_s if has_token == "has"
   model!(name).update_attributes!(
     :token => token
   )
@@ -42,8 +42,12 @@ Given /^paypal will (not )?return an authentication token$/ do |expectation|
   )
 end
 
-When /^I am redirected back to the application from paypal$/ do
-  When "I go to the paypal authable callback page"
+When /^I am redirected back from paypal with the #{capture_model}'s token$/ do |name|
+  paypal_authentication = model!(name)
+  visit user_paypal_authentication_path(
+    paypal_authentication,
+    paypal_authentication_token_query_hash(paypal_authentication.token)
+  )
 end
 
 Then /^I should be redirected to sign in with Paypal$/ do

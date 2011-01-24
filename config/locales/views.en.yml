@@ -1,0 +1,7 @@
+en:
+  views:
+    text:
+      paypal_redirect: "Please wait while we"
+    links:
+      paypal_redirect_link: "redirect you to Paypal..."
+

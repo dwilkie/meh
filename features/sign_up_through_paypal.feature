@@ -47,11 +47,12 @@ Feature: Sign up through Paypal
     Then a paypal authentication should exist
     But the paypal authentication's token should be nil
     And the most recent job in the queue should be to get an authentication token
+    And the job's priority should be "5"
     And I should be on the paypal authentication's show page
     And I should see "Please wait while we redirect you to Paypal..."
 
   Scenario: Paypal returns a token
-    Given I signed up with mobile_number: "121234442221"
+    Given I signed up
     Then the most recent job in the queue should be to get an authentication token
     Given paypal will return an authentication token
     When the worker works off the job
@@ -59,33 +60,34 @@ Feature: Sign up through Paypal
     And the paypal authentication's token should be the authentication token
 
   Scenario: Paypal does not return a token
-    Given I signed up with mobile_number: "121234442221"
+    Given I signed up
     Then the most recent job in the queue should be to get an authentication token
     Given paypal will not return an authentication token
     When the worker works off the job
     Then the job should not be deleted from the queue
 
-  Scenario: Follow "redirect you to Paypal..." after a token has been created
-    Given I signed up with mobile_number: "121234443332"
+  Scenario: I follow "redirect you to Paypal..." after a token has been created
+    Given I signed up
     And the paypal authentication has a token
 
     When I follow "redirect you to Paypal..."
 
     Then I should be redirected to sign in with Paypal
 
-  Scenario: Follow "redirect you to Paypal" before a token has been created
-    Given I signed up with mobile_number: "121234443332"
+  Scenario: I follow "redirect you to Paypal" before a token has been created
+    Given I signed up
     And the paypal authentication does not have a token
 
     When I follow "redirect you to Paypal..."
     Then I should be on the paypal authentication's show page
 
-#  Scenario: I redirect back to the app from Paypal
-#    Given a paypal authentication exists with token: "HA-13443434343"
+  Scenario: I am redirected back to the app from Paypal
+    Given I signed up
+    And the paypal authentication has a token
 
-#    When I go to that paypal authentication's page with query string: "token=HA-13443434343"
+    When I am redirected back from paypal with the paypal authentication's token
 
-#    Then I should see "Please wait while we check your details..."
+    Then I should see "Please wait while we check your details..."
 
 #  Scenario: I successfully sign up through Paypal
 #    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
