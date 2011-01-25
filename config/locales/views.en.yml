@@ -1,7 +1,8 @@
 en:
   views:
     text:
-      paypal_redirect: "Please wait while we"
+      please_wait: "Please wait while we"
     links:
-      paypal_redirect_link: "redirect you to Paypal..."
+      redirect_you_to_paypal: "redirect you to Paypal"
+      confim_your_details: "confim your details"
 

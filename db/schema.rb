@@ -130,7 +130,9 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
 
   create_table "paypal_authentications", :force => true do |t|
     t.text     "params"
+    t.text     "user_details"
     t.string   "token"
+    t.datetime "queued_for_confirmation_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

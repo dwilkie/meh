@@ -54,8 +54,13 @@ Then /^I should be redirected to sign in with Paypal$/ do
   assert_equal_to_paypal_url(current_url, Paypal.uri)
 end
 
-Then /^the most recent job in the queue should be to get an authentication token$/ do
-  Then %{the most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/}
+
+Then /^#{relative_job} should be to get an authentication token$/ do |index|
+  Then %{the #{index.to_i}st most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/}
+end
+
+Then /^#{relative_job} should be to get the authentication details$/ do |index|
+  Then %{the #{index.to_i}st most recent job in the queue should have a name like /GetPaypalAuthenticationDetailsJob$/}
 end
 
 Then(/^#{capture_model}'s (\w+) (should(?: not)?) be the authentication token$/) do |name, attribute, expectation|

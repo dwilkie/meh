@@ -87,7 +87,23 @@ Feature: Sign up through Paypal
 
     When I am redirected back from paypal with the paypal authentication's token
 
-    Then I should see "Please wait while we check your details..."
+    Then the paypal authentication's queued_for_confirmation_at should not be nil
+    And the most recent job in the queue should be to get the authentication details
+    And the job's priority should be "5"
+    And I should see "Please wait while we check your details..."
+
+  Scenario: I try to hijack somebodies session by changing the authentication token
+    Given I signed up with mobile_number: "+121222222331"
+    And the paypal authentication: "original" has a token
+    And another paypal authentication exists
+    And that paypal authentication has a token
+
+    When I redirected with the other paypal authentication's token
+
+    Then I should be on the signup page
+    And the paypal authentication: "original" should not exist
+    And I should see "Sorry, something went wrong with..."
+    And I should see "+121222222331"
 
 #  Scenario: I successfully sign up through Paypal
 #    Given I have a paypal account with first_name: "mara", email: "mara@example.com"
