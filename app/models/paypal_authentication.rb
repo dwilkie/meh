@@ -1,6 +1,11 @@
 class PaypalAuthentication < Devise::PaypalAuthentication
   class GetPaypalAuthenticationTokenJob < Struct.new(:id, :callback_url)
     include Paypal::Authentication
+
+    def max_attempts
+      3
+    end
+
     def perform
       response = set_auth_flow_param!(callback_url)
       raise("Failed to get paypal authentication token. Paypal error: #{response.long_error_message}") if response.failure?
@@ -8,6 +13,11 @@ class PaypalAuthentication < Devise::PaypalAuthentication
         :token => response.token
       )
     end
+
+    def failure
+      PaypalAuthentication.find_by_id(id).try(:destroy)
+    end
+
   end
 
   class GetPaypalAuthenticationDetailsJob < Struct.new(:id)

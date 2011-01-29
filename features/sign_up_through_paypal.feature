@@ -49,28 +49,50 @@ Feature: Sign up through Paypal
     And the most recent job in the queue should be to get an authentication token
     And the job's priority should be "5"
     And I should be on the paypal authentication's show page
-    And I should see "Please wait while we redirect you to Paypal..."
+    And I should see "Please wait while we redirect you to Paypal"
 
-  Scenario: Paypal returns a token
+  Scenario: I sign up and Paypal returns a token
     Given I signed up
     Then the most recent job in the queue should be to get an authentication token
     Given paypal will return an authentication token
     When the worker works off the job
     Then the job should be deleted from the queue
     And the paypal authentication's token should be the authentication token
+    And I should be on the paypal authentication's show page
 
-  Scenario: Paypal does not return a token
+  Scenario: I sign up but Paypal does not return a token the first time
     Given I signed up
     Then the most recent job in the queue should be to get an authentication token
     Given paypal will not return an authentication token
     When the worker works off the job
     Then the job should not be deleted from the queue
 
-  Scenario: I follow "redirect you to Paypal..." after a token has been created
+  Scenario: I sign up but Paypal does not return a token after 3 attempts
+    Given I signed up
+    Then the most recent job in the queue should be to get an authentication token
+    Given paypal will not return an authentication token
+    When the worker tries 3 times to work off the job
+    Then the job should be deleted from the queue
+    And the paypal authentication should not exist
+    When I go to the paypal authentication's show page
+    Then I should be on the signup page
+    And I should see "Sorry something went wrong when contacting Paypal. Please try again in a few minutes" within "p.error"
+
+  Scenario: I sign up but my paypal authentication was destroyed before fetching an authentication token
+    Given I signed up
+    Then the most recent job in the queue should be to get an authentication token
+    Given no paypal authentications exist
+    And paypal will not return an authentication token
+    When the worker tries 3 times to work off the job
+    And I go to the paypal authentication's show page
+    Then I should be on the signup page
+    And I should see "Sorry something went wrong when contacting Paypal. Please try again in a few minutes" within "p.error"
+
+  Scenario: I follow "redirect you to Paypal" after a token has been created
     Given I signed up
     And the paypal authentication has a token
 
-    When I follow "redirect you to Paypal..."
+    When I follow "redirect you to Paypal"
 
     Then I should be redirected to sign in with Paypal
 
@@ -78,7 +100,7 @@ Feature: Sign up through Paypal
     Given I signed up
     And the paypal authentication does not have a token
 
-    When I follow "redirect you to Paypal..."
+    When I follow "redirect you to Paypal"
     Then I should be on the paypal authentication's show page
 
   Scenario: I am redirected back to the app from Paypal
@@ -90,19 +112,27 @@ Feature: Sign up through Paypal
     Then the paypal authentication's queued_for_confirmation_at should not be nil
     And the most recent job in the queue should be to get the authentication details
     And the job's priority should be "5"
-    And I should see "Please wait while we check your details..."
+    And I should see "Please wait while we confirm your details"
 
-  Scenario: I try to hijack somebodies session by changing the authentication token
+  Scenario: I try to hijack somebodies session by changing the authentication id
+    Given a paypal authentication exists
+    When I go to the paypal authentication's show page
+    Then I should be on the signup page
+    But I should not see anything within "p.error"
+
+  Scenario: I try to hijack somebodies session by changing the authenthication token
     Given I signed up with mobile_number: "+121222222331"
-    And the paypal authentication: "original" has a token
-    And another paypal authentication exists
+    Then a paypal authentication: "for me" should exist
+    Given the paypal authentication has a token
+    And another paypal authentication: "for somebody else" exists
     And that paypal authentication has a token
 
-    When I redirected with the other paypal authentication's token
+    When I am redirected back from paypal with the paypal authentication's token
 
     Then I should be on the signup page
-    And the paypal authentication: "original" should not exist
-    And I should see "Sorry, something went wrong with..."
+    And 1 paypal authentications should exist
+    And the paypal authentication should be the paypal authentication: "for somebody else"
+    And I should see "Sorry, something went wrong with your"
     And I should see "+121222222331"
 
 #  Scenario: I successfully sign up through Paypal

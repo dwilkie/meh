@@ -1,15 +1,3 @@
-Given /^I signed up with mobile number: "([^"]*)"$/ do |number|
-  @user_params = {
-    :user => {
-      "mobile_numbers_attributes"=>{
-        "0"=>{
-          "number"=>"#{number}"
-        }
-      }
-    }
-  }
-end
-
 Given /^#{capture_model} (has|does not have) a token$/ do |name, has_token|
   token = sample_paypal_authentication_token << Factory.next(:basic).to_s if has_token == "has"
   model!(name).update_attributes!(
@@ -56,11 +44,11 @@ end
 
 
 Then /^#{relative_job} should be to get an authentication token$/ do |index|
-  Then %{the #{index.to_i}st most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/}
+  Then %{the #{index.to_i}th most recent job in the queue should have a name like /GetPaypalAuthenticationTokenJob$/}
 end
 
 Then /^#{relative_job} should be to get the authentication details$/ do |index|
-  Then %{the #{index.to_i}st most recent job in the queue should have a name like /GetPaypalAuthenticationDetailsJob$/}
+  Then %{the #{index.to_i}th most recent job in the queue should have a name like /GetPaypalAuthenticationDetailsJob$/}
 end
 
 Then(/^#{capture_model}'s (\w+) (should(?: not)?) be the authentication token$/) do |name, attribute, expectation|

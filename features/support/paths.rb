@@ -15,7 +15,7 @@ module NavigationHelpers
       new_user_paypal_authentication_path
 
     when /^the paypal authentication(?:'s)? show page$/
-      user_paypal_authentication_path(model!("the paypal_authentication"))
+      user_paypal_authentication_path(find_model("the paypal_authentication") || 1)
 
     # the following are examples using path_to_pickle
 

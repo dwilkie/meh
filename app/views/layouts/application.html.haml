@@ -6,7 +6,7 @@
     = javascript_include_tag :defaults
     = csrf_meta_tag
   %body
-    %p.notice
-      = notice
+    - flash_messages :notice
+    - flash_messages :error
     = yield
 

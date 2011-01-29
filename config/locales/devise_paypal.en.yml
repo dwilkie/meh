@@ -1,7 +1,6 @@
 en:
   devise:
-    returning: "back "
-    paypal_authentications:
-      success: "Welcome %{returning}%{user_name}! You're now signed in."
-      failure: "Sorry, could not authorize you from Paypal."
+    paypal_authable:
+      flash_messages:
+        something_went_wrong_when_contacting_paypal: "Sorry something went wrong when contacting Paypal. Please try again in a few minutes."
 
