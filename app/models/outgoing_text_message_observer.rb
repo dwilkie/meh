@@ -27,9 +27,9 @@ class OutgoingTextMessageObserver < ActiveRecord::Observer
     end
 
     def permanently_failed_to_send?(outgoing_text_message)
-      outgoing_text_message.permanently_failed_to_send_at? &&
-      outgoing_text_message.permanently_failed_to_send_changed? &&
-      outgoing_text_message_permanently_failed_to_send_was.nil?
+      outgoing_text_message.permanently_failed_to_send_at &&
+      outgoing_text_message.permanently_failed_to_send_at_changed? &&
+      outgoing_text_message.permanently_failed_to_send_at_was.nil?
     end
 
     def refund_credits(outgoing_text_message)
