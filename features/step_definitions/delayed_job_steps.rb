@@ -24,7 +24,8 @@ Then /^#{capture_model} should not be deleted from the queue$/ do |job|
 end
 
 Then /^#{relative_job} should (not )?have a name like \/([^\/]*)\/$/ do |job_number, expectation, job_name|
-  job = Delayed::Job.all[-1-job_number.to_i]
+  job_number ||= 1
+  job = Delayed::Job.all[0-job_number.to_i]
   expectation = expectation ? "_not" : ""
   if job
     job.name.send("should#{expectation}", match(job_name))

@@ -15,8 +15,7 @@ class User < ActiveRecord::Base
 
   # General Associations
 
-  has_one    :active_mobile_number,
-             :foreign_key => "active",
+  belongs_to :active_mobile_number,
              :class_name => "MobileNumber"
 
   has_many   :mobile_numbers
@@ -113,6 +112,10 @@ class User < ActiveRecord::Base
   validates :email,
             :presence => true,
             :if => :email_required?
+
+  validates :active_mobile_number_id,
+            :uniqueness => true,
+            :allow_nil => true
 
   validate  :has_at_least_one_mobile_number
 

@@ -90,7 +90,7 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should be a translation of "be specific about the order number" where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -168,7 +168,7 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number already used by you" in "en" (English) where value: "<tracking_number>"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number already used by you" where value: "<tracking_number>"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -182,7 +182,7 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number is invalid" in "en" (English) where value: "<tracking_number>"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "tracking number is invalid" where value: "<tracking_number>"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -199,7 +199,7 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "is required" in "en" (English)
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "is required"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -221,7 +221,7 @@ Feature: Complete an Order
 
     Then the supplier order should not be completed
 
-    And the most recent outgoing text message destined for the mobile_number: "Mara's number" should be a translation of "you have no orders to complete" in "en" (English) where supplier_name: "Mara"
+    And the most recent outgoing text message destined for the mobile_number: "Mara's number" should be a translation of "you have no orders to complete" where supplier_name: "Mara"
     And the seller should be that outgoing text message's payer
 
   Scenario: Complete an order as the seller/supplier
@@ -246,7 +246,7 @@ Feature: Complete an Order
     When I text "co" from "66354668874"
 
     Then the seller order should not be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you must confirm the line items first" in "en" (English) where supplier_name: "Nok", line_item_numbers: "#1"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should be a translation of "you must confirm the line items first" where supplier_name: "Nok", line_item_numbers: "#1"
     And the seller should be that outgoing text message's payer
 
   Scenario Outline: Try to complete an order which I already completed
@@ -255,7 +255,7 @@ Feature: Complete an Order
     When I text "co 1" from "66354668874"
 
     Then the supplier order should be completed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no orders to complete" in "en" (English) where supplier_name: "Nok"
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no orders to complete" where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -267,7 +267,7 @@ Feature: Complete an Order
     When I text "<message_text>" from "66354668874"
 
     Then the supplier order should not be completed
-    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "# does not exist" in "en" (English) where value: "<order_id>"
+    And the most recent outgoing text message destined for mobile_number: "Nok's number" should include a translation of "# does not exist" where value: "<order_id>"
     And the seller should be that outgoing text message's payer
 
     Examples:

@@ -77,8 +77,8 @@ module I18nHelpers
     end
   end
 
-  def translate(text)
-    I18n.t(translation_key(text))
+  def translate(text, options = {})
+    I18n.t(translation_key(text), options)
   end
 
 end

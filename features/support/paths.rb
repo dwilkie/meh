@@ -17,6 +17,15 @@ module NavigationHelpers
     when /^the paypal authentication(?:'s)? show page$/
       user_paypal_authentication_path(find_model("the paypal_authentication") || 1)
 
+    when /create paypal ipn/
+      paypal_ipns_path
+
+    when /create text message delivery receipt/
+      text_message_delivery_receipts_path
+
+    when /create incoming text message/
+      incoming_text_messages_path
+
     # the following are examples using path_to_pickle
 
     when /^#{capture_model}(?:'s)? page$/                           # eg. the forum's page

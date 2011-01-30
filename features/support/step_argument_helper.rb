@@ -8,7 +8,7 @@ class << self
   end
 
   def relative_outgoing_text_message
-    relative_reference << " #{capture_model} destined for #{capture_model} should (not )?(be|include)"
+    relative_reference << " #{capture_model} destined for #{capture_model} should (not )?(be|include)( a translation of)?"
   end
 end
 

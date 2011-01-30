@@ -21,7 +21,7 @@ Feature: Charge for outgoing text messages
     When an outgoing text message <num_chars> characters long is created with mobile_number: the mobile number
 
     Then the outgoing text message should be queued_for_sending
-    But the most recent outgoing text message destined for the mobile number should be a no credit warning
+    But the most recent outgoing text message destined for the mobile number should be a translation of "no credits remaining" where payer_name: ""
 
     And the user's message_credits should be "<credits_left>"
 
@@ -43,7 +43,7 @@ Feature: Charge for outgoing text messages
 
     When an outgoing text message is created with mobile_number: the mobile number
 
-    Then the most recent outgoing text message destined for the mobile number should be a no credit warning with payer_name: "Dave, "
+    Then the most recent outgoing text message destined for the mobile number should be a translation of "no credits remaining" where payer_name: "Dave, "
 
   Scenario Outline: The payer does not have enough message credits
     Given the user has <credits> message credits
@@ -51,7 +51,7 @@ Feature: Charge for outgoing text messages
     When an outgoing text message <num_chars> characters long is created with mobile_number: the mobile number
 
     Then the outgoing text message should not be queued_for_sending
-    And the most recent outgoing text message destined for the mobile number should be a no credit warning
+    And the most recent outgoing text message destined for the mobile number should be a translation of "no credits remaining" where payer_name: ""
     But that outgoing text message should be queued_for_sending
     And the user's message_credits should be "<credits_left>"
 
@@ -73,7 +73,7 @@ Feature: Charge for outgoing text messages
     When an outgoing text message 0 characters long is created with mobile_number: the mobile number
 
     Then the outgoing text message should not be queued_for_sending
-    And the most recent outgoing text message destined for the mobile number should be a no credit warning
+    And the most recent outgoing text message destined for the mobile number should be a translation of "no credits remaining" where payer_name: ""
     But that outgoing text message should be queued_for_sending
     And the user's message_credits should be "-2"
 
@@ -85,7 +85,7 @@ Feature: Charge for outgoing text messages
     When an outgoing text message is created with mobile_number: the mobile number, payer: user: "Dave"
 
     Then the outgoing text message should not be queued_for_sending
-    And the most recent outgoing text message destined for the mobile number: "Dave's number" should be a no credit warning
+    And the most recent outgoing text message destined for the mobile number: "Dave's number" should be a translation of "no credits remaining" where payer_name: ""
     And the outgoing text message should be queued_for_sending
     And the user: "Dave"'s message_credits should be "-1"
 
