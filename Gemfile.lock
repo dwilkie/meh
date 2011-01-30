@@ -1,13 +1,13 @@
 GIT
   remote: git://github.com/dwilkie/devise_paypal.git
-  revision: 27162f8d5d5820e7718fc5b33f39f03daafda424
+  revision: cd38de048701f8629e0cd50fc72ea8821039ca34
   specs:
     devise_paypal (0.0.1)
       paypal-ipn (> 0.0.1)
 
 GIT
   remote: git://github.com/dwilkie/paypal
-  revision: ca5699eb7a6e78d0b265624ff3c9152a1c07bb45
+  revision: 01cfa4b2009ea01f8c2814e7f6259e9ae7fa99d3
   specs:
     paypal-ipn (0.0.2)
       httparty
