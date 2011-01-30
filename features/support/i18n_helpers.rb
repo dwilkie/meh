@@ -76,6 +76,11 @@ module I18nHelpers
         "Now, go and add a mapping in #{__FILE__}"
     end
   end
+
+  def translate(text, options = {})
+    I18n.t(translation_key(text), options)
+  end
+
 end
 
 World(I18nHelpers)

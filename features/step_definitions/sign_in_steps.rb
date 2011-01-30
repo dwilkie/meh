@@ -13,3 +13,11 @@ Given /^I am not logged in$/ do
   # intentionally blank
 end
 
+Given /^I signed up(?: with #{capture_fields})?$/ do |fields|
+  mobile_number = parse_fields(fields)["mobile_number"] || "+121244411221"
+  Given %{I am on the signup page}
+  And %{I fill in "Mobile Number" with "#{mobile_number}"}
+  When %{I press "Sign Up"}
+  Then %{a paypal authentication should exist}
+end
+

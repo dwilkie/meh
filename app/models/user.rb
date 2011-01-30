@@ -5,13 +5,17 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :token_authenticatable, :lockable and :timeoutable
 
-  devise :database_authenticatable, :paypal_authable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable,
+         :recoverable,
+         :rememberable,
+         :trackable,
+         :validatable,
+         :paypal_authable,
+         :paypal_authentication_class => "PaypalAuthentication"
 
   # General Associations
 
-  has_one    :active_mobile_number,
-             :foreign_key => "active",
+  belongs_to :active_mobile_number,
              :class_name => "MobileNumber"
 
   has_many   :mobile_numbers
@@ -108,6 +112,10 @@ class User < ActiveRecord::Base
   validates :email,
             :presence => true,
             :if => :email_required?
+
+  validates :active_mobile_number_id,
+            :uniqueness => true,
+            :allow_nil => true
 
   validate  :has_at_least_one_mobile_number
 

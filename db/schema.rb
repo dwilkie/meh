@@ -57,7 +57,6 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
   create_table "mobile_numbers", :force => true do |t|
     t.string   "number",      :null => false
     t.datetime "verified_at"
-    t.integer  "active"
     t.integer  "user_id",     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -130,10 +129,14 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
 
   create_table "paypal_authentications", :force => true do |t|
     t.text     "params"
+    t.text     "user_details"
     t.string   "token"
+    t.datetime "queued_for_confirmation_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "paypal_authentications", ["token"], :name => "index_paypal_authentications_on_token", :unique => true
 
   create_table "paypal_ipns", :force => true do |t|
     t.text     "params",         :null => false
@@ -224,21 +227,23 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
 
   create_table "users", :force => true do |t|
     t.string   "email"
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "encrypted_password",      :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                       :default => 0
+    t.integer  "sign_in_count",                          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.integer  "roles_mask",                          :default => 0,  :null => false
-    t.string   "name",                                                :null => false
-    t.integer  "message_credits",                     :default => 0,  :null => false
+    t.integer  "roles_mask",                             :default => 0,  :null => false
+    t.string   "name",                                                   :null => false
+    t.integer  "message_credits",                        :default => 0,  :null => false
+    t.integer  "active_mobile_number_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "users", ["active_mobile_number_id"], :name => "index_users_on_active_mobile_number_id", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 

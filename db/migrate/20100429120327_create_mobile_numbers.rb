@@ -3,7 +3,6 @@ class CreateMobileNumbers < ActiveRecord::Migration
     create_table :mobile_numbers do |t|
       t.string     :number,               :null => false
       t.datetime   :verified_at
-      t.integer    :active
       t.references :user,                 :null => false
       t.timestamps
     end

@@ -11,9 +11,13 @@ en:
     error_notification:
       default_message: "Some errors were found, please take a look:"
     labels:
-      "order_simulation[seller_attributes][active_mobile_number_attributes]":
+      "user[mobile_numbers_attributes][0]":
         new:
-          number: Your Mobile Number
+          number: Enter your Mobile Number
+    hints:
+      "user[mobile_numbers_attributes][0]":
+        new:
+          number: International format e.g. +121234355555
     # Labels and hints examples
     # labels:
     #   password: 'Password'

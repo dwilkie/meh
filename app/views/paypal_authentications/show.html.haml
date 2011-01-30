@@ -1,0 +1,3 @@
+= t("views.text.please_wait")
+= link_to(t("views.links.#{@paypal_authentication.confirming? ? 'confirm_your_details' : 'redirect_you_to_paypal'}" << "..."), user_paypal_authentication_path(@paypal_authentication))
+

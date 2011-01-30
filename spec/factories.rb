@@ -7,6 +7,10 @@ Factory.sequence :transaction_id do |n|
   "45D21472YD182004#{n}"
 end
 
+Factory.sequence :basic do |n|
+  n
+end
+
 Factory.define :incoming_text_message do |f|
   f.association :mobile_number
   f.params { |itm|
@@ -15,6 +19,9 @@ Factory.define :incoming_text_message do |f|
       :authentic => true
     )
   }
+end
+
+Factory.define :paypal_authentication do |f|
 end
 
 Factory.define :job, :class => Delayed::Job do |f|

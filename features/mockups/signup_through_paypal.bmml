@@ -1,0 +1,39 @@
+<mockup version="1.0" skin="sketch" measuredW="873" measuredH="432" mockupW="789" mockupH="421">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="84" y="11" w="789" h="421" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Title" x="99" y="94" w="-1" h="-1" measuredW="627" measuredH="62" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Sign%20up%20for%20free%20through%20Paypal</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::Label" x="99" y="171" w="-1" h="-1" measuredW="169" measuredH="25" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Enter%20your%20mobile%20number%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="283" y="168" w="-1" h="-1" measuredW="102" measuredH="29" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>+1245666555</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Label" x="283" y="196" w="-1" h="-1" measuredW="254" measuredH="25" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>international%20format%20e.g.%20+1332344334</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="283" y="236" w="-1" h="-1" measuredW="73" measuredH="28" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Sign%20Up</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Image" x="613" y="180" w="89" h="56" measuredW="180" measuredH="113" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./resources/PayPal_mark_180x113.gif</src>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

@@ -8,13 +8,12 @@ Meh::Application.routes.draw do
   get "overview/index", :as => "user_root"
 
   resources :order_simulations, :only => [:new, :create]
-  resources :sellers, :only => [:new, :create]
   resources :suppliers, :only => [:index, :new, :create]
   resources :mobile_numbers
   resources :partnerships, :only => [:create, :destroy]
 
   devise_for :users, :controllers => {
-    :paypal_authable => "paypal_authentications"
+    :paypal_authable => :paypal_authentications
   }
 
   root :to => "welcome#index"
