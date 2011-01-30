@@ -115,7 +115,7 @@ Then /^#{relative_reference} #{capture_model} destined for #{capture_model} shou
   recent_text_message.send("should#{expectation}") == model!(text_message)
 end
 
-Then /^#{relative_reference} #{capture_model} destined for #{capture_model} should (not )?(be|include) "([^\"]*)"$/ do |text_message_index, name, mobile_number, expectation, exact_or_includes, expected_text|
+Then /^#{relative_outgoing_text_message} "([^\"]*)"$/ do |text_message_index, name, mobile_number, expectation, exact_or_includes, expected_text|
   text_message = find_text_message(
     :text_message_index => text_message_index,
     :mobile_number => mobile_number,
@@ -132,5 +132,15 @@ Then /^#{relative_reference} #{capture_model} destined for #{capture_model} shou
       "should#{expectation}", include(expected_text)
     )
   puts("\n" << body << "\n") if expectation.blank?
+end
+
+Then /^#{relative_outgoing_text_message} a no credit warning(?: with #{capture_fields})?$/ do |text_message_index, name, mobile_number, expectation, exact_or_includes, fields|
+  fields = parse_fields(fields).symbolize_keys!
+  fields[:payer_name] ||= ""
+  translation = I18n.t(
+    "notifications.messages.built_in.no_credits_remaining",
+    fields
+  )
+  Then %{the #{text_message_index}th most recent #{name} destined for #{mobile_number} should #{expectation}#{exact_or_includes} "#{translation}"}
 end
 
