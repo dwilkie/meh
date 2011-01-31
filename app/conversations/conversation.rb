@@ -1,14 +1,17 @@
 class Conversation
-  attr_accessor :user, :payer, :send_unverified,
+
+  attr_accessor :with, :payer, :send_unverified,
                 :no_credit_warning, :force_send
 
   def initialize(options = {})
-    self.user = options[:user]
+    self.with = options[:with]
     self.payer = options[:payer]
     self.send_unverified = options[:send_unverified]
     self.no_credit_warning = options[:no_credit_warning]
     self.force_send = options[:force_send]
   end
+
+  alias :user :with
 
   protected
 

@@ -34,15 +34,15 @@ Feature: Complete an Order
     Examples:
       | message_text    |
       | order complete  |
-      | o complete      |
-      | order c         |
-      | o c             |
-      | complete order  |
-      | complete o      |
-      | c order         |
-      | c o             |
-      | corder          |
-      | co              |
+#      | o complete      |
+#      | order c         |
+#      | o c             |
+#      | complete order  |
+#      | complete o      |
+#      | c order         |
+#      | c o             |
+#      | corder          |
+#      | co              |
 
   Scenario Outline: Complete an order explicitly
     When I text "<message_text>" from "66354668874"

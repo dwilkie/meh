@@ -51,25 +51,25 @@ Feature: Confirm line item
     Examples:
       | message_text        |
       | line_item confirm 1 |
-#      | item confirm 1      |
-#      | li confirm 1        |
-#      | i confirm 1         |
-#      | line_item c 1       |
-#      | item c 1            |
-#      | li c 1              |
-#      | i c 1               |
-#      | confirm line_item 1 |
-#      | confirm item 1      |
-#      | confirm li 1        |
-#      | confirm i 1         |
-#      | c line_item 1       |
-#      | c item 1            |
-#      | c li 1              |
-#      | c i 1               |
-#      | cline_item 1        |
-#      | citem 1             |
-#      | cli 1               |
-#      | ci 1                |
+      | item confirm 1      |
+      | li confirm 1        |
+      | i confirm 1         |
+      | line_item c 1       |
+      | item c 1            |
+      | li c 1              |
+      | i c 1               |
+      | confirm line_item 1 |
+      | confirm item 1      |
+      | confirm li 1        |
+      | confirm i 1         |
+      | c line_item 1       |
+      | c item 1            |
+      | c li 1              |
+      | c i 1               |
+      | cline_item 1        |
+      | citem 1             |
+      | cli 1               |
+      | ci 1                |
 
   Scenario Outline: Confirm an order explicitly
     When I text "<message_text>" from "66354668874"
