@@ -2,8 +2,8 @@ class CreateOutgoingTextMessages < ActiveRecord::Migration
   def self.up
     create_table :outgoing_text_messages do |t|
       t.text       :body
-      t.string     :gateway_response
-      t.string     :gateway_message_id
+      t.text       :gateway_response
+      t.text       :gateway_message_id
       t.references :mobile_number, :null => false
       t.references :payer, :null => false
       t.integer    :credits, :null => false, :default => 0

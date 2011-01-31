@@ -1,6 +1,14 @@
 class IncomingTextMessageConversation < Conversation
 
-  attr_accessor :action, :params, :message_words
+  include Conversational::Conversation
+
+  unknown_topic_subclass "UnknownTopicConversation"
+  blank_topic_subclass "UnknownTopicConversation"
+  class_suffix "Conversation"
+
+  attr_accessor :params, :message_words
+
+  alias :user :with
 
   def process(incoming_text_message)
     incoming_text_message.mobile_number.activate!

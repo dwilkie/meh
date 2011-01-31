@@ -1,4 +1,18 @@
 GIT
+  remote: git://github.com/dwilkie/action_sms.git
+  revision: 67c008c10d1b5029c68ce7e2c3160f320b6883c7
+  specs:
+    action_sms (0.1.1)
+      rack
+      tropo_message (>= 0.1.0)
+
+GIT
+  remote: git://github.com/dwilkie/conversational.git
+  revision: 3d07edfa31f2e5a8aae03754797af8af928d78c8
+  specs:
+    conversational (0.3.2)
+
+GIT
   remote: git://github.com/dwilkie/devise_paypal.git
   revision: cd38de048701f8629e0cd50fc72ea8821039ca34
   specs:
@@ -25,8 +39,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     abstract (1.0.0)
-    action_sms (0.1.1)
-      tropo_message (>= 0.1.0)
     actionmailer (3.0.3)
       actionpack (= 3.0.3)
       mail (~> 2.2.9)
@@ -71,7 +83,6 @@ GEM
       ffi (~> 0.6.3)
     columnize (0.3.2)
     configuration (1.2.0)
-    conversational (0.3.2)
     crack (0.1.8)
     cucumber (0.10.0)
       builder (>= 2.1.2)
@@ -198,9 +209,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  action_sms
+  action_sms!
   capybara
-  conversational
+  conversational!
   cucumber-rails
   delayed_job
   devise!

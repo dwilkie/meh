@@ -51,25 +51,25 @@ Feature: Confirm line item
     Examples:
       | message_text        |
       | line_item confirm 1 |
-      | item confirm 1      |
-      | li confirm 1        |
-      | i confirm 1         |
-      | line_item c 1       |
-      | item c 1            |
-      | li c 1              |
-      | i c 1               |
-      | confirm line_item 1 |
-      | confirm item 1      |
-      | confirm li 1        |
-      | confirm i 1         |
-      | c line_item 1       |
-      | c item 1            |
-      | c li 1              |
-      | c i 1               |
-      | cline_item 1        |
-      | citem 1             |
-      | cli 1               |
-      | ci 1                |
+#      | item confirm 1      |
+#      | li confirm 1        |
+#      | i confirm 1         |
+#      | line_item c 1       |
+#      | item c 1            |
+#      | li c 1              |
+#      | i c 1               |
+#      | confirm line_item 1 |
+#      | confirm item 1      |
+#      | confirm li 1        |
+#      | confirm i 1         |
+#      | c line_item 1       |
+#      | c item 1            |
+#      | c li 1              |
+#      | c i 1               |
+#      | cline_item 1        |
+#      | citem 1             |
+#      | cli 1               |
+#      | ci 1                |
 
   Scenario Outline: Confirm an order explicitly
     When I text "<message_text>" from "66354668874"
@@ -115,7 +115,7 @@ Feature: Confirm line item
 
     Then the line item: "first item" should not be confirmed
     And the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" in "en" (English) where supplier_name: "Nok", command: "<command>", params: <params>
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "be specific about the line item number" where supplier_name: "Nok", command: "<command>", params: <params>
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -152,7 +152,7 @@ Feature: Confirm line item
     When I text "ci 234 1" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile number: "Nok's number" should include a translation of "# does not exist" in "en" (English) where value: "234"
+    And the most recent outgoing text message destined for the mobile number: "Nok's number" should include a translation of "# does not exist" where value: "234"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item as the seller
@@ -160,7 +160,7 @@ Feature: Confirm line item
 
     Then the line item should not be confirmed
 
-    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Mara"
+    And the most recent outgoing text message destined for the mobile number: "Mara's number" should be a translation of "you have no line items to confirm" where supplier_name: "Mara"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to confirm a line item as a seller when the seller is also the supplier for this product
@@ -178,7 +178,7 @@ Feature: Confirm line item
     When I text "<message_text>" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" where value: "<value>"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -192,7 +192,7 @@ Feature: Confirm line item
     When I text "ci" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to explicitly confirm a line item omitting the quantity with multiple unconfirmed line items
@@ -204,7 +204,7 @@ Feature: Confirm line item
     When I text "ci 1" from "66354668874"
 
     Then the line item: "first item" should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed" in "en" (English)
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "line item quantity must be confirmed"
     And the seller should be that outgoing text message's payer
 
   Scenario Outline: Confirm an line item with a product verification code
@@ -235,7 +235,7 @@ Feature: Confirm line item
     When I text "<message_text>" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "<value>"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" where value: "<value>"
     And the seller should be that outgoing text message's payer
 
     Examples:
@@ -251,14 +251,14 @@ Feature: Confirm line item
     When I text "ci 1" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is required" in "en" (English) where value: "<value>"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is required" where value: "<value>"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly confirm a line item without a product verification code giving a code
     When I text "ci 1 xyz123" from "66354668874"
 
     Then the line item should not be confirmed
-    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" in "en" (English) where value: "xyz123"
+    And the most recent outgoing text message destined for the mobile_number: "Nok's number" should include a translation of "is incorrect" where value: "xyz123"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to explicitly confirm a line item without a product verification code giving a code
@@ -271,7 +271,7 @@ Feature: Confirm line item
 
     When I text "ci 1 1" from "66354668874"
 
-    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Nok"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 
   Scenario: Try to implicitly confirm a line item which I already completed
@@ -279,6 +279,6 @@ Feature: Confirm line item
 
     When I text "ci 1" from "66354668874"
 
-    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" in "en" (English) where supplier_name: "Nok"
+    Then the most recent outgoing text message destined for the mobile number: "Nok's number" should be a translation of "you have no line items to confirm" where supplier_name: "Nok"
     And the seller should be that outgoing text message's payer
 

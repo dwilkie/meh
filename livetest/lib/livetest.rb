@@ -33,9 +33,9 @@ class Test
   def self.incoming_text_message_query_string(options = {})
     params = {
       "to" => "61447100308",
-      "from" => "9999999999",
+      "from" => MobileNumber.first.to_s,
       "msg" => "Change me",
-      "userfield" => ENV["SMS_AUTHENTICATION_KEY"],
+      "authentication_key" => ENV["SMS_AUTHENTICATION_KEY"],
       "date" => Time.now
     }
     params = {"incoming_text_message" => params} if options[:normalized]

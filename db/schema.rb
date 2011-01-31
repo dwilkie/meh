@@ -89,8 +89,8 @@ ActiveRecord::Schema.define(:version => 20101230095841) do
 
   create_table "outgoing_text_messages", :force => true do |t|
     t.text     "body"
-    t.string   "gateway_response"
-    t.string   "gateway_message_id"
+    t.text     "gateway_response"
+    t.text     "gateway_message_id"
     t.integer  "mobile_number_id",                             :null => false
     t.integer  "payer_id",                                     :null => false
     t.integer  "credits",                       :default => 0, :null => false

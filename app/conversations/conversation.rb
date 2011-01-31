@@ -1,17 +1,13 @@
 class Conversation
-  include Conversational::Conversation
-
-  attr_accessor :user, :payer, :send_unverified, :no_credit_warning, :force_send
-  alias :user :with
-
-  self.unknown_topic_subclass = UnknownTopicConversation
-  self.blank_topic_subclass = UnknownTopicConversation
+  attr_accessor :user, :payer, :send_unverified,
+                :no_credit_warning, :force_send
 
   def initialize(options = {})
-    self.with = options.delete(:with)
-    self.send_unverified = options.delete(:send_unverified)
-    self.no_credit_warning = options.delete(:no_credit_warning)
-    self.force_send = options.delete(:force_send)
+    self.user = options[:user]
+    self.payer = options[:payer]
+    self.send_unverified = options[:send_unverified]
+    self.no_credit_warning = options[:no_credit_warning]
+    self.force_send = options[:force_send]
   end
 
   protected
